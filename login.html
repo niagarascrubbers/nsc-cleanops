@@ -1,1 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | NSC CleanOps</title>
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f8fb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .login-card {
+      background: white;
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 12px 35px rgba(0, 34, 68, 0.12);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      color: #0b2f4f;
+      font-size: 30px;
+    }
+
+    .brand p {
+      margin-top: 8px;
+      color: #5c6f7d;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #17324d;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px;
+      margin-bottom: 18px;
+      border: 1px solid #c8d6e2;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #0b2f4f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #164f7a;
+    }
+
+    .status {
+      margin-top: 16px;
+      text-align: center;
+      color: #5c6f7d;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-card">
+    <div class="brand">
+      <h1>NSC CleanOps</h1>
+      <p>Niagara Scrubbers Operations Platform</p>
+    </div>
+
+    <form id="login-form">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" required>
+
+      <button type="submit">Sign In</button>
+
+      <div class="status" id="status">
+        Authorized users only
+      </div>
+    </form>
+  </div>
+</body>
+</html>
