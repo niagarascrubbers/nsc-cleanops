@@ -129,7 +129,11 @@
       return;
     }
 
-    statusMessage.textContent = "Login successful.";
+    statusMessage.textContent = "Login successful. Opening dashboard...";
+
+setTimeout(function () {
+  window.location.href = "manager-dashboard.html";
+}, 500);
   });
 </script>
 </body>
