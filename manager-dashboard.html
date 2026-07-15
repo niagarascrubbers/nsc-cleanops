@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Dashboard | NSC CleanOps</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f8fb;
+      color: #17324d;
+    }
+
+    header {
+      background: #0b2f4f;
+      color: white;
+      padding: 18px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    main {
+      padding: 28px;
+    }
+
+    .welcome {
+      margin-bottom: 24px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0, 34, 68, 0.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #0b2f4f;
+    }
+
+    .card p {
+      color: #5c6f7d;
+      margin-bottom: 0;
+    }
+
+    button {
+      background: white;
+      color: #0b2f4f;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>NSC CleanOps</h1>
+    <button id="logout-button">Sign Out</button>
+  </header>
+
+  <main>
+    <div class="welcome">
+      <h2>Manager Dashboard</h2>
+      <p>Manage properties, turnovers, cleaners, inventory, reports, and issues.</p>
+    </div>
+
+    <section class="cards">
+      <div class="card">
+        <h2>Properties</h2>
+        <p>View and manage all client properties.</p>
+      </div>
+
+      <div class="card">
+        <h2>Turnovers</h2>
+        <p>Create, assign, and monitor cleaning turnovers.</p>
+      </div>
+
+      <div class="card">
+        <h2>Cleaners</h2>
+        <p>Manage cleaner assignments and access.</p>
+      </div>
+
+      <div class="card">
+        <h2>Inventory</h2>
+        <p>Review stock levels and low inventory alerts.</p>
+      </div>
+
+      <div class="card">
+        <h2>Damage Reports</h2>
+        <p>Review damage, maintenance, and issue reports.</p>
+      </div>
+
+      <div class="card">
+        <h2>Reports</h2>
+        <p>Open completed turnover reports and PDFs.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    async function protectPage() {
+      const { data } = await window.nscSupabase.auth.getSession();
+
+      if (!data.session) {
+        window.location.href = "login.html";
+      }
+    }
+
+    document.getElementById("logout-button").addEventListener("click", async function () {
+      await window.nscSupabase.auth.signOut();
+      window.location.href = "login.html";
+    });
+
+    protectPage();
+  </script>
+</body>
+</html>
