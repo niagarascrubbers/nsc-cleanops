@@ -103,6 +103,34 @@
         Authorized users only
       </div>
     </form>
-  </div>
+  </div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+
+<script>
+  const loginForm = document.getElementById("login-form");
+  const statusMessage = document.getElementById("status");
+
+  loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    statusMessage.textContent = "Signing in...";
+
+    const { data, error } =
+      await window.nscSupabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if (error) {
+      statusMessage.textContent = error.message;
+      return;
+    }
+
+    statusMessage.textContent = "Login successful.";
+  });
+</script>
 </body>
 </html>
