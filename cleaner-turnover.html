@@ -691,6 +691,125 @@
       font-weight: 600;
     }
 
+
+    .inventory-list {
+      display: grid;
+    }
+
+    .inventory-item {
+      padding: 15px 18px;
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .inventory-item:last-child {
+      border-bottom: 0;
+    }
+
+    .inventory-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .inventory-item-name {
+      color: var(--navy-light);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .inventory-location {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 8px;
+    }
+
+    .inventory-saved {
+      color: var(--success);
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .inventory-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .inventory-option {
+      position: relative;
+    }
+
+    .inventory-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .inventory-option label {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .inventory-option input:checked + label {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      color: #2078a9;
+      box-shadow: 0 0 0 2px rgba(47,143,202,.09);
+    }
+
+    .inventory-option.low input:checked + label {
+      border-color: #e5c170;
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .inventory-option.out input:checked + label,
+    .inventory-option.emergency input:checked + label {
+      border-color: #efbaba;
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .inventory-note {
+      width: 100%;
+      min-height: 58px;
+      margin-top: 9px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      resize: vertical;
+      color: var(--text);
+      font-size: 9px;
+      outline: none;
+    }
+
+    .inventory-note:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47,143,202,.12);
+    }
+
+    .inventory-empty {
+      padding: 22px 18px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
     .loading,
     .error {
       padding: 70px 20px;
@@ -784,6 +903,10 @@
         padding-left: 29px;
       }
 
+      .inventory-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .submit-bar {
         align-items: stretch;
         flex-direction: column;
@@ -868,6 +991,8 @@
     let tasks = [];
     let taskPhotos = [];
     let roomGroups = [];
+    let inventoryItems = [];
+    let inventoryCounts = [];
     let activeRoomKey = null;
     let remainingOnly = false;
 
@@ -932,7 +1057,7 @@
 
       const { data: profile, error: profileError } = await db
         .from("users")
-        .select("id, full_name, role, active")
+        .select("id, full_name, role, company_id, active")
         .eq("auth_user_id", session.user.id)
         .single();
 
@@ -954,6 +1079,8 @@
         .from("turnovers")
         .select(`
           id,
+          property_id,
+          company_id,
           assigned_user_id,
           turnover_date,
           scheduled_start,
@@ -1018,6 +1145,211 @@
       tasks = Array.isArray(data) ? data : [];
     }
 
+
+
+    async function loadInventory() {
+      const [itemsResult, countsResult] = await Promise.all([
+        db
+          .from("inventory_items")
+          .select(`
+            id,
+            property_id,
+            item_name,
+            item_code,
+            category,
+            unit_name,
+            location_note,
+            emergency_stock,
+            active,
+            sort_order
+          `)
+          .eq("property_id", turnover.property_id)
+          .eq("active", true)
+          .order("sort_order", { ascending: true })
+          .order("item_name", { ascending: true }),
+
+        db
+          .from("inventory_counts")
+          .select(`
+            id,
+            turnover_id,
+            inventory_item_id,
+            level_status,
+            stock_status,
+            emergency_stock_used,
+            cleaner_note,
+            counted_by,
+            counted_at
+          `)
+          .eq("turnover_id", turnover.id)
+      ]);
+
+      if (itemsResult.error) throw itemsResult.error;
+      if (countsResult.error) throw countsResult.error;
+
+      inventoryItems = Array.isArray(itemsResult.data) ? itemsResult.data : [];
+      inventoryCounts = Array.isArray(countsResult.data) ? countsResult.data : [];
+    }
+
+    function getInventoryCount(itemId) {
+      return inventoryCounts.find(count => count.inventory_item_id === itemId) || null;
+    }
+
+    function getInventorySelection(count) {
+      if (!count || count.stock_status === "unknown") return null;
+      if (count.emergency_stock_used) return "emergency";
+      if (count.stock_status === "red") return "out";
+      if (count.stock_status === "amber") return "low";
+      return "full";
+    }
+
+    function getInventoryProgress() {
+      const completed = inventoryItems.filter(item => {
+        const count = getInventoryCount(item.id);
+        return Boolean(getInventorySelection(count));
+      }).length;
+
+      return {
+        completed,
+        total: inventoryItems.length,
+        percent: inventoryItems.length
+          ? Math.round((completed / inventoryItems.length) * 100)
+          : 100
+      };
+    }
+
+    function inventoryValueToRecord(value) {
+      const mapping = {
+        full: {
+          level_status: "full",
+          stock_status: "green",
+          emergency_stock_used: false
+        },
+        low: {
+          level_status: "low",
+          stock_status: "amber",
+          emergency_stock_used: false
+        },
+        out: {
+          level_status: "out",
+          stock_status: "red",
+          emergency_stock_used: false
+        },
+        emergency: {
+          level_status: "emergency_stock_used",
+          stock_status: "red",
+          emergency_stock_used: true
+        }
+      };
+
+      return mapping[value] || null;
+    }
+
+    async function createInventoryNotifications(item, value) {
+      if (!["low", "out", "emergency"].includes(value)) return;
+
+      const { data: recipients, error: recipientsError } = await db
+        .from("users")
+        .select("id")
+        .eq("company_id", turnover.company_id || currentProfile.company_id)
+        .in("role", ["admin", "manager"])
+        .eq("active", true);
+
+      if (recipientsError) throw recipientsError;
+      if (!recipients?.length) return;
+
+      const severity = value === "low" ? "warning" : "critical";
+      const statusLabel = value === "emergency"
+        ? "Emergency stock used"
+        : value === "out"
+          ? "Out of stock"
+          : "Low stock";
+
+      const notificationRows = recipients.map(recipient => ({
+        company_id: turnover.company_id || currentProfile.company_id,
+        property_id: turnover.property_id,
+        turnover_id: turnover.id,
+        recipient_user_id: recipient.id,
+        notification_type: "inventory_alert",
+        severity,
+        title: `${statusLabel}: ${item.item_name}`,
+        message: `${item.item_name} was reported as ${statusLabel.toLowerCase()} during the turnover at ${turnover.properties?.property_name || "the property"}.`,
+        action_url: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
+      }));
+
+      const { error } = await db
+        .from("notifications")
+        .insert(notificationRows);
+
+      if (error) throw error;
+    }
+
+    async function saveInventoryCount(itemId, value, note, input) {
+      const item = inventoryItems.find(record => record.id === itemId);
+      const mapped = inventoryValueToRecord(value);
+
+      if (!item || !mapped) return;
+
+      const inventoryElement = input.closest("[data-inventory-item-id]");
+      inventoryElement?.querySelectorAll("input, textarea").forEach(control => {
+        control.disabled = true;
+      });
+
+      try {
+        const existing = getInventoryCount(itemId);
+        const previousSelection = getInventorySelection(existing);
+
+        const payload = {
+          turnover_id: turnover.id,
+          inventory_item_id: itemId,
+          level_status: mapped.level_status,
+          stock_status: mapped.stock_status,
+          emergency_stock_used: mapped.emergency_stock_used,
+          cleaner_note: note || null,
+          counted_by: currentProfile.id,
+          counted_at: new Date().toISOString()
+        };
+
+        const { data, error } = await db
+          .from("inventory_counts")
+          .upsert(payload, {
+            onConflict: "turnover_id,inventory_item_id"
+          })
+          .select(`
+            id,
+            turnover_id,
+            inventory_item_id,
+            level_status,
+            stock_status,
+            emergency_stock_used,
+            cleaner_note,
+            counted_by,
+            counted_at
+          `)
+          .single();
+
+        if (error) throw error;
+
+        const index = inventoryCounts.findIndex(count => count.inventory_item_id === itemId);
+        if (index >= 0) {
+          inventoryCounts[index] = data;
+        } else {
+          inventoryCounts.push(data);
+        }
+
+        if (previousSelection !== value) {
+          await createInventoryNotifications(item, value);
+        }
+
+        renderPage();
+        showToast(`${item.item_name} inventory status saved.`);
+      } catch (error) {
+        inventoryElement?.querySelectorAll("input, textarea").forEach(control => {
+          control.disabled = false;
+        });
+        showToast(error.message || "The inventory status could not be saved.", "error");
+      }
+    }
 
     async function loadPhotos() {
       const { data, error } = await db
@@ -1093,6 +1425,13 @@
 
       roomGroups = Array.from(grouped.values());
 
+      roomGroups.push({
+        key: "__inventory__",
+        roomName: "Inventory",
+        items: [],
+        isInventory: true
+      });
+
       if (!activeRoomKey && roomGroups.length) {
         const firstIncomplete = roomGroups.find(group =>
           group.items.some(task => !["completed", "not_applicable"].includes(task.task_status))
@@ -1102,6 +1441,8 @@
     }
 
     function getRoomProgress(group) {
+      if (group.isInventory) return getInventoryProgress();
+
       const completed = group.items.filter(task =>
         ["completed", "not_applicable"].includes(task.task_status)
       ).length;
@@ -1116,12 +1457,25 @@
     }
 
     function getIncompleteTasks(group) {
+      if (group.isInventory) {
+        return inventoryItems
+          .filter(item => !getInventorySelection(getInventoryCount(item.id)))
+          .map(item => ({
+            id: `inventory-${item.id}`,
+            inventoryItemId: item.id,
+            task_text: item.item_name,
+            isInventory: true
+          }));
+      }
+
       return group.items.filter(task =>
         !["completed", "not_applicable"].includes(task.task_status)
       );
     }
 
     function getMissingPhotoCount(task) {
+      if (task.isInventory) return 0;
+
       return Math.max(
         getRequiredPhotoCount(task) - getPhotosForTask(task.id).length,
         0
@@ -1168,6 +1522,7 @@
                       type="button"
                       data-open-room="${escapeHtml(group.key)}"
                       data-focus-task="${escapeHtml(task.id)}"
+                      ${task.inventoryItemId ? `data-focus-inventory="${escapeHtml(task.inventoryItemId)}"` : ""}
                     >
                       <span class="remaining-box"></span>
                       <span>
@@ -1185,6 +1540,73 @@
             `).join("")}
           </div>
         </section>
+      `;
+    }
+
+
+    function renderInventoryRoom() {
+      const locked = turnover.status === "review_required" || turnover.status === "completed";
+
+      if (!inventoryItems.length) {
+        return `
+          <div class="inventory-empty">
+            No active inventory items are configured for this property.
+          </div>
+        `;
+      }
+
+      return `
+        <div class="inventory-list">
+          ${inventoryItems.map(item => {
+            const count = getInventoryCount(item.id);
+            const selected = getInventorySelection(count);
+            const inputName = `inventory-${item.id}`;
+
+            return `
+              <div class="inventory-item" data-inventory-item-id="${escapeHtml(item.id)}">
+                <div class="inventory-item-header">
+                  <div>
+                    <div class="inventory-item-name">${escapeHtml(item.item_name)}</div>
+                    ${item.location_note ? `
+                      <div class="inventory-location">${escapeHtml(item.location_note)}</div>
+                    ` : ""}
+                  </div>
+
+                  ${selected ? `<span class="inventory-saved">Saved</span>` : ""}
+                </div>
+
+                <div class="inventory-options">
+                  ${[
+                    ["full", "Full", ""],
+                    ["low", "Low", "low"],
+                    ["out", "Out", "out"],
+                    ["emergency", "Emergency Stock Used", "emergency"]
+                  ].map(([value, label, className]) => `
+                    <div class="inventory-option ${className}">
+                      <input
+                        type="radio"
+                        id="${escapeHtml(inputName)}-${value}"
+                        name="${escapeHtml(inputName)}"
+                        value="${value}"
+                        data-role="inventory-status"
+                        ${selected === value ? "checked" : ""}
+                        ${locked ? "disabled" : ""}
+                      >
+                      <label for="${escapeHtml(inputName)}-${value}">${label}</label>
+                    </div>
+                  `).join("")}
+                </div>
+
+                <textarea
+                  class="inventory-note"
+                  data-role="inventory-note"
+                  placeholder="Optional inventory note"
+                  ${locked ? "disabled" : ""}
+                >${escapeHtml(count?.cleaner_note || "")}</textarea>
+              </div>
+            `;
+          }).join("")}
+        </div>
       `;
     }
 
@@ -1223,15 +1645,17 @@
           </button>
 
           <div class="room-body">
-            ${visibleTasks.length ? `
-              <div class="task-list">
-                ${visibleTasks.map((task, index) => renderTask(task, index + 1)).join("")}
-              </div>
-            ` : `
-              <div class="room-empty">
-                ${remainingOnly ? "No incomplete tasks remain in this room." : "No checklist tasks are assigned to this room."}
-              </div>
-            `}
+            ${group.isInventory
+              ? renderInventoryRoom()
+              : visibleTasks.length ? `
+                <div class="task-list">
+                  ${visibleTasks.map((task, index) => renderTask(task, index + 1)).join("")}
+                </div>
+              ` : `
+                <div class="room-empty">
+                  ${remainingOnly ? "No incomplete tasks remain in this room." : "No checklist tasks are assigned to this room."}
+                </div>
+              `}
           </div>
         </article>
       `;
@@ -1353,15 +1777,33 @@
         });
       });
 
+      pageContent.querySelectorAll('[data-role="inventory-status"]').forEach(input => {
+        input.addEventListener("change", () => {
+          const itemElement = input.closest("[data-inventory-item-id]");
+          const itemId = itemElement?.dataset.inventoryItemId;
+          const note = itemElement?.querySelector('[data-role="inventory-note"]')?.value.trim() || "";
+
+          if (itemId) {
+            saveInventoryCount(itemId, input.value, note, input);
+          }
+        });
+      });
+
       pageContent.querySelectorAll("[data-open-room]").forEach(button => {
         button.addEventListener("click", () => {
           activeRoomKey = button.dataset.openRoom;
           const taskId = button.dataset.focusTask;
           renderPage();
 
+          const inventoryItemId = button.dataset.focusInventory;
+
           window.requestAnimationFrame(() => {
-            const taskElement = pageContent.querySelector(`[data-task-id="${CSS.escape(taskId)}"]`);
-            taskElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+            const selector = inventoryItemId
+              ? `[data-inventory-item-id="${CSS.escape(inventoryItemId)}"]`
+              : `[data-task-id="${CSS.escape(taskId)}"]`;
+
+            const targetElement = pageContent.querySelector(selector);
+            targetElement?.scrollIntoView({ behavior: "smooth", block: "center" });
           });
         });
       });
@@ -1731,7 +2173,11 @@
         getPhotosForTask(task.id).length < getRequiredPhotoCount(task)
       );
 
-      if (incompleteRequired.length || missingRequiredPhotos.length) {
+      const incompleteInventory = inventoryItems.filter(item =>
+        !getInventorySelection(getInventoryCount(item.id))
+      );
+
+      if (incompleteRequired.length || missingRequiredPhotos.length || incompleteInventory.length) {
         const missingTaskNames = incompleteRequired
           .slice(0, 3)
           .map(task => task.task_text);
@@ -1741,17 +2187,34 @@
           .slice(0, 3)
           .map(task => `${task.task_text} photo`);
 
-        const remainingNames = [...missingTaskNames, ...missingPhotoNames].slice(0, 4);
-        const totalRemaining = incompleteRequired.length + missingRequiredPhotos.length;
+        const missingInventoryNames = incompleteInventory
+          .slice(0, 3)
+          .map(item => `${item.item_name} inventory`);
+
+        const remainingNames = [
+          ...missingTaskNames,
+          ...missingPhotoNames,
+          ...missingInventoryNames
+        ].slice(0, 4);
+
+        const totalRemaining =
+          incompleteRequired.length +
+          missingRequiredPhotos.length +
+          incompleteInventory.length;
 
         remainingOnly = true;
 
         const firstMissing = incompleteRequired[0] || missingRequiredPhotos[0];
-        const firstGroup = roomGroups.find(group =>
-          group.items.some(task => task.id === firstMissing?.id)
-        );
 
-        if (firstGroup) activeRoomKey = firstGroup.key;
+        if (firstMissing) {
+          const firstGroup = roomGroups.find(group =>
+            !group.isInventory && group.items.some(task => task.id === firstMissing.id)
+          );
+
+          if (firstGroup) activeRoomKey = firstGroup.key;
+        } else if (incompleteInventory.length) {
+          activeRoomKey = "__inventory__";
+        }
 
         renderPage();
 
@@ -1805,8 +2268,11 @@
         if (!authenticated) return;
 
         await loadTurnover();
-        await loadTasks();
-        await loadPhotos();
+        await Promise.all([
+          loadTasks(),
+          loadInventory(),
+          loadPhotos()
+        ]);
         renderPage();
       } catch (error) {
         console.error("Cleaner turnover page failed:", error);
