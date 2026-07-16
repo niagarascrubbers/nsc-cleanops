@@ -26,16 +26,22 @@
       --navy: #071f35;
       --navy-light: #0b2f4f;
       --blue: #2f8fca;
+      --blue-hover: #257daf;
       --blue-light: #eaf6fc;
       --background: #f5f8fb;
       --border: #dfe8ef;
+      --border-dark: #cbd9e3;
       --text: #17324d;
       --muted: #6c7e8f;
       --white: #ffffff;
       --success: #1f8f64;
       --success-light: #e9f8f1;
       --danger: #c94747;
+      --danger-light: #fff0f0;
+      --warning: #aa7214;
+      --warning-light: #fff8e7;
       --shadow: 0 10px 30px rgba(18, 50, 77, 0.08);
+      --shadow-large: 0 24px 60px rgba(7, 31, 53, 0.18);
     }
 
     * {
@@ -48,6 +54,10 @@
       background: var(--background);
       color: var(--text);
       font-family: "Poppins", sans-serif;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
     }
 
     button,
@@ -237,6 +247,11 @@
       color: var(--text);
     }
 
+    .icon-button:hover {
+      border-color: var(--border-dark);
+      background: #f8fafc;
+    }
+
     .page {
       width: 100%;
       max-width: 1480px;
@@ -262,6 +277,7 @@
     .property-meta {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       gap: 8px 16px;
       margin-top: 8px;
       color: var(--muted);
@@ -282,7 +298,7 @@
     }
 
     .status-badge.inactive {
-      background: #fff0f0;
+      background: var(--danger-light);
       color: var(--danger);
     }
 
@@ -304,6 +320,12 @@
       border-radius: 10px;
       font-size: 12px;
       font-weight: 600;
+      transition: 0.18s ease;
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: 0.62;
     }
 
     .button-primary {
@@ -312,10 +334,47 @@
       box-shadow: 0 7px 16px rgba(11, 47, 79, 0.16);
     }
 
+    .button-primary:hover:not(:disabled) {
+      background: var(--navy);
+      transform: translateY(-1px);
+    }
+
+    .button-blue {
+      color: white;
+      background: var(--blue);
+      box-shadow: 0 7px 16px rgba(47, 143, 202, 0.18);
+    }
+
+    .button-blue:hover:not(:disabled) {
+      background: var(--blue-hover);
+    }
+
     .button-secondary {
       color: var(--text);
       background: white;
       border-color: var(--border);
+    }
+
+    .button-secondary:hover:not(:disabled) {
+      border-color: var(--border-dark);
+      background: #f8fafc;
+    }
+
+    .button-danger {
+      color: var(--danger);
+      background: white;
+      border-color: #efcaca;
+    }
+
+    .button-danger:hover:not(:disabled) {
+      background: var(--danger-light);
+    }
+
+    .button-small {
+      min-height: 34px;
+      padding: 7px 11px;
+      border-radius: 8px;
+      font-size: 10px;
     }
 
     .tab-bar {
@@ -342,9 +401,18 @@
       font-weight: 600;
     }
 
+    .tab-link:hover {
+      color: var(--navy-light);
+      background: #f2f7fa;
+    }
+
     .tab-link.active {
       color: white;
       background: var(--navy-light);
+    }
+
+    .tab-panel[hidden] {
+      display: none;
     }
 
     .overview-grid {
@@ -441,10 +509,197 @@
       font-weight: 700;
     }
 
+    .module-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .module-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 21px;
+    }
+
+    .module-description {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .rooms-toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) 190px auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box span {
+      position: absolute;
+      top: 50%;
+      left: 13px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .search-box input,
+    .filter-select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      color: var(--text);
+      font-size: 11px;
+      outline: none;
+    }
+
+    .search-box input {
+      padding: 10px 13px 10px 38px;
+    }
+
+    .filter-select {
+      padding: 10px 12px;
+    }
+
+    .search-box input:focus,
+    .filter-select:focus,
+    .form-control:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47, 143, 202, 0.12);
+    }
+
+    .room-summary {
+      color: var(--muted);
+      font-size: 10px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .rooms-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    .rooms-table th {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .rooms-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #edf2f6;
+      color: var(--text);
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    .rooms-table tbody tr:hover {
+      background: #fbfdfe;
+    }
+
+    .room-name {
+      font-weight: 600;
+      color: var(--navy-light);
+    }
+
+    .room-code {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 7px;
+      background: #f1f5f8;
+      color: #536b7e;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .room-type-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--blue-light);
+      color: #2078a9;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .row-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 7px;
+    }
+
+    .empty-state {
+      padding: 64px 24px;
+      text-align: center;
+    }
+
+    .empty-icon {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 14px;
+      border-radius: 16px;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 23px;
+    }
+
+    .empty-title {
+      margin: 0 0 6px;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+    }
+
+    .empty-text {
+      max-width: 460px;
+      margin: 0 auto 17px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
     .loading-state,
     .error-state {
       padding: 80px 24px;
       text-align: center;
+    }
+
+    .inline-loading {
+      padding: 55px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
     }
 
     .spinner {
@@ -455,6 +710,13 @@
       border-top-color: var(--blue);
       border-radius: 50%;
       animation: spin 0.75s linear infinite;
+    }
+
+    .spinner-small {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 10px;
+      border-width: 2px;
     }
 
     .state-title {
@@ -472,15 +734,219 @@
       line-height: 1.6;
     }
 
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(4, 20, 34, 0.52);
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.2s ease;
+    }
+
+    .drawer-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 100;
+      width: min(470px, 100%);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      box-shadow: var(--shadow-large);
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 22px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 19px;
+    }
+
+    .drawer-subtitle {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .drawer-close {
+      flex: 0 0 auto;
+    }
+
+    .drawer-body {
+      flex: 1;
+      padding: 22px;
+      overflow-y: auto;
+    }
+
+    .drawer-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 22px;
+      border-top: 1px solid var(--border);
+      background: #fbfdfe;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 17px;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 7px;
+    }
+
+    .form-label {
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .required {
+      color: var(--danger);
+    }
+
+    .form-control {
+      width: 100%;
+      min-height: 43px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      color: var(--text);
+      font-size: 11px;
+      outline: none;
+    }
+
+    .form-help {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .checkbox-row input {
+      width: 17px;
+      height: 17px;
+      margin-top: 1px;
+      accent-color: var(--blue);
+    }
+
+    .checkbox-title {
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .checkbox-description {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .form-error {
+      display: none;
+      padding: 11px 12px;
+      border: 1px solid #efcaca;
+      border-radius: 9px;
+      background: var(--danger-light);
+      color: var(--danger);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .form-error.show {
+      display: block;
+    }
+
+    .toast-container {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 140;
+      display: grid;
+      gap: 10px;
+      width: min(360px, calc(100vw - 36px));
+    }
+
+    .toast {
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--success);
+      border-radius: 11px;
+      background: white;
+      box-shadow: var(--shadow-large);
+      color: var(--text);
+      font-size: 10px;
+      line-height: 1.5;
+      animation: toastIn 0.2s ease;
+    }
+
+    .toast.error {
+      border-left-color: var(--danger);
+    }
+
     @keyframes spin {
       to {
         transform: rotate(360deg);
       }
     }
 
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     @media (max-width: 1000px) {
       .overview-grid {
         grid-template-columns: 1fr;
+      }
+
+      .rooms-toolbar {
+        grid-template-columns: 1fr 170px;
+      }
+
+      .room-summary {
+        grid-column: 1 / -1;
+        text-align: left;
       }
     }
 
@@ -507,16 +973,34 @@
     }
 
     @media (max-width: 650px) {
-      .property-header {
+      .property-header,
+      .module-header {
         flex-direction: column;
       }
 
-      .property-header .button {
+      .property-header .button,
+      .module-header .button {
         width: 100%;
       }
 
       .details-grid {
         grid-template-columns: 1fr;
+      }
+
+      .rooms-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .room-summary {
+        grid-column: auto;
+      }
+
+      .drawer-footer {
+        flex-direction: column-reverse;
+      }
+
+      .drawer-footer .button {
+        width: 100%;
       }
     }
   </style>
@@ -631,6 +1115,131 @@
     </main>
   </div>
 
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <aside class="drawer" id="roomDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div>
+        <h2 class="drawer-title" id="drawerTitle">Add Room</h2>
+        <p class="drawer-subtitle" id="drawerSubtitle">
+          Add a room or service area to this property.
+        </p>
+      </div>
+
+      <button class="icon-button drawer-close" id="drawerCloseButton" type="button" title="Close">
+        ×
+      </button>
+    </div>
+
+    <form id="roomForm">
+      <div class="drawer-body">
+        <div class="form-grid">
+          <div class="form-error" id="roomFormError"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="roomName">
+              Room Name <span class="required">*</span>
+            </label>
+            <input
+              class="form-control"
+              id="roomName"
+              name="room_name"
+              type="text"
+              maxlength="100"
+              placeholder="Example: Main Kitchen"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="roomCode">
+              Room Code <span class="required">*</span>
+            </label>
+            <input
+              class="form-control"
+              id="roomCode"
+              name="room_code"
+              type="text"
+              maxlength="40"
+              placeholder="Example: MAIN_KITCHEN"
+              required
+            >
+            <div class="form-help">
+              Use a short unique code. Spaces will automatically be converted to underscores.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="roomType">
+              Room Type <span class="required">*</span>
+            </label>
+            <select class="form-control" id="roomType" name="room_type" required>
+              <option value="">Select room type</option>
+              <option value="entrance">Entrance / Foyer</option>
+              <option value="kitchen">Kitchen</option>
+              <option value="bathroom">Bathroom / Washroom</option>
+              <option value="bedroom">Bedroom</option>
+              <option value="living_room">Living Room</option>
+              <option value="dining_room">Dining Room</option>
+              <option value="office">Office</option>
+              <option value="boardroom">Boardroom</option>
+              <option value="hallway">Hallway / Corridor</option>
+              <option value="stairwell">Stairwell</option>
+              <option value="laundry">Laundry Room</option>
+              <option value="storage">Storage Room</option>
+              <option value="lounge">Lounge</option>
+              <option value="fitness">Fitness Room</option>
+              <option value="mudroom">Mudroom</option>
+              <option value="open_area">Open Area</option>
+              <option value="exterior">Exterior Area</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="sortOrder">Sort Order</label>
+            <input
+              class="form-control"
+              id="sortOrder"
+              name="sort_order"
+              type="number"
+              min="0"
+              max="9999"
+              step="1"
+              value="10"
+            >
+            <div class="form-help">
+              Lower numbers appear first. Using 10, 20, 30 leaves room to add rooms between them later.
+            </div>
+          </div>
+
+          <label class="checkbox-row" for="roomActive">
+            <input id="roomActive" name="active" type="checkbox" checked>
+
+            <span>
+              <span class="checkbox-title">Active room</span>
+              <span class="checkbox-description">
+                Active rooms are available for checklists, inventory and turnover assignments.
+              </span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button class="button button-secondary" id="cancelRoomButton" type="button">
+          Cancel
+        </button>
+
+        <button class="button button-primary" id="saveRoomButton" type="submit">
+          Save Room
+        </button>
+      </div>
+    </form>
+  </aside>
+
+  <div class="toast-container" id="toastContainer"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
 
@@ -641,7 +1250,31 @@
     const breadcrumbName = document.getElementById("breadcrumbName");
     const logoutButton = document.getElementById("logoutButton");
 
+    const drawerBackdrop = document.getElementById("drawerBackdrop");
+    const roomDrawer = document.getElementById("roomDrawer");
+    const drawerCloseButton = document.getElementById("drawerCloseButton");
+    const cancelRoomButton = document.getElementById("cancelRoomButton");
+    const roomForm = document.getElementById("roomForm");
+    const roomFormError = document.getElementById("roomFormError");
+    const drawerTitle = document.getElementById("drawerTitle");
+    const drawerSubtitle = document.getElementById("drawerSubtitle");
+    const saveRoomButton = document.getElementById("saveRoomButton");
+    const roomNameInput = document.getElementById("roomName");
+    const roomCodeInput = document.getElementById("roomCode");
+    const roomTypeInput = document.getElementById("roomType");
+    const sortOrderInput = document.getElementById("sortOrder");
+    const roomActiveInput = document.getElementById("roomActive");
+    const toastContainer = document.getElementById("toastContainer");
+
     const db = window.nscSupabase || window.supabaseClient;
+
+    let currentProperty = null;
+    let currentCounts = null;
+    let rooms = [];
+    let filteredRooms = [];
+    let activeTab = "overview";
+    let editingRoomId = null;
+    let roomNameManuallyEdited = false;
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -650,6 +1283,10 @@
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttribute(value) {
+      return escapeHtml(value);
     }
 
     function formatType(value) {
@@ -666,10 +1303,44 @@
       return labels[value] || value || "Not specified";
     }
 
+    function formatRoomType(value) {
+      const labels = {
+        entrance: "Entrance / Foyer",
+        kitchen: "Kitchen",
+        bathroom: "Bathroom / Washroom",
+        bedroom: "Bedroom",
+        living_room: "Living Room",
+        dining_room: "Dining Room",
+        office: "Office",
+        boardroom: "Boardroom",
+        hallway: "Hallway / Corridor",
+        stairwell: "Stairwell",
+        laundry: "Laundry Room",
+        storage: "Storage Room",
+        lounge: "Lounge",
+        fitness: "Fitness Room",
+        mudroom: "Mudroom",
+        open_area: "Open Area",
+        exterior: "Exterior Area",
+        other: "Other"
+      };
+
+      return labels[value] || value || "Other";
+    }
+
     function displayValue(value, fallback = "Not entered") {
       return value === null || value === undefined || value === ""
         ? fallback
         : escapeHtml(value);
+    }
+
+    function normalizeRoomCode(value) {
+      return String(value || "")
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 40);
     }
 
     function getPropertyId() {
@@ -677,7 +1348,25 @@
       return params.get("id");
     }
 
+    function showToast(message, type = "success") {
+      const toast = document.createElement("div");
+      toast.className = `toast ${type === "error" ? "error" : ""}`;
+      toast.textContent = message;
+
+      toastContainer.appendChild(toast);
+
+      window.setTimeout(() => {
+        toast.remove();
+      }, 4200);
+    }
+
     async function requireSession() {
+      if (!db) {
+        throw new Error(
+          "Supabase client is unavailable. Check that supabase-client.js loads correctly."
+        );
+      }
+
       const {
         data: { session },
         error
@@ -695,18 +1384,29 @@
       return true;
     }
 
-    async function getCount(tableName, propertyId) {
-      const { count, error } = await db
-        .from(tableName)
-        .select("*", { count: "exact", head: true })
-        .eq("property_id", propertyId);
+    async function getCount(tableName, propertyId, filters = []) {
+      try {
+        let query = db
+          .from(tableName)
+          .select("*", { count: "exact", head: true })
+          .eq("property_id", propertyId);
 
-      if (error) {
+        filters.forEach((filter) => {
+          query = query.eq(filter.column, filter.value);
+        });
+
+        const { count, error } = await query;
+
+        if (error) {
+          console.warn(`Could not count ${tableName}:`, error.message);
+          return 0;
+        }
+
+        return count || 0;
+      } catch (error) {
         console.warn(`Could not count ${tableName}:`, error.message);
         return 0;
       }
-
-      return count || 0;
     }
 
     async function loadProperty() {
@@ -755,6 +1455,8 @@
         throw error;
       }
 
+      currentProperty = property;
+
       const [
         roomCount,
         inventoryCount,
@@ -766,19 +1468,25 @@
         getCount("inventory_items", propertyId),
         getCount("turnovers", propertyId),
         getCount("photos", propertyId),
-        getCount("issues", propertyId)
+        getCount("issues", propertyId, [{ column: "status", value: "open" }])
       ]);
 
-      renderProperty(property, {
+      currentCounts = {
         roomCount,
         inventoryCount,
         turnoverCount,
         photoCount,
         issueCount
-      });
+      };
+
+      renderPropertyShell();
+      await loadRooms(false);
     }
 
-    function renderProperty(property, counts) {
+    function renderPropertyShell() {
+      const property = currentProperty;
+      const counts = currentCounts;
+
       const location = [
         property.city,
         property.province,
@@ -811,168 +1519,703 @@
 
           <button
             class="button button-secondary"
+            id="backToPropertiesButton"
             type="button"
-            onclick="window.location.href='properties.html'"
           >
             ← Back to Properties
           </button>
         </section>
 
-        <nav class="tab-bar">
-          <button class="tab-link active" type="button">Overview</button>
+        <nav class="tab-bar" aria-label="Property modules">
+          <button class="tab-link active" type="button" data-tab="overview">Overview</button>
           <button class="tab-link" type="button" data-tab="rooms">Rooms</button>
-          <button class="tab-link" type="button" data-tab="inventory">Inventory</button>
-          <button class="tab-link" type="button" data-tab="photos">Photos</button>
-          <button class="tab-link" type="button" data-tab="turnovers">Turnovers</button>
-          <button class="tab-link" type="button" data-tab="checklists">Checklists</button>
-          <button class="tab-link" type="button" data-tab="reports">Reports</button>
-          <button class="tab-link" type="button" data-tab="issues">Issues</button>
-          <button class="tab-link" type="button" data-tab="settings">Settings</button>
+          <button class="tab-link" type="button" data-placeholder-tab="inventory">Inventory</button>
+          <button class="tab-link" type="button" data-placeholder-tab="photos">Photos</button>
+          <button class="tab-link" type="button" data-placeholder-tab="turnovers">Turnovers</button>
+          <button class="tab-link" type="button" data-placeholder-tab="checklists">Checklists</button>
+          <button class="tab-link" type="button" data-placeholder-tab="reports">Reports</button>
+          <button class="tab-link" type="button" data-placeholder-tab="issues">Issues</button>
+          <button class="tab-link" type="button" data-placeholder-tab="settings">Settings</button>
         </nav>
 
-        <section class="overview-grid">
-          <article class="card">
-            <div class="card-header">
-              <h2 class="card-title">Property Overview</h2>
-              <p class="card-description">
-                Core location, access and client information.
-              </p>
-            </div>
+        <section class="tab-panel" id="overviewPanel" data-panel="overview">
+          <div class="overview-grid">
+            <article class="card">
+              <div class="card-header">
+                <h2 class="card-title">Property Overview</h2>
+                <p class="card-description">
+                  Core location, access and client information.
+                </p>
+              </div>
 
-            <div class="card-body">
-              <div class="details-grid">
-                <div class="detail-item">
-                  <div class="detail-label">Street Address</div>
-                  <div class="detail-value">
-                    ${displayValue(property.address)}
+              <div class="card-body">
+                <div class="details-grid">
+                  <div class="detail-item">
+                    <div class="detail-label">Street Address</div>
+                    <div class="detail-value">
+                      ${displayValue(property.address)}
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">City and Province</div>
-                  <div class="detail-value">
-                    ${displayValue(location)}
+                  <div class="detail-item">
+                    <div class="detail-label">City and Province</div>
+                    <div class="detail-value">
+                      ${displayValue(location)}
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">Property Type</div>
-                  <div class="detail-value">
-                    ${escapeHtml(formatType(property.property_type))}
+                  <div class="detail-item">
+                    <div class="detail-label">Property Type</div>
+                    <div class="detail-value">
+                      ${escapeHtml(formatType(property.property_type))}
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">GPS Check-In Radius</div>
-                  <div class="detail-value">
-                    ${displayValue(property.gps_radius, "150")} metres
+                  <div class="detail-item">
+                    <div class="detail-label">GPS Check-In Radius</div>
+                    <div class="detail-value">
+                      ${displayValue(property.gps_radius, "150")} metres
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">Owner Name</div>
-                  <div class="detail-value">
-                    ${displayValue(property.owner_name)}
+                  <div class="detail-item">
+                    <div class="detail-label">Owner Name</div>
+                    <div class="detail-value">
+                      ${displayValue(property.owner_name)}
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">Owner Phone</div>
-                  <div class="detail-value">
-                    ${displayValue(property.owner_phone)}
+                  <div class="detail-item">
+                    <div class="detail-label">Owner Phone</div>
+                    <div class="detail-value">
+                      ${displayValue(property.owner_phone)}
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">Owner Email</div>
-                  <div class="detail-value">
-                    ${property.owner_email
-                      ? `<a href="mailto:${escapeHtml(property.owner_email)}">${escapeHtml(property.owner_email)}</a>`
-                      : "Not entered"
-                    }
+                  <div class="detail-item">
+                    <div class="detail-label">Owner Email</div>
+                    <div class="detail-value">
+                      ${property.owner_email
+                        ? `<a href="mailto:${escapeAttribute(property.owner_email)}">${escapeHtml(property.owner_email)}</a>`
+                        : "Not entered"
+                      }
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">Listing</div>
-                  <div class="detail-value">
-                    ${property.listing_url
-                      ? `<a href="${escapeHtml(property.listing_url)}" target="_blank" rel="noopener">Open property listing ↗</a>`
-                      : "No listing URL entered"
-                    }
+                  <div class="detail-item">
+                    <div class="detail-label">Listing</div>
+                    <div class="detail-value">
+                      ${property.listing_url
+                        ? `<a href="${escapeAttribute(property.listing_url)}" target="_blank" rel="noopener noreferrer">Open property listing ↗</a>`
+                        : "No listing URL entered"
+                      }
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">Latitude</div>
-                  <div class="detail-value">
-                    ${displayValue(property.latitude)}
+                  <div class="detail-item">
+                    <div class="detail-label">Latitude</div>
+                    <div class="detail-value">
+                      ${displayValue(property.latitude)}
+                    </div>
                   </div>
-                </div>
 
-                <div class="detail-item">
-                  <div class="detail-label">Longitude</div>
-                  <div class="detail-value">
-                    ${displayValue(property.longitude)}
+                  <div class="detail-item">
+                    <div class="detail-label">Longitude</div>
+                    <div class="detail-value">
+                      ${displayValue(property.longitude)}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </article>
+            </article>
 
-          <aside class="card">
-            <div class="card-header">
-              <h2 class="card-title">Operations Summary</h2>
-              <p class="card-description">
-                Records currently connected to this property.
+            <aside class="card">
+              <div class="card-header">
+                <h2 class="card-title">Operations Summary</h2>
+                <p class="card-description">
+                  Records currently connected to this property.
+                </p>
+              </div>
+
+              <div class="card-body">
+                <div class="stats-list">
+                  <div class="stat-row">
+                    <span class="stat-name">Rooms</span>
+                    <strong class="stat-value" id="overviewRoomCount">${counts.roomCount}</strong>
+                  </div>
+
+                  <div class="stat-row">
+                    <span class="stat-name">Inventory Items</span>
+                    <strong class="stat-value">${counts.inventoryCount}</strong>
+                  </div>
+
+                  <div class="stat-row">
+                    <span class="stat-name">Turnovers</span>
+                    <strong class="stat-value">${counts.turnoverCount}</strong>
+                  </div>
+
+                  <div class="stat-row">
+                    <span class="stat-name">Photos</span>
+                    <strong class="stat-value">${counts.photoCount}</strong>
+                  </div>
+
+                  <div class="stat-row">
+                    <span class="stat-name">Open Issues</span>
+                    <strong class="stat-value">${counts.issueCount}</strong>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="roomsPanel" data-panel="rooms" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Rooms</h2>
+              <p class="module-description">
+                Manage every room and service area connected to this property.
               </p>
             </div>
 
-            <div class="card-body">
-              <div class="stats-list">
-                <div class="stat-row">
-                  <span class="stat-name">Rooms</span>
-                  <strong class="stat-value">${counts.roomCount}</strong>
-                </div>
+            <button class="button button-primary" id="addRoomButton" type="button">
+              + Add Room
+            </button>
+          </div>
 
-                <div class="stat-row">
-                  <span class="stat-name">Inventory Items</span>
-                  <strong class="stat-value">${counts.inventoryCount}</strong>
-                </div>
+          <div class="card">
+            <div class="rooms-toolbar">
+              <div class="search-box">
+                <span>⌕</span>
+                <input
+                  id="roomSearchInput"
+                  type="search"
+                  placeholder="Search by room name, code or type"
+                  autocomplete="off"
+                >
+              </div>
 
-                <div class="stat-row">
-                  <span class="stat-name">Turnovers</span>
-                  <strong class="stat-value">${counts.turnoverCount}</strong>
-                </div>
+              <select class="filter-select" id="roomStatusFilter">
+                <option value="all">All rooms</option>
+                <option value="active">Active only</option>
+                <option value="inactive">Inactive only</option>
+              </select>
 
-                <div class="stat-row">
-                  <span class="stat-name">Photos</span>
-                  <strong class="stat-value">${counts.photoCount}</strong>
-                </div>
-
-                <div class="stat-row">
-                  <span class="stat-name">Open Issues</span>
-                  <strong class="stat-value">${counts.issueCount}</strong>
-                </div>
+              <div class="room-summary" id="roomSummary">
+                Loading rooms…
               </div>
             </div>
-          </aside>
+
+            <div id="roomsContent">
+              <div class="inline-loading">
+                <div class="spinner spinner-small"></div>
+                Loading rooms
+              </div>
+            </div>
+          </div>
         </section>
       `;
 
-      registerTabPlaceholders();
+      registerPropertyEvents();
+      switchTab(activeTab);
     }
 
-    function registerTabPlaceholders() {
+    function registerPropertyEvents() {
+      document
+        .getElementById("backToPropertiesButton")
+        .addEventListener("click", () => {
+          window.location.href = "properties.html";
+        });
+
       document.querySelectorAll("[data-tab]").forEach((button) => {
         button.addEventListener("click", () => {
-          const tabName = button.dataset.tab;
+          switchTab(button.dataset.tab);
+        });
+      });
 
-          alert(
-            `${tabName.charAt(0).toUpperCase() + tabName.slice(1)} will be built in the next development step.`
+      document.querySelectorAll("[data-placeholder-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const tabName = button.dataset.placeholderTab;
+
+          showToast(
+            `${tabName.charAt(0).toUpperCase() + tabName.slice(1)} will be built after the Rooms module is tested.`
           );
         });
       });
+
+      document
+        .getElementById("addRoomButton")
+        .addEventListener("click", () => openRoomDrawer());
+
+      document
+        .getElementById("roomSearchInput")
+        .addEventListener("input", applyRoomFilters);
+
+      document
+        .getElementById("roomStatusFilter")
+        .addEventListener("change", applyRoomFilters);
+    }
+
+    function switchTab(tabName) {
+      activeTab = tabName;
+
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+
+      document.querySelectorAll("[data-panel]").forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== tabName;
+      });
+    }
+
+    async function loadRooms(showLoading = true) {
+      if (!currentProperty) {
+        return;
+      }
+
+      const roomsContent = document.getElementById("roomsContent");
+
+      if (showLoading && roomsContent) {
+        roomsContent.innerHTML = `
+          <div class="inline-loading">
+            <div class="spinner spinner-small"></div>
+            Loading rooms
+          </div>
+        `;
+      }
+
+      const { data, error } = await db
+        .from("rooms")
+        .select(`
+          id,
+          property_id,
+          room_name,
+          room_code,
+          room_type,
+          sort_order,
+          active
+        `)
+        .eq("property_id", currentProperty.id)
+        .order("sort_order", { ascending: true })
+        .order("room_name", { ascending: true });
+
+      if (error) {
+        throw error;
+      }
+
+      rooms = Array.isArray(data) ? data : [];
+      currentCounts.roomCount = rooms.length;
+
+      const overviewRoomCount = document.getElementById("overviewRoomCount");
+
+      if (overviewRoomCount) {
+        overviewRoomCount.textContent = rooms.length;
+      }
+
+      applyRoomFilters();
+    }
+
+    function applyRoomFilters() {
+      const searchInput = document.getElementById("roomSearchInput");
+      const statusFilter = document.getElementById("roomStatusFilter");
+
+      const searchTerm = (searchInput?.value || "").trim().toLowerCase();
+      const status = statusFilter?.value || "all";
+
+      filteredRooms = rooms.filter((room) => {
+        const searchableText = [
+          room.room_name,
+          room.room_code,
+          formatRoomType(room.room_type),
+          room.room_type
+        ].join(" ").toLowerCase();
+
+        const matchesSearch =
+          !searchTerm || searchableText.includes(searchTerm);
+
+        const matchesStatus =
+          status === "all" ||
+          (status === "active" && room.active !== false) ||
+          (status === "inactive" && room.active === false);
+
+        return matchesSearch && matchesStatus;
+      });
+
+      renderRooms();
+    }
+
+    function renderRooms() {
+      const roomsContent = document.getElementById("roomsContent");
+      const roomSummary = document.getElementById("roomSummary");
+
+      if (!roomsContent || !roomSummary) {
+        return;
+      }
+
+      roomSummary.textContent =
+        filteredRooms.length === rooms.length
+          ? `${rooms.length} room${rooms.length === 1 ? "" : "s"}`
+          : `${filteredRooms.length} of ${rooms.length} rooms`;
+
+      if (!filteredRooms.length) {
+        const hasRooms = rooms.length > 0;
+
+        roomsContent.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">${hasRooms ? "⌕" : "▦"}</div>
+            <h3 class="empty-title">
+              ${hasRooms ? "No rooms match your filters" : "No rooms added yet"}
+            </h3>
+            <p class="empty-text">
+              ${hasRooms
+                ? "Try changing the search term or status filter."
+                : "Add the first room or service area for this property."
+              }
+            </p>
+            ${hasRooms
+              ? ""
+              : `<button class="button button-primary" id="emptyAddRoomButton" type="button">+ Add First Room</button>`
+            }
+          </div>
+        `;
+
+        const emptyAddRoomButton =
+          document.getElementById("emptyAddRoomButton");
+
+        if (emptyAddRoomButton) {
+          emptyAddRoomButton.addEventListener("click", () => openRoomDrawer());
+        }
+
+        return;
+      }
+
+      roomsContent.innerHTML = `
+        <div class="table-wrap">
+          <table class="rooms-table">
+            <thead>
+              <tr>
+                <th>Room Name</th>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Sort Order</th>
+                <th>Status</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${filteredRooms.map((room) => `
+                <tr>
+                  <td>
+                    <span class="room-name">${escapeHtml(room.room_name)}</span>
+                  </td>
+
+                  <td>
+                    <span class="room-code">${escapeHtml(room.room_code)}</span>
+                  </td>
+
+                  <td>
+                    <span class="room-type-badge">
+                      ${escapeHtml(formatRoomType(room.room_type))}
+                    </span>
+                  </td>
+
+                  <td>${Number.isFinite(Number(room.sort_order)) ? Number(room.sort_order) : 0}</td>
+
+                  <td>
+                    <span class="status-badge ${room.active === false ? "inactive" : ""}">
+                      <span class="status-dot"></span>
+                      ${room.active === false ? "Inactive" : "Active"}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div class="row-actions">
+                      <button
+                        class="button button-secondary button-small"
+                        type="button"
+                        data-action="edit-room"
+                        data-room-id="${escapeAttribute(room.id)}"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        class="button ${room.active === false ? "button-blue" : "button-danger"} button-small"
+                        type="button"
+                        data-action="toggle-room"
+                        data-room-id="${escapeAttribute(room.id)}"
+                      >
+                        ${room.active === false ? "Activate" : "Deactivate"}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      roomsContent
+        .querySelectorAll('[data-action="edit-room"]')
+        .forEach((button) => {
+          button.addEventListener("click", () => {
+            const room = rooms.find(
+              (item) => item.id === button.dataset.roomId
+            );
+
+            if (room) {
+              openRoomDrawer(room);
+            }
+          });
+        });
+
+      roomsContent
+        .querySelectorAll('[data-action="toggle-room"]')
+        .forEach((button) => {
+          button.addEventListener("click", () => {
+            toggleRoomStatus(button.dataset.roomId, button);
+          });
+        });
+    }
+
+    function openRoomDrawer(room = null) {
+      editingRoomId = room?.id || null;
+      roomNameManuallyEdited = Boolean(room);
+
+      roomForm.reset();
+      roomFormError.classList.remove("show");
+      roomFormError.textContent = "";
+
+      if (room) {
+        drawerTitle.textContent = "Edit Room";
+        drawerSubtitle.textContent =
+          "Update this room or service area's information.";
+        saveRoomButton.textContent = "Save Changes";
+
+        roomNameInput.value = room.room_name || "";
+        roomCodeInput.value = room.room_code || "";
+        roomTypeInput.value = room.room_type || "other";
+        sortOrderInput.value =
+          Number.isFinite(Number(room.sort_order))
+            ? Number(room.sort_order)
+            : 10;
+        roomActiveInput.checked = room.active !== false;
+      } else {
+        drawerTitle.textContent = "Add Room";
+        drawerSubtitle.textContent =
+          "Add a room or service area to this property.";
+        saveRoomButton.textContent = "Save Room";
+
+        roomNameInput.value = "";
+        roomCodeInput.value = "";
+        roomTypeInput.value = "";
+        sortOrderInput.value = getNextSortOrder();
+        roomActiveInput.checked = true;
+      }
+
+      roomDrawer.classList.add("open");
+      drawerBackdrop.classList.add("open");
+      roomDrawer.setAttribute("aria-hidden", "false");
+      document.body.classList.add("drawer-open");
+
+      window.setTimeout(() => {
+        roomNameInput.focus();
+      }, 150);
+    }
+
+    function closeRoomDrawer() {
+      roomDrawer.classList.remove("open");
+      drawerBackdrop.classList.remove("open");
+      roomDrawer.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("drawer-open");
+
+      editingRoomId = null;
+      roomFormError.classList.remove("show");
+      roomFormError.textContent = "";
+    }
+
+    function getNextSortOrder() {
+      if (!rooms.length) {
+        return 10;
+      }
+
+      const highest = Math.max(
+        ...rooms.map((room) => Number(room.sort_order) || 0)
+      );
+
+      return highest + 10;
+    }
+
+    async function saveRoom(event) {
+      event.preventDefault();
+
+      if (!currentProperty) {
+        return;
+      }
+
+      const roomName = roomNameInput.value.trim();
+      const roomCode = normalizeRoomCode(roomCodeInput.value);
+      const roomType = roomTypeInput.value;
+      const sortOrder = Number.parseInt(sortOrderInput.value, 10);
+
+      if (!roomName) {
+        showRoomFormError("Enter a room name.");
+        roomNameInput.focus();
+        return;
+      }
+
+      if (!roomCode) {
+        showRoomFormError("Enter a valid room code.");
+        roomCodeInput.focus();
+        return;
+      }
+
+      if (!roomType) {
+        showRoomFormError("Select a room type.");
+        roomTypeInput.focus();
+        return;
+      }
+
+      const duplicate = rooms.find((room) =>
+        room.room_code?.toUpperCase() === roomCode &&
+        room.id !== editingRoomId
+      );
+
+      if (duplicate) {
+        showRoomFormError(
+          `The room code ${roomCode} is already used by ${duplicate.room_name}.`
+        );
+        roomCodeInput.focus();
+        return;
+      }
+
+      const payload = {
+        property_id: currentProperty.id,
+        room_name: roomName,
+        room_code: roomCode,
+        room_type: roomType,
+        sort_order: Number.isFinite(sortOrder) ? sortOrder : 10,
+        active: roomActiveInput.checked
+      };
+
+      const wasEditing = Boolean(editingRoomId);
+
+      setRoomFormSaving(true);
+      roomFormError.classList.remove("show");
+
+      try {
+        let result;
+
+        if (editingRoomId) {
+          result = await db
+            .from("rooms")
+            .update(payload)
+            .eq("id", editingRoomId)
+            .eq("property_id", currentProperty.id)
+            .select()
+            .single();
+        } else {
+          result = await db
+            .from("rooms")
+            .insert(payload)
+            .select()
+            .single();
+        }
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        closeRoomDrawer();
+        await loadRooms();
+
+        showToast(
+          wasEditing
+            ? "Room updated successfully."
+            : "Room added successfully."
+        );
+      } catch (error) {
+        console.error("Room save failed:", error);
+
+        const message =
+          error.code === "23505"
+            ? "That room code already exists for this property."
+            : error.message || "The room could not be saved.";
+
+        showRoomFormError(message);
+      } finally {
+        setRoomFormSaving(false);
+      }
+    }
+
+    function showRoomFormError(message) {
+      roomFormError.textContent = message;
+      roomFormError.classList.add("show");
+    }
+
+    function setRoomFormSaving(isSaving) {
+      saveRoomButton.disabled = isSaving;
+      cancelRoomButton.disabled = isSaving;
+      drawerCloseButton.disabled = isSaving;
+
+      saveRoomButton.textContent = isSaving
+        ? "Saving…"
+        : editingRoomId
+          ? "Save Changes"
+          : "Save Room";
+    }
+
+    async function toggleRoomStatus(roomId, button) {
+      const room = rooms.find((item) => item.id === roomId);
+
+      if (!room || !currentProperty) {
+        return;
+      }
+
+      const nextActive = room.active === false;
+
+      const confirmationMessage = nextActive
+        ? `Activate "${room.room_name}"?`
+        : `Deactivate "${room.room_name}"? It will remain in the system but will not be available for new operational assignments.`;
+
+      if (!window.confirm(confirmationMessage)) {
+        return;
+      }
+
+      button.disabled = true;
+      const previousText = button.textContent;
+      button.textContent = nextActive ? "Activating…" : "Deactivating…";
+
+      try {
+        const { error } = await db
+          .from("rooms")
+          .update({ active: nextActive })
+          .eq("id", room.id)
+          .eq("property_id", currentProperty.id);
+
+        if (error) {
+          throw error;
+        }
+
+        await loadRooms();
+
+        showToast(
+          nextActive
+            ? `${room.room_name} activated.`
+            : `${room.room_name} deactivated.`
+        );
+      } catch (error) {
+        console.error("Room status update failed:", error);
+        button.disabled = false;
+        button.textContent = previousText;
+
+        showToast(
+          error.message || "Room status could not be updated.",
+          "error"
+        );
+      }
     }
 
     function showError(title, message) {
@@ -986,13 +2229,19 @@
 
           <button
             class="button button-primary"
+            id="returnToPropertiesButton"
             type="button"
-            onclick="window.location.href='properties.html'"
           >
             Return to Properties
           </button>
         </div>
       `;
+
+      document
+        .getElementById("returnToPropertiesButton")
+        .addEventListener("click", () => {
+          window.location.href = "properties.html";
+        });
     }
 
     async function logout() {
@@ -1003,7 +2252,36 @@
       }
     }
 
+    roomNameInput.addEventListener("input", () => {
+      if (!editingRoomId && !roomNameManuallyEdited) {
+        roomCodeInput.value = normalizeRoomCode(roomNameInput.value);
+      }
+    });
+
+    roomCodeInput.addEventListener("input", () => {
+      roomNameManuallyEdited = true;
+      const cursorPosition = roomCodeInput.selectionStart;
+      roomCodeInput.value = normalizeRoomCode(roomCodeInput.value);
+
+      if (cursorPosition !== null) {
+        roomCodeInput.setSelectionRange(
+          roomCodeInput.value.length,
+          roomCodeInput.value.length
+        );
+      }
+    });
+
+    roomForm.addEventListener("submit", saveRoom);
+    drawerCloseButton.addEventListener("click", closeRoomDrawer);
+    cancelRoomButton.addEventListener("click", closeRoomDrawer);
+    drawerBackdrop.addEventListener("click", closeRoomDrawer);
     logoutButton.addEventListener("click", logout);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && roomDrawer.classList.contains("open")) {
+        closeRoomDrawer();
+      }
+    });
 
     loadProperty().catch((error) => {
       console.error("Property page failed:", error);
