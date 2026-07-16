@@ -1049,7 +1049,7 @@
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Cleaner Turnover Checklist · Inventory Quantity v5</div>
+          <div class="brand-subtitle">Cleaner Turnover Checklist · Inventory Quantity v5.1</div>
         </div>
       </div>
 
@@ -1074,7 +1074,7 @@
   <script>
     "use strict";
 
-    console.info("NSC Cleaner Turnover Inventory Quantity v5 loaded");
+    console.info("NSC Cleaner Turnover Inventory Quantity v5.1 loaded");
 
     const db = window.nscSupabase || window.supabaseClient;
     const pageContent = document.getElementById("pageContent");
@@ -1318,8 +1318,9 @@
             category,
             unit_name,
             location_note,
-            par_level,
-            reorder_level,
+            minimum_quantity,
+            amber_quantity,
+            target_quantity,
             emergency_stock,
             active,
             sort_order
@@ -1335,8 +1336,7 @@
             id,
             turnover_id,
             inventory_item_id,
-            counted_quantity,
-            counted_quantity,
+            quantity_remaining,
             level_status,
             stock_status,
             emergency_stock_used,
@@ -1359,20 +1359,30 @@
     }
 
     function getInventoryTarget(item) {
+      return Math.max(Number(item.target_quantity) || 0, 0);
+    }
+
+    function getInventoryAmberLevel(item) {
       return Math.max(
-        Number(item.par_level) || 0,
-        Number(item.reorder_level) || 0,
+        Number(item.amber_quantity) || 0,
+        Number(item.minimum_quantity) || 0,
         0
       );
     }
 
+    function getInventoryMinimum(item) {
+      return Math.max(Number(item.minimum_quantity) || 0, 0);
+    }
+
     function getInventoryQuantity(itemId) {
       const count = getInventoryCount(itemId);
-      return Math.max(Number(count?.counted_quantity) || 0, 0);
+      return Math.max(Number(count?.quantity_remaining) || 0, 0);
     }
 
     function getInventoryStatus(item, quantity, emergencyUsed = false) {
       const target = getInventoryTarget(item);
+      const amberLevel = getInventoryAmberLevel(item);
+      const minimum = getInventoryMinimum(item);
 
       if (emergencyUsed) {
         return {
@@ -1383,21 +1393,28 @@
         };
       }
 
-      if (quantity <= 0) {
+      if (quantity <= 0 || (minimum > 0 && quantity < minimum)) {
         return {
           value: "out",
           levelStatus: "out",
           stockStatus: "red",
-          label: "Out"
+          label: quantity <= 0
+            ? "Out of Stock"
+            : `Critical — below minimum ${minimum}`
         };
       }
 
-      if (target > 0 && quantity < target) {
+      if (
+        (amberLevel > 0 && quantity <= amberLevel) ||
+        (target > 0 && quantity < target)
+      ) {
         return {
           value: "low",
           levelStatus: "low",
           stockStatus: "amber",
-          label: `Low — ${target - quantity} below target`
+          label: target > 0
+            ? `Below Target — need ${Math.max(target - quantity, 0)}`
+            : "Low Stock"
         };
       }
 
@@ -1412,7 +1429,7 @@
     function getInventoryProgress() {
       const completed = inventoryItems.filter(item => {
         const count = getInventoryCount(item.id);
-        return count && count.counted_quantity !== null && count.counted_quantity !== undefined;
+        return count && count.quantity_remaining !== null && count.quantity_remaining !== undefined;
       }).length;
 
       return {
@@ -1480,7 +1497,7 @@
         const previousStatus = existing
           ? getInventoryStatus(
               item,
-              Number(existing.counted_quantity) || 0,
+              Number(existing.quantity_remaining) || 0,
               Boolean(existing.emergency_stock_used)
             ).value
           : null;
@@ -1488,7 +1505,7 @@
         const payload = {
           turnover_id: turnover.id,
           inventory_item_id: itemId,
-          counted_quantity: safeQuantity,
+          quantity_remaining: safeQuantity,
           level_status: status.levelStatus,
           stock_status: status.stockStatus,
           emergency_stock_used: emergencyUsed,
@@ -1506,7 +1523,7 @@
             id,
             turnover_id,
             inventory_item_id,
-            counted_quantity,
+            quantity_remaining,
             level_status,
             stock_status,
             emergency_stock_used,
@@ -1761,7 +1778,7 @@
         return inventoryItems
           .filter(item => {
             const count = getInventoryCount(item.id);
-            return !count || count.counted_quantity === null || count.counted_quantity === undefined;
+            return !count || count.quantity_remaining === null || count.quantity_remaining === undefined;
           })
           .map(item => ({
             id: `inventory-${item.id}`,
