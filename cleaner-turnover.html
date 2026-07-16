@@ -1005,7 +1005,7 @@
                   Upload Task Photo
                 </label>
 
-                <span class="photo-help">JPEG, PNG or WebP. Maximum file size is 10 MB.</span>
+                <span class="photo-help">JPEG, PNG or WebP. Maximum file size is 25 MB.</span>
               </div>
 
               ${requiredPhotoCount > 0 && !photoRequirementMet ? `
@@ -1106,7 +1106,7 @@
       if (!task || !file) return;
 
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-      const maxSize = 10 * 1024 * 1024;
+      const maxSize = 25 * 1024 * 1024;
 
       if (!allowedTypes.includes(file.type)) {
         input.value = "";
@@ -1116,7 +1116,7 @@
 
       if (file.size > maxSize) {
         input.value = "";
-        showToast("The selected photo is larger than 10 MB.", "error");
+        showToast("The selected photo is larger than 25 MB.", "error");
         return;
       }
 
