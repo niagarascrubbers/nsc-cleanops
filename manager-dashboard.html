@@ -13,9 +13,7 @@
     :root {
       --navy-900: #0b2239;
       --navy-800: #123a5a;
-      --navy-700: #1c4f73;
       --water-500: #2aa7c9;
-      --water-100: #e8f7fb;
       --surface: #ffffff;
       --background: #f4f8fb;
       --border: #dce7ef;
@@ -27,9 +25,7 @@
       --shadow: 0 12px 30px rgba(11, 34, 57, 0.08);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -39,12 +35,7 @@
       font-family: "Poppins", sans-serif;
     }
 
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
+    button, input, select, textarea { font: inherit; }
 
     .app-shell {
       display: grid;
@@ -53,11 +44,11 @@
     }
 
     .sidebar {
-      background: linear-gradient(
-        180deg,
-        var(--navy-900) 0%,
-        var(--navy-800) 100%
-      );
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 260px;
+      height: 100vh;
+      background: linear-gradient(180deg, var(--navy-900), var(--navy-800));
       color: white;
       padding: 28px 22px;
       display: flex;
@@ -66,7 +57,7 @@
 
     .brand {
       padding: 0 10px 28px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(255,255,255,.12);
       margin-bottom: 26px;
     }
 
@@ -75,14 +66,12 @@
       font-family: "Montserrat", sans-serif;
       font-size: 24px;
       font-weight: 700;
-      letter-spacing: -0.4px;
     }
 
     .brand-subtitle {
       margin: 6px 0 0;
       font-size: 12px;
-      line-height: 1.5;
-      color: rgba(255, 255, 255, 0.68);
+      color: rgba(255,255,255,.68);
     }
 
     .nav-label {
@@ -91,7 +80,7 @@
       font-weight: 600;
       letter-spacing: 1.1px;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.48);
+      color: rgba(255,255,255,.48);
     }
 
     .nav {
@@ -100,18 +89,17 @@
     }
 
     .nav a {
-      color: rgba(255, 255, 255, 0.76);
+      color: rgba(255,255,255,.76);
       text-decoration: none;
       padding: 12px 14px;
       border-radius: 10px;
       font-size: 14px;
       font-weight: 500;
-      transition: 0.2s ease;
     }
 
     .nav a:hover,
     .nav a.active {
-      background: rgba(42, 167, 201, 0.16);
+      background: rgba(42,167,201,.16);
       color: white;
     }
 
@@ -123,19 +111,16 @@
     .signout-button {
       width: 100%;
       padding: 12px 14px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255,255,255,.18);
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255,255,255,.06);
       color: white;
       font-weight: 600;
       cursor: pointer;
     }
 
-    .signout-button:hover {
-      background: rgba(255, 255, 255, 0.12);
-    }
-
     .main-area {
+      grid-column: 2;
       min-width: 0;
     }
 
@@ -161,20 +146,15 @@
       font-size: 13px;
     }
 
-    .content {
-      padding: 34px;
-    }
+    .content { padding: 34px; }
 
-    .hero {
-      margin-bottom: 28px;
-    }
+    .hero { margin-bottom: 28px; }
 
     .hero h2 {
       margin: 0;
       font-family: "Montserrat", sans-serif;
       font-size: 30px;
       font-weight: 700;
-      letter-spacing: -0.6px;
     }
 
     .hero p {
@@ -185,24 +165,25 @@
 
     .stat-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0,1fr));
       gap: 18px;
       margin-bottom: 28px;
     }
 
-    .stat-card {
+    .stat-card,
+    .panel {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 22px;
       box-shadow: var(--shadow);
     }
+
+    .stat-card { padding: 22px; }
 
     .stat-label {
       margin: 0;
       color: var(--text-secondary);
       font-size: 13px;
-      font-weight: 500;
     }
 
     .stat-value {
@@ -225,13 +206,7 @@
       gap: 22px;
     }
 
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-    }
+    .panel { padding: 24px; }
 
     .panel-header {
       display: flex;
@@ -254,25 +229,19 @@
       font-weight: 600;
     }
 
-    .activity-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .activity-item {
+    .activity-item,
+    .status-row {
       padding: 14px 0;
       border-bottom: 1px solid var(--border);
     }
 
-    .activity-item:last-child {
-      border-bottom: none;
-    }
+    .activity-item:last-child,
+    .status-row:last-child { border-bottom: none; }
 
     .activity-title {
       margin: 0;
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-primary);
     }
 
     .activity-meta {
@@ -294,12 +263,6 @@
       text-decoration: none;
       color: var(--text-primary);
       background: #fbfdff;
-      transition: 0.2s ease;
-    }
-
-    .quick-action:hover {
-      border-color: var(--water-500);
-      transform: translateY(-1px);
     }
 
     .quick-action strong {
@@ -317,12 +280,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 13px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .status-row:last-child {
-      border-bottom: none;
     }
 
     .status-name {
@@ -337,73 +294,38 @@
       font-weight: 600;
     }
 
-    .status-green {
-      color: var(--success);
-      background: #e8f5ef;
-    }
-
-    .status-amber {
-      color: var(--warning);
-      background: #fff4dc;
-    }
-
-    .status-red {
-      color: var(--danger);
-      background: #fdeaea;
-    }
+    .status-green { color: var(--success); background: #e8f5ef; }
+    .status-amber { color: var(--warning); background: #fff4dc; }
+    .status-red { color: var(--danger); background: #fdeaea; }
 
     @media (max-width: 1100px) {
-      .stat-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
+      .stat-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .dashboard-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
-      .app-shell {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        display: none;
-      }
-
-      .topbar,
-      .content {
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-
-      .stat-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero h2 {
-        font-size: 25px;
-      }
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main-area { grid-column: 1; }
+      .topbar, .content { padding-left: 20px; padding-right: 20px; }
+      .stat-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
 <body>
   <div class="app-shell">
-
     <aside class="sidebar">
       <div class="brand">
         <h1 class="brand-name">NSC CleanOps</h1>
-        <p class="brand-subtitle">
-          Niagara Scrubbers Operations Platform
-        </p>
+        <p class="brand-subtitle">Niagara Scrubbers Operations Platform</p>
       </div>
 
       <p class="nav-label">Operations</p>
 
       <nav class="nav">
-        <a href="#" class="active">Dashboard</a>
-        <a href="#">Properties</a>
+        <a href="manager-dashboard.html" class="active">Dashboard</a>
+        <a href="properties.html">Properties</a>
         <a href="#">Turnovers</a>
         <a href="#">Cleaners</a>
         <a href="#">Inventory</a>
@@ -414,9 +336,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <button class="signout-button" id="logout-button">
-          Sign Out
-        </button>
+        <button class="signout-button" id="logout-button" type="button">Sign Out</button>
       </div>
     </aside>
 
@@ -428,68 +348,43 @@
 
       <main class="content">
         <section class="hero">
-          <h2>Welcome back, Uttam</h2>
-          <p>
-            Monitor operations, review property activity, and manage cleaning workflows.
-          </p>
+          <h2 id="welcome-heading">Welcome back</h2>
+          <p>Monitor operations, review property activity, and manage cleaning workflows.</p>
         </section>
 
         <section class="stat-grid">
           <article class="stat-card">
             <p class="stat-label">Active Properties</p>
-            <p class="stat-value">0</p>
-            <p class="stat-note">No properties added yet</p>
+            <p class="stat-value" id="active-properties">—</p>
+            <p class="stat-note" id="active-properties-note">Loading</p>
           </article>
 
           <article class="stat-card">
             <p class="stat-label">Today's Turnovers</p>
-            <p class="stat-value">0</p>
-            <p class="stat-note">No jobs scheduled today</p>
+            <p class="stat-value" id="today-turnovers">0</p>
+            <p class="stat-note">Turnovers not connected yet</p>
           </article>
 
           <article class="stat-card">
             <p class="stat-label">Open Issues</p>
-            <p class="stat-value">0</p>
-            <p class="stat-note">No outstanding reports</p>
+            <p class="stat-value" id="open-issues">0</p>
+            <p class="stat-note">Issues not connected yet</p>
           </article>
 
           <article class="stat-card">
             <p class="stat-label">Low Inventory</p>
-            <p class="stat-value">0</p>
-            <p class="stat-note">Inventory status unavailable</p>
+            <p class="stat-value" id="low-inventory">0</p>
+            <p class="stat-note">Inventory not connected yet</p>
           </article>
         </section>
 
         <section class="dashboard-grid">
-
           <div class="panel">
             <div class="panel-header">
-              <h3 class="panel-title">Recent Activity</h3>
-              <a href="#" class="panel-link">View all</a>
+              <h3 class="panel-title">Recent Properties</h3>
+              <a href="properties.html" class="panel-link">View all</a>
             </div>
-
-            <div class="activity-list">
-              <div class="activity-item">
-                <p class="activity-title">NSC CleanOps setup completed</p>
-                <p class="activity-meta">
-                  Authentication and manager dashboard are active.
-                </p>
-              </div>
-
-              <div class="activity-item">
-                <p class="activity-title">No turnover activity yet</p>
-                <p class="activity-meta">
-                  Activity will appear after properties and turnovers are added.
-                </p>
-              </div>
-
-              <div class="activity-item">
-                <p class="activity-title">No cleaner assignments yet</p>
-                <p class="activity-meta">
-                  Cleaner accounts will be added after setup is finalized.
-                </p>
-              </div>
-            </div>
+            <div id="recent-properties"></div>
           </div>
 
           <div class="panel">
@@ -498,19 +393,19 @@
             </div>
 
             <div class="quick-actions">
-              <a href="#" class="quick-action">
-                <strong>Add Property</strong>
-                <span>Create a new client property record.</span>
+              <a href="properties.html" class="quick-action">
+                <strong>Manage Properties</strong>
+                <span>View and update property records.</span>
               </a>
 
               <a href="#" class="quick-action">
                 <strong>Create Turnover</strong>
-                <span>Schedule and assign a cleaning job.</span>
+                <span>Turnover scheduling will be connected next.</span>
               </a>
 
               <a href="#" class="quick-action">
                 <strong>Review Reports</strong>
-                <span>Open completed cleaning and damage reports.</span>
+                <span>Reporting will be connected later.</span>
               </a>
             </div>
           </div>
@@ -548,7 +443,7 @@
 
             <div class="status-row">
               <span class="status-name">Database</span>
-              <span class="status-pill status-green">Connected</span>
+              <span class="status-pill status-green" id="database-status">Connected</span>
             </div>
 
             <div class="status-row">
@@ -556,34 +451,125 @@
               <span class="status-pill status-green">Connected</span>
             </div>
           </div>
-
         </section>
       </main>
     </div>
-
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
 
   <script>
-    async function protectPage() {
-      const { data, error } = await window.nscSupabase.auth.getSession();
+    "use strict";
 
-      if (error || !data.session) {
-        window.location.href = "login.html";
+    const db = window.nscSupabase || window.supabaseClient;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function loadDashboard() {
+      if (!db) {
+        throw new Error("Supabase client is unavailable.");
       }
+
+      const {
+        data: { session },
+        error: sessionError
+      } = await db.auth.getSession();
+
+      if (sessionError || !session) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const { data: profile, error: profileError } = await db
+        .from("users")
+        .select("full_name, company_id, active")
+        .eq("auth_user_id", session.user.id)
+        .single();
+
+      if (profileError) {
+        throw profileError;
+      }
+
+      if (!profile.active) {
+        throw new Error("This user account is inactive.");
+      }
+
+      const firstName = (profile.full_name || "Manager").trim().split(/\s+/)[0];
+      document.getElementById("welcome-heading").textContent = `Welcome back, ${firstName}`;
+
+      const { data: properties, error: propertiesError } = await db
+        .from("properties")
+        .select("id, property_name, property_code, city, province, active")
+        .eq("company_id", profile.company_id)
+        .order("property_name", { ascending: true });
+
+      if (propertiesError) {
+        throw propertiesError;
+      }
+
+      const propertyList = Array.isArray(properties) ? properties : [];
+      const activeProperties = propertyList.filter(item => item.active !== false);
+
+      document.getElementById("active-properties").textContent = activeProperties.length;
+      document.getElementById("active-properties-note").textContent =
+        activeProperties.length === 1
+          ? "1 active property"
+          : `${activeProperties.length} active properties`;
+
+      const recentContainer = document.getElementById("recent-properties");
+
+      if (!propertyList.length) {
+        recentContainer.innerHTML = `
+          <div class="activity-item">
+            <p class="activity-title">No properties found</p>
+            <p class="activity-meta">Add a property to begin using NSC CleanOps.</p>
+          </div>
+        `;
+        return;
+      }
+
+      recentContainer.innerHTML = propertyList.slice(0, 5).map(property => {
+        const location = [property.city, property.province].filter(Boolean).join(", ");
+
+        return `
+          <div class="activity-item">
+            <p class="activity-title">${escapeHtml(property.property_name || "Unnamed Property")}</p>
+            <p class="activity-meta">
+              ${escapeHtml(property.property_code || "No code")}
+              ${location ? ` · ${escapeHtml(location)}` : ""}
+              · ${property.active === false ? "Inactive" : "Active"}
+            </p>
+          </div>
+        `;
+      }).join("");
     }
 
     document
       .getElementById("logout-button")
-      .addEventListener("click", async function () {
-        await window.nscSupabase.auth.signOut();
+      .addEventListener("click", async () => {
+        await db.auth.signOut();
         window.location.href = "login.html";
       });
 
-    protectPage();
+    loadDashboard().catch(error => {
+      console.error("Dashboard failed:", error);
+
+      document.getElementById("active-properties").textContent = "0";
+      document.getElementById("active-properties-note").textContent =
+        error.message || "Dashboard could not load";
+
+      const databaseStatus = document.getElementById("database-status");
+      databaseStatus.textContent = "Error";
+      databaseStatus.className = "status-pill status-red";
+    });
   </script>
 </body>
 </html>
-
