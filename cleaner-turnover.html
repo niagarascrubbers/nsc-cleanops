@@ -494,6 +494,117 @@
     }
 
 
+
+    .gps-card {
+      margin-bottom: 18px;
+      padding: 18px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .gps-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .gps-card-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+    }
+
+    .gps-card-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .gps-status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #f1f5f8;
+      color: #536b7e;
+      font-size: 8px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .gps-status-badge.active {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .gps-status-badge.complete {
+      background: var(--blue-light);
+      color: #2078a9;
+    }
+
+    .gps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .gps-item {
+      padding: 11px;
+      border: 1px solid #edf2f6;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .gps-label {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    .gps-value {
+      margin-top: 4px;
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .gps-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .gps-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.5;
+    }
+
+    .gps-warning {
+      margin-top: 10px;
+      padding: 9px 10px;
+      border: 1px solid #efd9a5;
+      border-radius: 9px;
+      background: var(--warning-light);
+      color: var(--warning);
+      font-size: 8px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
     .checklist-toolbar {
       position: sticky;
       top: 82px;
@@ -958,7 +1069,8 @@
     }
 
     @media (max-width: 800px) {
-      .overview-grid {
+      .overview-grid,
+      .gps-grid {
         grid-template-columns: repeat(2, minmax(0,1fr));
       }
 
@@ -1018,7 +1130,8 @@
         flex-direction: column;
       }
 
-      .overview-grid {
+      .overview-grid,
+      .gps-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1049,7 +1162,7 @@
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Cleaner Turnover Checklist · Inventory Quantity v5.1</div>
+          <div class="brand-subtitle">Cleaner Turnover Checklist · GPS Clock v6</div>
         </div>
       </div>
 
@@ -1074,7 +1187,7 @@
   <script>
     "use strict";
 
-    console.info("NSC Cleaner Turnover Inventory Quantity v5.1 loaded");
+    console.info("NSC Cleaner Turnover GPS Clock v6 loaded");
 
     const db = window.nscSupabase || window.supabaseClient;
     const pageContent = document.getElementById("pageContent");
@@ -1186,12 +1299,24 @@
           status,
           priority,
           final_notes,
+          check_in_time,
+          check_out_time,
+          check_in_latitude,
+          check_in_longitude,
+          check_in_accuracy,
+          check_in_distance,
+          check_out_latitude,
+          check_out_longitude,
+          check_out_accuracy,
+          check_out_distance,
           properties (
             property_name,
             property_code,
             address,
             city,
-            province
+            province,
+            latitude,
+            longitude
           )
         `)
         .eq("id", turnoverId)
@@ -2025,6 +2150,262 @@
       `;
     }
 
+
+    function toRadians(value) {
+      return value * Math.PI / 180;
+    }
+
+    function calculateDistanceMetres(lat1, lon1, lat2, lon2) {
+      const earthRadiusMetres = 6371000;
+      const dLat = toRadians(lat2 - lat1);
+      const dLon = toRadians(lon2 - lon1);
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return earthRadiusMetres * c;
+    }
+
+    function formatDistance(value) {
+      const metres = Number(value);
+      if (!Number.isFinite(metres)) return "Not recorded";
+      if (metres < 1000) return `${Math.round(metres)} m`;
+      return `${(metres / 1000).toFixed(2)} km`;
+    }
+
+    function formatDuration(startValue, endValue) {
+      if (!startValue || !endValue) return "Not available";
+
+      const milliseconds =
+        new Date(endValue).getTime() -
+        new Date(startValue).getTime();
+
+      if (!Number.isFinite(milliseconds) || milliseconds < 0) {
+        return "Not available";
+      }
+
+      const totalMinutes = Math.round(milliseconds / 60000);
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      if (!hours) return `${minutes} min`;
+      return `${hours} hr ${minutes} min`;
+    }
+
+    function getGpsPosition() {
+      return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+          reject(new Error("This device does not support GPS location."));
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          position => resolve(position),
+          error => {
+            const messages = {
+              1: "Location permission was denied. Allow location access and try again.",
+              2: "Your location could not be determined. Move to an open area and try again.",
+              3: "The location request timed out. Try again."
+            };
+
+            reject(new Error(messages[error.code] || "GPS location could not be captured."));
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 0
+          }
+        );
+      });
+    }
+
+    function getPropertyCoordinates() {
+      const latitude = Number(turnover.properties?.latitude);
+      const longitude = Number(turnover.properties?.longitude);
+
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+        return null;
+      }
+
+      return { latitude, longitude };
+    }
+
+    async function saveGpsEvent(type, button) {
+      const isClockIn = type === "in";
+      const propertyCoordinates = getPropertyCoordinates();
+
+      button.disabled = true;
+      button.textContent = isClockIn ? "Capturing GPS" : "Capturing GPS";
+
+      try {
+        const position = await getGpsPosition();
+
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        const timestamp = new Date().toISOString();
+
+        const distance = propertyCoordinates
+          ? calculateDistanceMetres(
+              latitude,
+              longitude,
+              propertyCoordinates.latitude,
+              propertyCoordinates.longitude
+            )
+          : null;
+
+        const payload = isClockIn
+          ? {
+              check_in_time: timestamp,
+              check_in_latitude: latitude,
+              check_in_longitude: longitude,
+              check_in_accuracy: accuracy,
+              check_in_distance: distance,
+              status: turnover.status === "assigned" || turnover.status === "accepted"
+                ? "in_progress"
+                : turnover.status
+            }
+          : {
+              check_out_time: timestamp,
+              check_out_latitude: latitude,
+              check_out_longitude: longitude,
+              check_out_accuracy: accuracy,
+              check_out_distance: distance
+            };
+
+        const { data, error } = await db
+          .from("turnovers")
+          .update(payload)
+          .eq("id", turnover.id)
+          .select(`
+            check_in_time,
+            check_out_time,
+            check_in_latitude,
+            check_in_longitude,
+            check_in_accuracy,
+            check_in_distance,
+            check_out_latitude,
+            check_out_longitude,
+            check_out_accuracy,
+            check_out_distance,
+            status
+          `)
+          .single();
+
+        if (error) throw error;
+
+        Object.assign(turnover, data);
+        renderPage();
+
+        showToast(
+          isClockIn
+            ? "Clock in recorded successfully."
+            : "Clock out recorded successfully."
+        );
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = isClockIn ? "Clock In" : "Clock Out";
+        showToast(error.message || "GPS could not be recorded.", "error");
+      }
+    }
+
+    function renderGpsCard() {
+      const clockedIn = Boolean(turnover.check_in_time);
+      const clockedOut = Boolean(turnover.check_out_time);
+      const statusClass = clockedOut ? "complete" : clockedIn ? "active" : "";
+      const statusLabel = clockedOut
+        ? "Clocked Out"
+        : clockedIn
+          ? "Clocked In"
+          : "Not Clocked In";
+
+      const distanceWarning =
+        Number(turnover.check_in_distance) > 250 ||
+        Number(turnover.check_out_distance) > 250;
+
+      return `
+        <section class="gps-card">
+          <div class="gps-card-header">
+            <div>
+              <h2 class="gps-card-title">GPS Time Tracking</h2>
+              <div class="gps-card-subtitle">
+                Clock in and out from the property using the device location.
+              </div>
+            </div>
+
+            <span class="gps-status-badge ${statusClass}">
+              ${statusLabel}
+            </span>
+          </div>
+
+          <div class="gps-grid">
+            <div class="gps-item">
+              <div class="gps-label">Clock In</div>
+              <div class="gps-value">${escapeHtml(formatTime(turnover.check_in_time))}</div>
+            </div>
+
+            <div class="gps-item">
+              <div class="gps-label">Clock In Distance</div>
+              <div class="gps-value">${escapeHtml(formatDistance(turnover.check_in_distance))}</div>
+            </div>
+
+            <div class="gps-item">
+              <div class="gps-label">Clock Out</div>
+              <div class="gps-value">${escapeHtml(formatTime(turnover.check_out_time))}</div>
+            </div>
+
+            <div class="gps-item">
+              <div class="gps-label">Total Cleaning Time</div>
+              <div class="gps-value">${escapeHtml(formatDuration(turnover.check_in_time, turnover.check_out_time))}</div>
+            </div>
+          </div>
+
+          <div class="gps-actions">
+            <button
+              class="button button-primary"
+              id="clockInButton"
+              type="button"
+              ${clockedIn || turnover.status === "review_required" || turnover.status === "completed" ? "disabled" : ""}
+            >
+              Clock In
+            </button>
+
+            <button
+              class="button button-secondary"
+              id="clockOutButton"
+              type="button"
+              ${!clockedIn || clockedOut || turnover.status === "review_required" || turnover.status === "completed" ? "disabled" : ""}
+            >
+              Clock Out
+            </button>
+          </div>
+
+          <div class="gps-note">
+            GPS accuracy:
+            ${turnover.check_in_accuracy ? `${Math.round(turnover.check_in_accuracy)} m at clock in` : "not recorded"}
+            ${turnover.check_out_accuracy ? ` · ${Math.round(turnover.check_out_accuracy)} m at clock out` : ""}
+          </div>
+
+          ${!getPropertyCoordinates() ? `
+            <div class="gps-warning">
+              Property coordinates are not configured. Clock in/out will save GPS, but distance from the property cannot be calculated.
+            </div>
+          ` : ""}
+
+          ${distanceWarning ? `
+            <div class="gps-warning">
+              One or more GPS records were more than 250 metres from the property. Manager review is recommended.
+            </div>
+          ` : ""}
+        </section>
+      `;
+    }
+
     function renderPage() {
       buildRoomGroups();
 
@@ -2080,6 +2461,8 @@
             </div>
           </div>
         </section>
+
+        ${renderGpsCard()}
 
         <div class="checklist-toolbar">
           <div>
@@ -2137,6 +2520,14 @@
     }
 
     function registerPageEvents() {
+      document.getElementById("clockInButton")?.addEventListener("click", event => {
+        saveGpsEvent("in", event.currentTarget);
+      });
+
+      document.getElementById("clockOutButton")?.addEventListener("click", event => {
+        saveGpsEvent("out", event.currentTarget);
+      });
+
       document.getElementById("remainingToggle")?.addEventListener("click", () => {
         remainingOnly = !remainingOnly;
 
@@ -2596,11 +2987,21 @@
         getPhotosForTask(task.id).length < getRequiredPhotoCount(task)
       );
 
-      const incompleteInventory = inventoryItems.filter(item =>
-        !getInventorySelection(getInventoryCount(item.id))
-      );
+      const incompleteInventory = inventoryItems.filter(item => {
+        const count = getInventoryCount(item.id);
+        return !count || count.quantity_remaining === null || count.quantity_remaining === undefined;
+      });
 
-      if (incompleteRequired.length || missingRequiredPhotos.length || incompleteInventory.length) {
+      const missingClockIn = !turnover.check_in_time;
+      const missingClockOut = !turnover.check_out_time;
+
+      if (
+        incompleteRequired.length ||
+        missingRequiredPhotos.length ||
+        incompleteInventory.length ||
+        missingClockIn ||
+        missingClockOut
+      ) {
         const missingTaskNames = incompleteRequired
           .slice(0, 3)
           .map(task => task.task_text);
@@ -2614,16 +3015,24 @@
           .slice(0, 3)
           .map(item => `${item.item_name} quantity`);
 
+        const missingGpsNames = [
+          ...(missingClockIn ? ["GPS clock in"] : []),
+          ...(missingClockOut ? ["GPS clock out"] : [])
+        ];
+
         const remainingNames = [
           ...missingTaskNames,
           ...missingPhotoNames,
-          ...missingInventoryNames
+          ...missingInventoryNames,
+          ...missingGpsNames
         ].slice(0, 4);
 
         const totalRemaining =
           incompleteRequired.length +
           missingRequiredPhotos.length +
-          incompleteInventory.length;
+          incompleteInventory.length +
+          (missingClockIn ? 1 : 0) +
+          (missingClockOut ? 1 : 0);
 
         remainingOnly = true;
 
