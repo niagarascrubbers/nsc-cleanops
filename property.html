@@ -1469,15 +1469,42 @@
             <textarea class="form-control" id="taskText" rows="3" maxlength="250" placeholder="Example: Clean and disinfect countertops" required></textarea>
           </div>
 
+          <div class="form-row-two">
+            <div class="form-group">
+              <label class="form-label" for="taskType">Task Type</label>
+              <select class="form-control" id="taskType">
+                <option value="checkbox">Completed / Checkbox</option>
+                <option value="pass_fail">Pass / Fail Inspection</option>
+                <option value="photo_only">Photo Only</option>
+                <option value="information">Information Only</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskCategory">Category</label>
+              <select class="form-control" id="taskCategory">
+                <option value="cleaning">Cleaning</option>
+                <option value="inspection">Inspection</option>
+                <option value="restocking">Restocking</option>
+                <option value="safety">Safety</option>
+              </select>
+            </div>
+          </div>
+
           <div class="form-group">
-            <label class="form-label" for="taskInstructions">Instructions</label>
-            <textarea class="form-control" id="taskInstructions" rows="3" maxlength="500" placeholder="Optional cleaner instructions"></textarea>
+            <label class="form-label" for="taskInstructions">Cleaner Instructions</label>
+            <textarea class="form-control" id="taskInstructions" rows="3" maxlength="500" placeholder="Explain the required result, product, method or safety instruction"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskSupplies">Required Supplies</label>
+            <input class="form-control" id="taskSupplies" type="text" maxlength="250" placeholder="Example: Microfibre cloth, neutral cleaner, mop">
           </div>
 
           <div class="form-row-two">
             <div class="form-group">
-              <label class="form-label" for="taskSortOrder">Sort Order</label>
-              <input class="form-control" id="taskSortOrder" type="number" min="0" max="9999" step="1" value="10">
+              <label class="form-label" for="taskEstimatedMinutes">Estimated Minutes</label>
+              <input class="form-control" id="taskEstimatedMinutes" type="number" min="0" max="480" step="1" placeholder="Example: 5">
             </div>
 
             <div class="form-group">
@@ -1485,6 +1512,27 @@
               <input class="form-control" id="taskPhotoCount" type="number" min="0" max="10" step="1" value="0">
             </div>
           </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskSortOrder">Sort Order</label>
+            <input class="form-control" id="taskSortOrder" type="number" min="0" max="9999" step="1" value="10">
+          </div>
+
+          <label class="checkbox-row" for="taskRequired">
+            <input id="taskRequired" type="checkbox" checked>
+            <span>
+              <span class="checkbox-title">Mandatory Task</span>
+              <span class="checkbox-description">The cleaner must complete this task before submitting the turnover.</span>
+            </span>
+          </label>
+
+          <label class="checkbox-row" for="taskNotesRequired">
+            <input id="taskNotesRequired" type="checkbox">
+            <span>
+              <span class="checkbox-title">Notes Required</span>
+              <span class="checkbox-description">The cleaner must enter a note before completing this task.</span>
+            </span>
+          </label>
 
           <label class="checkbox-row" for="taskAllowNA">
             <input id="taskAllowNA" type="checkbox" checked>
@@ -1551,8 +1599,14 @@
     const taskSectionInput = document.getElementById("taskSection");
     const taskTextInput = document.getElementById("taskText");
     const taskInstructionsInput = document.getElementById("taskInstructions");
+    const taskTypeInput = document.getElementById("taskType");
+    const taskCategoryInput = document.getElementById("taskCategory");
+    const taskSuppliesInput = document.getElementById("taskSupplies");
+    const taskEstimatedMinutesInput = document.getElementById("taskEstimatedMinutes");
     const taskSortOrderInput = document.getElementById("taskSortOrder");
     const taskPhotoCountInput = document.getElementById("taskPhotoCount");
+    const taskRequiredInput = document.getElementById("taskRequired");
+    const taskNotesRequiredInput = document.getElementById("taskNotesRequired");
     const taskAllowNAInput = document.getElementById("taskAllowNA");
     const taskActiveInput = document.getElementById("taskActive");
 
@@ -2600,6 +2654,14 @@
           required_photo_count,
           allow_not_applicable,
           issue_requires_photo,
+          is_required,
+          photo_required,
+          notes_required,
+          task_type,
+          category,
+          cleaner_instructions,
+          estimated_minutes,
+          required_supplies,
           sort_order,
           active
         `)
@@ -2756,9 +2818,23 @@
                             ? `<span class="task-badge photo">📷 ${Number(item.required_photo_count)} required</span>`
                             : ""
                           }
+                          <span class="task-badge">${escapeHtml((item.task_type || "checkbox").replaceAll("_", " "))}</span>
+                          <span class="task-badge">${escapeHtml(item.category || "cleaning")}</span>
+                          ${item.is_required !== false
+                            ? `<span class="task-badge">Mandatory</span>`
+                            : `<span class="task-badge">Optional</span>`
+                          }
+                          ${item.notes_required
+                            ? `<span class="task-badge">Notes required</span>`
+                            : ""
+                          }
+                          ${Number(item.estimated_minutes) > 0
+                            ? `<span class="task-badge">⏱ ${Number(item.estimated_minutes)} min</span>`
+                            : ""
+                          }
                           ${item.allow_not_applicable
                             ? `<span class="task-badge">N/A allowed</span>`
-                            : `<span class="task-badge">Required</span>`
+                            : ""
                           }
                           ${item.active === false
                             ? `<span class="task-badge inactive">Inactive</span>`
@@ -2834,9 +2910,17 @@
         saveTaskButton.textContent = "Save Changes";
         taskSectionInput.value = task.section_name || formatRoomType(room.room_type);
         taskTextInput.value = task.task_text || "";
-        taskInstructionsInput.value = task.instructions || "";
+        taskInstructionsInput.value = task.cleaner_instructions || task.instructions || "";
+        taskTypeInput.value = task.task_type || "checkbox";
+        taskCategoryInput.value = task.category || "cleaning";
+        taskSuppliesInput.value = task.required_supplies || "";
+        taskEstimatedMinutesInput.value = Number.isFinite(Number(task.estimated_minutes))
+          ? Number(task.estimated_minutes)
+          : "";
         taskSortOrderInput.value = Number(task.sort_order) || 10;
         taskPhotoCountInput.value = Number(task.required_photo_count) || 0;
+        taskRequiredInput.checked = task.is_required !== false;
+        taskNotesRequiredInput.checked = task.notes_required === true;
         taskAllowNAInput.checked = task.allow_not_applicable !== false;
         taskActiveInput.checked = task.active !== false;
       } else {
@@ -2846,8 +2930,14 @@
         taskSectionInput.value = formatRoomType(room.room_type);
         taskTextInput.value = "";
         taskInstructionsInput.value = "";
+        taskTypeInput.value = "checkbox";
+        taskCategoryInput.value = "cleaning";
+        taskSuppliesInput.value = "";
+        taskEstimatedMinutesInput.value = "";
         taskSortOrderInput.value = getNextTaskSortOrder(room.id);
         taskPhotoCountInput.value = 0;
+        taskRequiredInput.checked = true;
+        taskNotesRequiredInput.checked = false;
         taskAllowNAInput.checked = true;
         taskActiveInput.checked = true;
       }
@@ -2899,6 +2989,10 @@
       const sectionName = taskSectionInput.value.trim();
       const taskText = taskTextInput.value.trim();
       const instructions = taskInstructionsInput.value.trim();
+      const taskType = taskTypeInput.value;
+      const category = taskCategoryInput.value;
+      const requiredSupplies = taskSuppliesInput.value.trim();
+      const estimatedMinutes = Number.parseInt(taskEstimatedMinutesInput.value, 10);
       const sortOrder = Number.parseInt(taskSortOrderInput.value, 10);
       const requiredPhotoCount = Number.parseInt(taskPhotoCountInput.value, 10);
 
@@ -2916,7 +3010,15 @@
         task_text: taskText,
         task_code: existingTask?.task_code || generateTaskCode(room, taskText),
         instructions: instructions || null,
+        cleaner_instructions: instructions || null,
         required_photo_count: Number.isFinite(requiredPhotoCount) ? requiredPhotoCount : 0,
+        photo_required: Number.isFinite(requiredPhotoCount) && requiredPhotoCount > 0,
+        is_required: taskRequiredInput.checked,
+        notes_required: taskNotesRequiredInput.checked,
+        task_type: taskType,
+        category,
+        estimated_minutes: Number.isFinite(estimatedMinutes) ? estimatedMinutes : null,
+        required_supplies: requiredSupplies || null,
         allow_not_applicable: taskAllowNAInput.checked,
         issue_requires_photo: true,
         sort_order: Number.isFinite(sortOrder) ? sortOrder : 10,
