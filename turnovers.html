@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnovers | NSC CleanOps</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="panels.css">
+  <link rel="stylesheet" href="forms.css">
+  <link rel="stylesheet" href="tables.css">
+
+  <style>
+    :root {
+      --navy: #071f35;
+      --navy-light: #0b2f4f;
+      --blue: #2f8fca;
+      --blue-hover: #257daf;
+      --blue-light: #eaf6fc;
+      --background: #f5f8fb;
+      --border: #dfe8ef;
+      --border-dark: #cbd9e3;
+      --text: #17324d;
+      --muted: #6c7e8f;
+      --white: #ffffff;
+      --success: #1f8f64;
+      --success-light: #e9f8f1;
+      --danger: #c94747;
+      --danger-light: #fff0f0;
+      --warning: #aa7214;
+      --warning-light: #fff8e7;
+      --shadow: 0 10px 30px rgba(18, 50, 77, 0.08);
+      --shadow-large: 0 24px 60px rgba(7, 31, 53, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: "Poppins", sans-serif;
+    }
+
+    body.drawer-open { overflow: hidden; }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 252px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 40;
+      width: 252px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--navy);
+      color: white;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 82px;
+      padding: 20px 22px;
+      border-bottom: 1px solid rgba(255,255,255,.09);
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #56b8e8, #2f8fca);
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      margin-top: 2px;
+      color: #a8c0d1;
+      font-size: 11px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 18px 14px;
+      overflow-y: auto;
+    }
+
+    .nav-label {
+      margin: 12px 12px 8px;
+      color: #7897ad;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      margin-bottom: 5px;
+      padding: 10px 13px;
+      color: #c9d8e3;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: white;
+      background: rgba(65,163,216,.19);
+    }
+
+    .nav-link.active { box-shadow: inset 3px 0 0 #4eb4e6; }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 5px;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,.09);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .user-avatar {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--blue);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .user-name { font-size: 12px; font-weight: 600; }
+    .user-role { color: #8fa9bb; font-size: 10px; }
+
+    .main {
+      grid-column: 2;
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      padding: 0 30px;
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .breadcrumb {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .breadcrumb strong { color: var(--text); }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      color: var(--text);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    .page-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(25px,3vw,34px);
+    }
+
+    .page-description {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 10px 17px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .18s ease;
+    }
+
+    .button:disabled { cursor: not-allowed; opacity: .62; }
+
+    .button-primary {
+      color: white;
+      background: var(--navy-light);
+      box-shadow: 0 7px 16px rgba(11,47,79,.16);
+    }
+
+    .button-primary:hover:not(:disabled) { background: var(--navy); }
+
+    .button-secondary {
+      color: var(--text);
+      background: white;
+      border-color: var(--border);
+    }
+
+    .button-danger {
+      color: var(--danger);
+      background: white;
+      border-color: #efcaca;
+    }
+
+    .button-small {
+      min-height: 34px;
+      padding: 7px 11px;
+      border-radius: 8px;
+      font-size: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .stat-number {
+      margin-top: 7px;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px,1fr) 220px 190px auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-control {
+      width: 100%;
+      min-height: 43px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      color: var(--text);
+      font-size: 11px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47,143,202,.12);
+    }
+
+    .record-summary {
+      color: var(--muted);
+      font-size: 10px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .table-wrap { width: 100%; overflow-x: auto; }
+
+    .data-table {
+      width: 100%;
+      min-width: 1050px;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #edf2f6;
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    .record-title {
+      color: var(--navy-light);
+      font-weight: 600;
+    }
+
+    .record-subtitle {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .status-badge,
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .status-unassigned { background: #f1f5f8; color: #536b7e; }
+    .status-assigned, .status-accepted { background: var(--blue-light); color: #2078a9; }
+    .status-in-progress { background: var(--warning-light); color: var(--warning); }
+    .status-review-required, .status-correction-required { background: #fff0e5; color: #b35f18; }
+    .status-completed { background: var(--success-light); color: var(--success); }
+    .status-cancelled { background: var(--danger-light); color: var(--danger); }
+
+    .priority-normal { background: #f1f5f8; color: #536b7e; }
+    .priority-same-day { background: var(--warning-light); color: var(--warning); }
+    .priority-urgent { background: var(--danger-light); color: var(--danger); }
+
+    .row-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 7px;
+    }
+
+    .loading-state,
+    .empty-state,
+    .error-state {
+      padding: 70px 24px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 15px;
+      border: 3px solid #dcecf4;
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .state-title {
+      margin: 0 0 7px;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 17px;
+    }
+
+    .state-text {
+      max-width: 540px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(4,20,34,.52);
+      opacity: 0;
+      visibility: hidden;
+      transition: .2s ease;
+    }
+
+    .drawer-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 100;
+      width: min(560px,100%);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      box-shadow: var(--shadow-large);
+      transform: translateX(100%);
+      transition: transform .25s ease;
+    }
+
+    .drawer.open { transform: translateX(0); }
+
+    .drawer-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 19px;
+    }
+
+    .drawer-subtitle {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .drawer-body {
+      flex: 1;
+      padding: 22px;
+      overflow-y: auto;
+    }
+
+    .drawer-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 22px;
+      border-top: 1px solid var(--border);
+      background: #fbfdfe;
+    }
+
+    .form-grid { display: grid; gap: 17px; }
+    .form-row-two { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+    .form-group { display: grid; gap: 7px; }
+
+    .form-label {
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .required { color: var(--danger); }
+
+    .form-help {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .checkbox-row input {
+      width: 17px;
+      height: 17px;
+      margin-top: 1px;
+      accent-color: var(--blue);
+    }
+
+    .checkbox-title {
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .checkbox-description {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .form-error {
+      display: none;
+      padding: 11px 12px;
+      border: 1px solid #efcaca;
+      border-radius: 9px;
+      background: var(--danger-light);
+      color: var(--danger);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .form-error.show { display: block; }
+
+    .toast-container {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 140;
+      display: grid;
+      gap: 10px;
+      width: min(360px,calc(100vw - 36px));
+    }
+
+    .toast {
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--success);
+      border-radius: 11px;
+      background: white;
+      box-shadow: var(--shadow-large);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .toast.error { border-left-color: var(--danger); }
+
+    @media (max-width: 1100px) {
+      .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .toolbar { grid-template-columns: 1fr 1fr; }
+      .record-summary { text-align: left; }
+    }
+
+    @media (max-width: 900px) {
+      .app-shell { display: block; }
+      .sidebar { display: none; }
+      .main { grid-column: auto; }
+      .page { padding: 22px 17px; }
+      .topbar { padding: 0 18px; }
+    }
+
+    @media (max-width: 650px) {
+      .page-header { flex-direction: column; }
+      .page-header .button { width: 100%; }
+      .stats-grid, .toolbar, .form-row-two { grid-template-columns: 1fr; }
+      .drawer-footer { flex-direction: column-reverse; }
+      .drawer-footer .button { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">NSC</div>
+        <div>
+          <p class="brand-title">NSC CleanOps</p>
+          <div class="brand-subtitle">Operations Management</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Workspace</div>
+        <a class="nav-link" href="manager-dashboard.html"><span class="nav-icon">DB</span>Dashboard</a>
+        <a class="nav-link" href="properties.html"><span class="nav-icon">PR</span>Properties</a>
+        <a class="nav-link active" href="turnovers.html"><span class="nav-icon">TO</span>Turnovers</a>
+        <a class="nav-link" href="#"><span class="nav-icon">AS</span>Assignments</a>
+
+        <div class="nav-label">Operations</div>
+        <a class="nav-link" href="#"><span class="nav-icon">CL</span>Checklists</a>
+        <a class="nav-link" href="#"><span class="nav-icon">IN</span>Inventory</a>
+        <a class="nav-link" href="#"><span class="nav-icon">PH</span>Photos</a>
+        <a class="nav-link" href="#"><span class="nav-icon">IS</span>Issues</a>
+        <a class="nav-link" href="#"><span class="nav-icon">RP</span>Reports</a>
+
+        <div class="nav-label">System</div>
+        <a class="nav-link" href="#"><span class="nav-icon">ST</span>Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">UP</div>
+          <div>
+            <div class="user-name" id="sidebarUserName">Uttam Preet</div>
+            <div class="user-role" id="sidebarUserRole">Administrator</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb"><strong>Turnovers</strong></div>
+        <button class="icon-button" id="logoutButton" type="button" title="Sign out">OUT</button>
+      </header>
+
+      <div class="page">
+        <section class="page-header">
+          <div>
+            <h1 class="page-title">Turnovers</h1>
+            <p class="page-description">
+              Schedule property cleaning, apply the correct checklist, and monitor operational progress.
+            </p>
+          </div>
+
+          <button class="button button-primary" id="addTurnoverButton" type="button">
+            Create Turnover
+          </button>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-label">Total Turnovers</div>
+            <div class="stat-number" id="totalCount">0</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label">Upcoming</div>
+            <div class="stat-number" id="upcomingCount">0</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label">In Progress</div>
+            <div class="stat-number" id="inProgressCount">0</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label">Review Required</div>
+            <div class="stat-number" id="reviewCount">0</div>
+          </article>
+        </section>
+
+        <section class="card">
+          <div class="toolbar">
+            <input class="form-control" id="searchInput" type="search" placeholder="Search by property or status">
+
+            <select class="form-control" id="propertyFilter">
+              <option value="all">All properties</option>
+            </select>
+
+            <select class="form-control" id="statusFilter">
+              <option value="all">All statuses</option>
+              <option value="unassigned">Unassigned</option>
+              <option value="assigned">Assigned</option>
+              <option value="accepted">Accepted</option>
+              <option value="in_progress">In Progress</option>
+              <option value="review_required">Review Required</option>
+              <option value="correction_required">Correction Required</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+
+            <div class="record-summary" id="recordSummary">Loading turnovers.</div>
+          </div>
+
+          <div id="turnoversContent">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <h2 class="state-title">Loading turnovers</h2>
+              <p class="state-text">Retrieving turnover schedules and task progress.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <aside class="drawer" id="turnoverDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div>
+        <h2 class="drawer-title">Create Turnover</h2>
+        <p class="drawer-subtitle">
+          Schedule a cleaning and generate its checklist tasks.
+        </p>
+      </div>
+      <button class="icon-button" id="closeDrawerButton" type="button" title="Close">Close</button>
+    </div>
+
+    <form id="turnoverForm">
+      <div class="drawer-body">
+        <div class="form-grid">
+          <div class="form-error" id="formError"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="propertyInput">
+              Property <span class="required">*</span>
+            </label>
+            <select class="form-control" id="propertyInput" required>
+              <option value="">Select a property</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="templateInput">
+              Checklist Template <span class="required">*</span>
+            </label>
+            <select class="form-control" id="templateInput" required disabled>
+              <option value="">Select a property first</option>
+            </select>
+            <div class="form-help">
+              Active checklist tasks will be copied into this turnover when it is created.
+            </div>
+          </div>
+
+          <div class="form-row-two">
+            <div class="form-group">
+              <label class="form-label" for="turnoverDateInput">
+                Turnover Date <span class="required">*</span>
+              </label>
+              <input class="form-control" id="turnoverDateInput" type="date" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="priorityInput">Priority</label>
+              <select class="form-control" id="priorityInput">
+                <option value="normal">Normal</option>
+                <option value="same_day">Same-Day Turnover</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-two">
+            <div class="form-group">
+              <label class="form-label" for="scheduledStartInput">
+                Scheduled Start <span class="required">*</span>
+              </label>
+              <input class="form-control" id="scheduledStartInput" type="datetime-local" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="scheduledEndInput">
+                Scheduled End <span class="required">*</span>
+              </label>
+              <input class="form-control" id="scheduledEndInput" type="datetime-local" required>
+            </div>
+          </div>
+
+          <div class="form-row-two">
+            <div class="form-group">
+              <label class="form-label" for="guestCheckoutInput">Guest Checkout</label>
+              <input class="form-control" id="guestCheckoutInput" type="datetime-local">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="guestCheckinInput">Guest Check-In</label>
+              <input class="form-control" id="guestCheckinInput" type="datetime-local">
+            </div>
+          </div>
+
+          <label class="checkbox-row" for="sameDayInput">
+            <input id="sameDayInput" type="checkbox">
+            <span>
+              <span class="checkbox-title">Same-day turnover</span>
+              <span class="checkbox-description">
+                The departing guest and arriving guest are scheduled on the same date.
+              </span>
+            </span>
+          </label>
+
+          <div class="form-group">
+            <label class="form-label" for="notesInput">Manager Notes</label>
+            <textarea class="form-control" id="notesInput" rows="4" maxlength="1000" placeholder="Enter access details, special instructions, or scheduling notes."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button class="button button-secondary" id="cancelButton" type="button">Cancel</button>
+        <button class="button button-primary" id="saveButton" type="submit">Create Turnover</button>
+      </div>
+    </form>
+  </aside>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    "use strict";
+
+    const db = window.nscSupabase || window.supabaseClient;
+
+    const turnoversContent = document.getElementById("turnoversContent");
+    const searchInput = document.getElementById("searchInput");
+    const propertyFilter = document.getElementById("propertyFilter");
+    const statusFilter = document.getElementById("statusFilter");
+    const recordSummary = document.getElementById("recordSummary");
+
+    const drawerBackdrop = document.getElementById("drawerBackdrop");
+    const turnoverDrawer = document.getElementById("turnoverDrawer");
+    const closeDrawerButton = document.getElementById("closeDrawerButton");
+    const addTurnoverButton = document.getElementById("addTurnoverButton");
+    const cancelButton = document.getElementById("cancelButton");
+    const turnoverForm = document.getElementById("turnoverForm");
+    const formError = document.getElementById("formError");
+    const saveButton = document.getElementById("saveButton");
+
+    const propertyInput = document.getElementById("propertyInput");
+    const templateInput = document.getElementById("templateInput");
+    const turnoverDateInput = document.getElementById("turnoverDateInput");
+    const priorityInput = document.getElementById("priorityInput");
+    const scheduledStartInput = document.getElementById("scheduledStartInput");
+    const scheduledEndInput = document.getElementById("scheduledEndInput");
+    const guestCheckoutInput = document.getElementById("guestCheckoutInput");
+    const guestCheckinInput = document.getElementById("guestCheckinInput");
+    const sameDayInput = document.getElementById("sameDayInput");
+    const notesInput = document.getElementById("notesInput");
+    const toastContainer = document.getElementById("toastContainer");
+
+    let currentProfile = null;
+    let properties = [];
+    let turnovers = [];
+    let filteredTurnovers = [];
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showToast(message, type = "success") {
+      const toast = document.createElement("div");
+      toast.className = `toast ${type === "error" ? "error" : ""}`;
+      toast.textContent = message;
+      toastContainer.appendChild(toast);
+      window.setTimeout(() => toast.remove(), 4300);
+    }
+
+    function showFormError(message) {
+      formError.textContent = message;
+      formError.classList.add("show");
+    }
+
+    function clearFormError() {
+      formError.textContent = "";
+      formError.classList.remove("show");
+    }
+
+    function formatDate(value) {
+      if (!value) return "Not scheduled";
+      return new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      }).format(new Date(`${value}T12:00:00`));
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "Not scheduled";
+      return new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(new Date(value));
+    }
+
+    function formatStatus(value) {
+      const labels = {
+        unassigned: "Unassigned",
+        assigned: "Assigned",
+        accepted: "Accepted",
+        in_progress: "In Progress",
+        review_required: "Review Required",
+        correction_required: "Correction Required",
+        completed: "Completed",
+        cancelled: "Cancelled"
+      };
+      return labels[value] || value || "Unknown";
+    }
+
+    function formatPriority(value) {
+      const labels = {
+        normal: "Normal",
+        same_day: "Same-Day",
+        urgent: "Urgent"
+      };
+      return labels[value] || value || "Normal";
+    }
+
+    function cssStatus(value) {
+      return `status-${String(value || "unassigned").replaceAll("_", "-")}`;
+    }
+
+    function cssPriority(value) {
+      return `priority-${String(value || "normal").replaceAll("_", "-")}`;
+    }
+
+    async function requireSession() {
+      if (!db) throw new Error("Supabase client is unavailable.");
+
+      const { data: { session }, error } = await db.auth.getSession();
+      if (error) throw error;
+
+      if (!session) {
+        window.location.href = "login.html";
+        return null;
+      }
+
+      const { data: profile, error: profileError } = await db
+        .from("users")
+        .select("id, full_name, role, company_id, active")
+        .eq("auth_user_id", session.user.id)
+        .single();
+
+      if (profileError) throw profileError;
+      if (!profile?.active) throw new Error("This user profile is inactive.");
+
+      currentProfile = profile;
+      document.getElementById("sidebarUserName").textContent = profile.full_name || "NSC Manager";
+      document.getElementById("sidebarUserRole").textContent =
+        profile.role === "admin" ? "Administrator" : "Manager";
+
+      return session;
+    }
+
+    async function loadProperties() {
+      const { data, error } = await db
+        .from("properties")
+        .select("id, company_id, property_name, property_code, city, active")
+        .eq("active", true)
+        .order("property_name", { ascending: true });
+
+      if (error) throw error;
+      properties = Array.isArray(data) ? data : [];
+
+      const options = properties.map(property => `
+        <option value="${escapeHtml(property.id)}">
+          ${escapeHtml(property.property_name || "Unnamed Property")}
+        </option>
+      `).join("");
+
+      propertyFilter.innerHTML = `<option value="all">All properties</option>${options}`;
+      propertyInput.innerHTML = `<option value="">Select a property</option>${options}`;
+    }
+
+    async function loadTurnovers() {
+      turnoversContent.innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <h2 class="state-title">Loading turnovers</h2>
+          <p class="state-text">Retrieving turnover schedules and task progress.</p>
+        </div>
+      `;
+
+      const { data, error } = await db
+        .from("turnovers")
+        .select(`
+          id,
+          property_id,
+          checklist_template_id,
+          assigned_user_id,
+          turnover_date,
+          scheduled_start,
+          scheduled_end,
+          status,
+          priority,
+          same_day_turnover,
+          guest_checkout_time,
+          guest_checkin_time,
+          final_notes,
+          property_readiness_status,
+          created_at,
+          properties (
+            property_name,
+            property_code,
+            city
+          ),
+          checklist_templates (
+            template_name
+          ),
+          turnover_tasks (
+            id,
+            task_status
+          )
+        `)
+        .order("turnover_date", { ascending: false })
+        .order("scheduled_start", { ascending: false });
+
+      if (error) throw error;
+      turnovers = Array.isArray(data) ? data : [];
+      applyFilters();
+      renderStatistics();
+    }
+
+    function applyFilters() {
+      const search = searchInput.value.trim().toLowerCase();
+      const propertyId = propertyFilter.value;
+      const status = statusFilter.value;
+
+      filteredTurnovers = turnovers.filter(turnover => {
+        const searchable = [
+          turnover.properties?.property_name,
+          turnover.properties?.property_code,
+          turnover.properties?.city,
+          formatStatus(turnover.status),
+          formatPriority(turnover.priority)
+        ].join(" ").toLowerCase();
+
+        return (!search || searchable.includes(search))
+          && (propertyId === "all" || turnover.property_id === propertyId)
+          && (status === "all" || turnover.status === status);
+      });
+
+      renderTurnovers();
+    }
+
+    function renderStatistics() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      document.getElementById("totalCount").textContent = turnovers.length;
+      document.getElementById("upcomingCount").textContent = turnovers.filter(item =>
+        item.turnover_date && new Date(`${item.turnover_date}T12:00:00`) >= today
+        && !["completed", "cancelled"].includes(item.status)
+      ).length;
+      document.getElementById("inProgressCount").textContent =
+        turnovers.filter(item => item.status === "in_progress").length;
+      document.getElementById("reviewCount").textContent =
+        turnovers.filter(item => item.status === "review_required").length;
+    }
+
+    function renderTurnovers() {
+      recordSummary.textContent =
+        filteredTurnovers.length === turnovers.length
+          ? `${turnovers.length} turnover${turnovers.length === 1 ? "" : "s"}`
+          : `${filteredTurnovers.length} of ${turnovers.length} turnovers`;
+
+      if (!filteredTurnovers.length) {
+        turnoversContent.innerHTML = `
+          <div class="empty-state">
+            <h2 class="state-title">No turnovers found</h2>
+            <p class="state-text">
+              Create the first turnover or change the current search and filters.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      turnoversContent.innerHTML = `
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Turnover Date</th>
+                <th>Cleaning Window</th>
+                <th>Checklist</th>
+                <th>Task Progress</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredTurnovers.map(turnover => {
+                const tasks = Array.isArray(turnover.turnover_tasks) ? turnover.turnover_tasks : [];
+                const completed = tasks.filter(task =>
+                  ["completed", "not_applicable"].includes(task.task_status)
+                ).length;
+
+                return `
+                  <tr>
+                    <td>
+                      <div class="record-title">
+                        ${escapeHtml(turnover.properties?.property_name || "Unknown Property")}
+                      </div>
+                      <div class="record-subtitle">
+                        ${escapeHtml(turnover.properties?.property_code || "")}
+                      </div>
+                    </td>
+                    <td>${escapeHtml(formatDate(turnover.turnover_date))}</td>
+                    <td>
+                      <div>${escapeHtml(formatDateTime(turnover.scheduled_start))}</div>
+                      <div class="record-subtitle">Ends ${escapeHtml(formatDateTime(turnover.scheduled_end))}</div>
+                    </td>
+                    <td>${escapeHtml(turnover.checklist_templates?.template_name || "No template")}</td>
+                    <td>${completed} of ${tasks.length} completed</td>
+                    <td>
+                      <span class="priority-badge ${cssPriority(turnover.priority)}">
+                        ${escapeHtml(formatPriority(turnover.priority))}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="status-badge ${cssStatus(turnover.status)}">
+                        ${escapeHtml(formatStatus(turnover.status))}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="row-actions">
+                        <button
+                          class="button button-secondary button-small"
+                          type="button"
+                          data-action="view-property"
+                          data-property-id="${escapeHtml(turnover.property_id)}"
+                        >
+                          Open Property
+                        </button>
+                        ${turnover.status !== "cancelled" && turnover.status !== "completed" ? `
+                          <button
+                            class="button button-danger button-small"
+                            type="button"
+                            data-action="cancel-turnover"
+                            data-turnover-id="${escapeHtml(turnover.id)}"
+                          >
+                            Cancel
+                          </button>
+                        ` : ""}
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      turnoversContent.querySelectorAll('[data-action="view-property"]').forEach(button => {
+        button.addEventListener("click", () => {
+          window.location.href = `property.html?id=${encodeURIComponent(button.dataset.propertyId)}`;
+        });
+      });
+
+      turnoversContent.querySelectorAll('[data-action="cancel-turnover"]').forEach(button => {
+        button.addEventListener("click", () => cancelTurnover(button.dataset.turnoverId, button));
+      });
+    }
+
+    function openDrawer() {
+      turnoverForm.reset();
+      clearFormError();
+      templateInput.disabled = true;
+      templateInput.innerHTML = `<option value="">Select a property first</option>`;
+
+      const now = new Date();
+      const today = now.toISOString().slice(0, 10);
+      turnoverDateInput.value = today;
+      priorityInput.value = "normal";
+
+      turnoverDrawer.classList.add("open");
+      drawerBackdrop.classList.add("open");
+      turnoverDrawer.setAttribute("aria-hidden", "false");
+      document.body.classList.add("drawer-open");
+    }
+
+    function closeDrawer() {
+      turnoverDrawer.classList.remove("open");
+      drawerBackdrop.classList.remove("open");
+      turnoverDrawer.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("drawer-open");
+      clearFormError();
+    }
+
+    async function loadTemplatesForProperty(propertyId) {
+      templateInput.disabled = true;
+      templateInput.innerHTML = `<option value="">Loading checklist templates</option>`;
+
+      if (!propertyId) {
+        templateInput.innerHTML = `<option value="">Select a property first</option>`;
+        return;
+      }
+
+      const { data, error } = await db
+        .from("checklist_templates")
+        .select("id, template_name, version_number")
+        .eq("property_id", propertyId)
+        .eq("active", true)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        templateInput.innerHTML = `<option value="">Unable to load templates</option>`;
+        showFormError(error.message);
+        return;
+      }
+
+      if (!data?.length) {
+        templateInput.innerHTML = `<option value="">No active checklist template is available</option>`;
+        return;
+      }
+
+      templateInput.innerHTML = data.map((template, index) => `
+        <option value="${escapeHtml(template.id)}" ${index === 0 ? "selected" : ""}>
+          ${escapeHtml(template.template_name)} — Version ${escapeHtml(template.version_number || "1.0")}
+        </option>
+      `).join("");
+
+      templateInput.disabled = false;
+    }
+
+    function toIsoOrNull(value) {
+      return value ? new Date(value).toISOString() : null;
+    }
+
+    async function saveTurnover(event) {
+      event.preventDefault();
+      clearFormError();
+
+      const propertyId = propertyInput.value;
+      const templateId = templateInput.value;
+      const turnoverDate = turnoverDateInput.value;
+      const scheduledStart = toIsoOrNull(scheduledStartInput.value);
+      const scheduledEnd = toIsoOrNull(scheduledEndInput.value);
+
+      if (!propertyId) return showFormError("Select a property.");
+      if (!templateId) return showFormError("Select an active checklist template.");
+      if (!turnoverDate) return showFormError("Enter the turnover date.");
+      if (!scheduledStart || !scheduledEnd) return showFormError("Enter the scheduled start and end times.");
+      if (new Date(scheduledEnd) <= new Date(scheduledStart)) {
+        return showFormError("The scheduled end time must be later than the scheduled start time.");
+      }
+
+      const property = properties.find(item => item.id === propertyId);
+      if (!property) return showFormError("The selected property could not be found.");
+
+      saveButton.disabled = true;
+      cancelButton.disabled = true;
+      closeDrawerButton.disabled = true;
+      saveButton.textContent = "Creating Turnover";
+
+      try {
+        const payload = {
+          company_id: property.company_id || currentProfile.company_id || null,
+          property_id: propertyId,
+          checklist_template_id: templateId,
+          turnover_date: turnoverDate,
+          scheduled_start: scheduledStart,
+          scheduled_end: scheduledEnd,
+          guest_checkout_time: toIsoOrNull(guestCheckoutInput.value),
+          guest_checkin_time: toIsoOrNull(guestCheckinInput.value),
+          priority: priorityInput.value,
+          same_day_turnover: sameDayInput.checked || priorityInput.value === "same_day",
+          status: "unassigned",
+          final_notes: notesInput.value.trim() || null,
+          property_readiness_status: "not_started",
+          owner_approval_status: "pending",
+          created_by: currentProfile.id
+        };
+
+        const { data: turnover, error: insertError } = await db
+          .from("turnovers")
+          .insert(payload)
+          .select("id")
+          .single();
+
+        if (insertError) throw insertError;
+
+        const { data: taskCount, error: taskError } = await db
+          .rpc("create_turnover_tasks", { p_turnover_id: turnover.id });
+
+        if (taskError) {
+          await db.from("turnovers").delete().eq("id", turnover.id);
+          throw new Error(`The turnover was not created because its checklist tasks could not be generated. ${taskError.message}`);
+        }
+
+        closeDrawer();
+        await loadTurnovers();
+        showToast(`Turnover created successfully with ${taskCount || 0} checklist tasks.`);
+      } catch (error) {
+        console.error("Turnover creation failed:", error);
+        showFormError(error.message || "The turnover could not be created.");
+      } finally {
+        saveButton.disabled = false;
+        cancelButton.disabled = false;
+        closeDrawerButton.disabled = false;
+        saveButton.textContent = "Create Turnover";
+      }
+    }
+
+    async function cancelTurnover(turnoverId, button) {
+      const turnover = turnovers.find(item => item.id === turnoverId);
+      if (!turnover) return;
+
+      const propertyName = turnover.properties?.property_name || "this property";
+      if (!window.confirm(`Cancel the scheduled turnover for ${propertyName}?`)) return;
+
+      button.disabled = true;
+      button.textContent = "Cancelling";
+
+      try {
+        const { error } = await db
+          .from("turnovers")
+          .update({ status: "cancelled" })
+          .eq("id", turnoverId);
+
+        if (error) throw error;
+        await loadTurnovers();
+        showToast("The turnover has been cancelled.");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Cancel";
+        showToast(error.message || "The turnover could not be cancelled.", "error");
+      }
+    }
+
+    async function initialize() {
+      try {
+        await requireSession();
+        await loadProperties();
+        await loadTurnovers();
+      } catch (error) {
+        console.error("Turnovers page failed:", error);
+        turnoversContent.innerHTML = `
+          <div class="error-state">
+            <h2 class="state-title">Unable to load turnovers</h2>
+            <p class="state-text">${escapeHtml(error.message || "An unexpected error occurred.")}</p>
+          </div>
+        `;
+      }
+    }
+
+    addTurnoverButton.addEventListener("click", openDrawer);
+    closeDrawerButton.addEventListener("click", closeDrawer);
+    cancelButton.addEventListener("click", closeDrawer);
+    drawerBackdrop.addEventListener("click", closeDrawer);
+    propertyInput.addEventListener("change", () => loadTemplatesForProperty(propertyInput.value));
+    turnoverForm.addEventListener("submit", saveTurnover);
+    searchInput.addEventListener("input", applyFilters);
+    propertyFilter.addEventListener("change", applyFilters);
+    statusFilter.addEventListener("change", applyFilters);
+
+    priorityInput.addEventListener("change", () => {
+      sameDayInput.checked = priorityInput.value === "same_day";
+    });
+
+    turnoverDateInput.addEventListener("change", () => {
+      const date = turnoverDateInput.value;
+      if (!date) return;
+
+      if (!scheduledStartInput.value) scheduledStartInput.value = `${date}T11:00`;
+      if (!scheduledEndInput.value) scheduledEndInput.value = `${date}T15:00`;
+      if (!guestCheckoutInput.value) guestCheckoutInput.value = `${date}T11:00`;
+      if (!guestCheckinInput.value) guestCheckinInput.value = `${date}T16:00`;
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      try {
+        await db.auth.signOut();
+      } finally {
+        window.location.href = "login.html";
+      }
+    });
+
+    initialize();
+  </script>
+</body>
+</html>
