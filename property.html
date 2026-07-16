@@ -935,8 +935,188 @@
       }
     }
 
+
+    .checklist-layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .room-selector {
+      padding: 12px;
+    }
+
+    .room-selector-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 13px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .room-selector-button:hover {
+      background: #f5f9fc;
+    }
+
+    .room-selector-button.active {
+      color: white;
+      background: var(--navy-light);
+    }
+
+    .room-selector-count {
+      min-width: 26px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 9px;
+      text-align: center;
+    }
+
+    .room-selector-button:not(.active) .room-selector-count {
+      color: var(--muted);
+      background: #edf3f7;
+    }
+
+    .checklist-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .checklist-room-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 17px;
+    }
+
+    .checklist-room-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .checklist-sections {
+      display: grid;
+      gap: 15px;
+      padding: 18px;
+    }
+
+    .checklist-section {
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+    }
+
+    .checklist-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .checklist-section-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 12px;
+    }
+
+    .checklist-task {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 11px;
+      align-items: start;
+      padding: 13px 14px;
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .checklist-task:last-child {
+      border-bottom: 0;
+    }
+
+    .task-order {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--blue-light);
+      color: #2078a9;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .task-title {
+      color: var(--navy-light);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .task-instructions {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .task-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 7px;
+    }
+
+    .task-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #f1f5f8;
+      color: #536b7e;
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .task-badge.photo {
+      background: #fff5df;
+      color: #946515;
+    }
+
+    .task-badge.inactive {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .form-row-two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
     @media (max-width: 1000px) {
-      .overview-grid {
+      .overview-grid,
+      .checklist-layout {
         grid-template-columns: 1fr;
       }
 
@@ -983,7 +1163,8 @@
         width: 100%;
       }
 
-      .details-grid {
+      .details-grid,
+      .form-row-two {
         grid-template-columns: 1fr;
       }
 
@@ -997,6 +1178,20 @@
 
       .drawer-footer {
         flex-direction: column-reverse;
+      }
+
+      .checklist-toolbar,
+      .checklist-task {
+        grid-template-columns: 1fr;
+      }
+
+      .checklist-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .task-actions {
+        justify-content: flex-start;
       }
 
       .drawer-footer .button {
@@ -1238,6 +1433,84 @@
     </form>
   </aside>
 
+
+  <div class="drawer-backdrop" id="taskDrawerBackdrop"></div>
+
+  <aside class="drawer" id="taskDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div>
+        <h2 class="drawer-title" id="taskDrawerTitle">Add Checklist Task</h2>
+        <p class="drawer-subtitle" id="taskDrawerSubtitle">
+          Add a cleaning task to the selected room.
+        </p>
+      </div>
+
+      <button class="icon-button drawer-close" id="taskDrawerCloseButton" type="button" title="Close">
+        ×
+      </button>
+    </div>
+
+    <form id="taskForm">
+      <div class="drawer-body">
+        <div class="form-grid">
+          <div class="form-error" id="taskFormError"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskSection">
+              Section Name <span class="required">*</span>
+            </label>
+            <input class="form-control" id="taskSection" type="text" maxlength="100" placeholder="Example: Kitchen" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskText">
+              Task <span class="required">*</span>
+            </label>
+            <textarea class="form-control" id="taskText" rows="3" maxlength="250" placeholder="Example: Clean and disinfect countertops" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskInstructions">Instructions</label>
+            <textarea class="form-control" id="taskInstructions" rows="3" maxlength="500" placeholder="Optional cleaner instructions"></textarea>
+          </div>
+
+          <div class="form-row-two">
+            <div class="form-group">
+              <label class="form-label" for="taskSortOrder">Sort Order</label>
+              <input class="form-control" id="taskSortOrder" type="number" min="0" max="9999" step="1" value="10">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskPhotoCount">Required Photos</label>
+              <input class="form-control" id="taskPhotoCount" type="number" min="0" max="10" step="1" value="0">
+            </div>
+          </div>
+
+          <label class="checkbox-row" for="taskAllowNA">
+            <input id="taskAllowNA" type="checkbox" checked>
+            <span>
+              <span class="checkbox-title">Allow Not Applicable</span>
+              <span class="checkbox-description">The cleaner may mark this task as not applicable.</span>
+            </span>
+          </label>
+
+          <label class="checkbox-row" for="taskActive">
+            <input id="taskActive" type="checkbox" checked>
+            <span>
+              <span class="checkbox-title">Active Task</span>
+              <span class="checkbox-description">Inactive tasks remain saved but are excluded from new turnovers.</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button class="button button-secondary" id="cancelTaskButton" type="button">Cancel</button>
+        <button class="button button-primary" id="saveTaskButton" type="submit">Save Task</button>
+      </div>
+    </form>
+  </aside>
+
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1266,6 +1539,23 @@
     const roomActiveInput = document.getElementById("roomActive");
     const toastContainer = document.getElementById("toastContainer");
 
+    const taskDrawerBackdrop = document.getElementById("taskDrawerBackdrop");
+    const taskDrawer = document.getElementById("taskDrawer");
+    const taskDrawerCloseButton = document.getElementById("taskDrawerCloseButton");
+    const cancelTaskButton = document.getElementById("cancelTaskButton");
+    const taskForm = document.getElementById("taskForm");
+    const taskFormError = document.getElementById("taskFormError");
+    const taskDrawerTitle = document.getElementById("taskDrawerTitle");
+    const taskDrawerSubtitle = document.getElementById("taskDrawerSubtitle");
+    const saveTaskButton = document.getElementById("saveTaskButton");
+    const taskSectionInput = document.getElementById("taskSection");
+    const taskTextInput = document.getElementById("taskText");
+    const taskInstructionsInput = document.getElementById("taskInstructions");
+    const taskSortOrderInput = document.getElementById("taskSortOrder");
+    const taskPhotoCountInput = document.getElementById("taskPhotoCount");
+    const taskAllowNAInput = document.getElementById("taskAllowNA");
+    const taskActiveInput = document.getElementById("taskActive");
+
     const db = window.nscSupabase || window.supabaseClient;
 
     let currentProperty = null;
@@ -1275,6 +1565,10 @@
     let activeTab = "overview";
     let editingRoomId = null;
     let roomNameManuallyEdited = false;
+    let checklistTemplate = null;
+    let checklistItems = [];
+    let selectedChecklistRoomId = null;
+    let editingTaskId = null;
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -1481,6 +1775,7 @@
 
       renderPropertyShell();
       await loadRooms(false);
+      await loadChecklistData();
     }
 
     function renderPropertyShell() {
@@ -1532,7 +1827,7 @@
           <button class="tab-link" type="button" data-placeholder-tab="inventory">Inventory</button>
           <button class="tab-link" type="button" data-placeholder-tab="photos">Photos</button>
           <button class="tab-link" type="button" data-placeholder-tab="turnovers">Turnovers</button>
-          <button class="tab-link" type="button" data-placeholder-tab="checklists">Checklists</button>
+          <button class="tab-link" type="button" data-tab="checklists">Checklists</button>
           <button class="tab-link" type="button" data-placeholder-tab="reports">Reports</button>
           <button class="tab-link" type="button" data-placeholder-tab="issues">Issues</button>
           <button class="tab-link" type="button" data-placeholder-tab="settings">Settings</button>
@@ -1713,6 +2008,43 @@
               </div>
             </div>
           </div>
+
+        </section>
+
+        <section class="tab-panel" id="checklistsPanel" data-panel="checklists" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Checklist Manager</h2>
+              <p class="module-description">
+                Review and manage room-specific cleaning tasks for this property.
+              </p>
+            </div>
+          </div>
+
+          <div class="checklist-layout">
+            <aside class="card">
+              <div class="card-header">
+                <h3 class="card-title">Rooms</h3>
+                <p class="card-description">Choose a room to view its checklist.</p>
+              </div>
+              <div class="room-selector" id="checklistRoomSelector">
+                <div class="inline-loading">
+                  <div class="spinner spinner-small"></div>
+                  Loading rooms
+                </div>
+              </div>
+            </aside>
+
+            <section class="card">
+              <div id="checklistContent">
+                <div class="empty-state">
+                  <div class="empty-icon">✓</div>
+                  <h3 class="empty-title">Select a room</h3>
+                  <p class="empty-text">Choose a room to view and manage its checklist tasks.</p>
+                </div>
+              </div>
+            </section>
+          </div>
         </section>
       `;
 
@@ -1766,6 +2098,11 @@
       document.querySelectorAll("[data-panel]").forEach((panel) => {
         panel.hidden = panel.dataset.panel !== tabName;
       });
+
+      if (tabName === "checklists") {
+        renderChecklistRoomSelector();
+        renderSelectedChecklist();
+      }
     }
 
     async function loadRooms(showLoading = true) {
@@ -2218,6 +2555,464 @@
       }
     }
 
+
+    async function loadChecklistData() {
+      if (!currentProperty) {
+        return;
+      }
+
+      const { data: templates, error: templateError } = await db
+        .from("checklist_templates")
+        .select("id, property_id, template_name, template_code, active")
+        .eq("property_id", currentProperty.id)
+        .eq("active", true)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (templateError) {
+        console.warn("Checklist template could not be loaded:", templateError.message);
+        checklistTemplate = null;
+        checklistItems = [];
+        renderChecklistRoomSelector();
+        renderSelectedChecklist();
+        return;
+      }
+
+      checklistTemplate = templates?.[0] || null;
+
+      if (!checklistTemplate) {
+        checklistItems = [];
+        renderChecklistRoomSelector();
+        renderSelectedChecklist();
+        return;
+      }
+
+      const { data: items, error: itemsError } = await db
+        .from("checklist_template_items")
+        .select(`
+          id,
+          template_id,
+          room_id,
+          section_name,
+          task_text,
+          task_code,
+          instructions,
+          required_photo_count,
+          allow_not_applicable,
+          issue_requires_photo,
+          sort_order,
+          active
+        `)
+        .eq("template_id", checklistTemplate.id)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
+
+      if (itemsError) {
+        throw itemsError;
+      }
+
+      checklistItems = Array.isArray(items) ? items : [];
+
+      if (!selectedChecklistRoomId) {
+        const firstRoomWithTasks = rooms.find((room) =>
+          checklistItems.some((item) => item.room_id === room.id)
+        );
+        selectedChecklistRoomId = firstRoomWithTasks?.id || rooms[0]?.id || null;
+      }
+
+      renderChecklistRoomSelector();
+      renderSelectedChecklist();
+    }
+
+    function getRoomChecklistItems(roomId) {
+      return checklistItems
+        .filter((item) => item.room_id === roomId)
+        .sort((a, b) =>
+          (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0)
+        );
+    }
+
+    function renderChecklistRoomSelector() {
+      const container = document.getElementById("checklistRoomSelector");
+
+      if (!container) {
+        return;
+      }
+
+      if (!rooms.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p class="empty-text">No rooms are available for this property.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = rooms
+        .filter((room) => room.active !== false)
+        .map((room) => {
+          const count = getRoomChecklistItems(room.id)
+            .filter((item) => item.active !== false).length;
+
+          return `
+            <button
+              class="room-selector-button ${selectedChecklistRoomId === room.id ? "active" : ""}"
+              type="button"
+              data-checklist-room-id="${escapeAttribute(room.id)}"
+            >
+              <span>${escapeHtml(room.room_name)}</span>
+              <span class="room-selector-count">${count}</span>
+            </button>
+          `;
+        })
+        .join("");
+
+      container.querySelectorAll("[data-checklist-room-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedChecklistRoomId = button.dataset.checklistRoomId;
+          renderChecklistRoomSelector();
+          renderSelectedChecklist();
+        });
+      });
+    }
+
+    function renderSelectedChecklist() {
+      const container = document.getElementById("checklistContent");
+
+      if (!container) {
+        return;
+      }
+
+      if (!checklistTemplate) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">✓</div>
+            <h3 class="empty-title">No checklist template found</h3>
+            <p class="empty-text">
+              Create an active checklist template for this property before adding tasks.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      const room = rooms.find((item) => item.id === selectedChecklistRoomId);
+
+      if (!room) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">✓</div>
+            <h3 class="empty-title">Select a room</h3>
+            <p class="empty-text">Choose a room to view and manage its checklist tasks.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const roomItems = getRoomChecklistItems(room.id);
+      const grouped = roomItems.reduce((result, item) => {
+        const section = item.section_name || "General";
+        if (!result[section]) result[section] = [];
+        result[section].push(item);
+        return result;
+      }, {});
+
+      container.innerHTML = `
+        <div class="checklist-toolbar">
+          <div>
+            <h3 class="checklist-room-title">${escapeHtml(room.room_name)} Checklist</h3>
+            <div class="checklist-room-meta">
+              ${roomItems.length} task${roomItems.length === 1 ? "" : "s"} · ${escapeHtml(checklistTemplate.template_name)}
+            </div>
+          </div>
+
+          <button class="button button-primary" id="addChecklistTaskButton" type="button">
+            + Add Task
+          </button>
+        </div>
+
+        ${roomItems.length
+          ? `<div class="checklist-sections">
+              ${Object.entries(grouped).map(([sectionName, items]) => `
+                <section class="checklist-section">
+                  <div class="checklist-section-header">
+                    <h4 class="checklist-section-title">${escapeHtml(sectionName)}</h4>
+                    <span class="room-summary">${items.length} task${items.length === 1 ? "" : "s"}</span>
+                  </div>
+
+                  ${items.map((item) => `
+                    <div class="checklist-task">
+                      <div class="task-order">${Number(item.sort_order) || 0}</div>
+
+                      <div>
+                        <div class="task-title">${escapeHtml(item.task_text)}</div>
+                        ${item.instructions
+                          ? `<div class="task-instructions">${escapeHtml(item.instructions)}</div>`
+                          : ""
+                        }
+
+                        <div class="task-badges">
+                          ${Number(item.required_photo_count) > 0
+                            ? `<span class="task-badge photo">📷 ${Number(item.required_photo_count)} required</span>`
+                            : ""
+                          }
+                          ${item.allow_not_applicable
+                            ? `<span class="task-badge">N/A allowed</span>`
+                            : `<span class="task-badge">Required</span>`
+                          }
+                          ${item.active === false
+                            ? `<span class="task-badge inactive">Inactive</span>`
+                            : ""
+                          }
+                        </div>
+                      </div>
+
+                      <div class="task-actions">
+                        <button
+                          class="button button-secondary button-small"
+                          type="button"
+                          data-edit-task-id="${escapeAttribute(item.id)}"
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          class="button ${item.active === false ? "button-blue" : "button-danger"} button-small"
+                          type="button"
+                          data-toggle-task-id="${escapeAttribute(item.id)}"
+                        >
+                          ${item.active === false ? "Activate" : "Deactivate"}
+                        </button>
+                      </div>
+                    </div>
+                  `).join("")}
+                </section>
+              `).join("")}
+            </div>`
+          : `<div class="empty-state">
+              <div class="empty-icon">✓</div>
+              <h3 class="empty-title">No tasks for this room</h3>
+              <p class="empty-text">Add the first cleaning task for ${escapeHtml(room.room_name)}.</p>
+            </div>`
+        }
+      `;
+
+      document
+        .getElementById("addChecklistTaskButton")
+        .addEventListener("click", () => openTaskDrawer());
+
+      container.querySelectorAll("[data-edit-task-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const task = checklistItems.find((item) => item.id === button.dataset.editTaskId);
+          if (task) openTaskDrawer(task);
+        });
+      });
+
+      container.querySelectorAll("[data-toggle-task-id]").forEach((button) => {
+        button.addEventListener("click", () =>
+          toggleTaskStatus(button.dataset.toggleTaskId, button)
+        );
+      });
+    }
+
+    function openTaskDrawer(task = null) {
+      const room = rooms.find((item) => item.id === selectedChecklistRoomId);
+
+      if (!room || !checklistTemplate) {
+        showToast("Select a room with an active checklist template.", "error");
+        return;
+      }
+
+      editingTaskId = task?.id || null;
+      taskForm.reset();
+      taskFormError.classList.remove("show");
+      taskFormError.textContent = "";
+
+      if (task) {
+        taskDrawerTitle.textContent = "Edit Checklist Task";
+        taskDrawerSubtitle.textContent = `Update the task for ${room.room_name}.`;
+        saveTaskButton.textContent = "Save Changes";
+        taskSectionInput.value = task.section_name || formatRoomType(room.room_type);
+        taskTextInput.value = task.task_text || "";
+        taskInstructionsInput.value = task.instructions || "";
+        taskSortOrderInput.value = Number(task.sort_order) || 10;
+        taskPhotoCountInput.value = Number(task.required_photo_count) || 0;
+        taskAllowNAInput.checked = task.allow_not_applicable !== false;
+        taskActiveInput.checked = task.active !== false;
+      } else {
+        taskDrawerTitle.textContent = "Add Checklist Task";
+        taskDrawerSubtitle.textContent = `Add a cleaning task to ${room.room_name}.`;
+        saveTaskButton.textContent = "Save Task";
+        taskSectionInput.value = formatRoomType(room.room_type);
+        taskTextInput.value = "";
+        taskInstructionsInput.value = "";
+        taskSortOrderInput.value = getNextTaskSortOrder(room.id);
+        taskPhotoCountInput.value = 0;
+        taskAllowNAInput.checked = true;
+        taskActiveInput.checked = true;
+      }
+
+      taskDrawer.classList.add("open");
+      taskDrawerBackdrop.classList.add("open");
+      taskDrawer.setAttribute("aria-hidden", "false");
+      document.body.classList.add("drawer-open");
+
+      window.setTimeout(() => taskTextInput.focus(), 150);
+    }
+
+    function closeTaskDrawer() {
+      taskDrawer.classList.remove("open");
+      taskDrawerBackdrop.classList.remove("open");
+      taskDrawer.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("drawer-open");
+      editingTaskId = null;
+      taskFormError.classList.remove("show");
+      taskFormError.textContent = "";
+    }
+
+    function getNextTaskSortOrder(roomId) {
+      const items = getRoomChecklistItems(roomId);
+      if (!items.length) return 10;
+      return Math.max(...items.map((item) => Number(item.sort_order) || 0)) + 10;
+    }
+
+    function generateTaskCode(room, taskText) {
+      const taskPart = String(taskText || "")
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 45);
+
+      return `${room.room_code}_${taskPart || "TASK"}`;
+    }
+
+    async function saveChecklistTask(event) {
+      event.preventDefault();
+
+      const room = rooms.find((item) => item.id === selectedChecklistRoomId);
+
+      if (!room || !checklistTemplate) {
+        return;
+      }
+
+      const sectionName = taskSectionInput.value.trim();
+      const taskText = taskTextInput.value.trim();
+      const instructions = taskInstructionsInput.value.trim();
+      const sortOrder = Number.parseInt(taskSortOrderInput.value, 10);
+      const requiredPhotoCount = Number.parseInt(taskPhotoCountInput.value, 10);
+
+      if (!sectionName || !taskText) {
+        showTaskFormError("Enter both a section name and task.");
+        return;
+      }
+
+      const existingTask = checklistItems.find((item) => item.id === editingTaskId);
+
+      const payload = {
+        template_id: checklistTemplate.id,
+        room_id: room.id,
+        section_name: sectionName,
+        task_text: taskText,
+        task_code: existingTask?.task_code || generateTaskCode(room, taskText),
+        instructions: instructions || null,
+        required_photo_count: Number.isFinite(requiredPhotoCount) ? requiredPhotoCount : 0,
+        allow_not_applicable: taskAllowNAInput.checked,
+        issue_requires_photo: true,
+        sort_order: Number.isFinite(sortOrder) ? sortOrder : 10,
+        active: taskActiveInput.checked
+      };
+
+      setTaskFormSaving(true);
+
+      try {
+        let result;
+
+        if (editingTaskId) {
+          result = await db
+            .from("checklist_template_items")
+            .update(payload)
+            .eq("id", editingTaskId)
+            .eq("template_id", checklistTemplate.id)
+            .select()
+            .single();
+        } else {
+          result = await db
+            .from("checklist_template_items")
+            .insert(payload)
+            .select()
+            .single();
+        }
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        const wasEditing = Boolean(editingTaskId);
+        closeTaskDrawer();
+        await loadChecklistData();
+        showToast(wasEditing ? "Checklist task updated." : "Checklist task added.");
+      } catch (error) {
+        console.error("Checklist task save failed:", error);
+        showTaskFormError(error.message || "The checklist task could not be saved.");
+      } finally {
+        setTaskFormSaving(false);
+      }
+    }
+
+    function showTaskFormError(message) {
+      taskFormError.textContent = message;
+      taskFormError.classList.add("show");
+    }
+
+    function setTaskFormSaving(isSaving) {
+      saveTaskButton.disabled = isSaving;
+      cancelTaskButton.disabled = isSaving;
+      taskDrawerCloseButton.disabled = isSaving;
+      saveTaskButton.textContent = isSaving
+        ? "Saving…"
+        : editingTaskId
+          ? "Save Changes"
+          : "Save Task";
+    }
+
+    async function toggleTaskStatus(taskId, button) {
+      const task = checklistItems.find((item) => item.id === taskId);
+
+      if (!task) {
+        return;
+      }
+
+      const nextActive = task.active === false;
+
+      if (!window.confirm(
+        `${nextActive ? "Activate" : "Deactivate"} "${task.task_text}"?`
+      )) {
+        return;
+      }
+
+      button.disabled = true;
+
+      try {
+        const { error } = await db
+          .from("checklist_template_items")
+          .update({ active: nextActive })
+          .eq("id", task.id)
+          .eq("template_id", checklistTemplate.id);
+
+        if (error) {
+          throw error;
+        }
+
+        await loadChecklistData();
+        showToast(nextActive ? "Checklist task activated." : "Checklist task deactivated.");
+      } catch (error) {
+        console.error("Checklist task status failed:", error);
+        button.disabled = false;
+        showToast(error.message || "Task status could not be updated.", "error");
+      }
+    }
+
     function showError(title, message) {
       pageContent.innerHTML = `
         <div class="error-state">
@@ -2272,13 +3067,23 @@
     });
 
     roomForm.addEventListener("submit", saveRoom);
+    taskForm.addEventListener("submit", saveChecklistTask);
+    taskDrawerCloseButton.addEventListener("click", closeTaskDrawer);
+    cancelTaskButton.addEventListener("click", closeTaskDrawer);
+    taskDrawerBackdrop.addEventListener("click", closeTaskDrawer);
     drawerCloseButton.addEventListener("click", closeRoomDrawer);
     cancelRoomButton.addEventListener("click", closeRoomDrawer);
     drawerBackdrop.addEventListener("click", closeRoomDrawer);
     logoutButton.addEventListener("click", logout);
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && roomDrawer.classList.contains("open")) {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      if (taskDrawer.classList.contains("open")) {
+        closeTaskDrawer();
+      } else if (roomDrawer.classList.contains("open")) {
         closeRoomDrawer();
       }
     });
