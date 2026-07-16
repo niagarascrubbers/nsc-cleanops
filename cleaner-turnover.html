@@ -958,7 +958,7 @@
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Cleaner Turnover Checklist · Physical Rooms v3</div>
+          <div class="brand-subtitle">Cleaner Turnover Checklist · Template Rooms v4</div>
         </div>
       </div>
 
@@ -983,6 +983,8 @@
   <script>
     "use strict";
 
+    console.info("NSC Cleaner Turnover Template Rooms v4 loaded");
+
     const db = window.nscSupabase || window.supabaseClient;
     const pageContent = document.getElementById("pageContent");
 
@@ -990,6 +992,7 @@
     let turnover = null;
     let tasks = [];
     let taskPhotos = [];
+    let templateRoomMap = new Map();
     let roomGroups = [];
     let displayedTasks = [];
     let inventoryItems = [];
@@ -1118,6 +1121,7 @@
         .select(`
           id,
           turnover_id,
+          template_item_id,
           room_id,
           section_name,
           task_text,
@@ -1146,6 +1150,68 @@
       if (error) throw error;
       tasks = Array.isArray(data) ? data : [];
     }
+
+
+    async function loadTemplateRoomNames() {
+      const templateItemIds = [
+        ...new Set(
+          tasks
+            .map(task => task.template_item_id)
+            .filter(Boolean)
+        )
+      ];
+
+      templateRoomMap = new Map();
+
+      if (!templateItemIds.length) return;
+
+      const { data, error } = await db
+        .from("checklist_template_items")
+        .select(`
+          id,
+          room_id,
+          section_name,
+          rooms (
+            room_name,
+            room_code,
+            sort_order
+          )
+        `)
+        .in("id", templateItemIds);
+
+      if (error) throw error;
+
+      (data || []).forEach(item => {
+        templateRoomMap.set(item.id, {
+          roomId: item.room_id || null,
+          roomName:
+            item.rooms?.room_name ||
+            item.section_name ||
+            "General Tasks",
+          roomCode: item.rooms?.room_code || "",
+          roomSortOrder: Number(item.rooms?.sort_order) || 0
+        });
+      });
+    }
+
+    function getPhysicalRoom(task) {
+      const templateRoom = templateRoomMap.get(task.template_item_id);
+
+      if (templateRoom) {
+        return templateRoom;
+      }
+
+      return {
+        roomId: task.room_id || null,
+        roomName:
+          task.rooms?.room_name ||
+          task.section_name ||
+          "General Tasks",
+        roomCode: task.rooms?.room_code || "",
+        roomSortOrder: 0
+      };
+    }
+
 
 
 
@@ -1423,28 +1489,25 @@
       const grouped = new Map();
 
       tasks.forEach(task => {
-        const roomName =
-          task.rooms?.room_name ||
-          task.section_name ||
-          "General Tasks";
-
-        const roomCode = task.rooms?.room_code || "";
+        const physicalRoom = getPhysicalRoom(task);
 
         /*
-         * Use the physical room record as the main grouping key.
-         * This keeps Bedroom 1, Bedroom 2, Bedroom 3,
-         * Main Bathroom and Lower Bathroom separate.
+         * Group by the original template room.
+         * This preserves Bedroom 1, Bedroom 2, Bedroom 3,
+         * Main Bathroom, Lower Bathroom, Front Exterior, etc.
          */
         const key = String(
-          task.room_id ||
-          `${normalizeGroupName(roomName)}-${roomCode || "general"}`
+          physicalRoom.roomId ||
+          task.template_item_id ||
+          `${normalizeGroupName(physicalRoom.roomName)}-${physicalRoom.roomCode || "general"}`
         );
 
         if (!grouped.has(key)) {
           grouped.set(key, {
             key,
-            roomName,
-            roomCode,
+            roomName: physicalRoom.roomName,
+            roomCode: physicalRoom.roomCode,
+            roomSortOrder: physicalRoom.roomSortOrder,
             items: []
           });
         }
@@ -1452,67 +1515,58 @@
         grouped.get(key).items.push(task);
       });
 
-      let groups = Array.from(grouped.values());
+      roomGroups = Array.from(grouped.values())
+        .map(group => {
+          const seenTasks = new Set();
 
-      /*
-       * Remove exact duplicate tasks only inside the same physical room.
-       * Tasks with the same wording in different rooms remain separate.
-       */
-      groups.forEach(group => {
-        const seenTasks = new Set();
+          const uniqueItems = group.items.filter(task => {
+            const duplicateKey = [
+              normalizeGroupName(task.section_name),
+              String(task.task_text || "")
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, " ")
+            ].join("::");
 
-        group.items = group.items.filter(task => {
-          const duplicateKey = String(task.task_text || "")
-            .trim()
-            .toLowerCase()
-            .replace(/\s+/g, " ");
+            if (seenTasks.has(duplicateKey)) return false;
+            seenTasks.add(duplicateKey);
+            return true;
+          });
 
-          if (seenTasks.has(duplicateKey)) return false;
+          uniqueItems.sort((a, b) => {
+            const sortDifference =
+              (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0);
 
-          seenTasks.add(duplicateKey);
-          return true;
-        });
+            if (sortDifference !== 0) return sortDifference;
 
-        group.items.sort((a, b) => {
+            return String(a.task_text || "")
+              .localeCompare(String(b.task_text || ""));
+          });
+
+          return {
+            ...group,
+            items: uniqueItems
+          };
+        })
+        .sort((a, b) => {
           const sortDifference =
-            (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0);
+            (Number(a.roomSortOrder) || 0) -
+            (Number(b.roomSortOrder) || 0);
 
           if (sortDifference !== 0) return sortDifference;
 
-          return String(a.task_text || "")
-            .localeCompare(String(b.task_text || ""));
+          return String(a.roomName || "")
+            .localeCompare(String(b.roomName || ""), undefined, {
+              numeric: true,
+              sensitivity: "base"
+            });
         });
-      });
-
-      /*
-       * Final Inspection tasks exist under every room.
-       * Keep them attached to the physical room rather than merging
-       * every final inspection task into one giant section.
-       */
-      groups = groups.map(group => {
-        const regularTasks = group.items.filter(task =>
-          normalizeGroupName(task.section_name) !== "final inspection" &&
-          normalizeGroupName(task.section_name) !== "final walkthrough"
-        );
-
-        const finalTasks = group.items.filter(task =>
-          normalizeGroupName(task.section_name) === "final inspection" ||
-          normalizeGroupName(task.section_name) === "final walkthrough"
-        );
-
-        return {
-          ...group,
-          regularTasks,
-          finalTasks,
-          items: [...regularTasks, ...finalTasks]
-        };
-      });
-
-      roomGroups = groups;
 
       roomGroups.push({
         key: "__inventory__",
         roomName: "Inventory",
+        roomCode: "INVENTORY",
+        roomSortOrder: 99999,
         items: [],
         isInventory: true
       });
@@ -2406,8 +2460,9 @@
         if (!authenticated) return;
 
         await loadTurnover();
+        await loadTasks();
         await Promise.all([
-          loadTasks(),
+          loadTemplateRoomNames(),
           loadInventory(),
           loadPhotos()
         ]);
