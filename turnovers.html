@@ -1244,6 +1244,18 @@
                         >
                           Open Property
                         </button>
+
+                        ${["review_required", "correction_required", "completed"].includes(turnover.status) ? `
+                          <button
+                            class="button button-primary button-small"
+                            type="button"
+                            data-action="review-turnover"
+                            data-turnover-id="${escapeHtml(turnover.id)}"
+                          >
+                            ${turnover.status === "completed" ? "View Review" : "Review Turnover"}
+                          </button>
+                        ` : ""}
+
                         ${turnover.status !== "cancelled" && turnover.status !== "completed" ? `
                           <button
                             class="button button-danger button-small"
@@ -1267,6 +1279,13 @@
       turnoversContent.querySelectorAll('[data-action="view-property"]').forEach(button => {
         button.addEventListener("click", () => {
           window.location.href = `property.html?id=${encodeURIComponent(button.dataset.propertyId)}`;
+        });
+      });
+
+      turnoversContent.querySelectorAll('[data-action="review-turnover"]').forEach(button => {
+        button.addEventListener("click", () => {
+          window.location.href =
+            `turnover-review.html?id=${encodeURIComponent(button.dataset.turnoverId)}`;
         });
       });
 
