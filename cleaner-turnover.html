@@ -361,6 +361,92 @@
       border-color: #efcaca;
     }
 
+
+    .photo-panel {
+      margin-top: 10px;
+      padding: 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fbfdfe;
+    }
+
+    .photo-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .photo-panel-title {
+      color: var(--navy-light);
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .photo-count {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .photo-upload-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .photo-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .photo-help {
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.5;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .photo-preview {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+    }
+
+    .photo-preview img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+
+    .photo-preview-label {
+      padding: 6px;
+      color: var(--muted);
+      font-size: 7px;
+      text-align: center;
+    }
+
+    .photo-requirement-missing {
+      margin-top: 8px;
+      color: var(--danger);
+      font-size: 8px;
+      font-weight: 600;
+    }
+
     .notes-box {
       margin-top: 9px;
       display: grid;
@@ -564,6 +650,7 @@
     let currentProfile = null;
     let turnover = null;
     let tasks = [];
+    let taskPhotos = [];
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -712,6 +799,50 @@
       tasks = Array.isArray(data) ? data : [];
     }
 
+
+    async function loadPhotos() {
+      const { data, error } = await db
+        .from("photos")
+        .select(`
+          id,
+          turnover_id,
+          turnover_task_id,
+          room_id,
+          photo_type,
+          storage_path,
+          file_name,
+          mime_type,
+          file_size_bytes,
+          caption,
+          uploaded_by,
+          taken_at,
+          created_at
+        `)
+        .eq("turnover_id", turnover.id)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+
+      taskPhotos = Array.isArray(data) ? data : [];
+
+      await Promise.all(taskPhotos.map(async photo => {
+        const { data: signedData, error: signedError } = await db.storage
+          .from("turnover-photos")
+          .createSignedUrl(photo.storage_path, 3600);
+
+        photo.preview_url = signedError ? null : signedData?.signedUrl || null;
+      }));
+    }
+
+    function getPhotosForTask(taskId) {
+      return taskPhotos.filter(photo => photo.turnover_task_id === taskId);
+    }
+
+    function getRequiredPhotoCount(task) {
+      const configured = Number(task.required_photo_count) || 0;
+      return Math.max(configured, task.photo_required ? 1 : 0);
+    }
+
     function getTaskProgress() {
       const completed = tasks.filter(task =>
         ["completed", "not_applicable"].includes(task.task_status)
@@ -825,6 +956,9 @@
       const isComplete = task.task_status === "completed";
       const isNA = task.task_status === "not_applicable";
       const locked = turnover.status === "review_required" || turnover.status === "completed";
+      const photos = getPhotosForTask(task.id);
+      const requiredPhotoCount = getRequiredPhotoCount(task);
+      const photoRequirementMet = photos.length >= requiredPhotoCount;
 
       return `
         <div class="task-item" data-task-id="${escapeHtml(task.id)}">
@@ -839,12 +973,60 @@
 
             <div class="task-badges">
               ${task.is_required ? `<span class="task-badge required">Mandatory Task</span>` : ""}
-              ${task.photo_required || Number(task.required_photo_count) > 0
-                ? `<span class="task-badge required">Required Photo</span>` : ""}
+              ${requiredPhotoCount > 0
+                ? `<span class="task-badge required">${requiredPhotoCount} Required Photo${requiredPhotoCount === 1 ? "" : "s"}</span>` : ""}
               ${task.notes_required ? `<span class="task-badge required">Required Note</span>` : ""}
               ${task.estimated_minutes ? `<span class="task-badge">${escapeHtml(task.estimated_minutes)} minutes</span>` : ""}
               ${isComplete ? `<span class="task-badge complete">Completed</span>` : ""}
               ${isNA ? `<span class="task-badge">Not Applicable</span>` : ""}
+            </div>
+
+            <div class="photo-panel">
+              <div class="photo-panel-header">
+                <span class="photo-panel-title">Task Photos</span>
+                <span class="photo-count">${photos.length}${requiredPhotoCount ? ` of ${requiredPhotoCount} required` : " uploaded"}</span>
+              </div>
+
+              <div class="photo-upload-row">
+                <input
+                  class="photo-input"
+                  id="photoInput-${escapeHtml(task.id)}"
+                  data-role="photo-input"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  capture="environment"
+                  ${locked ? "disabled" : ""}
+                >
+
+                <label
+                  class="button button-secondary"
+                  for="photoInput-${escapeHtml(task.id)}"
+                >
+                  Upload Task Photo
+                </label>
+
+                <span class="photo-help">JPEG, PNG or WebP. Maximum file size is 10 MB.</span>
+              </div>
+
+              ${requiredPhotoCount > 0 && !photoRequirementMet ? `
+                <div class="photo-requirement-missing">
+                  ${requiredPhotoCount - photos.length} more required photo${requiredPhotoCount - photos.length === 1 ? "" : "s"} must be uploaded.
+                </div>
+              ` : ""}
+
+              ${photos.length ? `
+                <div class="photo-grid">
+                  ${photos.map((photo, index) => `
+                    <div class="photo-preview">
+                      ${photo.preview_url
+                        ? `<img src="${escapeHtml(photo.preview_url)}" alt="Task photo ${index + 1}">`
+                        : `<div class="photo-preview-label">Preview unavailable</div>`
+                      }
+                      <div class="photo-preview-label">Task photo ${index + 1}</div>
+                    </div>
+                  `).join("")}
+                </div>
+              ` : ""}
             </div>
 
             <div class="notes-box">
@@ -900,7 +1082,117 @@
 
         taskElement.querySelector('[data-action="not-applicable"]')
           .addEventListener("click", event => markNotApplicable(taskId, event.currentTarget));
+
+        taskElement.querySelector('[data-role="photo-input"]')
+          .addEventListener("change", event => uploadTaskPhoto(taskId, event.currentTarget));
       });
+    }
+
+
+    function getFileExtension(file) {
+      const mimeExtensions = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp"
+      };
+
+      return mimeExtensions[file.type] || "jpg";
+    }
+
+    async function uploadTaskPhoto(taskId, input) {
+      const task = tasks.find(item => item.id === taskId);
+      const file = input.files?.[0];
+
+      if (!task || !file) return;
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 10 * 1024 * 1024;
+
+      if (!allowedTypes.includes(file.type)) {
+        input.value = "";
+        showToast("Upload a JPEG, PNG, or WebP image.", "error");
+        return;
+      }
+
+      if (file.size > maxSize) {
+        input.value = "";
+        showToast("The selected photo is larger than 10 MB.", "error");
+        return;
+      }
+
+      const taskElement = input.closest("[data-task-id]");
+      const uploadLabel = taskElement?.querySelector(`label[for="${input.id}"]`);
+      const previousLabel = uploadLabel?.textContent || "Upload Task Photo";
+
+      input.disabled = true;
+      if (uploadLabel) uploadLabel.textContent = "Uploading Photo";
+
+      const extension = getFileExtension(file);
+      const uniqueName = `${crypto.randomUUID()}.${extension}`;
+      const storagePath = `${currentProfile.id}/${turnover.id}/${taskId}/${uniqueName}`;
+
+      try {
+        const { error: storageError } = await db.storage
+          .from("turnover-photos")
+          .upload(storagePath, file, {
+            cacheControl: "3600",
+            contentType: file.type,
+            upsert: false
+          });
+
+        if (storageError) throw storageError;
+
+        const { data: photoRecord, error: databaseError } = await db
+          .from("photos")
+          .insert({
+            turnover_id: turnover.id,
+            turnover_task_id: taskId,
+            room_id: task.room_id || null,
+            photo_type: "after",
+            storage_path: storagePath,
+            file_name: file.name,
+            mime_type: file.type,
+            file_size_bytes: file.size,
+            uploaded_by: currentProfile.id,
+            taken_at: new Date().toISOString()
+          })
+          .select(`
+            id,
+            turnover_id,
+            turnover_task_id,
+            room_id,
+            photo_type,
+            storage_path,
+            file_name,
+            mime_type,
+            file_size_bytes,
+            caption,
+            uploaded_by,
+            taken_at,
+            created_at
+          `)
+          .single();
+
+        if (databaseError) {
+          await db.storage.from("turnover-photos").remove([storagePath]);
+          throw databaseError;
+        }
+
+        const { data: signedData } = await db.storage
+          .from("turnover-photos")
+          .createSignedUrl(storagePath, 3600);
+
+        photoRecord.preview_url = signedData?.signedUrl || null;
+        taskPhotos.push(photoRecord);
+
+        renderPage();
+        showToast("The task photo has been uploaded successfully.");
+      } catch (error) {
+        input.disabled = false;
+        input.value = "";
+        if (uploadLabel) uploadLabel.textContent = previousLabel;
+        showToast(error.message || "The photo could not be uploaded.", "error");
+      }
     }
 
     async function saveTaskNote(taskId, taskElement, button) {
@@ -944,8 +1236,12 @@
         return;
       }
 
-      if (task.photo_required || Number(task.required_photo_count) > 0) {
-        showToast("Photo upload will be connected in the next step. This task cannot be completed until the required photo is uploaded.", "error");
+      const requiredPhotoCount = getRequiredPhotoCount(task);
+      const uploadedPhotoCount = getPhotosForTask(task.id).length;
+
+      if (uploadedPhotoCount < requiredPhotoCount) {
+        const remaining = requiredPhotoCount - uploadedPhotoCount;
+        showToast(`${remaining} required photo${remaining === 1 ? " remains" : "s remain"} before this task can be completed.`, "error");
         return;
       }
 
@@ -1029,7 +1325,7 @@
           .from("turnovers")
           .update({
             status: "review_required",
-            property_readiness_status: "ready_for_review"
+            property_readiness_status: "needs_review"
           })
           .eq("id", turnover.id);
 
@@ -1064,6 +1360,7 @@
 
         await loadTurnover();
         await loadTasks();
+        await loadPhotos();
         renderPage();
       } catch (error) {
         console.error("Cleaner turnover page failed:", error);
