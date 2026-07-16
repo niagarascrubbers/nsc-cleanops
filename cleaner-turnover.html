@@ -626,6 +626,185 @@
       line-height: 1.5;
     }
 
+
+    .issue-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(7, 31, 53, .58);
+    }
+
+    .issue-modal-backdrop.open {
+      display: flex;
+    }
+
+    .issue-modal {
+      width: min(680px, 100%);
+      max-height: calc(100vh - 36px);
+      overflow-y: auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 28px 80px rgba(7, 31, 53, .3);
+    }
+
+    .issue-modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+
+    .issue-modal-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 17px;
+    }
+
+    .issue-close-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .issue-form {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .issue-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .issue-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .issue-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .issue-label {
+      color: var(--navy-light);
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .issue-input,
+    .issue-select,
+    .issue-textarea {
+      width: 100%;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--text);
+      font-size: 10px;
+      outline: none;
+    }
+
+    .issue-input:focus,
+    .issue-select:focus,
+    .issue-textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47,143,202,.12);
+    }
+
+    .issue-textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .issue-check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fbfdfe;
+      color: var(--text);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .issue-check-row input {
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+    }
+
+    .issue-photo-box {
+      padding: 12px;
+      border: 1px dashed #bdd2df;
+      border-radius: 10px;
+      background: #fbfdfe;
+    }
+
+    .issue-photo-help {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.5;
+    }
+
+    .issue-file-list {
+      display: grid;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .issue-file-item {
+      padding: 7px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      color: var(--muted);
+      font-size: 8px;
+      word-break: break-word;
+    }
+
+    .issue-form-error {
+      display: none;
+      padding: 10px 11px;
+      border: 1px solid #efcaca;
+      border-radius: 9px;
+      background: var(--danger-light);
+      color: var(--danger);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .issue-form-error.visible {
+      display: block;
+    }
+
+    .issue-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      padding-top: 3px;
+    }
+
     .checklist-toolbar {
       position: sticky;
       top: 82px;
@@ -1152,7 +1331,8 @@
       }
 
       .overview-grid,
-      .gps-grid {
+      .gps-grid,
+      .issue-form-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1183,7 +1363,7 @@
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Cleaner Turnover Checklist · Reference Photos v6.2</div>
+          <div class="brand-subtitle">Cleaner Turnover Checklist · Issue Reporting v7</div>
         </div>
       </div>
 
@@ -1202,13 +1382,109 @@
     </div>
   </main>
 
+  <div class="issue-modal-backdrop" id="issueModalBackdrop" aria-hidden="true">
+    <section class="issue-modal" role="dialog" aria-modal="true" aria-labelledby="issueModalTitle">
+      <div class="issue-modal-header">
+        <h2 class="issue-modal-title" id="issueModalTitle">Report an Issue</h2>
+        <button class="issue-close-button" id="closeIssueModalButton" type="button" aria-label="Close">×</button>
+      </div>
+
+      <form class="issue-form" id="issueForm">
+        <div class="issue-form-grid">
+          <label class="issue-field">
+            <span class="issue-label">Issue Type *</span>
+            <select class="issue-select" id="issueTypeInput" required>
+              <option value="">Select issue type</option>
+              <option value="damage">Damage</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="missing_item">Missing Item</option>
+              <option value="inventory">Inventory</option>
+              <option value="safety">Safety Hazard</option>
+              <option value="guest_belongings">Guest Belongings</option>
+            </select>
+          </label>
+
+          <label class="issue-field">
+            <span class="issue-label">Urgency *</span>
+            <select class="issue-select" id="issueUrgencyInput" required>
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </label>
+
+          <label class="issue-field full">
+            <span class="issue-label">Room / Area</span>
+            <select class="issue-select" id="issueRoomInput">
+              <option value="">Whole Property / General</option>
+            </select>
+          </label>
+
+          <label class="issue-field full">
+            <span class="issue-label">Short Title *</span>
+            <input
+              class="issue-input"
+              id="issueTitleInput"
+              type="text"
+              maxlength="120"
+              placeholder="Example: Leak under kitchen sink"
+              required
+            >
+          </label>
+
+          <label class="issue-field full">
+            <span class="issue-label">Description *</span>
+            <textarea
+              class="issue-textarea"
+              id="issueDescriptionInput"
+              maxlength="2000"
+              placeholder="Describe what happened, where it is, and what the manager needs to know."
+              required
+            ></textarea>
+          </label>
+
+          <label class="issue-field full">
+            <span class="issue-label">Issue Photos * (1–10)</span>
+            <div class="issue-photo-box">
+              <input
+                id="issuePhotosInput"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                capture="environment"
+                multiple
+                required
+              >
+              <div class="issue-photo-help">
+                At least one photo is mandatory. For damage, include a close-up and a wider photo showing the location.
+              </div>
+              <div class="issue-file-list" id="issueFileList"></div>
+            </div>
+          </label>
+
+          <label class="issue-check-row full">
+            <input id="issuePreventsGuestReadyInput" type="checkbox">
+            <span>This issue prevents the property from being guest-ready.</span>
+          </label>
+        </div>
+
+        <div class="issue-form-error" id="issueFormError"></div>
+
+        <div class="issue-modal-actions">
+          <button class="button button-secondary" id="cancelIssueButton" type="button">Cancel</button>
+          <button class="button button-primary" id="submitIssueButton" type="submit">Submit Issue</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
 
   <script>
     "use strict";
 
-    console.info("NSC Cleaner Turnover Reference Photos v6.2 loaded");
+    console.info("NSC Cleaner Turnover Issue Reporting v7 loaded");
 
     const db = window.nscSupabase || window.supabaseClient;
     const pageContent = document.getElementById("pageContent");
@@ -1225,6 +1501,20 @@
     let openRoomKeys = new Set();
     let roomsInitialized = false;
     let remainingOnly = false;
+    let issueFiles = [];
+
+    const issueModalBackdrop = document.getElementById("issueModalBackdrop");
+    const issueForm = document.getElementById("issueForm");
+    const issueTypeInput = document.getElementById("issueTypeInput");
+    const issueUrgencyInput = document.getElementById("issueUrgencyInput");
+    const issueRoomInput = document.getElementById("issueRoomInput");
+    const issueTitleInput = document.getElementById("issueTitleInput");
+    const issueDescriptionInput = document.getElementById("issueDescriptionInput");
+    const issuePhotosInput = document.getElementById("issuePhotosInput");
+    const issueFileList = document.getElementById("issueFileList");
+    const issuePreventsGuestReadyInput = document.getElementById("issuePreventsGuestReadyInput");
+    const issueFormError = document.getElementById("issueFormError");
+    const submitIssueButton = document.getElementById("submitIssueButton");
 
     const PROPERTY_REFERENCE_PHOTOS_URL =
       "https://www.airbnb.ca/rooms/854194758868635183?adults=6&search_mode=regular_search&check_in=2026-08-16&check_out=2026-08-21&children=0&infants=0&pets=0&source_impression_id=p3_1784116064_P3xaP3Q92Eljh-Xk&previous_page_section_name=1000&federated_search_id=c655c850-4c1e-44f6-a4d9-8eec297655ef&modal=PHOTO_TOUR_SCROLLABLE";
@@ -2466,6 +2756,256 @@
       `;
     }
 
+
+    function getIssueRoomOptions() {
+      const uniqueRooms = new Map();
+
+      tasks.forEach(task => {
+        const physicalRoom = getPhysicalRoom(task);
+        if (!physicalRoom.roomId || uniqueRooms.has(physicalRoom.roomId)) return;
+
+        uniqueRooms.set(physicalRoom.roomId, {
+          id: physicalRoom.roomId,
+          name: physicalRoom.roomName,
+          sortOrder: physicalRoom.roomSortOrder || 0
+        });
+      });
+
+      return Array.from(uniqueRooms.values()).sort((a, b) => {
+        const sortDifference = a.sortOrder - b.sortOrder;
+        if (sortDifference !== 0) return sortDifference;
+        return a.name.localeCompare(b.name, undefined, {
+          numeric: true,
+          sensitivity: "base"
+        });
+      });
+    }
+
+    function showIssueError(message) {
+      issueFormError.textContent = message;
+      issueFormError.classList.add("visible");
+    }
+
+    function clearIssueError() {
+      issueFormError.textContent = "";
+      issueFormError.classList.remove("visible");
+    }
+
+    function renderIssueFileList() {
+      issueFileList.innerHTML = issueFiles.length
+        ? issueFiles.map((file, index) => `
+            <div class="issue-file-item">
+              ${index + 1}. ${escapeHtml(file.name)} — ${(file.size / 1024 / 1024).toFixed(2)} MB
+            </div>
+          `).join("")
+        : "";
+    }
+
+    function openIssueModal() {
+      clearIssueError();
+      issueForm.reset();
+      issueUrgencyInput.value = "medium";
+      issueFiles = [];
+      renderIssueFileList();
+
+      const roomOptions = getIssueRoomOptions();
+      issueRoomInput.innerHTML = `
+        <option value="">Whole Property / General</option>
+        ${roomOptions.map(room => `
+          <option value="${escapeHtml(room.id)}">${escapeHtml(room.name)}</option>
+        `).join("")}
+      `;
+
+      issueModalBackdrop.classList.add("open");
+      issueModalBackdrop.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeIssueModal() {
+      issueModalBackdrop.classList.remove("open");
+      issueModalBackdrop.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      issueForm.reset();
+      issueFiles = [];
+      renderIssueFileList();
+      clearIssueError();
+    }
+
+    function validateIssueFiles(files) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxFileSize = 25 * 1024 * 1024;
+
+      if (!files.length) {
+        throw new Error("At least one issue photo is required.");
+      }
+
+      if (files.length > 10) {
+        throw new Error("A maximum of 10 issue photos can be uploaded.");
+      }
+
+      files.forEach(file => {
+        if (!allowedTypes.includes(file.type)) {
+          throw new Error(`${file.name} is not a supported JPEG, PNG, or WebP image.`);
+        }
+
+        if (file.size > maxFileSize) {
+          throw new Error(`${file.name} is larger than 25 MB.`);
+        }
+      });
+    }
+
+    async function createIssueNotification(issue, urgencyLabel) {
+      const { data: recipients, error: recipientsError } = await db
+        .from("users")
+        .select("id")
+        .eq("company_id", turnover.company_id || currentProfile.company_id)
+        .in("role", ["admin", "manager"])
+        .eq("active", true);
+
+      if (recipientsError) throw recipientsError;
+      if (!recipients?.length) return;
+
+      const rows = recipients.map(recipient => ({
+        company_id: turnover.company_id || currentProfile.company_id,
+        property_id: turnover.property_id,
+        turnover_id: turnover.id,
+        recipient_user_id: recipient.id,
+        notification_type: "issue_reported",
+        severity: ["urgent", "high"].includes(issue.urgency) ? "critical" : "warning",
+        title: `${urgencyLabel} issue: ${issue.title}`,
+        message: `${currentProfile.full_name || "A cleaner"} reported a ${issue.issue_type.replaceAll("_", " ")} issue at ${turnover.properties?.property_name || "the property"}.`,
+        action_url: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
+      }));
+
+      const { error } = await db.from("notifications").insert(rows);
+      if (error) throw error;
+    }
+
+    async function uploadIssuePhotos(issueId, roomId, files) {
+      const uploadedPaths = [];
+
+      try {
+        for (const file of files) {
+          const extension = getFileExtension(file);
+          const uniqueName = `${crypto.randomUUID()}.${extension}`;
+          const storagePath =
+            `${currentProfile.id}/${turnover.id}/issues/${issueId}/${uniqueName}`;
+
+          const { error: storageError } = await db.storage
+            .from("turnover-photos")
+            .upload(storagePath, file, {
+              cacheControl: "3600",
+              contentType: file.type,
+              upsert: false
+            });
+
+          if (storageError) throw storageError;
+          uploadedPaths.push(storagePath);
+
+          const { error: photoError } = await db
+            .from("photos")
+            .insert({
+              turnover_id: turnover.id,
+              issue_id: issueId,
+              turnover_task_id: null,
+              room_id: roomId || null,
+              photo_type: "issue",
+              storage_path: storagePath,
+              file_name: file.name,
+              mime_type: file.type,
+              file_size_bytes: file.size,
+              caption: "Cleaner issue report",
+              uploaded_by: currentProfile.id,
+              taken_at: new Date().toISOString()
+            });
+
+          if (photoError) throw photoError;
+        }
+      } catch (error) {
+        if (uploadedPaths.length) {
+          await db.storage.from("turnover-photos").remove(uploadedPaths);
+        }
+        throw error;
+      }
+    }
+
+    async function submitIssue(event) {
+      event.preventDefault();
+      clearIssueError();
+
+      const issueType = issueTypeInput.value;
+      const urgency = issueUrgencyInput.value;
+      const roomId = issueRoomInput.value || null;
+      const title = issueTitleInput.value.trim();
+      const description = issueDescriptionInput.value.trim();
+      const preventsGuestReady = issuePreventsGuestReadyInput.checked;
+
+      try {
+        if (!issueType) throw new Error("Select an issue type.");
+        if (!urgency) throw new Error("Select an urgency.");
+        if (!title) throw new Error("Enter a short issue title.");
+        if (!description) throw new Error("Enter an issue description.");
+
+        validateIssueFiles(issueFiles);
+
+        submitIssueButton.disabled = true;
+        submitIssueButton.textContent = "Submitting Issue";
+
+        const { data: issue, error: issueError } = await db
+          .from("issues")
+          .insert({
+            turnover_id: turnover.id,
+            property_id: turnover.property_id,
+            room_id: roomId,
+            issue_type: issueType,
+            title,
+            description,
+            urgency,
+            issue_status: "new",
+            prevents_guest_ready: preventsGuestReady,
+            reported_by: currentProfile.id,
+            owner_review_required: true
+          })
+          .select(`
+            id,
+            turnover_id,
+            property_id,
+            room_id,
+            issue_type,
+            title,
+            description,
+            urgency,
+            issue_status,
+            prevents_guest_ready,
+            reported_by,
+            owner_review_required,
+            created_at
+          `)
+          .single();
+
+        if (issueError) throw issueError;
+
+        try {
+          await uploadIssuePhotos(issue.id, roomId, issueFiles);
+          await createIssueNotification(
+            issue,
+            urgency.charAt(0).toUpperCase() + urgency.slice(1)
+          );
+        } catch (followUpError) {
+          await db.from("issues").delete().eq("id", issue.id);
+          throw followUpError;
+        }
+
+        closeIssueModal();
+        showToast("Issue submitted successfully. The manager has been notified.");
+      } catch (error) {
+        showIssueError(error.message || "The issue could not be submitted.");
+      } finally {
+        submitIssueButton.disabled = false;
+        submitIssueButton.textContent = "Submit Issue";
+      }
+    }
+
     function renderPage() {
       buildRoomGroups();
 
@@ -2563,6 +3103,15 @@
             >
               ${remainingOnly ? "Show All Tasks" : "Show Remaining Tasks"}
             </button>
+
+            <button
+              class="button button-danger"
+              id="reportIssueButton"
+              type="button"
+              ${turnover.status === "completed" ? "disabled" : ""}
+            >
+              Report Issue
+            </button>
           </div>
         </div>
 
@@ -2589,6 +3138,8 @@
     }
 
     function registerPageEvents() {
+      document.getElementById("reportIssueButton")?.addEventListener("click", openIssueModal);
+
       document.getElementById("clockInButton")?.addEventListener("click", event => {
         saveGpsEvent("in", event.currentTarget);
       });
@@ -3164,6 +3715,32 @@
         window.location.href = "login.html";
       }
     });
+
+    document.getElementById("closeIssueModalButton").addEventListener("click", closeIssueModal);
+    document.getElementById("cancelIssueButton").addEventListener("click", closeIssueModal);
+
+    issueModalBackdrop.addEventListener("click", event => {
+      if (event.target === issueModalBackdrop) {
+        closeIssueModal();
+      }
+    });
+
+    issuePhotosInput.addEventListener("change", () => {
+      try {
+        const selectedFiles = Array.from(issuePhotosInput.files || []);
+        validateIssueFiles(selectedFiles);
+        issueFiles = selectedFiles;
+        clearIssueError();
+        renderIssueFileList();
+      } catch (error) {
+        issueFiles = [];
+        issuePhotosInput.value = "";
+        renderIssueFileList();
+        showIssueError(error.message);
+      }
+    });
+
+    issueForm.addEventListener("submit", submitIssue);
 
     async function initialize() {
       try {
