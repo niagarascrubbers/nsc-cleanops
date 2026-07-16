@@ -958,7 +958,7 @@
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Cleaner Turnover Checklist</div>
+          <div class="brand-subtitle">Cleaner Turnover Checklist · Physical Rooms v3</div>
         </div>
       </div>
 
@@ -1421,34 +1421,24 @@
 
     function buildRoomGroups() {
       const grouped = new Map();
-      const seenTasks = new Set();
 
       tasks.forEach(task => {
-        const roomName = task.rooms?.room_name || task.section_name || "General Tasks";
+        const roomName =
+          task.rooms?.room_name ||
+          task.section_name ||
+          "General Tasks";
+
         const roomCode = task.rooms?.room_code || "";
-        const normalizedRoomName = normalizeGroupName(roomName);
 
-        // Merge duplicate room records that display the same room name.
-        // Keep numbered rooms separate when their visible names are different.
-        const key = normalizedRoomName;
-
-        const normalizedTaskText = String(task.task_text || "")
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, " ");
-
-        const normalizedTaskCode = String(task.task_code || "")
-          .trim()
-          .toLowerCase();
-
-        // Remove duplicate generated tasks inside the same displayed room.
-        const duplicateKey = [
-          key,
-          normalizedTaskCode || normalizedTaskText
-        ].join("::");
-
-        if (seenTasks.has(duplicateKey)) return;
-        seenTasks.add(duplicateKey);
+        /*
+         * Use the physical room record as the main grouping key.
+         * This keeps Bedroom 1, Bedroom 2, Bedroom 3,
+         * Main Bathroom and Lower Bathroom separate.
+         */
+        const key = String(
+          task.room_id ||
+          `${normalizeGroupName(roomName)}-${roomCode || "general"}`
+        );
 
         if (!grouped.has(key)) {
           grouped.set(key, {
@@ -1462,7 +1452,63 @@
         grouped.get(key).items.push(task);
       });
 
-      roomGroups = Array.from(grouped.values());
+      let groups = Array.from(grouped.values());
+
+      /*
+       * Remove exact duplicate tasks only inside the same physical room.
+       * Tasks with the same wording in different rooms remain separate.
+       */
+      groups.forEach(group => {
+        const seenTasks = new Set();
+
+        group.items = group.items.filter(task => {
+          const duplicateKey = String(task.task_text || "")
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, " ");
+
+          if (seenTasks.has(duplicateKey)) return false;
+
+          seenTasks.add(duplicateKey);
+          return true;
+        });
+
+        group.items.sort((a, b) => {
+          const sortDifference =
+            (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0);
+
+          if (sortDifference !== 0) return sortDifference;
+
+          return String(a.task_text || "")
+            .localeCompare(String(b.task_text || ""));
+        });
+      });
+
+      /*
+       * Final Inspection tasks exist under every room.
+       * Keep them attached to the physical room rather than merging
+       * every final inspection task into one giant section.
+       */
+      groups = groups.map(group => {
+        const regularTasks = group.items.filter(task =>
+          normalizeGroupName(task.section_name) !== "final inspection" &&
+          normalizeGroupName(task.section_name) !== "final walkthrough"
+        );
+
+        const finalTasks = group.items.filter(task =>
+          normalizeGroupName(task.section_name) === "final inspection" ||
+          normalizeGroupName(task.section_name) === "final walkthrough"
+        );
+
+        return {
+          ...group,
+          regularTasks,
+          finalTasks,
+          items: [...regularTasks, ...finalTasks]
+        };
+      });
+
+      roomGroups = groups;
 
       roomGroups.push({
         key: "__inventory__",
