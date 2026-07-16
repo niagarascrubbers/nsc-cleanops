@@ -991,9 +991,11 @@
     let tasks = [];
     let taskPhotos = [];
     let roomGroups = [];
+    let displayedTasks = [];
     let inventoryItems = [];
     let inventoryCounts = [];
     let openRoomKeys = new Set();
+    let roomsInitialized = false;
     let remainingOnly = false;
 
     function escapeHtml(value) {
@@ -1395,27 +1397,64 @@
     }
 
     function getTaskProgress() {
-      const completed = tasks.filter(task =>
+      const sourceTasks = displayedTasks.length ? displayedTasks : tasks;
+
+      const completed = sourceTasks.filter(task =>
         ["completed", "not_applicable"].includes(task.task_status)
       ).length;
 
       return {
         completed,
-        total: tasks.length,
-        percent: tasks.length ? Math.round((completed / tasks.length) * 100) : 0
+        total: sourceTasks.length,
+        percent: sourceTasks.length
+          ? Math.round((completed / sourceTasks.length) * 100)
+          : 0
       };
+    }
+
+    function normalizeGroupName(value) {
+      return String(value || "General Tasks")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
     }
 
     function buildRoomGroups() {
       const grouped = new Map();
+      const seenTasks = new Set();
 
       tasks.forEach(task => {
-        const key = String(task.room_id || task.section_name || "general");
+        const roomName = task.rooms?.room_name || task.section_name || "General Tasks";
+        const roomCode = task.rooms?.room_code || "";
+        const normalizedRoomName = normalizeGroupName(roomName);
+
+        // Merge duplicate room records that display the same room name.
+        // Keep numbered rooms separate when their visible names are different.
+        const key = normalizedRoomName;
+
+        const normalizedTaskText = String(task.task_text || "")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, " ");
+
+        const normalizedTaskCode = String(task.task_code || "")
+          .trim()
+          .toLowerCase();
+
+        // Remove duplicate generated tasks inside the same displayed room.
+        const duplicateKey = [
+          key,
+          normalizedTaskCode || normalizedTaskText
+        ].join("::");
+
+        if (seenTasks.has(duplicateKey)) return;
+        seenTasks.add(duplicateKey);
 
         if (!grouped.has(key)) {
           grouped.set(key, {
             key,
-            roomName: task.rooms?.room_name || task.section_name || "General Tasks",
+            roomName,
+            roomCode,
             items: []
           });
         }
@@ -1432,12 +1471,17 @@
         isInventory: true
       });
 
-      if (!openRoomKeys.size && roomGroups.length) {
+      displayedTasks = roomGroups
+        .filter(group => !group.isInventory)
+        .flatMap(group => group.items);
+
+      if (!roomsInitialized && roomGroups.length) {
         const firstIncomplete = roomGroups.find(group =>
           getIncompleteTasks(group).length
         );
 
         openRoomKeys.add((firstIncomplete || roomGroups[0]).key);
+        roomsInitialized = true;
       }
     }
 
@@ -1641,7 +1685,9 @@
             </div>
 
             <div class="room-progress-summary">
-              ${progress.completed} / ${progress.total} Complete
+              ${group.isInventory && progress.total === 0
+                ? "Not Configured"
+                : `${progress.completed} / ${progress.total} Complete`}
             </div>
           </button>
 
@@ -2207,11 +2253,13 @@
     }
 
     async function submitTurnover() {
-      const incompleteRequired = tasks.filter(task =>
+      const validationTasks = displayedTasks.length ? displayedTasks : tasks;
+
+      const incompleteRequired = validationTasks.filter(task =>
         task.is_required && !["completed", "not_applicable"].includes(task.task_status)
       );
 
-      const missingRequiredPhotos = tasks.filter(task =>
+      const missingRequiredPhotos = validationTasks.filter(task =>
         getPhotosForTask(task.id).length < getRequiredPhotoCount(task)
       );
 
