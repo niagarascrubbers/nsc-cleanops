@@ -787,6 +787,16 @@
             </div>
           </div>
 
+          <div class="form-group">
+            <label class="form-label" for="assignedCleanerInput">Assigned Cleaner</label>
+            <select class="form-control" id="assignedCleanerInput">
+              <option value="">Unassigned</option>
+            </select>
+            <div class="form-help">
+              Select the cleaner responsible for completing this turnover.
+            </div>
+          </div>
+
           <div class="form-row-two">
             <div class="form-group">
               <label class="form-label" for="turnoverDateInput">
@@ -884,6 +894,7 @@
 
     const propertyInput = document.getElementById("propertyInput");
     const templateInput = document.getElementById("templateInput");
+    const assignedCleanerInput = document.getElementById("assignedCleanerInput");
     const turnoverDateInput = document.getElementById("turnoverDateInput");
     const priorityInput = document.getElementById("priorityInput");
     const scheduledStartInput = document.getElementById("scheduledStartInput");
@@ -896,6 +907,7 @@
 
     let currentProfile = null;
     let properties = [];
+    let cleaners = [];
     let turnovers = [];
     let filteredTurnovers = [];
 
@@ -1025,6 +1037,34 @@
       propertyInput.innerHTML = `<option value="">Select a property</option>${options}`;
     }
 
+    async function loadCleaners() {
+      const { data, error } = await db
+        .from("users")
+        .select("id, full_name, role, active, company_id")
+        .eq("company_id", currentProfile.company_id)
+        .eq("role", "cleaner")
+        .eq("active", true)
+        .order("full_name", { ascending: true });
+
+      if (error) throw error;
+
+      cleaners = Array.isArray(data) ? data : [];
+
+      assignedCleanerInput.innerHTML = `
+        <option value="">Unassigned</option>
+        ${cleaners.map(cleaner => `
+          <option value="${escapeHtml(cleaner.id)}">
+            ${escapeHtml(cleaner.full_name || "Unnamed Cleaner")}
+          </option>
+        `).join("")}
+      `;
+    }
+
+    function getCleanerName(cleanerId) {
+      if (!cleanerId) return "Unassigned";
+      return cleaners.find(cleaner => cleaner.id === cleanerId)?.full_name || "Assigned Cleaner";
+    }
+
     async function loadTurnovers() {
       turnoversContent.innerHTML = `
         <div class="loading-state">
@@ -1138,6 +1178,7 @@
                 <th>Turnover Date</th>
                 <th>Cleaning Window</th>
                 <th>Checklist</th>
+                <th>Assigned Cleaner</th>
                 <th>Task Progress</th>
                 <th>Priority</th>
                 <th>Status</th>
@@ -1167,6 +1208,21 @@
                       <div class="record-subtitle">Ends ${escapeHtml(formatDateTime(turnover.scheduled_end))}</div>
                     </td>
                     <td>${escapeHtml(turnover.checklist_templates?.template_name || "No template")}</td>
+                    <td>
+                      <select
+                        class="form-control"
+                        data-action="assign-cleaner"
+                        data-turnover-id="${escapeHtml(turnover.id)}"
+                        style="min-width:170px; min-height:34px; padding:6px 9px;"
+                      >
+                        <option value="">Unassigned</option>
+                        ${cleaners.map(cleaner => `
+                          <option value="${escapeHtml(cleaner.id)}" ${turnover.assigned_user_id === cleaner.id ? "selected" : ""}>
+                            ${escapeHtml(cleaner.full_name || "Unnamed Cleaner")}
+                          </option>
+                        `).join("")}
+                      </select>
+                    </td>
                     <td>${completed} of ${tasks.length} completed</td>
                     <td>
                       <span class="priority-badge ${cssPriority(turnover.priority)}">
@@ -1214,6 +1270,12 @@
         });
       });
 
+      turnoversContent.querySelectorAll('[data-action="assign-cleaner"]').forEach(select => {
+        select.addEventListener("change", () => {
+          assignCleaner(select.dataset.turnoverId, select.value, select);
+        });
+      });
+
       turnoversContent.querySelectorAll('[data-action="cancel-turnover"]').forEach(button => {
         button.addEventListener("click", () => cancelTurnover(button.dataset.turnoverId, button));
       });
@@ -1229,6 +1291,7 @@
       const today = now.toISOString().slice(0, 10);
       turnoverDateInput.value = today;
       priorityInput.value = "normal";
+      assignedCleanerInput.value = "";
 
       turnoverDrawer.classList.add("open");
       drawerBackdrop.classList.add("open");
@@ -1322,7 +1385,8 @@
           guest_checkin_time: toIsoOrNull(guestCheckinInput.value),
           priority: priorityInput.value,
           same_day_turnover: sameDayInput.checked || priorityInput.value === "same_day",
-          status: "unassigned",
+          assigned_user_id: assignedCleanerInput.value || null,
+          status: assignedCleanerInput.value ? "assigned" : "unassigned",
           final_notes: notesInput.value.trim() || null,
           property_readiness_status: "not_started",
           owner_approval_status: "pending",
@@ -1359,6 +1423,43 @@
       }
     }
 
+    async function assignCleaner(turnoverId, cleanerId, select) {
+      const turnover = turnovers.find(item => item.id === turnoverId);
+      if (!turnover) return;
+
+      const previousCleanerId = turnover.assigned_user_id || "";
+      select.disabled = true;
+
+      try {
+        const nextStatus = cleanerId
+          ? (turnover.status === "unassigned" ? "assigned" : turnover.status)
+          : (["assigned", "accepted"].includes(turnover.status) ? "unassigned" : turnover.status);
+
+        const { error } = await db
+          .from("turnovers")
+          .update({
+            assigned_user_id: cleanerId || null,
+            status: nextStatus
+          })
+          .eq("id", turnoverId);
+
+        if (error) throw error;
+
+        turnover.assigned_user_id = cleanerId || null;
+        turnover.status = nextStatus;
+
+        showToast(cleanerId
+          ? `Turnover assigned to ${getCleanerName(cleanerId)}.`
+          : "Cleaner assignment removed.");
+
+        await loadTurnovers();
+      } catch (error) {
+        select.value = previousCleanerId;
+        select.disabled = false;
+        showToast(error.message || "The cleaner assignment could not be updated.", "error");
+      }
+    }
+
     async function cancelTurnover(turnoverId, button) {
       const turnover = turnovers.find(item => item.id === turnoverId);
       if (!turnover) return;
@@ -1389,6 +1490,7 @@
       try {
         await requireSession();
         await loadProperties();
+        await loadCleaners();
         await loadTurnovers();
       } catch (error) {
         console.error("Turnovers page failed:", error);
