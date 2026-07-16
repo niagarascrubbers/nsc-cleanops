@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Property | NSC CleanOps</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="panels.css">
+  <link rel="stylesheet" href="forms.css">
+  <link rel="stylesheet" href="tables.css">
+
+  <style>
+    :root {
+      --navy: #071f35;
+      --navy-light: #0b2f4f;
+      --blue: #2f8fca;
+      --blue-light: #eaf6fc;
+      --background: #f5f8fb;
+      --border: #dfe8ef;
+      --text: #17324d;
+      --muted: #6c7e8f;
+      --white: #ffffff;
+      --success: #1f8f64;
+      --success-light: #e9f8f1;
+      --danger: #c94747;
+      --shadow: 0 10px 30px rgba(18, 50, 77, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: "Poppins", sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 252px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 40;
+      width: 252px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--navy);
+      color: white;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 82px;
+      padding: 20px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #56b8e8, #2f8fca);
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      margin-top: 2px;
+      color: #a8c0d1;
+      font-size: 11px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 18px 14px;
+      overflow-y: auto;
+    }
+
+    .nav-label {
+      margin: 12px 12px 8px;
+      color: #7897ad;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      margin-bottom: 5px;
+      padding: 10px 13px;
+      color: #c9d8e3;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: white;
+      background: rgba(65, 163, 216, 0.19);
+    }
+
+    .nav-link.active {
+      box-shadow: inset 3px 0 0 #4eb4e6;
+    }
+
+    .nav-icon {
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .user-avatar {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--blue);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .user-name {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .user-role {
+      color: #8fa9bb;
+      font-size: 10px;
+    }
+
+    .main {
+      grid-column: 2;
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      padding: 0 30px;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .breadcrumb {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .breadcrumb a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .breadcrumb strong {
+      color: var(--text);
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      color: var(--text);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    .property-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    .property-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(25px, 3vw, 34px);
+    }
+
+    .property-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 28px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: var(--success-light);
+      color: var(--success);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .status-badge.inactive {
+      background: #fff0f0;
+      color: var(--danger);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 10px 17px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .button-primary {
+      color: white;
+      background: var(--navy-light);
+      box-shadow: 0 7px 16px rgba(11, 47, 79, 0.16);
+    }
+
+    .button-secondary {
+      color: var(--text);
+      background: white;
+      border-color: var(--border);
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 20px;
+      padding: 6px;
+      overflow-x: auto;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .tab-link {
+      flex: 0 0 auto;
+      min-height: 40px;
+      padding: 9px 15px;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tab-link.active {
+      color: white;
+      background: var(--navy-light);
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+    }
+
+    .card-description {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .detail-item {
+      min-width: 0;
+    }
+
+    .detail-label {
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .detail-value {
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-value a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .stats-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 54px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid #edf2f6;
+      border-radius: 11px;
+    }
+
+    .stat-name {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .stat-value {
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .loading-state,
+    .error-state {
+      padding: 80px 24px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 15px;
+      border: 3px solid #dcecf4;
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+
+    .state-title {
+      margin: 0 0 6px;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 17px;
+    }
+
+    .state-text {
+      max-width: 500px;
+      margin: 0 auto 20px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 1000px) {
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        display: block;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        grid-column: auto;
+      }
+
+      .page {
+        padding: 22px 17px;
+      }
+
+      .topbar {
+        padding: 0 18px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .property-header {
+        flex-direction: column;
+      }
+
+      .property-header .button {
+        width: 100%;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">NSC</div>
+
+        <div>
+          <p class="brand-title">NSC CleanOps</p>
+          <div class="brand-subtitle">Operations Management</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Workspace</div>
+
+        <a class="nav-link" href="manager-dashboard.html">
+          <span class="nav-icon">⌂</span>
+          Dashboard
+        </a>
+
+        <a class="nav-link active" href="properties.html">
+          <span class="nav-icon">▦</span>
+          Properties
+        </a>
+
+        <a class="nav-link" href="#">
+          <span class="nav-icon">□</span>
+          Turnovers
+        </a>
+
+        <a class="nav-link" href="#">
+          <span class="nav-icon">✓</span>
+          Assignments
+        </a>
+
+        <div class="nav-label">Operations</div>
+
+        <a class="nav-link" href="#">
+          <span class="nav-icon">≡</span>
+          Checklists
+        </a>
+
+        <a class="nav-link" href="#">
+          <span class="nav-icon">▤</span>
+          Inventory
+        </a>
+
+        <a class="nav-link" href="#">
+          <span class="nav-icon">◫</span>
+          Photos
+        </a>
+
+        <a class="nav-link" href="#">
+          <span class="nav-icon">!</span>
+          Issues
+        </a>
+
+        <a class="nav-link" href="#">
+          <span class="nav-icon">▥</span>
+          Reports
+        </a>
+
+        <div class="nav-label">System</div>
+
+        <a class="nav-link" href="#">
+          <span class="nav-icon">⚙</span>
+          Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">UP</div>
+
+          <div>
+            <div class="user-name">Uttam Preet</div>
+            <div class="user-role">Administrator</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <a href="properties.html">Properties</a>
+          /
+          <strong id="breadcrumbName">Property</strong>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-button" id="logoutButton" type="button" title="Sign out">
+            ↪
+          </button>
+        </div>
+      </header>
+
+      <div class="page" id="pageContent">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <h1 class="state-title">Loading property</h1>
+          <p class="state-text">
+            Retrieving property details from NSC CleanOps.
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    "use strict";
+
+    const pageContent = document.getElementById("pageContent");
+    const breadcrumbName = document.getElementById("breadcrumbName");
+    const logoutButton = document.getElementById("logoutButton");
+
+    const db = window.nscSupabase || window.supabaseClient;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatType(value) {
+      const labels = {
+        airbnb: "Airbnb / Short-Term Rental",
+        commercial: "Commercial",
+        office: "Office",
+        construction: "Construction",
+        industrial: "Industrial",
+        residential: "Residential",
+        other: "Other"
+      };
+
+      return labels[value] || value || "Not specified";
+    }
+
+    function displayValue(value, fallback = "Not entered") {
+      return value === null || value === undefined || value === ""
+        ? fallback
+        : escapeHtml(value);
+    }
+
+    function getPropertyId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    async function requireSession() {
+      const {
+        data: { session },
+        error
+      } = await db.auth.getSession();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!session) {
+        window.location.href = "login.html";
+        return false;
+      }
+
+      return true;
+    }
+
+    async function getCount(tableName, propertyId) {
+      const { count, error } = await db
+        .from(tableName)
+        .select("*", { count: "exact", head: true })
+        .eq("property_id", propertyId);
+
+      if (error) {
+        console.warn(`Could not count ${tableName}:`, error.message);
+        return 0;
+      }
+
+      return count || 0;
+    }
+
+    async function loadProperty() {
+      const propertyId = getPropertyId();
+
+      if (!propertyId) {
+        showError(
+          "Property not selected",
+          "No property ID was provided. Return to the Properties page and select a property."
+        );
+        return;
+      }
+
+      const authenticated = await requireSession();
+
+      if (!authenticated) {
+        return;
+      }
+
+      const { data: property, error } = await db
+        .from("properties")
+        .select(`
+          id,
+          property_name,
+          property_code,
+          property_type,
+          address,
+          city,
+          province,
+          postal_code,
+          latitude,
+          longitude,
+          gps_radius,
+          owner_name,
+          owner_email,
+          owner_phone,
+          listing_url,
+          active,
+          created_at,
+          updated_at
+        `)
+        .eq("id", propertyId)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      const [
+        roomCount,
+        inventoryCount,
+        turnoverCount,
+        photoCount,
+        issueCount
+      ] = await Promise.all([
+        getCount("rooms", propertyId),
+        getCount("inventory_items", propertyId),
+        getCount("turnovers", propertyId),
+        getCount("photos", propertyId),
+        getCount("issues", propertyId)
+      ]);
+
+      renderProperty(property, {
+        roomCount,
+        inventoryCount,
+        turnoverCount,
+        photoCount,
+        issueCount
+      });
+    }
+
+    function renderProperty(property, counts) {
+      const location = [
+        property.city,
+        property.province,
+        property.postal_code
+      ].filter(Boolean).join(", ");
+
+      breadcrumbName.textContent =
+        property.property_name || "Property";
+
+      document.title =
+        `${property.property_name || "Property"} | NSC CleanOps`;
+
+      pageContent.innerHTML = `
+        <section class="property-header">
+          <div>
+            <h1 class="property-title">
+              ${escapeHtml(property.property_name || "Unnamed Property")}
+            </h1>
+
+            <div class="property-meta">
+              <span>${escapeHtml(property.property_code || "No code")}</span>
+              <span>${escapeHtml(formatType(property.property_type))}</span>
+
+              <span class="status-badge ${property.active === false ? "inactive" : ""}">
+                <span class="status-dot"></span>
+                ${property.active === false ? "Inactive" : "Active"}
+              </span>
+            </div>
+          </div>
+
+          <button
+            class="button button-secondary"
+            type="button"
+            onclick="window.location.href='properties.html'"
+          >
+            ← Back to Properties
+          </button>
+        </section>
+
+        <nav class="tab-bar">
+          <button class="tab-link active" type="button">Overview</button>
+          <button class="tab-link" type="button" data-tab="rooms">Rooms</button>
+          <button class="tab-link" type="button" data-tab="inventory">Inventory</button>
+          <button class="tab-link" type="button" data-tab="photos">Photos</button>
+          <button class="tab-link" type="button" data-tab="turnovers">Turnovers</button>
+          <button class="tab-link" type="button" data-tab="checklists">Checklists</button>
+          <button class="tab-link" type="button" data-tab="reports">Reports</button>
+          <button class="tab-link" type="button" data-tab="issues">Issues</button>
+          <button class="tab-link" type="button" data-tab="settings">Settings</button>
+        </nav>
+
+        <section class="overview-grid">
+          <article class="card">
+            <div class="card-header">
+              <h2 class="card-title">Property Overview</h2>
+              <p class="card-description">
+                Core location, access and client information.
+              </p>
+            </div>
+
+            <div class="card-body">
+              <div class="details-grid">
+                <div class="detail-item">
+                  <div class="detail-label">Street Address</div>
+                  <div class="detail-value">
+                    ${displayValue(property.address)}
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">City and Province</div>
+                  <div class="detail-value">
+                    ${displayValue(location)}
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Property Type</div>
+                  <div class="detail-value">
+                    ${escapeHtml(formatType(property.property_type))}
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">GPS Check-In Radius</div>
+                  <div class="detail-value">
+                    ${displayValue(property.gps_radius, "150")} metres
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Owner Name</div>
+                  <div class="detail-value">
+                    ${displayValue(property.owner_name)}
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Owner Phone</div>
+                  <div class="detail-value">
+                    ${displayValue(property.owner_phone)}
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Owner Email</div>
+                  <div class="detail-value">
+                    ${property.owner_email
+                      ? `<a href="mailto:${escapeHtml(property.owner_email)}">${escapeHtml(property.owner_email)}</a>`
+                      : "Not entered"
+                    }
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Listing</div>
+                  <div class="detail-value">
+                    ${property.listing_url
+                      ? `<a href="${escapeHtml(property.listing_url)}" target="_blank" rel="noopener">Open property listing ↗</a>`
+                      : "No listing URL entered"
+                    }
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Latitude</div>
+                  <div class="detail-value">
+                    ${displayValue(property.latitude)}
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Longitude</div>
+                  <div class="detail-value">
+                    ${displayValue(property.longitude)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <aside class="card">
+            <div class="card-header">
+              <h2 class="card-title">Operations Summary</h2>
+              <p class="card-description">
+                Records currently connected to this property.
+              </p>
+            </div>
+
+            <div class="card-body">
+              <div class="stats-list">
+                <div class="stat-row">
+                  <span class="stat-name">Rooms</span>
+                  <strong class="stat-value">${counts.roomCount}</strong>
+                </div>
+
+                <div class="stat-row">
+                  <span class="stat-name">Inventory Items</span>
+                  <strong class="stat-value">${counts.inventoryCount}</strong>
+                </div>
+
+                <div class="stat-row">
+                  <span class="stat-name">Turnovers</span>
+                  <strong class="stat-value">${counts.turnoverCount}</strong>
+                </div>
+
+                <div class="stat-row">
+                  <span class="stat-name">Photos</span>
+                  <strong class="stat-value">${counts.photoCount}</strong>
+                </div>
+
+                <div class="stat-row">
+                  <span class="stat-name">Open Issues</span>
+                  <strong class="stat-value">${counts.issueCount}</strong>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </section>
+      `;
+
+      registerTabPlaceholders();
+    }
+
+    function registerTabPlaceholders() {
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const tabName = button.dataset.tab;
+
+          alert(
+            `${tabName.charAt(0).toUpperCase() + tabName.slice(1)} will be built in the next development step.`
+          );
+        });
+      });
+    }
+
+    function showError(title, message) {
+      pageContent.innerHTML = `
+        <div class="error-state">
+          <h1 class="state-title">${escapeHtml(title)}</h1>
+
+          <p class="state-text">
+            ${escapeHtml(message)}
+          </p>
+
+          <button
+            class="button button-primary"
+            type="button"
+            onclick="window.location.href='properties.html'"
+          >
+            Return to Properties
+          </button>
+        </div>
+      `;
+    }
+
+    async function logout() {
+      try {
+        await db.auth.signOut();
+      } finally {
+        window.location.href = "login.html";
+      }
+    }
+
+    logoutButton.addEventListener("click", logout);
+
+    loadProperty().catch((error) => {
+      console.error("Property page failed:", error);
+
+      showError(
+        "Property could not be loaded",
+        error.message || "An unexpected error occurred."
+      );
+    });
+  </script>
+</body>
+</html>
