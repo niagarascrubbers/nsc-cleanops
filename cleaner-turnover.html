@@ -993,7 +993,7 @@
     let roomGroups = [];
     let inventoryItems = [];
     let inventoryCounts = [];
-    let activeRoomKey = null;
+    let openRoomKeys = new Set();
     let remainingOnly = false;
 
     function escapeHtml(value) {
@@ -1432,11 +1432,12 @@
         isInventory: true
       });
 
-      if (!activeRoomKey && roomGroups.length) {
+      if (!openRoomKeys.size && roomGroups.length) {
         const firstIncomplete = roomGroups.find(group =>
-          group.items.some(task => !["completed", "not_applicable"].includes(task.task_status))
+          getIncompleteTasks(group).length
         );
-        activeRoomKey = (firstIncomplete || roomGroups[0]).key;
+
+        openRoomKeys.add((firstIncomplete || roomGroups[0]).key);
       }
     }
 
@@ -1613,7 +1614,7 @@
     function renderRoomCard(group) {
       const progress = getRoomProgress(group);
       const visibleTasks = remainingOnly ? getIncompleteTasks(group) : group.items;
-      const isOpen = activeRoomKey === group.key;
+      const isOpen = openRoomKeys.has(group.key);
       const complete = progress.total > 0 && progress.completed === progress.total;
 
       return `
@@ -1723,13 +1724,31 @@
             <div class="room-meta">Open one room at a time to complete the turnover.</div>
           </div>
 
-          <button
-            class="button button-secondary remaining-toggle ${remainingOnly ? "active" : ""}"
-            id="remainingToggle"
-            type="button"
-          >
-            ${remainingOnly ? "Show All Tasks" : "Show Remaining Tasks"}
-          </button>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button
+              class="button button-secondary"
+              id="openAllRoomsButton"
+              type="button"
+            >
+              Open All
+            </button>
+
+            <button
+              class="button button-secondary"
+              id="collapseAllRoomsButton"
+              type="button"
+            >
+              Collapse All
+            </button>
+
+            <button
+              class="button button-secondary remaining-toggle ${remainingOnly ? "active" : ""}"
+              id="remainingToggle"
+              type="button"
+            >
+              ${remainingOnly ? "Show All Tasks" : "Show Remaining Tasks"}
+            </button>
+          </div>
         </div>
 
         ${remainingOnly ? renderRemainingPanel() : ""}
@@ -1759,10 +1778,17 @@
         remainingOnly = !remainingOnly;
 
         if (remainingOnly) {
-          const activeGroup = roomGroups.find(group => group.key === activeRoomKey);
-          if (!activeGroup || !getIncompleteTasks(activeGroup).length) {
+          const hasOpenRemainingRoom = roomGroups.some(group =>
+            openRoomKeys.has(group.key) && getIncompleteTasks(group).length
+          );
+
+          if (!hasOpenRemainingRoom) {
             const firstRemaining = roomGroups.find(group => getIncompleteTasks(group).length);
-            activeRoomKey = firstRemaining?.key || roomGroups[0]?.key || null;
+            openRoomKeys.clear();
+
+            if (firstRemaining) {
+              openRoomKeys.add(firstRemaining.key);
+            }
           }
         }
 
@@ -1772,9 +1798,25 @@
       pageContent.querySelectorAll('[data-action="toggle-room"]').forEach(button => {
         button.addEventListener("click", () => {
           const roomKey = button.dataset.roomKey;
-          activeRoomKey = activeRoomKey === roomKey ? null : roomKey;
+
+          if (openRoomKeys.has(roomKey)) {
+            openRoomKeys.delete(roomKey);
+          } else {
+            openRoomKeys.add(roomKey);
+          }
+
           renderPage();
         });
+      });
+
+      document.getElementById("openAllRoomsButton")?.addEventListener("click", () => {
+        openRoomKeys = new Set(roomGroups.map(group => group.key));
+        renderPage();
+      });
+
+      document.getElementById("collapseAllRoomsButton")?.addEventListener("click", () => {
+        openRoomKeys.clear();
+        renderPage();
       });
 
       pageContent.querySelectorAll('[data-role="inventory-status"]').forEach(input => {
@@ -1791,7 +1833,7 @@
 
       pageContent.querySelectorAll("[data-open-room]").forEach(button => {
         button.addEventListener("click", () => {
-          activeRoomKey = button.dataset.openRoom;
+          openRoomKeys.add(button.dataset.openRoom);
           const taskId = button.dataset.focusTask;
           renderPage();
 
@@ -2211,9 +2253,11 @@
             !group.isInventory && group.items.some(task => task.id === firstMissing.id)
           );
 
-          if (firstGroup) activeRoomKey = firstGroup.key;
+          if (firstGroup) {
+            openRoomKeys.add(firstGroup.key);
+          }
         } else if (incompleteInventory.length) {
-          activeRoomKey = "__inventory__";
+          openRoomKeys.add("__inventory__");
         }
 
         renderPage();
