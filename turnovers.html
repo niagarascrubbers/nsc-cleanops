@@ -1366,6 +1366,224 @@
       return value ? new Date(value).toISOString() : null;
     }
 
+
+    function normalizeChecklistText(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+    }
+
+    function getPhotoRequirement(task) {
+      const roomName = normalizeChecklistText(
+        task.rooms?.room_name || task.section_name || ""
+      );
+
+      const taskText = normalizeChecklistText(task.task_text);
+      const combined = `${roomName} ${taskText}`;
+
+      const rules = [
+        {
+          matches: ["bed stripped", "strip bed", "remove bedding"],
+          count: 1,
+          instruction: "Upload a clear photo showing the bed fully stripped before new linens are installed."
+        },
+        {
+          matches: ["under bed", "beneath bed"],
+          count: 1,
+          instruction: "Upload a clear photo showing the cleaned area under the bed."
+        },
+        {
+          matches: ["bed made", "make bed", "finished bed"],
+          count: 1,
+          instruction: "Upload a final photo showing the bed fully made and guest-ready."
+        },
+        {
+          matches: ["microwave"],
+          count: 1,
+          instruction: "Upload a clear photo of the microwave interior after cleaning."
+        },
+        {
+          matches: ["fridge", "refrigerator"],
+          count: 1,
+          instruction: "Upload a clear photo of the refrigerator interior after cleaning."
+        },
+        {
+          matches: ["coffee maker", "coffee machine"],
+          count: 1,
+          instruction: "Upload a clear photo of the cleaned coffee maker and surrounding area."
+        },
+        {
+          matches: ["toaster", "crumb tray"],
+          count: 1,
+          instruction: "Upload a clear photo of the toaster crumb tray after cleaning."
+        },
+        {
+          matches: ["kettle"],
+          count: 1,
+          instruction: "Upload a clear photo of the cleaned kettle and base."
+        },
+        {
+          matches: ["oven"],
+          count: 1,
+          instruction: "Upload a clear photo of the oven interior after cleaning."
+        },
+        {
+          matches: ["stove", "cooktop", "range top"],
+          count: 1,
+          instruction: "Upload a clear photo of the cleaned stove or cooktop."
+        },
+        {
+          roomMatches: ["bathroom", "washroom"],
+          matches: ["final", "overview", "complete bathroom"],
+          count: 1,
+          instruction: "Upload a final overview photo showing the bathroom guest-ready."
+        },
+        {
+          roomMatches: ["bathroom", "washroom"],
+          matches: ["shower", "tub", "bathtub"],
+          count: 1,
+          instruction: "Upload a clear photo of the cleaned shower or bathtub."
+        },
+        {
+          roomMatches: ["bathroom", "washroom"],
+          matches: ["toilet"],
+          count: 1,
+          instruction: "Upload a clear photo of the cleaned toilet and surrounding floor."
+        },
+        {
+          roomMatches: ["bathroom", "washroom"],
+          matches: ["vanity", "sink", "mirror"],
+          count: 1,
+          instruction: "Upload a clear photo of the cleaned vanity, sink, and mirror."
+        },
+        {
+          roomMatches: ["living room", "lounge"],
+          matches: ["final", "overview", "complete"],
+          count: 1,
+          instruction: "Upload a final overview photo showing the living room guest-ready."
+        },
+        {
+          roomMatches: ["exterior", "outside"],
+          matches: ["front", "entrance"],
+          count: 1,
+          instruction: "Upload a clear photo of the front exterior and entrance."
+        },
+        {
+          roomMatches: ["exterior", "outside"],
+          matches: ["back", "rear", "patio"],
+          count: 1,
+          instruction: "Upload a clear photo of the rear exterior or patio area."
+        },
+        {
+          roomMatches: ["exterior", "outside"],
+          matches: ["bbq", "barbecue", "grill"],
+          count: 1,
+          instruction: "Upload a clear photo of the cleaned BBQ or grill area."
+        },
+        {
+          roomMatches: ["exterior", "outside"],
+          matches: ["garbage", "recycling", "waste"],
+          count: 1,
+          instruction: "Upload a clear photo of the garbage and recycling area."
+        },
+        {
+          matches: ["welcome binder"],
+          count: 1,
+          instruction: "Upload a photo showing the welcome binder placed correctly."
+        },
+        {
+          matches: ["welcome gift"],
+          count: 1,
+          instruction: "Upload a photo showing the welcome gift placed correctly."
+        },
+        {
+          roomMatches: ["entrance", "entry"],
+          matches: ["final", "overview", "guest ready", "guest-ready"],
+          count: 1,
+          instruction: "Upload a final photo showing the entrance guest-ready."
+        }
+      ];
+
+      for (const rule of rules) {
+        const roomMatches = !rule.roomMatches ||
+          rule.roomMatches.some(value => roomName.includes(value));
+
+        const textMatches = rule.matches.some(value => combined.includes(value));
+
+        if (roomMatches && textMatches) {
+          return {
+            requiredPhotoCount: rule.count,
+            instruction: rule.instruction
+          };
+        }
+      }
+
+      return null;
+    }
+
+    async function configureGeneratedPhotoRequirements(turnoverId) {
+      const { data: generatedTasks, error: loadError } = await db
+        .from("turnover_tasks")
+        .select(`
+          id,
+          room_id,
+          section_name,
+          task_text,
+          cleaner_instructions,
+          required_photo_count,
+          photo_required,
+          rooms (
+            room_name,
+            room_code
+          )
+        `)
+        .eq("turnover_id", turnoverId);
+
+      if (loadError) throw loadError;
+
+      const updates = [];
+
+      for (const task of generatedTasks || []) {
+        const requirement = getPhotoRequirement(task);
+        if (!requirement) continue;
+
+        const existingInstructions = String(task.cleaner_instructions || "").trim();
+        const damageInstruction =
+          "If you discover damage, missing property, stains, breakage, or a maintenance concern, stop and upload a clear close-up photo plus a wider location photo before continuing.";
+
+        const instructions = [
+          existingInstructions,
+          requirement.instruction,
+          damageInstruction
+        ].filter(Boolean).join(" ");
+
+        updates.push(
+          db
+            .from("turnover_tasks")
+            .update({
+              photo_required: true,
+              required_photo_count: Math.max(
+                Number(task.required_photo_count) || 0,
+                requirement.requiredPhotoCount
+              ),
+              cleaner_instructions: instructions,
+              updated_at: new Date().toISOString()
+            })
+            .eq("id", task.id)
+            .eq("turnover_id", turnoverId)
+        );
+      }
+
+      if (!updates.length) return 0;
+
+      const results = await Promise.all(updates);
+      const failed = results.find(result => result.error);
+
+      if (failed?.error) throw failed.error;
+      return updates.length;
+    }
+
     async function saveTurnover(event) {
       event.preventDefault();
       clearFormError();
@@ -1428,9 +1646,14 @@
           throw new Error(`The turnover was not created because its checklist tasks could not be generated. ${taskError.message}`);
         }
 
+        const configuredPhotoTasks =
+          await configureGeneratedPhotoRequirements(turnover.id);
+
         closeDrawer();
         await loadTurnovers();
-        showToast(`Turnover created successfully with ${taskCount || 0} checklist tasks.`);
+        showToast(
+          `Turnover created with ${taskCount || 0} checklist tasks and ${configuredPhotoTasks} mandatory photo requirement${configuredPhotoTasks === 1 ? "" : "s"}.`
+        );
       } catch (error) {
         console.error("Turnover creation failed:", error);
         showFormError(error.message || "The turnover could not be created.");
