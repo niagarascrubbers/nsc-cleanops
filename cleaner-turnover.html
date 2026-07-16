@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnover Checklist | NSC CleanOps</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #071f35;
+      --navy-light: #0b2f4f;
+      --blue: #2f8fca;
+      --blue-hover: #257daf;
+      --blue-light: #eaf6fc;
+      --background: #f5f8fb;
+      --border: #dfe8ef;
+      --text: #17324d;
+      --muted: #6c7e8f;
+      --success: #1f8f64;
+      --success-light: #e9f8f1;
+      --warning: #aa7214;
+      --warning-light: #fff8e7;
+      --danger: #c94747;
+      --danger-light: #fff0f0;
+      --shadow: 0 12px 32px rgba(18, 50, 77, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: "Poppins", sans-serif;
+    }
+
+    button, input, textarea { font: inherit; }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--navy);
+      color: white;
+      box-shadow: 0 8px 24px rgba(7, 31, 53, 0.16);
+    }
+
+    .header-inner {
+      width: min(1120px, calc(100% - 32px));
+      min-height: 72px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--blue);
+      font-family: "Montserrat", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      margin-top: 2px;
+      color: #a8c0d1;
+      font-size: 10px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .header-button {
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 9px;
+      background: rgba(255,255,255,.07);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 48px;
+    }
+
+    .overview-card,
+    .room-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .overview-card {
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .overview-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .property-name {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
+    }
+
+    .property-location {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--warning-light);
+      color: var(--warning);
+      font-size: 9px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .overview-item {
+      padding: 12px;
+      border: 1px solid #edf2f6;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .overview-label {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    .overview-value {
+      margin-top: 5px;
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .progress-card {
+      margin-top: 17px;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .progress-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8eff4;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 999px;
+      transition: width .2s ease;
+    }
+
+    .room-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .room-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .room-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+    }
+
+    .room-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .task-list {
+      display: grid;
+    }
+
+    .task-item {
+      display: grid;
+      grid-template-columns: 28px minmax(0,1fr) auto;
+      gap: 12px;
+      align-items: start;
+      padding: 15px 18px;
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .task-item:last-child {
+      border-bottom: 0;
+    }
+
+    .task-number {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--blue-light);
+      color: #2078a9;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .task-title {
+      color: var(--navy-light);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .task-instructions {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .task-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 7px;
+    }
+
+    .task-badge {
+      min-height: 22px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #f1f5f8;
+      color: #536b7e;
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .task-badge.required {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .task-badge.complete {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .task-controls {
+      display: grid;
+      gap: 8px;
+      min-width: 150px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: .58;
+    }
+
+    .button-primary {
+      color: white;
+      background: var(--navy-light);
+    }
+
+    .button-primary:hover:not(:disabled) {
+      background: var(--navy);
+    }
+
+    .button-secondary {
+      color: var(--text);
+      background: white;
+      border-color: var(--border);
+    }
+
+    .button-success {
+      color: var(--success);
+      background: var(--success-light);
+      border-color: #c9eadc;
+    }
+
+    .button-danger {
+      color: var(--danger);
+      background: white;
+      border-color: #efcaca;
+    }
+
+    .notes-box {
+      margin-top: 9px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .notes-box textarea {
+      width: 100%;
+      min-height: 72px;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      resize: vertical;
+      color: var(--text);
+      font-size: 10px;
+      outline: none;
+    }
+
+    .notes-box textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47,143,202,.12);
+    }
+
+    .submit-bar {
+      position: sticky;
+      bottom: 0;
+      z-index: 15;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-top: 20px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,.97);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 16px 36px rgba(7,31,53,.16);
+      backdrop-filter: blur(10px);
+    }
+
+    .submit-text {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .loading,
+    .error {
+      padding: 70px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 14px;
+      border: 3px solid #dcecf4;
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .state-title {
+      margin: 0 0 7px;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+    }
+
+    .state-text {
+      max-width: 520px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 60;
+      width: min(360px, calc(100vw - 36px));
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--success);
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 20px 50px rgba(7,31,53,.2);
+      color: var(--text);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .toast.error {
+      border-left-color: var(--danger);
+    }
+
+    @media (max-width: 800px) {
+      .overview-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+
+      .task-item {
+        grid-template-columns: 28px minmax(0,1fr);
+      }
+
+      .task-controls {
+        grid-column: 2;
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+
+      .submit-bar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .submit-bar .button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .header-inner,
+      .page {
+        width: min(100% - 22px, 1120px);
+      }
+
+      .overview-header {
+        flex-direction: column;
+      }
+
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .task-item {
+        grid-template-columns: 1fr;
+      }
+
+      .task-number,
+      .task-controls {
+        grid-column: 1;
+      }
+
+      .task-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-subtitle {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">NSC</div>
+        <div>
+          <p class="brand-title">NSC CleanOps</p>
+          <div class="brand-subtitle">Cleaner Turnover Checklist</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="header-button" id="backButton" type="button">Assignments</button>
+        <button class="header-button" id="logoutButton" type="button">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page" id="pageContent">
+    <div class="loading">
+      <div class="spinner"></div>
+      <h1 class="state-title">Loading turnover checklist</h1>
+      <p class="state-text">Retrieving property details and assigned checklist tasks.</p>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    "use strict";
+
+    const db = window.nscSupabase || window.supabaseClient;
+    const pageContent = document.getElementById("pageContent");
+
+    let currentProfile = null;
+    let turnover = null;
+    let tasks = [];
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function getTurnoverId() {
+      return new URLSearchParams(window.location.search).get("id");
+    }
+
+    function showToast(message, type = "success") {
+      document.querySelector(".toast")?.remove();
+
+      const toast = document.createElement("div");
+      toast.className = `toast ${type === "error" ? "error" : ""}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      window.setTimeout(() => toast.remove(), 4300);
+    }
+
+    function formatDate(value) {
+      if (!value) return "Not scheduled";
+
+      return new Intl.DateTimeFormat("en-CA", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      }).format(new Date(`${value}T12:00:00`));
+    }
+
+    function formatTime(value) {
+      if (!value) return "Not entered";
+
+      return new Intl.DateTimeFormat("en-CA", {
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(new Date(value));
+    }
+
+    async function requireSession() {
+      if (!db) throw new Error("Supabase client is unavailable.");
+
+      const {
+        data: { session },
+        error: sessionError
+      } = await db.auth.getSession();
+
+      if (sessionError) throw sessionError;
+
+      if (!session) {
+        window.location.href = "login.html";
+        return false;
+      }
+
+      const { data: profile, error: profileError } = await db
+        .from("users")
+        .select("id, full_name, role, active")
+        .eq("auth_user_id", session.user.id)
+        .single();
+
+      if (profileError) throw profileError;
+      if (!profile?.active) throw new Error("This user account is inactive.");
+
+      currentProfile = profile;
+      return true;
+    }
+
+    async function loadTurnover() {
+      const turnoverId = getTurnoverId();
+
+      if (!turnoverId) {
+        throw new Error("No turnover was selected.");
+      }
+
+      const { data, error } = await db
+        .from("turnovers")
+        .select(`
+          id,
+          assigned_user_id,
+          turnover_date,
+          scheduled_start,
+          scheduled_end,
+          guest_checkout_time,
+          guest_checkin_time,
+          status,
+          priority,
+          final_notes,
+          properties (
+            property_name,
+            property_code,
+            address,
+            city,
+            province
+          )
+        `)
+        .eq("id", turnoverId)
+        .single();
+
+      if (error) throw error;
+
+      if (data.assigned_user_id !== currentProfile.id && !["admin", "manager"].includes(currentProfile.role)) {
+        throw new Error("You are not assigned to this turnover.");
+      }
+
+      turnover = data;
+    }
+
+    async function loadTasks() {
+      const { data, error } = await db
+        .from("turnover_tasks")
+        .select(`
+          id,
+          turnover_id,
+          room_id,
+          section_name,
+          task_text,
+          task_code,
+          required_photo_count,
+          task_status,
+          cleaner_note,
+          is_required,
+          photo_required,
+          notes_required,
+          task_type,
+          category,
+          cleaner_instructions,
+          estimated_minutes,
+          required_supplies,
+          sort_order,
+          rooms (
+            room_name,
+            room_code
+          )
+        `)
+        .eq("turnover_id", turnover.id)
+        .order("sort_order", { ascending: true })
+        .order("task_text", { ascending: true });
+
+      if (error) throw error;
+      tasks = Array.isArray(data) ? data : [];
+    }
+
+    function getTaskProgress() {
+      const completed = tasks.filter(task =>
+        ["completed", "not_applicable"].includes(task.task_status)
+      ).length;
+
+      return {
+        completed,
+        total: tasks.length,
+        percent: tasks.length ? Math.round((completed / tasks.length) * 100) : 0
+      };
+    }
+
+    function renderPage() {
+      const location = [
+        turnover.properties?.address,
+        turnover.properties?.city,
+        turnover.properties?.province
+      ].filter(Boolean).join(", ");
+
+      const grouped = new Map();
+
+      tasks.forEach(task => {
+        const key = task.room_id || task.section_name || "general";
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            roomName: task.rooms?.room_name || task.section_name || "General Tasks",
+            items: []
+          });
+        }
+        grouped.get(key).items.push(task);
+      });
+
+      const progress = getTaskProgress();
+
+      pageContent.innerHTML = `
+        <section class="overview-card">
+          <div class="overview-header">
+            <div>
+              <h1 class="property-name">${escapeHtml(turnover.properties?.property_name || "Assigned Property")}</h1>
+              <div class="property-location">${escapeHtml(location || "Address not entered")}</div>
+            </div>
+
+            <span class="status-badge">${escapeHtml(turnover.status.replaceAll("_", " "))}</span>
+          </div>
+
+          <div class="overview-grid">
+            <div class="overview-item">
+              <div class="overview-label">Turnover Date</div>
+              <div class="overview-value">${escapeHtml(formatDate(turnover.turnover_date))}</div>
+            </div>
+
+            <div class="overview-item">
+              <div class="overview-label">Scheduled Start</div>
+              <div class="overview-value">${escapeHtml(formatTime(turnover.scheduled_start))}</div>
+            </div>
+
+            <div class="overview-item">
+              <div class="overview-label">Scheduled End</div>
+              <div class="overview-value">${escapeHtml(formatTime(turnover.scheduled_end))}</div>
+            </div>
+
+            <div class="overview-item">
+              <div class="overview-label">Guest Check-In</div>
+              <div class="overview-value">${escapeHtml(formatTime(turnover.guest_checkin_time))}</div>
+            </div>
+          </div>
+
+          <div class="progress-card">
+            <div class="progress-row">
+              <span>Checklist progress</span>
+              <strong id="progressText">${progress.completed} of ${progress.total} tasks completed</strong>
+            </div>
+
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill" style="width:${progress.percent}%"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="room-list">
+          ${Array.from(grouped.values()).map(group => `
+            <article class="room-card">
+              <div class="room-header">
+                <h2 class="room-title">${escapeHtml(group.roomName)}</h2>
+                <div class="room-meta">${group.items.length} checklist task${group.items.length === 1 ? "" : "s"}</div>
+              </div>
+
+              <div class="task-list">
+                ${group.items.map((task, index) => renderTask(task, index + 1)).join("")}
+              </div>
+            </article>
+          `).join("")}
+        </section>
+
+        <div class="submit-bar">
+          <div class="submit-text">
+            Complete every mandatory task before submitting this turnover for manager review.
+          </div>
+
+          <button class="button button-primary" id="submitTurnoverButton" type="button">
+            Submit for Review
+          </button>
+        </div>
+      `;
+
+      registerTaskEvents();
+      document.getElementById("submitTurnoverButton").addEventListener("click", submitTurnover);
+    }
+
+    function renderTask(task, number) {
+      const isComplete = task.task_status === "completed";
+      const isNA = task.task_status === "not_applicable";
+      const locked = turnover.status === "review_required" || turnover.status === "completed";
+
+      return `
+        <div class="task-item" data-task-id="${escapeHtml(task.id)}">
+          <div class="task-number">${number}</div>
+
+          <div>
+            <div class="task-title">${escapeHtml(task.task_text)}</div>
+
+            ${task.cleaner_instructions ? `
+              <div class="task-instructions">${escapeHtml(task.cleaner_instructions)}</div>
+            ` : ""}
+
+            <div class="task-badges">
+              ${task.is_required ? `<span class="task-badge required">Mandatory Task</span>` : ""}
+              ${task.photo_required || Number(task.required_photo_count) > 0
+                ? `<span class="task-badge required">Required Photo</span>` : ""}
+              ${task.notes_required ? `<span class="task-badge required">Required Note</span>` : ""}
+              ${task.estimated_minutes ? `<span class="task-badge">${escapeHtml(task.estimated_minutes)} minutes</span>` : ""}
+              ${isComplete ? `<span class="task-badge complete">Completed</span>` : ""}
+              ${isNA ? `<span class="task-badge">Not Applicable</span>` : ""}
+            </div>
+
+            <div class="notes-box">
+              <textarea
+                data-role="note"
+                placeholder="Add a cleaner note for this task."
+                ${locked ? "disabled" : ""}
+              >${escapeHtml(task.cleaner_note || "")}</textarea>
+            </div>
+          </div>
+
+          <div class="task-controls">
+            <button
+              class="button ${isComplete ? "button-success" : "button-primary"}"
+              type="button"
+              data-action="complete"
+              ${locked ? "disabled" : ""}
+            >
+              ${isComplete ? "Completed" : "Mark Complete"}
+            </button>
+
+            <button
+              class="button button-secondary"
+              type="button"
+              data-action="save-note"
+              ${locked ? "disabled" : ""}
+            >
+              Save Note
+            </button>
+
+            <button
+              class="button button-danger"
+              type="button"
+              data-action="not-applicable"
+              ${task.is_required || locked ? "disabled" : ""}
+            >
+              Not Applicable
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function registerTaskEvents() {
+      pageContent.querySelectorAll("[data-task-id]").forEach(taskElement => {
+        const taskId = taskElement.dataset.taskId;
+
+        taskElement.querySelector('[data-action="complete"]')
+          .addEventListener("click", event => completeTask(taskId, taskElement, event.currentTarget));
+
+        taskElement.querySelector('[data-action="save-note"]')
+          .addEventListener("click", event => saveTaskNote(taskId, taskElement, event.currentTarget));
+
+        taskElement.querySelector('[data-action="not-applicable"]')
+          .addEventListener("click", event => markNotApplicable(taskId, event.currentTarget));
+      });
+    }
+
+    async function saveTaskNote(taskId, taskElement, button) {
+      const note = taskElement.querySelector('[data-role="note"]').value.trim();
+
+      button.disabled = true;
+      button.textContent = "Saving Note";
+
+      try {
+        const { error } = await db
+          .from("turnover_tasks")
+          .update({
+            cleaner_note: note || null,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", taskId)
+          .eq("turnover_id", turnover.id);
+
+        if (error) throw error;
+
+        const task = tasks.find(item => item.id === taskId);
+        if (task) task.cleaner_note = note || null;
+
+        showToast("The task note has been saved.");
+      } catch (error) {
+        showToast(error.message || "The note could not be saved.", "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Save Note";
+      }
+    }
+
+    async function completeTask(taskId, taskElement, button) {
+      const task = tasks.find(item => item.id === taskId);
+      if (!task) return;
+
+      const note = taskElement.querySelector('[data-role="note"]').value.trim();
+
+      if (task.notes_required && !note) {
+        showToast("A cleaner note is required before this task can be completed.", "error");
+        return;
+      }
+
+      if (task.photo_required || Number(task.required_photo_count) > 0) {
+        showToast("Photo upload will be connected in the next step. This task cannot be completed until the required photo is uploaded.", "error");
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Saving";
+
+      try {
+        const { error } = await db
+          .from("turnover_tasks")
+          .update({
+            task_status: "completed",
+            cleaner_note: note || null,
+            completed_by: currentProfile.id,
+            completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", taskId)
+          .eq("turnover_id", turnover.id);
+
+        if (error) throw error;
+
+        task.task_status = "completed";
+        task.cleaner_note = note || null;
+
+        renderPage();
+        showToast("The task has been marked complete.");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Mark Complete";
+        showToast(error.message || "The task could not be completed.", "error");
+      }
+    }
+
+    async function markNotApplicable(taskId, button) {
+      const task = tasks.find(item => item.id === taskId);
+      if (!task || task.is_required) return;
+
+      button.disabled = true;
+      button.textContent = "Saving";
+
+      try {
+        const { error } = await db
+          .from("turnover_tasks")
+          .update({
+            task_status: "not_applicable",
+            completed_by: currentProfile.id,
+            completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", taskId)
+          .eq("turnover_id", turnover.id);
+
+        if (error) throw error;
+
+        task.task_status = "not_applicable";
+        renderPage();
+        showToast("The task has been marked not applicable.");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Not Applicable";
+        showToast(error.message || "The task could not be updated.", "error");
+      }
+    }
+
+    async function submitTurnover() {
+      const incompleteRequired = tasks.filter(task =>
+        task.is_required && !["completed", "not_applicable"].includes(task.task_status)
+      );
+
+      if (incompleteRequired.length) {
+        showToast(`${incompleteRequired.length} mandatory task${incompleteRequired.length === 1 ? " remains" : "s remain"} incomplete.`, "error");
+        return;
+      }
+
+      const button = document.getElementById("submitTurnoverButton");
+      button.disabled = true;
+      button.textContent = "Submitting";
+
+      try {
+        const { error } = await db
+          .from("turnovers")
+          .update({
+            status: "review_required",
+            property_readiness_status: "ready_for_review"
+          })
+          .eq("id", turnover.id);
+
+        if (error) throw error;
+
+        turnover.status = "review_required";
+        renderPage();
+        showToast("The turnover has been submitted for manager review.");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Submit for Review";
+        showToast(error.message || "The turnover could not be submitted.", "error");
+      }
+    }
+
+    document.getElementById("backButton").addEventListener("click", () => {
+      window.location.href = "cleaner-dashboard.html";
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      try {
+        await db.auth.signOut();
+      } finally {
+        window.location.href = "login.html";
+      }
+    });
+
+    async function initialize() {
+      try {
+        const authenticated = await requireSession();
+        if (!authenticated) return;
+
+        await loadTurnover();
+        await loadTasks();
+        renderPage();
+      } catch (error) {
+        console.error("Cleaner turnover page failed:", error);
+
+        pageContent.innerHTML = `
+          <div class="error">
+            <h1 class="state-title">Unable to load turnover checklist</h1>
+            <p class="state-text">${escapeHtml(error.message || "An unexpected error occurred.")}</p>
+          </div>
+        `;
+      }
+    }
+
+    initialize();
+  </script>
+</body>
+</html>
