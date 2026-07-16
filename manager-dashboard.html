@@ -5,133 +5,582 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manager Dashboard | NSC CleanOps</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --navy-900: #0b2239;
+      --navy-800: #123a5a;
+      --navy-700: #1c4f73;
+      --water-500: #2aa7c9;
+      --water-100: #e8f7fb;
+      --surface: #ffffff;
+      --background: #f4f8fb;
+      --border: #dce7ef;
+      --text-primary: #18324a;
+      --text-secondary: #6b7f90;
+      --success: #2f8f68;
+      --warning: #d89b2b;
+      --danger: #c65555;
+      --shadow: 0 12px 30px rgba(11, 34, 57, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f8fb;
-      color: #17324d;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      font-family: "Poppins", sans-serif;
     }
 
-    header {
-      background: #0b2f4f;
-      color: white;
-      padding: 18px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    main {
-      padding: 28px;
-    }
-
-    .welcome {
-      margin-bottom: 24px;
-    }
-
-    .cards {
+    .app-shell {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
     }
 
-    .card {
-      background: white;
-      padding: 22px;
-      border-radius: 14px;
-      box-shadow: 0 8px 24px rgba(0, 34, 68, 0.08);
+    .sidebar {
+      background: linear-gradient(
+        180deg,
+        var(--navy-900) 0%,
+        var(--navy-800) 100%
+      );
+      color: white;
+      padding: 28px 22px;
+      display: flex;
+      flex-direction: column;
     }
 
-    .card h2 {
-      margin-top: 0;
-      font-size: 18px;
-      color: #0b2f4f;
+    .brand {
+      padding: 0 10px 28px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 26px;
     }
 
-    .card p {
-      color: #5c6f7d;
-      margin-bottom: 0;
-    }
-
-    button {
-      background: white;
-      color: #0b2f4f;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 8px;
+    .brand-name {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
       font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .brand-subtitle {
+      margin: 6px 0 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    .nav-label {
+      margin: 0 10px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.48);
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav a {
+      color: rgba(255, 255, 255, 0.76);
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: 0.2s ease;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: rgba(42, 167, 201, 0.16);
+      color: white;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 24px;
+    }
+
+    .signout-button {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      color: white;
+      font-weight: 600;
       cursor: pointer;
+    }
+
+    .signout-button:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .main-area {
+      min-width: 0;
+    }
+
+    .topbar {
+      min-height: 76px;
+      padding: 18px 34px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .topbar-meta {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .content {
+      padding: 34px;
+    }
+
+    .hero {
+      margin-bottom: 28px;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      margin: 12px 0 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .stat-note {
+      margin: 8px 0 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .panel-link {
+      color: var(--water-500);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .activity-item {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .activity-meta {
+      margin: 5px 0 0;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .quick-actions {
+      display: grid;
+      gap: 12px;
+    }
+
+    .quick-action {
+      display: block;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+      background: #fbfdff;
+      transition: 0.2s ease;
+    }
+
+    .quick-action:hover {
+      border-color: var(--water-500);
+      transform: translateY(-1px);
+    }
+
+    .quick-action strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .quick-action span {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .status-row:last-child {
+      border-bottom: none;
+    }
+
+    .status-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-green {
+      color: var(--success);
+      background: #e8f5ef;
+    }
+
+    .status-amber {
+      color: var(--warning);
+      background: #fff4dc;
+    }
+
+    .status-red {
+      color: var(--danger);
+      background: #fdeaea;
+    }
+
+    @media (max-width: 1100px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar,
+      .content {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h2 {
+        font-size: 25px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>NSC CleanOps</h1>
-    <button id="logout-button">Sign Out</button>
-  </header>
+  <div class="app-shell">
 
-  <main>
-    <div class="welcome">
-      <h2>Manager Dashboard</h2>
-      <p>Manage properties, turnovers, cleaners, inventory, reports, and issues.</p>
+    <aside class="sidebar">
+      <div class="brand">
+        <h1 class="brand-name">NSC CleanOps</h1>
+        <p class="brand-subtitle">
+          Niagara Scrubbers Operations Platform
+        </p>
+      </div>
+
+      <p class="nav-label">Operations</p>
+
+      <nav class="nav">
+        <a href="#" class="active">Dashboard</a>
+        <a href="#">Properties</a>
+        <a href="#">Turnovers</a>
+        <a href="#">Cleaners</a>
+        <a href="#">Inventory</a>
+        <a href="#">Reports</a>
+        <a href="#">Issues</a>
+        <a href="#">Notifications</a>
+        <a href="#">Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="signout-button" id="logout-button">
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <h2 class="topbar-title">Manager Dashboard</h2>
+        <div class="topbar-meta">Niagara Scrubbers Cleaning Inc.</div>
+      </header>
+
+      <main class="content">
+        <section class="hero">
+          <h2>Welcome back, Uttam</h2>
+          <p>
+            Monitor operations, review property activity, and manage cleaning workflows.
+          </p>
+        </section>
+
+        <section class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-label">Active Properties</p>
+            <p class="stat-value">0</p>
+            <p class="stat-note">No properties added yet</p>
+          </article>
+
+          <article class="stat-card">
+            <p class="stat-label">Today's Turnovers</p>
+            <p class="stat-value">0</p>
+            <p class="stat-note">No jobs scheduled today</p>
+          </article>
+
+          <article class="stat-card">
+            <p class="stat-label">Open Issues</p>
+            <p class="stat-value">0</p>
+            <p class="stat-note">No outstanding reports</p>
+          </article>
+
+          <article class="stat-card">
+            <p class="stat-label">Low Inventory</p>
+            <p class="stat-value">0</p>
+            <p class="stat-note">Inventory status unavailable</p>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Recent Activity</h3>
+              <a href="#" class="panel-link">View all</a>
+            </div>
+
+            <div class="activity-list">
+              <div class="activity-item">
+                <p class="activity-title">NSC CleanOps setup completed</p>
+                <p class="activity-meta">
+                  Authentication and manager dashboard are active.
+                </p>
+              </div>
+
+              <div class="activity-item">
+                <p class="activity-title">No turnover activity yet</p>
+                <p class="activity-meta">
+                  Activity will appear after properties and turnovers are added.
+                </p>
+              </div>
+
+              <div class="activity-item">
+                <p class="activity-title">No cleaner assignments yet</p>
+                <p class="activity-meta">
+                  Cleaner accounts will be added after setup is finalized.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Quick Actions</h3>
+            </div>
+
+            <div class="quick-actions">
+              <a href="#" class="quick-action">
+                <strong>Add Property</strong>
+                <span>Create a new client property record.</span>
+              </a>
+
+              <a href="#" class="quick-action">
+                <strong>Create Turnover</strong>
+                <span>Schedule and assign a cleaning job.</span>
+              </a>
+
+              <a href="#" class="quick-action">
+                <strong>Review Reports</strong>
+                <span>Open completed cleaning and damage reports.</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Inventory Status</h3>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Green stock items</span>
+              <span class="status-pill status-green">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Amber stock items</span>
+              <span class="status-pill status-amber">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Red stock items</span>
+              <span class="status-pill status-red">0</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">System Status</h3>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Authentication</span>
+              <span class="status-pill status-green">Active</span>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Database</span>
+              <span class="status-pill status-green">Connected</span>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Storage</span>
+              <span class="status-pill status-green">Connected</span>
+            </div>
+          </div>
+
+        </section>
+      </main>
     </div>
 
-    <section class="cards">
-      <div class="card">
-        <h2>Properties</h2>
-        <p>View and manage all client properties.</p>
-      </div>
-
-      <div class="card">
-        <h2>Turnovers</h2>
-        <p>Create, assign, and monitor cleaning turnovers.</p>
-      </div>
-
-      <div class="card">
-        <h2>Cleaners</h2>
-        <p>Manage cleaner assignments and access.</p>
-      </div>
-
-      <div class="card">
-        <h2>Inventory</h2>
-        <p>Review stock levels and low inventory alerts.</p>
-      </div>
-
-      <div class="card">
-        <h2>Damage Reports</h2>
-        <p>Review damage, maintenance, and issue reports.</p>
-      </div>
-
-      <div class="card">
-        <h2>Reports</h2>
-        <p>Open completed turnover reports and PDFs.</p>
-      </div>
-    </section>
-  </main>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
 
   <script>
     async function protectPage() {
-      const { data } = await window.nscSupabase.auth.getSession();
+      const { data, error } = await window.nscSupabase.auth.getSession();
 
-      if (!data.session) {
+      if (error || !data.session) {
         window.location.href = "login.html";
       }
     }
 
-    document.getElementById("logout-button").addEventListener("click", async function () {
-      await window.nscSupabase.auth.signOut();
-      window.location.href = "login.html";
-    });
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", async function () {
+        await window.nscSupabase.auth.signOut();
+        window.location.href = "login.html";
+      });
 
     protectPage();
   </script>
