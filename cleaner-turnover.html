@@ -732,10 +732,97 @@
       font-weight: 600;
     }
 
-    .inventory-options {
+    .inventory-quantity-row {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: auto minmax(90px, 130px) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+    }
+
+    .inventory-step-button {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--navy-light);
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .inventory-step-button:hover:not(:disabled) {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .inventory-quantity-input {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--navy-light);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+    }
+
+    .inventory-quantity-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47,143,202,.12);
+    }
+
+    .inventory-target {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .inventory-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      margin-top: 9px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f1f5f8;
+      color: #536b7e;
+      font-size: 8px;
+      font-weight: 700;
+    }
+
+    .inventory-status.full {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .inventory-status.low {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .inventory-status.out,
+    .inventory-status.emergency {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .inventory-emergency-row {
+      display: flex;
+      align-items: center;
       gap: 8px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .inventory-emergency-row input {
+      width: 16px;
+      height: 16px;
     }
 
     .inventory-option {
@@ -903,8 +990,12 @@
         padding-left: 29px;
       }
 
-      .inventory-options {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .inventory-quantity-row {
+        grid-template-columns: auto minmax(80px, 1fr) auto;
+      }
+
+      .inventory-target {
+        grid-column: 1 / -1;
       }
 
       .submit-bar {
@@ -958,7 +1049,7 @@
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Cleaner Turnover Checklist · Template Rooms v4</div>
+          <div class="brand-subtitle">Cleaner Turnover Checklist · Inventory Quantity v5</div>
         </div>
       </div>
 
@@ -983,7 +1074,7 @@
   <script>
     "use strict";
 
-    console.info("NSC Cleaner Turnover Template Rooms v4 loaded");
+    console.info("NSC Cleaner Turnover Inventory Quantity v5 loaded");
 
     const db = window.nscSupabase || window.supabaseClient;
     const pageContent = document.getElementById("pageContent");
@@ -1227,6 +1318,8 @@
             category,
             unit_name,
             location_note,
+            par_level,
+            reorder_level,
             emergency_stock,
             active,
             sort_order
@@ -1242,6 +1335,8 @@
             id,
             turnover_id,
             inventory_item_id,
+            counted_quantity,
+            counted_quantity,
             level_status,
             stock_status,
             emergency_stock_used,
@@ -1263,18 +1358,61 @@
       return inventoryCounts.find(count => count.inventory_item_id === itemId) || null;
     }
 
-    function getInventorySelection(count) {
-      if (!count || count.stock_status === "unknown") return null;
-      if (count.emergency_stock_used) return "emergency";
-      if (count.stock_status === "red") return "out";
-      if (count.stock_status === "amber") return "low";
-      return "full";
+    function getInventoryTarget(item) {
+      return Math.max(
+        Number(item.par_level) || 0,
+        Number(item.reorder_level) || 0,
+        0
+      );
+    }
+
+    function getInventoryQuantity(itemId) {
+      const count = getInventoryCount(itemId);
+      return Math.max(Number(count?.counted_quantity) || 0, 0);
+    }
+
+    function getInventoryStatus(item, quantity, emergencyUsed = false) {
+      const target = getInventoryTarget(item);
+
+      if (emergencyUsed) {
+        return {
+          value: "emergency",
+          levelStatus: "emergency_stock_used",
+          stockStatus: "red",
+          label: "Emergency Stock Used"
+        };
+      }
+
+      if (quantity <= 0) {
+        return {
+          value: "out",
+          levelStatus: "out",
+          stockStatus: "red",
+          label: "Out"
+        };
+      }
+
+      if (target > 0 && quantity < target) {
+        return {
+          value: "low",
+          levelStatus: "low",
+          stockStatus: "amber",
+          label: `Low — ${target - quantity} below target`
+        };
+      }
+
+      return {
+        value: "full",
+        levelStatus: "full",
+        stockStatus: "green",
+        label: target > 0 ? "Target Met" : "Counted"
+      };
     }
 
     function getInventoryProgress() {
       const completed = inventoryItems.filter(item => {
         const count = getInventoryCount(item.id);
-        return Boolean(getInventorySelection(count));
+        return count && count.counted_quantity !== null && count.counted_quantity !== undefined;
       }).length;
 
       return {
@@ -1286,35 +1424,8 @@
       };
     }
 
-    function inventoryValueToRecord(value) {
-      const mapping = {
-        full: {
-          level_status: "full",
-          stock_status: "green",
-          emergency_stock_used: false
-        },
-        low: {
-          level_status: "low",
-          stock_status: "amber",
-          emergency_stock_used: false
-        },
-        out: {
-          level_status: "out",
-          stock_status: "red",
-          emergency_stock_used: false
-        },
-        emergency: {
-          level_status: "emergency_stock_used",
-          stock_status: "red",
-          emergency_stock_used: true
-        }
-      };
-
-      return mapping[value] || null;
-    }
-
-    async function createInventoryNotifications(item, value) {
-      if (!["low", "out", "emergency"].includes(value)) return;
+    async function createInventoryNotifications(item, status, quantity) {
+      if (!["low", "out", "emergency"].includes(status.value)) return;
 
       const { data: recipients, error: recipientsError } = await db
         .from("users")
@@ -1326,12 +1437,12 @@
       if (recipientsError) throw recipientsError;
       if (!recipients?.length) return;
 
-      const severity = value === "low" ? "warning" : "critical";
-      const statusLabel = value === "emergency"
+      const severity = status.value === "low" ? "warning" : "critical";
+      const statusLabel = status.value === "emergency"
         ? "Emergency stock used"
-        : value === "out"
+        : status.value === "out"
           ? "Out of stock"
-          : "Low stock";
+          : "Below client target";
 
       const notificationRows = recipients.map(recipient => ({
         company_id: turnover.company_id || currentProfile.company_id,
@@ -1341,7 +1452,7 @@
         notification_type: "inventory_alert",
         severity,
         title: `${statusLabel}: ${item.item_name}`,
-        message: `${item.item_name} was reported as ${statusLabel.toLowerCase()} during the turnover at ${turnover.properties?.property_name || "the property"}.`,
+        message: `${item.item_name} count is ${quantity}. Client target is ${getInventoryTarget(item)}. Status: ${statusLabel}. Property: ${turnover.properties?.property_name || "Unknown property"}.`,
         action_url: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
       }));
 
@@ -1352,27 +1463,35 @@
       if (error) throw error;
     }
 
-    async function saveInventoryCount(itemId, value, note, input) {
+    async function saveInventoryCount(itemId, quantity, note, emergencyUsed, triggerElement) {
       const item = inventoryItems.find(record => record.id === itemId);
-      const mapped = inventoryValueToRecord(value);
+      if (!item) return;
 
-      if (!item || !mapped) return;
+      const safeQuantity = Math.max(Number(quantity) || 0, 0);
+      const status = getInventoryStatus(item, safeQuantity, emergencyUsed);
 
-      const inventoryElement = input.closest("[data-inventory-item-id]");
-      inventoryElement?.querySelectorAll("input, textarea").forEach(control => {
+      const inventoryElement = triggerElement?.closest("[data-inventory-item-id]");
+      inventoryElement?.querySelectorAll("button, input, textarea").forEach(control => {
         control.disabled = true;
       });
 
       try {
         const existing = getInventoryCount(itemId);
-        const previousSelection = getInventorySelection(existing);
+        const previousStatus = existing
+          ? getInventoryStatus(
+              item,
+              Number(existing.counted_quantity) || 0,
+              Boolean(existing.emergency_stock_used)
+            ).value
+          : null;
 
         const payload = {
           turnover_id: turnover.id,
           inventory_item_id: itemId,
-          level_status: mapped.level_status,
-          stock_status: mapped.stock_status,
-          emergency_stock_used: mapped.emergency_stock_used,
+          counted_quantity: safeQuantity,
+          level_status: status.levelStatus,
+          stock_status: status.stockStatus,
+          emergency_stock_used: emergencyUsed,
           cleaner_note: note || null,
           counted_by: currentProfile.id,
           counted_at: new Date().toISOString()
@@ -1387,6 +1506,7 @@
             id,
             turnover_id,
             inventory_item_id,
+            counted_quantity,
             level_status,
             stock_status,
             emergency_stock_used,
@@ -1405,18 +1525,53 @@
           inventoryCounts.push(data);
         }
 
-        if (previousSelection !== value) {
-          await createInventoryNotifications(item, value);
+        if (previousStatus !== status.value) {
+          await createInventoryNotifications(item, status, safeQuantity);
         }
 
         renderPage();
-        showToast(`${item.item_name} inventory status saved.`);
+        showToast(`${item.item_name} count saved: ${safeQuantity}.`);
       } catch (error) {
-        inventoryElement?.querySelectorAll("input, textarea").forEach(control => {
+        inventoryElement?.querySelectorAll("button, input, textarea").forEach(control => {
           control.disabled = false;
         });
-        showToast(error.message || "The inventory status could not be saved.", "error");
+
+        showToast(error.message || "The inventory quantity could not be saved.", "error");
       }
+    }
+
+    function changeInventoryQuantity(itemId, change, button) {
+      const itemElement = button.closest("[data-inventory-item-id]");
+      const input = itemElement?.querySelector('[data-role="inventory-quantity"]');
+
+      if (!input) return;
+
+      const current = Math.max(Number(input.value) || 0, 0);
+      input.value = Math.max(current + change, 0);
+
+      saveInventoryFromElement(itemId, itemElement, button);
+    }
+
+    function saveInventoryFromElement(itemId, itemElement, triggerElement) {
+      const quantity = Math.max(
+        Number(itemElement?.querySelector('[data-role="inventory-quantity"]')?.value) || 0,
+        0
+      );
+
+      const note =
+        itemElement?.querySelector('[data-role="inventory-note"]')?.value.trim() || "";
+
+      const emergencyUsed = Boolean(
+        itemElement?.querySelector('[data-role="inventory-emergency"]')?.checked
+      );
+
+      saveInventoryCount(
+        itemId,
+        quantity,
+        note,
+        emergencyUsed,
+        triggerElement
+      );
     }
 
     async function loadPhotos() {
@@ -1604,7 +1759,10 @@
     function getIncompleteTasks(group) {
       if (group.isInventory) {
         return inventoryItems
-          .filter(item => !getInventorySelection(getInventoryCount(item.id)))
+          .filter(item => {
+            const count = getInventoryCount(item.id);
+            return !count || count.counted_quantity === null || count.counted_quantity === undefined;
+          })
           .map(item => ({
             id: `inventory-${item.id}`,
             inventoryItemId: item.id,
@@ -1704,8 +1862,12 @@
         <div class="inventory-list">
           ${inventoryItems.map(item => {
             const count = getInventoryCount(item.id);
-            const selected = getInventorySelection(count);
-            const inputName = `inventory-${item.id}`;
+            const quantity = getInventoryQuantity(item.id);
+            const target = getInventoryTarget(item);
+            const emergencyUsed = Boolean(count?.emergency_stock_used);
+            const status = count
+              ? getInventoryStatus(item, quantity, emergencyUsed)
+              : null;
 
             return `
               <div class="inventory-item" data-inventory-item-id="${escapeHtml(item.id)}">
@@ -1717,30 +1879,58 @@
                     ` : ""}
                   </div>
 
-                  ${selected ? `<span class="inventory-saved">Saved</span>` : ""}
+                  ${count ? `<span class="inventory-saved">Saved</span>` : ""}
                 </div>
 
-                <div class="inventory-options">
-                  ${[
-                    ["full", "Full", ""],
-                    ["low", "Low", "low"],
-                    ["out", "Out", "out"],
-                    ["emergency", "Emergency Stock Used", "emergency"]
-                  ].map(([value, label, className]) => `
-                    <div class="inventory-option ${className}">
-                      <input
-                        type="radio"
-                        id="${escapeHtml(inputName)}-${value}"
-                        name="${escapeHtml(inputName)}"
-                        value="${value}"
-                        data-role="inventory-status"
-                        ${selected === value ? "checked" : ""}
-                        ${locked ? "disabled" : ""}
-                      >
-                      <label for="${escapeHtml(inputName)}-${value}">${label}</label>
-                    </div>
-                  `).join("")}
+                <div class="inventory-quantity-row">
+                  <button
+                    class="inventory-step-button"
+                    type="button"
+                    data-action="inventory-minus"
+                    ${locked ? "disabled" : ""}
+                  >−</button>
+
+                  <input
+                    class="inventory-quantity-input"
+                    data-role="inventory-quantity"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value="${escapeHtml(quantity)}"
+                    ${locked ? "disabled" : ""}
+                  >
+
+                  <button
+                    class="inventory-step-button"
+                    type="button"
+                    data-action="inventory-plus"
+                    ${locked ? "disabled" : ""}
+                  >+</button>
+
+                  <div class="inventory-target">
+                    Client target:
+                    <strong>${target}</strong>
+                    ${item.unit_name ? ` ${escapeHtml(item.unit_name)}` : ""}
+                  </div>
                 </div>
+
+                ${status ? `
+                  <div class="inventory-status ${status.value}">
+                    ${escapeHtml(status.label)}
+                  </div>
+                ` : `
+                  <div class="inventory-status">Not counted</div>
+                `}
+
+                <label class="inventory-emergency-row">
+                  <input
+                    type="checkbox"
+                    data-role="inventory-emergency"
+                    ${emergencyUsed ? "checked" : ""}
+                    ${locked ? "disabled" : ""}
+                  >
+                  Emergency stock was used
+                </label>
 
                 <textarea
                   class="inventory-note"
@@ -1748,6 +1938,16 @@
                   placeholder="Optional inventory note"
                   ${locked ? "disabled" : ""}
                 >${escapeHtml(count?.cleaner_note || "")}</textarea>
+
+                <button
+                  class="button button-secondary"
+                  type="button"
+                  data-action="save-inventory"
+                  style="margin-top:9px;"
+                  ${locked ? "disabled" : ""}
+                >
+                  Save Quantity
+                </button>
               </div>
             `;
           }).join("")}
@@ -1965,16 +2165,32 @@
         renderPage();
       });
 
-      pageContent.querySelectorAll('[data-role="inventory-status"]').forEach(input => {
-        input.addEventListener("change", () => {
-          const itemElement = input.closest("[data-inventory-item-id]");
-          const itemId = itemElement?.dataset.inventoryItemId;
-          const note = itemElement?.querySelector('[data-role="inventory-note"]')?.value.trim() || "";
+      pageContent.querySelectorAll("[data-inventory-item-id]").forEach(itemElement => {
+        const itemId = itemElement.dataset.inventoryItemId;
 
-          if (itemId) {
-            saveInventoryCount(itemId, input.value, note, input);
-          }
-        });
+        itemElement
+          .querySelector('[data-action="inventory-minus"]')
+          ?.addEventListener("click", event => {
+            changeInventoryQuantity(itemId, -1, event.currentTarget);
+          });
+
+        itemElement
+          .querySelector('[data-action="inventory-plus"]')
+          ?.addEventListener("click", event => {
+            changeInventoryQuantity(itemId, 1, event.currentTarget);
+          });
+
+        itemElement
+          .querySelector('[data-action="save-inventory"]')
+          ?.addEventListener("click", event => {
+            saveInventoryFromElement(itemId, itemElement, event.currentTarget);
+          });
+
+        itemElement
+          .querySelector('[data-role="inventory-emergency"]')
+          ?.addEventListener("change", event => {
+            saveInventoryFromElement(itemId, itemElement, event.currentTarget);
+          });
       });
 
       pageContent.querySelectorAll("[data-open-room]").forEach(button => {
@@ -2379,7 +2595,7 @@
 
         const missingInventoryNames = incompleteInventory
           .slice(0, 3)
-          .map(item => `${item.item_name} inventory`);
+          .map(item => `${item.item_name} quantity`);
 
         const remainingNames = [
           ...missingTaskNames,
