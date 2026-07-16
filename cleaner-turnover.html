@@ -493,6 +493,204 @@
       line-height: 1.5;
     }
 
+
+    .checklist-toolbar {
+      position: sticky;
+      top: 82px;
+      z-index: 12;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: rgba(245, 248, 251, .96);
+      backdrop-filter: blur(10px);
+    }
+
+    .remaining-toggle.active {
+      color: white;
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .room-card {
+      overflow: hidden;
+    }
+
+    .room-header {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      text-align: left;
+      cursor: pointer;
+      background: white;
+      border: 0;
+    }
+
+    .room-header:hover {
+      background: #fbfdfe;
+    }
+
+    .room-header-main {
+      min-width: 0;
+    }
+
+    .room-heading-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .room-chevron {
+      width: 20px;
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 700;
+      transition: transform .2s ease;
+    }
+
+    .room-card.open .room-chevron {
+      transform: rotate(90deg);
+    }
+
+    .room-progress-summary {
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .room-progress-track {
+      height: 6px;
+      margin-top: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8eff4;
+    }
+
+    .room-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--blue);
+      transition: width .2s ease;
+    }
+
+    .room-card.complete .room-progress-fill {
+      background: var(--success);
+    }
+
+    .room-card.complete .room-title,
+    .room-card.complete .room-progress-summary {
+      color: var(--success);
+    }
+
+    .room-body {
+      display: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .room-card.open .room-body {
+      display: block;
+    }
+
+    .room-empty {
+      padding: 20px 18px;
+      color: var(--muted);
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .remaining-panel {
+      display: none;
+      margin-bottom: 15px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .remaining-panel.visible {
+      display: block;
+    }
+
+    .remaining-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 17px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .remaining-panel-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+    }
+
+    .remaining-list {
+      display: grid;
+    }
+
+    .remaining-room {
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .remaining-room:last-child {
+      border-bottom: 0;
+    }
+
+    .remaining-room-title {
+      padding: 12px 17px 6px;
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .remaining-item {
+      width: 100%;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      padding: 8px 17px 11px;
+      border: 0;
+      background: white;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .remaining-item:hover {
+      background: #f8fbfd;
+    }
+
+    .remaining-box {
+      flex: 0 0 auto;
+      width: 15px;
+      height: 15px;
+      margin-top: 1px;
+      border: 1px solid #b9cad7;
+      border-radius: 4px;
+      background: white;
+    }
+
+    .remaining-photo {
+      display: block;
+      margin-top: 3px;
+      color: var(--danger);
+      font-size: 8px;
+      font-weight: 600;
+    }
+
     .loading,
     .error {
       padding: 70px 20px;
@@ -566,6 +764,24 @@
         grid-column: 2;
         min-width: 0;
         grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+
+      .checklist-toolbar {
+        top: 78px;
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .checklist-toolbar .button {
+        width: 100%;
+      }
+
+      .room-header {
+        grid-template-columns: 1fr;
+      }
+
+      .room-progress-summary {
+        padding-left: 29px;
       }
 
       .submit-bar {
@@ -651,6 +867,9 @@
     let turnover = null;
     let tasks = [];
     let taskPhotos = [];
+    let roomGroups = [];
+    let activeRoomKey = null;
+    let remainingOnly = false;
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -855,25 +1074,177 @@
       };
     }
 
+    function buildRoomGroups() {
+      const grouped = new Map();
+
+      tasks.forEach(task => {
+        const key = String(task.room_id || task.section_name || "general");
+
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            key,
+            roomName: task.rooms?.room_name || task.section_name || "General Tasks",
+            items: []
+          });
+        }
+
+        grouped.get(key).items.push(task);
+      });
+
+      roomGroups = Array.from(grouped.values());
+
+      if (!activeRoomKey && roomGroups.length) {
+        const firstIncomplete = roomGroups.find(group =>
+          group.items.some(task => !["completed", "not_applicable"].includes(task.task_status))
+        );
+        activeRoomKey = (firstIncomplete || roomGroups[0]).key;
+      }
+    }
+
+    function getRoomProgress(group) {
+      const completed = group.items.filter(task =>
+        ["completed", "not_applicable"].includes(task.task_status)
+      ).length;
+
+      return {
+        completed,
+        total: group.items.length,
+        percent: group.items.length
+          ? Math.round((completed / group.items.length) * 100)
+          : 0
+      };
+    }
+
+    function getIncompleteTasks(group) {
+      return group.items.filter(task =>
+        !["completed", "not_applicable"].includes(task.task_status)
+      );
+    }
+
+    function getMissingPhotoCount(task) {
+      return Math.max(
+        getRequiredPhotoCount(task) - getPhotosForTask(task.id).length,
+        0
+      );
+    }
+
+    function renderRemainingPanel() {
+      const groupsWithRemaining = roomGroups
+        .map(group => ({
+          ...group,
+          remaining: getIncompleteTasks(group)
+        }))
+        .filter(group => group.remaining.length);
+
+      if (!groupsWithRemaining.length) {
+        return `
+          <section class="remaining-panel visible" id="remainingPanel">
+            <div class="remaining-panel-header">
+              <h2 class="remaining-panel-title">Remaining Tasks</h2>
+            </div>
+            <div class="room-empty">All checklist tasks are complete.</div>
+          </section>
+        `;
+      }
+
+      return `
+        <section class="remaining-panel visible" id="remainingPanel">
+          <div class="remaining-panel-header">
+            <h2 class="remaining-panel-title">Remaining Tasks</h2>
+            <strong>${groupsWithRemaining.reduce((sum, group) => sum + group.remaining.length, 0)} remaining</strong>
+          </div>
+
+          <div class="remaining-list">
+            ${groupsWithRemaining.map(group => `
+              <div class="remaining-room">
+                <div class="remaining-room-title">${escapeHtml(group.roomName)}</div>
+
+                ${group.remaining.map(task => {
+                  const missingPhotos = getMissingPhotoCount(task);
+
+                  return `
+                    <button
+                      class="remaining-item"
+                      type="button"
+                      data-open-room="${escapeHtml(group.key)}"
+                      data-focus-task="${escapeHtml(task.id)}"
+                    >
+                      <span class="remaining-box"></span>
+                      <span>
+                        ${escapeHtml(task.task_text)}
+                        ${missingPhotos > 0 ? `
+                          <span class="remaining-photo">
+                            ${missingPhotos} required photo${missingPhotos === 1 ? "" : "s"} missing
+                          </span>
+                        ` : ""}
+                      </span>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderRoomCard(group) {
+      const progress = getRoomProgress(group);
+      const visibleTasks = remainingOnly ? getIncompleteTasks(group) : group.items;
+      const isOpen = activeRoomKey === group.key;
+      const complete = progress.total > 0 && progress.completed === progress.total;
+
+      return `
+        <article
+          class="room-card ${isOpen ? "open" : ""} ${complete ? "complete" : ""}"
+          data-room-key="${escapeHtml(group.key)}"
+        >
+          <button
+            class="room-header"
+            type="button"
+            data-action="toggle-room"
+            data-room-key="${escapeHtml(group.key)}"
+            aria-expanded="${isOpen ? "true" : "false"}"
+          >
+            <div class="room-header-main">
+              <div class="room-heading-row">
+                <span class="room-chevron">›</span>
+                <h2 class="room-title">${escapeHtml(group.roomName)}</h2>
+              </div>
+
+              <div class="room-progress-track">
+                <div class="room-progress-fill" style="width:${progress.percent}%"></div>
+              </div>
+            </div>
+
+            <div class="room-progress-summary">
+              ${progress.completed} / ${progress.total} Complete
+            </div>
+          </button>
+
+          <div class="room-body">
+            ${visibleTasks.length ? `
+              <div class="task-list">
+                ${visibleTasks.map((task, index) => renderTask(task, index + 1)).join("")}
+              </div>
+            ` : `
+              <div class="room-empty">
+                ${remainingOnly ? "No incomplete tasks remain in this room." : "No checklist tasks are assigned to this room."}
+              </div>
+            `}
+          </div>
+        </article>
+      `;
+    }
+
     function renderPage() {
+      buildRoomGroups();
+
       const location = [
         turnover.properties?.address,
         turnover.properties?.city,
         turnover.properties?.province
       ].filter(Boolean).join(", ");
-
-      const grouped = new Map();
-
-      tasks.forEach(task => {
-        const key = task.room_id || task.section_name || "general";
-        if (!grouped.has(key)) {
-          grouped.set(key, {
-            roomName: task.rooms?.room_name || task.section_name || "General Tasks",
-            items: []
-          });
-        }
-        grouped.get(key).items.push(task);
-      });
 
       const progress = getTaskProgress();
 
@@ -922,19 +1293,25 @@
           </div>
         </section>
 
-        <section class="room-list">
-          ${Array.from(grouped.values()).map(group => `
-            <article class="room-card">
-              <div class="room-header">
-                <h2 class="room-title">${escapeHtml(group.roomName)}</h2>
-                <div class="room-meta">${group.items.length} checklist task${group.items.length === 1 ? "" : "s"}</div>
-              </div>
+        <div class="checklist-toolbar">
+          <div>
+            <strong>Room Checklist</strong>
+            <div class="room-meta">Open one room at a time to complete the turnover.</div>
+          </div>
 
-              <div class="task-list">
-                ${group.items.map((task, index) => renderTask(task, index + 1)).join("")}
-              </div>
-            </article>
-          `).join("")}
+          <button
+            class="button button-secondary remaining-toggle ${remainingOnly ? "active" : ""}"
+            id="remainingToggle"
+            type="button"
+          >
+            ${remainingOnly ? "Show All Tasks" : "Show Remaining Tasks"}
+          </button>
+        </div>
+
+        ${remainingOnly ? renderRemainingPanel() : ""}
+
+        <section class="room-list">
+          ${roomGroups.map(renderRoomCard).join("")}
         </section>
 
         <div class="submit-bar">
@@ -948,9 +1325,48 @@
         </div>
       `;
 
+      registerPageEvents();
       registerTaskEvents();
       document.getElementById("submitTurnoverButton").addEventListener("click", submitTurnover);
     }
+
+    function registerPageEvents() {
+      document.getElementById("remainingToggle")?.addEventListener("click", () => {
+        remainingOnly = !remainingOnly;
+
+        if (remainingOnly) {
+          const activeGroup = roomGroups.find(group => group.key === activeRoomKey);
+          if (!activeGroup || !getIncompleteTasks(activeGroup).length) {
+            const firstRemaining = roomGroups.find(group => getIncompleteTasks(group).length);
+            activeRoomKey = firstRemaining?.key || roomGroups[0]?.key || null;
+          }
+        }
+
+        renderPage();
+      });
+
+      pageContent.querySelectorAll('[data-action="toggle-room"]').forEach(button => {
+        button.addEventListener("click", () => {
+          const roomKey = button.dataset.roomKey;
+          activeRoomKey = activeRoomKey === roomKey ? null : roomKey;
+          renderPage();
+        });
+      });
+
+      pageContent.querySelectorAll("[data-open-room]").forEach(button => {
+        button.addEventListener("click", () => {
+          activeRoomKey = button.dataset.openRoom;
+          const taskId = button.dataset.focusTask;
+          renderPage();
+
+          window.requestAnimationFrame(() => {
+            const taskElement = pageContent.querySelector(`[data-task-id="${CSS.escape(taskId)}"]`);
+            taskElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+        });
+      });
+    }
+
 
     function renderTask(task, number) {
       const isComplete = task.task_status === "completed";
@@ -1311,8 +1727,38 @@
         task.is_required && !["completed", "not_applicable"].includes(task.task_status)
       );
 
-      if (incompleteRequired.length) {
-        showToast(`${incompleteRequired.length} mandatory task${incompleteRequired.length === 1 ? " remains" : "s remain"} incomplete.`, "error");
+      const missingRequiredPhotos = tasks.filter(task =>
+        getPhotosForTask(task.id).length < getRequiredPhotoCount(task)
+      );
+
+      if (incompleteRequired.length || missingRequiredPhotos.length) {
+        const missingTaskNames = incompleteRequired
+          .slice(0, 3)
+          .map(task => task.task_text);
+
+        const missingPhotoNames = missingRequiredPhotos
+          .filter(task => !incompleteRequired.some(item => item.id === task.id))
+          .slice(0, 3)
+          .map(task => `${task.task_text} photo`);
+
+        const remainingNames = [...missingTaskNames, ...missingPhotoNames].slice(0, 4);
+        const totalRemaining = incompleteRequired.length + missingRequiredPhotos.length;
+
+        remainingOnly = true;
+
+        const firstMissing = incompleteRequired[0] || missingRequiredPhotos[0];
+        const firstGroup = roomGroups.find(group =>
+          group.items.some(task => task.id === firstMissing?.id)
+        );
+
+        if (firstGroup) activeRoomKey = firstGroup.key;
+
+        renderPage();
+
+        showToast(
+          `Cannot submit. ${totalRemaining} requirement${totalRemaining === 1 ? "" : "s"} remain: ${remainingNames.join(", ")}${totalRemaining > remainingNames.length ? "…" : ""}`,
+          "error"
+        );
         return;
       }
 
