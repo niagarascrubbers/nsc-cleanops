@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Assignments | NSC CleanOps</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #071f35;
+      --navy-light: #0b2f4f;
+      --blue: #2f8fca;
+      --blue-hover: #257daf;
+      --blue-light: #eaf6fc;
+      --background: #f5f8fb;
+      --border: #dfe8ef;
+      --text: #17324d;
+      --muted: #6c7e8f;
+      --success: #1f8f64;
+      --success-light: #e9f8f1;
+      --warning: #aa7214;
+      --warning-light: #fff8e7;
+      --danger: #c94747;
+      --danger-light: #fff0f0;
+      --shadow: 0 12px 32px rgba(18, 50, 77, 0.09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: "Poppins", sans-serif;
+    }
+
+    button, select { font: inherit; }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--navy);
+      color: white;
+      box-shadow: 0 8px 24px rgba(7, 31, 53, 0.16);
+    }
+
+    .header-inner {
+      width: min(1100px, calc(100% - 32px));
+      min-height: 72px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--blue);
+      font-family: "Montserrat", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      margin-top: 2px;
+      color: #a8c0d1;
+      font-size: 10px;
+    }
+
+    .sign-out {
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 9px;
+      background: rgba(255,255,255,.07);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .welcome {
+      margin-bottom: 22px;
+    }
+
+    .welcome h1 {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(25px, 4vw, 34px);
+    }
+
+    .welcome p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      padding: 17px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      margin-top: 7px;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 19px;
+    }
+
+    .filter {
+      min-height: 40px;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--text);
+      font-size: 11px;
+      outline: none;
+    }
+
+    .assignments {
+      display: grid;
+      gap: 14px;
+    }
+
+    .assignment-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .assignment-main {
+      padding: 18px;
+    }
+
+    .assignment-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .property-name {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 17px;
+    }
+
+    .property-location {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .status-badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .status-unassigned,
+    .status-assigned { background: var(--blue-light); color: #2078a9; }
+
+    .status-accepted { background: #eef4ff; color: #365d9d; }
+
+    .status-in-progress,
+    .status-review-required { background: var(--warning-light); color: var(--warning); }
+
+    .status-correction-required { background: var(--danger-light); color: var(--danger); }
+
+    .status-completed { background: var(--success-light); color: var(--success); }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 17px;
+    }
+
+    .detail {
+      padding: 11px;
+      background: #f8fafc;
+      border: 1px solid #edf2f6;
+      border-radius: 10px;
+    }
+
+    .detail-label {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    .detail-value {
+      margin-top: 5px;
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .progress-block {
+      margin-top: 16px;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+      background: #e8eff4;
+      border-radius: 999px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 999px;
+    }
+
+    .assignment-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 9px;
+      padding: 13px 18px;
+      background: #fbfdfe;
+      border-top: 1px solid var(--border);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 9px 15px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: .6;
+    }
+
+    .button-primary {
+      color: white;
+      background: var(--navy-light);
+    }
+
+    .button-primary:hover:not(:disabled) {
+      background: var(--navy);
+    }
+
+    .button-secondary {
+      color: var(--text);
+      background: white;
+      border-color: var(--border);
+    }
+
+    .overdue-notice {
+      margin-top: 13px;
+      padding: 10px 11px;
+      border: 1px solid #efcaca;
+      border-radius: 9px;
+      background: var(--danger-light);
+      color: var(--danger);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .loading,
+    .empty,
+    .error {
+      padding: 70px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 14px;
+      border: 3px solid #dcecf4;
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .state-title {
+      margin: 0 0 7px;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+    }
+
+    .state-text {
+      max-width: 500px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      width: min(350px, calc(100vw - 36px));
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--success);
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 20px 50px rgba(7, 31, 53, .2);
+      color: var(--text);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .toast.error { border-left-color: var(--danger); }
+
+    @media (max-width: 760px) {
+      .summary-grid { grid-template-columns: 1fr; }
+      .details-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .toolbar, .assignment-header { align-items: stretch; flex-direction: column; }
+      .filter { width: 100%; }
+      .status-badge { align-self: flex-start; }
+      .assignment-footer { flex-direction: column; }
+      .assignment-footer .button { width: 100%; }
+    }
+
+    @media (max-width: 460px) {
+      .header-inner, .page { width: min(100% - 22px, 1100px); }
+      .details-grid { grid-template-columns: 1fr; }
+      .brand-subtitle { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">NSC</div>
+        <div>
+          <p class="brand-title">NSC CleanOps</p>
+          <div class="brand-subtitle">Cleaner Operations</div>
+        </div>
+      </div>
+
+      <button class="sign-out" id="logoutButton" type="button">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="welcome">
+      <h1 id="welcomeHeading">My Assignments</h1>
+      <p>
+        Review your scheduled cleaning assignments and continue any work already in progress.
+      </p>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <div class="summary-label">Today</div>
+        <div class="summary-value" id="todayCount">0</div>
+      </article>
+
+      <article class="summary-card">
+        <div class="summary-label">In Progress</div>
+        <div class="summary-value" id="inProgressCount">0</div>
+      </article>
+
+      <article class="summary-card">
+        <div class="summary-label">Awaiting Review</div>
+        <div class="summary-value" id="reviewCount">0</div>
+      </article>
+    </section>
+
+    <div class="toolbar">
+      <h2 class="section-title">Assigned Turnovers</h2>
+
+      <select class="filter" id="statusFilter">
+        <option value="active">Current assignments</option>
+        <option value="all">All assignments</option>
+        <option value="assigned">Assigned</option>
+        <option value="accepted">Accepted</option>
+        <option value="in_progress">In Progress</option>
+        <option value="review_required">Awaiting Review</option>
+        <option value="correction_required">Correction Required</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+
+    <section class="assignments" id="assignmentsContent">
+      <div class="loading">
+        <div class="spinner"></div>
+        <h2 class="state-title">Loading assignments</h2>
+        <p class="state-text">Retrieving your assigned turnover schedule and task progress.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    "use strict";
+
+    const db = window.nscSupabase || window.supabaseClient;
+    const assignmentsContent = document.getElementById("assignmentsContent");
+    const statusFilter = document.getElementById("statusFilter");
+
+    let currentProfile = null;
+    let assignments = [];
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showToast(message, type = "success") {
+      document.querySelector(".toast")?.remove();
+
+      const toast = document.createElement("div");
+      toast.className = `toast ${type === "error" ? "error" : ""}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      window.setTimeout(() => toast.remove(), 4200);
+    }
+
+    function formatStatus(value) {
+      const labels = {
+        unassigned: "Unassigned",
+        assigned: "Assigned",
+        accepted: "Accepted",
+        in_progress: "In Progress",
+        review_required: "Awaiting Review",
+        correction_required: "Correction Required",
+        completed: "Completed",
+        cancelled: "Cancelled"
+      };
+
+      return labels[value] || value || "Unknown";
+    }
+
+    function statusClass(value) {
+      return `status-${String(value || "assigned").replaceAll("_", "-")}`;
+    }
+
+    function formatDate(value) {
+      if (!value) return "Not scheduled";
+
+      return new Intl.DateTimeFormat("en-CA", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      }).format(new Date(`${value}T12:00:00`));
+    }
+
+    function formatTime(value) {
+      if (!value) return "Not entered";
+
+      return new Intl.DateTimeFormat("en-CA", {
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(new Date(value));
+    }
+
+    function isToday(dateValue) {
+      if (!dateValue) return false;
+
+      const date = new Date(`${dateValue}T12:00:00`);
+      const today = new Date();
+
+      return date.getFullYear() === today.getFullYear()
+        && date.getMonth() === today.getMonth()
+        && date.getDate() === today.getDate();
+    }
+
+    function isOverdue(turnover) {
+      if (!turnover.scheduled_end) return false;
+      if (["review_required", "completed", "cancelled"].includes(turnover.status)) return false;
+      return new Date(turnover.scheduled_end) < new Date();
+    }
+
+    async function requireCleanerSession() {
+      if (!db) {
+        throw new Error("Supabase client is unavailable.");
+      }
+
+      const {
+        data: { session },
+        error: sessionError
+      } = await db.auth.getSession();
+
+      if (sessionError) throw sessionError;
+
+      if (!session) {
+        window.location.href = "login.html";
+        return false;
+      }
+
+      const { data: profile, error: profileError } = await db
+        .from("users")
+        .select("id, full_name, role, company_id, active")
+        .eq("auth_user_id", session.user.id)
+        .single();
+
+      if (profileError) throw profileError;
+      if (!profile?.active) throw new Error("This user account is inactive.");
+
+      currentProfile = profile;
+
+      const firstName = (profile.full_name || "Cleaner").trim().split(/\s+/)[0];
+      document.getElementById("welcomeHeading").textContent = `Welcome, ${firstName}`;
+
+      return true;
+    }
+
+    async function loadAssignments() {
+      const { data, error } = await db
+        .from("turnovers")
+        .select(`
+          id,
+          property_id,
+          assigned_user_id,
+          turnover_date,
+          scheduled_start,
+          scheduled_end,
+          guest_checkout_time,
+          guest_checkin_time,
+          status,
+          priority,
+          same_day_turnover,
+          final_notes,
+          properties (
+            property_name,
+            property_code,
+            address,
+            city,
+            province
+          ),
+          turnover_tasks (
+            id,
+            task_status
+          )
+        `)
+        .eq("assigned_user_id", currentProfile.id)
+        .neq("status", "cancelled")
+        .order("turnover_date", { ascending: true })
+        .order("scheduled_start", { ascending: true });
+
+      if (error) throw error;
+
+      assignments = Array.isArray(data) ? data : [];
+      renderSummary();
+      renderAssignments();
+    }
+
+    function renderSummary() {
+      document.getElementById("todayCount").textContent =
+        assignments.filter(item => isToday(item.turnover_date)).length;
+
+      document.getElementById("inProgressCount").textContent =
+        assignments.filter(item => item.status === "in_progress").length;
+
+      document.getElementById("reviewCount").textContent =
+        assignments.filter(item => item.status === "review_required").length;
+    }
+
+    function getFilteredAssignments() {
+      const filter = statusFilter.value;
+
+      if (filter === "all") return assignments;
+
+      if (filter === "active") {
+        return assignments.filter(item =>
+          !["completed", "cancelled"].includes(item.status)
+        );
+      }
+
+      return assignments.filter(item => item.status === filter);
+    }
+
+    function renderAssignments() {
+      const filtered = getFilteredAssignments();
+
+      if (!filtered.length) {
+        assignmentsContent.innerHTML = `
+          <div class="empty">
+            <h2 class="state-title">No assignments found</h2>
+            <p class="state-text">
+              There are no turnover assignments matching the selected status.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      assignmentsContent.innerHTML = filtered.map(turnover => {
+        const tasks = Array.isArray(turnover.turnover_tasks)
+          ? turnover.turnover_tasks
+          : [];
+
+        const completedTasks = tasks.filter(task =>
+          ["completed", "not_applicable"].includes(task.task_status)
+        ).length;
+
+        const progress = tasks.length
+          ? Math.round((completedTasks / tasks.length) * 100)
+          : 0;
+
+        const location = [
+          turnover.properties?.address,
+          turnover.properties?.city,
+          turnover.properties?.province
+        ].filter(Boolean).join(", ");
+
+        const actionLabel =
+          turnover.status === "in_progress" || turnover.status === "correction_required"
+            ? "Continue Assignment"
+            : turnover.status === "review_required"
+              ? "Review Submission"
+              : turnover.status === "completed"
+                ? "View Completed Work"
+                : "Start Assignment";
+
+        const canStart = ["unassigned", "assigned", "accepted"].includes(turnover.status);
+
+        return `
+          <article class="assignment-card">
+            <div class="assignment-main">
+              <div class="assignment-header">
+                <div>
+                  <h3 class="property-name">
+                    ${escapeHtml(turnover.properties?.property_name || "Assigned Property")}
+                  </h3>
+                  <div class="property-location">
+                    ${escapeHtml(location || "Address not entered")}
+                  </div>
+                </div>
+
+                <span class="status-badge ${statusClass(turnover.status)}">
+                  ${escapeHtml(formatStatus(turnover.status))}
+                </span>
+              </div>
+
+              <div class="details-grid">
+                <div class="detail">
+                  <div class="detail-label">Turnover Date</div>
+                  <div class="detail-value">${escapeHtml(formatDate(turnover.turnover_date))}</div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">Scheduled Start</div>
+                  <div class="detail-value">${escapeHtml(formatTime(turnover.scheduled_start))}</div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">Scheduled End</div>
+                  <div class="detail-value">${escapeHtml(formatTime(turnover.scheduled_end))}</div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">Guest Check-In</div>
+                  <div class="detail-value">${escapeHtml(formatTime(turnover.guest_checkin_time))}</div>
+                </div>
+              </div>
+
+              <div class="progress-block">
+                <div class="progress-row">
+                  <span>Checklist progress</span>
+                  <strong>${completedTasks} of ${tasks.length} tasks completed</strong>
+                </div>
+
+                <div class="progress-track">
+                  <div class="progress-fill" style="width:${progress}%"></div>
+                </div>
+              </div>
+
+              ${isOverdue(turnover) ? `
+                <div class="overdue-notice">
+                  This assignment is past its scheduled completion time and requires immediate attention.
+                </div>
+              ` : ""}
+            </div>
+
+            <div class="assignment-footer">
+              ${canStart ? `
+                <button
+                  class="button button-primary"
+                  type="button"
+                  data-action="start"
+                  data-turnover-id="${escapeHtml(turnover.id)}"
+                >
+                  ${escapeHtml(actionLabel)}
+                </button>
+              ` : `
+                <a
+                  class="button button-primary"
+                  href="cleaner-turnover.html?id=${encodeURIComponent(turnover.id)}"
+                >
+                  ${escapeHtml(actionLabel)}
+                </a>
+              `}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      assignmentsContent.querySelectorAll('[data-action="start"]').forEach(button => {
+        button.addEventListener("click", () => startAssignment(button.dataset.turnoverId, button));
+      });
+    }
+
+    async function startAssignment(turnoverId, button) {
+      button.disabled = true;
+      button.textContent = "Starting Assignment";
+
+      try {
+        const { error } = await db
+          .from("turnovers")
+          .update({ status: "in_progress" })
+          .eq("id", turnoverId)
+          .eq("assigned_user_id", currentProfile.id);
+
+        if (error) throw error;
+
+        window.location.href =
+          `cleaner-turnover.html?id=${encodeURIComponent(turnoverId)}`;
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Start Assignment";
+        showToast(error.message || "The assignment could not be started.", "error");
+      }
+    }
+
+    statusFilter.addEventListener("change", renderAssignments);
+
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      try {
+        await db.auth.signOut();
+      } finally {
+        window.location.href = "login.html";
+      }
+    });
+
+    async function initialize() {
+      try {
+        const authenticated = await requireCleanerSession();
+        if (!authenticated) return;
+        await loadAssignments();
+      } catch (error) {
+        console.error("Cleaner dashboard failed:", error);
+
+        assignmentsContent.innerHTML = `
+          <div class="error">
+            <h2 class="state-title">Unable to load assignments</h2>
+            <p class="state-text">${escapeHtml(error.message || "An unexpected error occurred.")}</p>
+          </div>
+        `;
+      }
+    }
+
+    initialize();
+  </script>
+</body>
+</html>
