@@ -1363,7 +1363,7 @@
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Cleaner Turnover Checklist · Issue Reporting v7</div>
+          <div class="brand-subtitle">Cleaner Turnover Checklist · Issue Reporting v7.1</div>
         </div>
       </div>
 
@@ -1407,10 +1407,10 @@
           <label class="issue-field">
             <span class="issue-label">Urgency *</span>
             <select class="issue-select" id="issueUrgencyInput" required>
-             <option value="normal">Normal</option>
-<option value="important" selected>Important</option>
-<option value="urgent">Urgent</option>
-<option value="emergency">Emergency</option>
+              <option value="normal">Normal</option>
+              <option value="important" selected>Important</option>
+              <option value="urgent">Urgent</option>
+              <option value="emergency">Emergency</option>
             </select>
           </label>
 
@@ -1484,7 +1484,7 @@
   <script>
     "use strict";
 
-    console.info("NSC Cleaner Turnover Issue Reporting v7 loaded");
+    console.info("NSC Cleaner Turnover Issue Reporting v7.1 loaded");
 
     const db = window.nscSupabase || window.supabaseClient;
     const pageContent = document.getElementById("pageContent");
@@ -2804,7 +2804,7 @@
     function openIssueModal() {
       clearIssueError();
       issueForm.reset();
-     issueUrgencyInput.value = "important";
+      issueUrgencyInput.value = "important";
       issueFiles = [];
       renderIssueFileList();
 
@@ -2871,7 +2871,7 @@
         turnover_id: turnover.id,
         recipient_user_id: recipient.id,
         notification_type: "issue_reported",
-        severity: ["urgent", "high"].includes(issue.urgency) ? "critical" : "warning",
+        severity: ["urgent", "emergency"].includes(issue.urgency) ? "critical" : "warning",
         title: `${urgencyLabel} issue: ${issue.title}`,
         message: `${currentProfile.full_name || "A cleaner"} reported a ${issue.issue_type.replaceAll("_", " ")} issue at ${turnover.properties?.property_name || "the property"}.`,
         action_url: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
@@ -2934,7 +2934,18 @@
       clearIssueError();
 
       const issueType = issueTypeInput.value;
-      const urgency = issueUrgencyInput.value;
+      const urgencyMap = {
+        low: "normal",
+        medium: "important",
+        high: "urgent",
+        normal: "normal",
+        important: "important",
+        urgent: "urgent",
+        emergency: "emergency"
+      };
+
+      const urgency =
+        urgencyMap[issueUrgencyInput.value] || "important";
       const roomId = issueRoomInput.value || null;
       const title = issueTitleInput.value.trim();
       const description = issueDescriptionInput.value.trim();
