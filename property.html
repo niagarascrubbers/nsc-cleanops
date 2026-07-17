@@ -1114,6 +1114,202 @@
       gap: 12px;
     }
 
+
+    .module-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .module-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .module-summary-card {
+      padding: 16px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .module-summary-label {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .45px;
+      text-transform: uppercase;
+    }
+
+    .module-summary-value {
+      margin-top: 6px;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .module-toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) 190px auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .module-table {
+      width: 100%;
+      min-width: 820px;
+      border-collapse: collapse;
+    }
+
+    .module-table th {
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .module-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #edf2f6;
+      color: var(--text);
+      font-size: 11px;
+      vertical-align: middle;
+    }
+
+    .stock-badge,
+    .severity-badge,
+    .record-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .stock-badge.green,
+    .record-badge.success {
+      color: var(--success);
+      background: var(--success-light);
+    }
+
+    .stock-badge.amber,
+    .severity-badge.important,
+    .severity-badge.urgent,
+    .record-badge.warning {
+      color: var(--warning);
+      background: var(--warning-light);
+    }
+
+    .stock-badge.red,
+    .severity-badge.emergency,
+    .record-badge.danger {
+      color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    .record-badge.neutral,
+    .severity-badge.normal {
+      color: #536b7e;
+      background: #f1f5f8;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .photo-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: white;
+    }
+
+    .photo-preview {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #edf3f7;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-info {
+      padding: 12px;
+    }
+
+    .photo-title {
+      color: var(--navy-light);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .photo-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .settings-item {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    @media (max-width: 1000px) {
+      .module-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .module-toolbar {
+        grid-template-columns: 1fr 170px;
+      }
+
+      .module-toolbar .room-summary {
+        grid-column: 1 / -1;
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .module-summary-grid,
+      .settings-grid,
+      .module-toolbar {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 1000px) {
       .overview-grid,
       .checklist-layout {
@@ -1226,8 +1422,8 @@
           Properties
         </a>
 
-        <a class="nav-link" href="#">
-          <span class="nav-icon">□</span>
+        <a class="nav-link" href="turnovers.html">
+          <span class="nav-icon">TO</span>
           Turnovers
         </a>
 
@@ -1469,15 +1665,42 @@
             <textarea class="form-control" id="taskText" rows="3" maxlength="250" placeholder="Example: Clean and disinfect countertops" required></textarea>
           </div>
 
+          <div class="form-row-two">
+            <div class="form-group">
+              <label class="form-label" for="taskType">Task Type</label>
+              <select class="form-control" id="taskType">
+                <option value="checkbox">Completed / Checkbox</option>
+                <option value="pass_fail">Pass / Fail Inspection</option>
+                <option value="photo_only">Photo Only</option>
+                <option value="information">Information Only</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskCategory">Category</label>
+              <select class="form-control" id="taskCategory">
+                <option value="cleaning">Cleaning</option>
+                <option value="inspection">Inspection</option>
+                <option value="restocking">Restocking</option>
+                <option value="safety">Safety</option>
+              </select>
+            </div>
+          </div>
+
           <div class="form-group">
-            <label class="form-label" for="taskInstructions">Instructions</label>
-            <textarea class="form-control" id="taskInstructions" rows="3" maxlength="500" placeholder="Optional cleaner instructions"></textarea>
+            <label class="form-label" for="taskInstructions">Cleaner Instructions</label>
+            <textarea class="form-control" id="taskInstructions" rows="3" maxlength="500" placeholder="Explain the required result, product, method or safety instruction"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskSupplies">Required Supplies</label>
+            <input class="form-control" id="taskSupplies" type="text" maxlength="250" placeholder="Example: Microfibre cloth, neutral cleaner, mop">
           </div>
 
           <div class="form-row-two">
             <div class="form-group">
-              <label class="form-label" for="taskSortOrder">Sort Order</label>
-              <input class="form-control" id="taskSortOrder" type="number" min="0" max="9999" step="1" value="10">
+              <label class="form-label" for="taskEstimatedMinutes">Estimated Minutes</label>
+              <input class="form-control" id="taskEstimatedMinutes" type="number" min="0" max="480" step="1" placeholder="Example: 5">
             </div>
 
             <div class="form-group">
@@ -1485,6 +1708,27 @@
               <input class="form-control" id="taskPhotoCount" type="number" min="0" max="10" step="1" value="0">
             </div>
           </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskSortOrder">Sort Order</label>
+            <input class="form-control" id="taskSortOrder" type="number" min="0" max="9999" step="1" value="10">
+          </div>
+
+          <label class="checkbox-row" for="taskRequired">
+            <input id="taskRequired" type="checkbox" checked>
+            <span>
+              <span class="checkbox-title">Mandatory Task</span>
+              <span class="checkbox-description">The cleaner must complete this task before submitting the turnover.</span>
+            </span>
+          </label>
+
+          <label class="checkbox-row" for="taskNotesRequired">
+            <input id="taskNotesRequired" type="checkbox">
+            <span>
+              <span class="checkbox-title">Notes Required</span>
+              <span class="checkbox-description">The cleaner must enter a note before completing this task.</span>
+            </span>
+          </label>
 
           <label class="checkbox-row" for="taskAllowNA">
             <input id="taskAllowNA" type="checkbox" checked>
@@ -1551,8 +1795,14 @@
     const taskSectionInput = document.getElementById("taskSection");
     const taskTextInput = document.getElementById("taskText");
     const taskInstructionsInput = document.getElementById("taskInstructions");
+    const taskTypeInput = document.getElementById("taskType");
+    const taskCategoryInput = document.getElementById("taskCategory");
+    const taskSuppliesInput = document.getElementById("taskSupplies");
+    const taskEstimatedMinutesInput = document.getElementById("taskEstimatedMinutes");
     const taskSortOrderInput = document.getElementById("taskSortOrder");
     const taskPhotoCountInput = document.getElementById("taskPhotoCount");
+    const taskRequiredInput = document.getElementById("taskRequired");
+    const taskNotesRequiredInput = document.getElementById("taskNotesRequired");
     const taskAllowNAInput = document.getElementById("taskAllowNA");
     const taskActiveInput = document.getElementById("taskActive");
 
@@ -1824,13 +2074,13 @@
         <nav class="tab-bar" aria-label="Property modules">
           <button class="tab-link active" type="button" data-tab="overview">Overview</button>
           <button class="tab-link" type="button" data-tab="rooms">Rooms</button>
-          <button class="tab-link" type="button" data-placeholder-tab="inventory">Inventory</button>
-          <button class="tab-link" type="button" data-placeholder-tab="photos">Photos</button>
-          <button class="tab-link" type="button" data-placeholder-tab="turnovers">Turnovers</button>
+          <button class="tab-link" type="button" data-tab="inventory">Inventory</button>
+          <button class="tab-link" type="button" data-tab="photos">Photos</button>
+          <button class="tab-link" type="button" id="propertyTurnoversButton">Turnovers</button>
           <button class="tab-link" type="button" data-tab="checklists">Checklists</button>
-          <button class="tab-link" type="button" data-placeholder-tab="reports">Reports</button>
-          <button class="tab-link" type="button" data-placeholder-tab="issues">Issues</button>
-          <button class="tab-link" type="button" data-placeholder-tab="settings">Settings</button>
+          <button class="tab-link" type="button" data-tab="reports">Reports</button>
+          <button class="tab-link" type="button" data-tab="issues">Issues</button>
+          <button class="tab-link" type="button" data-tab="settings">Settings</button>
         </nav>
 
         <section class="tab-panel" id="overviewPanel" data-panel="overview">
@@ -2046,6 +2296,66 @@
             </section>
           </div>
         </section>
+
+        <section class="tab-panel" id="inventoryPanel" data-panel="inventory" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Inventory</h2>
+              <p class="module-description">Review property stock levels and low-stock items.</p>
+            </div>
+          </div>
+          <div id="inventoryContent" class="module-grid">
+            <div class="inline-loading"><div class="spinner spinner-small"></div>Loading inventory</div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="photosPanel" data-panel="photos" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Photos</h2>
+              <p class="module-description">View checklist, completion and issue photos for this property.</p>
+            </div>
+          </div>
+          <div class="card" id="photosContent">
+            <div class="inline-loading"><div class="spinner spinner-small"></div>Loading photos</div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="reportsPanel" data-panel="reports" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Reports</h2>
+              <p class="module-description">Property turnover and operational history.</p>
+            </div>
+          </div>
+          <div id="reportsContent" class="module-grid">
+            <div class="inline-loading"><div class="spinner spinner-small"></div>Loading reports</div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="issuesPanel" data-panel="issues" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Issues</h2>
+              <p class="module-description">Review reported problems, urgency and guest-readiness blockers.</p>
+            </div>
+          </div>
+          <div class="card" id="issuesContent">
+            <div class="inline-loading"><div class="spinner spinner-small"></div>Loading issues</div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="settingsPanel" data-panel="settings" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Property Settings</h2>
+              <p class="module-description">Review the property configuration currently used by NSC CleanOps.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body" id="settingsContent"></div>
+          </div>
+        </section>
       `;
 
       registerPropertyEvents();
@@ -2065,15 +2375,12 @@
         });
       });
 
-      document.querySelectorAll("[data-placeholder-tab]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const tabName = button.dataset.placeholderTab;
-
-          showToast(
-            `${tabName.charAt(0).toUpperCase() + tabName.slice(1)} will be built after the Rooms module is tested.`
-          );
+      const propertyTurnoversButton = document.getElementById("propertyTurnoversButton");
+      if (propertyTurnoversButton) {
+        propertyTurnoversButton.addEventListener("click", () => {
+          window.location.href = `turnovers.html?property_id=${encodeURIComponent(currentProperty.id)}`;
         });
-      });
+      }
 
       document
         .getElementById("addRoomButton")
@@ -2103,6 +2410,12 @@
         renderChecklistRoomSelector();
         renderSelectedChecklist();
       }
+
+      if (tabName === "inventory") loadInventory();
+      if (tabName === "photos") loadPhotos();
+      if (tabName === "issues") loadIssues();
+      if (tabName === "reports") loadReports();
+      if (tabName === "settings") renderSettings();
     }
 
     async function loadRooms(showLoading = true) {
@@ -2600,6 +2913,14 @@
           required_photo_count,
           allow_not_applicable,
           issue_requires_photo,
+          is_required,
+          photo_required,
+          notes_required,
+          task_type,
+          category,
+          cleaner_instructions,
+          estimated_minutes,
+          required_supplies,
           sort_order,
           active
         `)
@@ -2756,9 +3077,23 @@
                             ? `<span class="task-badge photo">📷 ${Number(item.required_photo_count)} required</span>`
                             : ""
                           }
+                          <span class="task-badge">${escapeHtml((item.task_type || "checkbox").replaceAll("_", " "))}</span>
+                          <span class="task-badge">${escapeHtml(item.category || "cleaning")}</span>
+                          ${item.is_required !== false
+                            ? `<span class="task-badge">Mandatory</span>`
+                            : `<span class="task-badge">Optional</span>`
+                          }
+                          ${item.notes_required
+                            ? `<span class="task-badge">Notes required</span>`
+                            : ""
+                          }
+                          ${Number(item.estimated_minutes) > 0
+                            ? `<span class="task-badge">⏱ ${Number(item.estimated_minutes)} min</span>`
+                            : ""
+                          }
                           ${item.allow_not_applicable
                             ? `<span class="task-badge">N/A allowed</span>`
-                            : `<span class="task-badge">Required</span>`
+                            : ""
                           }
                           ${item.active === false
                             ? `<span class="task-badge inactive">Inactive</span>`
@@ -2834,9 +3169,17 @@
         saveTaskButton.textContent = "Save Changes";
         taskSectionInput.value = task.section_name || formatRoomType(room.room_type);
         taskTextInput.value = task.task_text || "";
-        taskInstructionsInput.value = task.instructions || "";
+        taskInstructionsInput.value = task.cleaner_instructions || task.instructions || "";
+        taskTypeInput.value = task.task_type || "checkbox";
+        taskCategoryInput.value = task.category || "cleaning";
+        taskSuppliesInput.value = task.required_supplies || "";
+        taskEstimatedMinutesInput.value = Number.isFinite(Number(task.estimated_minutes))
+          ? Number(task.estimated_minutes)
+          : "";
         taskSortOrderInput.value = Number(task.sort_order) || 10;
         taskPhotoCountInput.value = Number(task.required_photo_count) || 0;
+        taskRequiredInput.checked = task.is_required !== false;
+        taskNotesRequiredInput.checked = task.notes_required === true;
         taskAllowNAInput.checked = task.allow_not_applicable !== false;
         taskActiveInput.checked = task.active !== false;
       } else {
@@ -2846,8 +3189,14 @@
         taskSectionInput.value = formatRoomType(room.room_type);
         taskTextInput.value = "";
         taskInstructionsInput.value = "";
+        taskTypeInput.value = "checkbox";
+        taskCategoryInput.value = "cleaning";
+        taskSuppliesInput.value = "";
+        taskEstimatedMinutesInput.value = "";
         taskSortOrderInput.value = getNextTaskSortOrder(room.id);
         taskPhotoCountInput.value = 0;
+        taskRequiredInput.checked = true;
+        taskNotesRequiredInput.checked = false;
         taskAllowNAInput.checked = true;
         taskActiveInput.checked = true;
       }
@@ -2899,6 +3248,10 @@
       const sectionName = taskSectionInput.value.trim();
       const taskText = taskTextInput.value.trim();
       const instructions = taskInstructionsInput.value.trim();
+      const taskType = taskTypeInput.value;
+      const category = taskCategoryInput.value;
+      const requiredSupplies = taskSuppliesInput.value.trim();
+      const estimatedMinutes = Number.parseInt(taskEstimatedMinutesInput.value, 10);
       const sortOrder = Number.parseInt(taskSortOrderInput.value, 10);
       const requiredPhotoCount = Number.parseInt(taskPhotoCountInput.value, 10);
 
@@ -2916,7 +3269,15 @@
         task_text: taskText,
         task_code: existingTask?.task_code || generateTaskCode(room, taskText),
         instructions: instructions || null,
+        cleaner_instructions: instructions || null,
         required_photo_count: Number.isFinite(requiredPhotoCount) ? requiredPhotoCount : 0,
+        photo_required: Number.isFinite(requiredPhotoCount) && requiredPhotoCount > 0,
+        is_required: taskRequiredInput.checked,
+        notes_required: taskNotesRequiredInput.checked,
+        task_type: taskType,
+        category,
+        estimated_minutes: Number.isFinite(estimatedMinutes) ? estimatedMinutes : null,
+        required_supplies: requiredSupplies || null,
         allow_not_applicable: taskAllowNAInput.checked,
         issue_requires_photo: true,
         sort_order: Number.isFinite(sortOrder) ? sortOrder : 10,
@@ -3011,6 +3372,376 @@
         button.disabled = false;
         showToast(error.message || "Task status could not be updated.", "error");
       }
+    }
+
+
+    function firstDefined(record, keys, fallback = null) {
+      for (const key of keys) {
+        if (record && record[key] !== null && record[key] !== undefined && record[key] !== "") {
+          return record[key];
+        }
+      }
+      return fallback;
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "Not recorded";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return date.toLocaleString("en-CA", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    function getInventoryStatus(item) {
+      const quantity = Number(firstDefined(item, ["current_quantity", "quantity", "on_hand", "stock_quantity"], 0)) || 0;
+      const amber = Number(firstDefined(item, ["amber_threshold", "reorder_level", "low_stock_threshold"], 0)) || 0;
+      const red = Number(firstDefined(item, ["minimum_threshold", "minimum_quantity", "critical_threshold"], 0)) || 0;
+
+      if (quantity <= red) return { key: "red", label: "Critical" };
+      if (quantity <= amber) return { key: "amber", label: "Low" };
+      return { key: "green", label: "Good" };
+    }
+
+    async function loadInventory() {
+      const container = document.getElementById("inventoryContent");
+      if (!container || container.dataset.loaded === "true") return;
+
+      try {
+        const { data, error } = await db
+          .from("inventory_items")
+          .select("*")
+          .eq("property_id", currentProperty.id)
+          .order("created_at", { ascending: true });
+
+        if (error) throw error;
+
+        const items = Array.isArray(data) ? data : [];
+        const statuses = items.map(getInventoryStatus);
+        const criticalCount = statuses.filter((status) => status.key === "red").length;
+        const lowCount = statuses.filter((status) => status.key === "amber").length;
+        const goodCount = statuses.filter((status) => status.key === "green").length;
+
+        container.innerHTML = `
+          <div class="module-summary-grid">
+            <div class="module-summary-card">
+              <div class="module-summary-label">Inventory Items</div>
+              <div class="module-summary-value">${items.length}</div>
+            </div>
+            <div class="module-summary-card">
+              <div class="module-summary-label">Good Stock</div>
+              <div class="module-summary-value">${goodCount}</div>
+            </div>
+            <div class="module-summary-card">
+              <div class="module-summary-label">Low Stock</div>
+              <div class="module-summary-value">${lowCount}</div>
+            </div>
+            <div class="module-summary-card">
+              <div class="module-summary-label">Critical</div>
+              <div class="module-summary-value">${criticalCount}</div>
+            </div>
+          </div>
+
+          <div class="card">
+            ${items.length ? `
+              <div class="table-wrap">
+                <table class="module-table">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Location</th>
+                      <th>Current</th>
+                      <th>Target</th>
+                      <th>Amber</th>
+                      <th>Minimum</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${items.map((item) => {
+                      const status = getInventoryStatus(item);
+                      return `
+                        <tr>
+                          <td><strong>${escapeHtml(firstDefined(item, ["item_name", "name", "inventory_name"], "Unnamed item"))}</strong></td>
+                          <td>${escapeHtml(firstDefined(item, ["location", "storage_location", "room_name"], "Not assigned"))}</td>
+                          <td>${escapeHtml(firstDefined(item, ["current_quantity", "quantity", "on_hand", "stock_quantity"], 0))}</td>
+                          <td>${escapeHtml(firstDefined(item, ["target_quantity", "par_level", "ideal_quantity"], "—"))}</td>
+                          <td>${escapeHtml(firstDefined(item, ["amber_threshold", "reorder_level", "low_stock_threshold"], "—"))}</td>
+                          <td>${escapeHtml(firstDefined(item, ["minimum_threshold", "minimum_quantity", "critical_threshold"], "—"))}</td>
+                          <td><span class="stock-badge ${status.key}">${status.label}</span></td>
+                        </tr>
+                      `;
+                    }).join("")}
+                  </tbody>
+                </table>
+              </div>
+            ` : `
+              <div class="empty-state">
+                <div class="empty-icon">▤</div>
+                <h3 class="empty-title">No inventory items found</h3>
+                <p class="empty-text">No inventory records are connected to this property yet.</p>
+              </div>
+            `}
+          </div>
+        `;
+
+        container.dataset.loaded = "true";
+      } catch (error) {
+        console.error("Inventory load failed:", error);
+        container.innerHTML = `<div class="card"><div class="error-state"><h3 class="state-title">Inventory could not be loaded</h3><p class="state-text">${escapeHtml(error.message || "Unknown error")}</p></div></div>`;
+      }
+    }
+
+    function getPhotoUrl(photo) {
+      return firstDefined(photo, ["public_url", "photo_url", "file_url", "url", "signed_url"], null);
+    }
+
+    async function loadPhotos() {
+      const container = document.getElementById("photosContent");
+      if (!container || container.dataset.loaded === "true") return;
+
+      try {
+        const { data, error } = await db
+          .from("photos")
+          .select("*")
+          .eq("property_id", currentProperty.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        const photos = Array.isArray(data) ? data : [];
+
+        container.innerHTML = photos.length ? `
+          <div class="photo-grid">
+            ${photos.map((photo) => {
+              const url = getPhotoUrl(photo);
+              const title = firstDefined(photo, ["caption", "photo_type", "category", "file_name"], "Property photo");
+              return `
+                <article class="photo-card">
+                  <div class="photo-preview">
+                    ${url
+                      ? `<a href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer"><img src="${escapeAttribute(url)}" alt="${escapeAttribute(title)}"></a>`
+                      : "Photo file unavailable"
+                    }
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-title">${escapeHtml(title)}</div>
+                    <div class="photo-meta">${escapeHtml(formatDateTime(firstDefined(photo, ["created_at", "uploaded_at", "taken_at"], null)))}</div>
+                  </div>
+                </article>
+              `;
+            }).join("")}
+          </div>
+        ` : `
+          <div class="empty-state">
+            <div class="empty-icon">◫</div>
+            <h3 class="empty-title">No photos found</h3>
+            <p class="empty-text">No checklist or issue photos are connected to this property yet.</p>
+          </div>
+        `;
+
+        container.dataset.loaded = "true";
+      } catch (error) {
+        console.error("Photos load failed:", error);
+        container.innerHTML = `<div class="error-state"><h3 class="state-title">Photos could not be loaded</h3><p class="state-text">${escapeHtml(error.message || "Unknown error")}</p></div>`;
+      }
+    }
+
+    async function loadIssues() {
+      const container = document.getElementById("issuesContent");
+      if (!container || container.dataset.loaded === "true") return;
+
+      try {
+        const { data, error } = await db
+          .from("issues")
+          .select("*")
+          .eq("property_id", currentProperty.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        const issues = Array.isArray(data) ? data : [];
+
+        container.innerHTML = issues.length ? `
+          <div class="table-wrap">
+            <table class="module-table">
+              <thead>
+                <tr>
+                  <th>Issue</th>
+                  <th>Urgency</th>
+                  <th>Status</th>
+                  <th>Guest Blocker</th>
+                  <th>Reported</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${issues.map((issue) => {
+                  const urgency = String(firstDefined(issue, ["urgency"], "normal")).toLowerCase();
+                  const status = String(firstDefined(issue, ["status"], "open")).toLowerCase();
+                  const statusClass = ["resolved", "closed"].includes(status) ? "success" : status === "open" ? "warning" : "neutral";
+                  const blocker = Boolean(firstDefined(issue, ["prevents_guest_ready", "guest_blocker"], false));
+                  return `
+                    <tr>
+                      <td>
+                        <strong>${escapeHtml(firstDefined(issue, ["title", "issue_type", "category"], "Reported issue"))}</strong>
+                        ${firstDefined(issue, ["description", "details", "notes"], null)
+                          ? `<div class="task-instructions">${escapeHtml(firstDefined(issue, ["description", "details", "notes"], ""))}</div>`
+                          : ""
+                        }
+                      </td>
+                      <td><span class="severity-badge ${escapeAttribute(urgency)}">${escapeHtml(urgency)}</span></td>
+                      <td><span class="record-badge ${statusClass}">${escapeHtml(status.replaceAll("_", " "))}</span></td>
+                      <td>${blocker ? `<span class="record-badge danger">Yes</span>` : `<span class="record-badge neutral">No</span>`}</td>
+                      <td>${escapeHtml(formatDateTime(firstDefined(issue, ["created_at", "reported_at"], null)))}</td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>
+        ` : `
+          <div class="empty-state">
+            <div class="empty-icon">!</div>
+            <h3 class="empty-title">No issues found</h3>
+            <p class="empty-text">No issue reports are connected to this property.</p>
+          </div>
+        `;
+
+        container.dataset.loaded = "true";
+      } catch (error) {
+        console.error("Issues load failed:", error);
+        container.innerHTML = `<div class="error-state"><h3 class="state-title">Issues could not be loaded</h3><p class="state-text">${escapeHtml(error.message || "Unknown error")}</p></div>`;
+      }
+    }
+
+    async function loadReports() {
+      const container = document.getElementById("reportsContent");
+      if (!container || container.dataset.loaded === "true") return;
+
+      try {
+        const { data, error } = await db
+          .from("turnovers")
+          .select("*")
+          .eq("property_id", currentProperty.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        const turnovers = Array.isArray(data) ? data : [];
+        const completed = turnovers.filter((item) => ["completed", "approved", "closed"].includes(String(item.status || "").toLowerCase())).length;
+        const active = turnovers.filter((item) => ["assigned", "confirmed", "in_progress", "submitted", "submitted_for_review"].includes(String(item.status || "").toLowerCase())).length;
+
+        container.innerHTML = `
+          <div class="module-summary-grid">
+            <div class="module-summary-card">
+              <div class="module-summary-label">Total Turnovers</div>
+              <div class="module-summary-value">${turnovers.length}</div>
+            </div>
+            <div class="module-summary-card">
+              <div class="module-summary-label">Completed</div>
+              <div class="module-summary-value">${completed}</div>
+            </div>
+            <div class="module-summary-card">
+              <div class="module-summary-label">Active</div>
+              <div class="module-summary-value">${active}</div>
+            </div>
+            <div class="module-summary-card">
+              <div class="module-summary-label">Open Issues</div>
+              <div class="module-summary-value">${currentCounts.issueCount || 0}</div>
+            </div>
+          </div>
+
+          <div class="card">
+            ${turnovers.length ? `
+              <div class="table-wrap">
+                <table class="module-table">
+                  <thead>
+                    <tr>
+                      <th>Turnover</th>
+                      <th>Status</th>
+                      <th>Scheduled</th>
+                      <th>Created</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${turnovers.slice(0, 50).map((turnover) => {
+                      const status = String(firstDefined(turnover, ["status"], "unknown")).toLowerCase();
+                      const statusClass = ["completed", "approved", "closed"].includes(status) ? "success" : ["cancelled", "declined"].includes(status) ? "danger" : "warning";
+                      return `
+                        <tr>
+                          <td><strong>${escapeHtml(firstDefined(turnover, ["turnover_code", "title", "id"], "Turnover"))}</strong></td>
+                          <td><span class="record-badge ${statusClass}">${escapeHtml(status.replaceAll("_", " "))}</span></td>
+                          <td>${escapeHtml(formatDateTime(firstDefined(turnover, ["scheduled_start", "scheduled_date", "check_in_date"], null)))}</td>
+                          <td>${escapeHtml(formatDateTime(firstDefined(turnover, ["created_at"], null)))}</td>
+                        </tr>
+                      `;
+                    }).join("")}
+                  </tbody>
+                </table>
+              </div>
+            ` : `
+              <div class="empty-state">
+                <div class="empty-icon">▥</div>
+                <h3 class="empty-title">No turnover history</h3>
+                <p class="empty-text">No turnovers are connected to this property yet.</p>
+              </div>
+            `}
+          </div>
+        `;
+
+        container.dataset.loaded = "true";
+      } catch (error) {
+        console.error("Reports load failed:", error);
+        container.innerHTML = `<div class="card"><div class="error-state"><h3 class="state-title">Reports could not be loaded</h3><p class="state-text">${escapeHtml(error.message || "Unknown error")}</p></div></div>`;
+      }
+    }
+
+    function renderSettings() {
+      const container = document.getElementById("settingsContent");
+      if (!container || container.dataset.loaded === "true") return;
+
+      container.innerHTML = `
+        <div class="settings-grid">
+          <div class="settings-item">
+            <div class="detail-label">Property Name</div>
+            <div class="detail-value">${displayValue(currentProperty.property_name)}</div>
+          </div>
+          <div class="settings-item">
+            <div class="detail-label">Property Code</div>
+            <div class="detail-value">${displayValue(currentProperty.property_code)}</div>
+          </div>
+          <div class="settings-item">
+            <div class="detail-label">GPS Radius</div>
+            <div class="detail-value">${displayValue(currentProperty.gps_radius, "150")} metres</div>
+          </div>
+          <div class="settings-item">
+            <div class="detail-label">Property Status</div>
+            <div class="detail-value">${currentProperty.active === false ? "Inactive" : "Active"}</div>
+          </div>
+          <div class="settings-item">
+            <div class="detail-label">Owner</div>
+            <div class="detail-value">${displayValue(currentProperty.owner_name)}</div>
+          </div>
+          <div class="settings-item">
+            <div class="detail-label">Owner Email</div>
+            <div class="detail-value">${displayValue(currentProperty.owner_email)}</div>
+          </div>
+          <div class="settings-item">
+            <div class="detail-label">Latitude</div>
+            <div class="detail-value">${displayValue(currentProperty.latitude)}</div>
+          </div>
+          <div class="settings-item">
+            <div class="detail-label">Longitude</div>
+            <div class="detail-value">${displayValue(currentProperty.longitude)}</div>
+          </div>
+        </div>
+      `;
+
+      container.dataset.loaded = "true";
     }
 
     function showError(title, message) {
