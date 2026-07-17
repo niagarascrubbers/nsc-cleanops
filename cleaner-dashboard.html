@@ -244,6 +244,177 @@
 
     .status-completed { background: var(--success-light); color: var(--success); }
 
+    .attendance-panel {
+      margin-top: 15px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #fbfdfe;
+    }
+
+    .attendance-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .attendance-title {
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .attendance-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 8px;
+      font-weight: 700;
+    }
+
+    .attendance-pending {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .attendance-confirmed {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .attendance-declined {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .attendance-message {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.55;
+    }
+
+    .attendance-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 11px;
+    }
+
+    .button-confirm {
+      color: white;
+      background: var(--success);
+    }
+
+    .button-decline {
+      color: var(--danger);
+      background: white;
+      border-color: #efcaca;
+    }
+
+    .decline-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(7,31,53,.58);
+    }
+
+    .decline-modal-backdrop.open {
+      display: flex;
+    }
+
+    .decline-modal {
+      width: min(520px, 100%);
+      overflow: hidden;
+      border-radius: 15px;
+      background: white;
+      box-shadow: 0 28px 80px rgba(7,31,53,.3);
+    }
+
+    .decline-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 17px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .decline-modal-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+    }
+
+    .decline-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 17px;
+    }
+
+    .decline-form {
+      display: grid;
+      gap: 12px;
+      padding: 17px;
+    }
+
+    .decline-label {
+      color: var(--navy-light);
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .decline-textarea {
+      width: 100%;
+      min-height: 105px;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      resize: vertical;
+      color: var(--text);
+      font-size: 10px;
+      outline: none;
+    }
+
+    .decline-textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47,143,202,.12);
+    }
+
+    .decline-error {
+      display: none;
+      padding: 9px 10px;
+      border: 1px solid #efcaca;
+      border-radius: 9px;
+      background: var(--danger-light);
+      color: var(--danger);
+      font-size: 9px;
+    }
+
+    .decline-error.visible {
+      display: block;
+    }
+
+    .decline-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+
     .details-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0,1fr));
@@ -439,7 +610,7 @@
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Cleaner Operations</div>
+          <div class="brand-subtitle">Cleaner Operations · Attendance v2</div>
         </div>
       </div>
 
@@ -496,6 +667,35 @@
     </section>
   </main>
 
+  <div class="decline-modal-backdrop" id="declineModalBackdrop" aria-hidden="true">
+    <section class="decline-modal" role="dialog" aria-modal="true" aria-labelledby="declineModalTitle">
+      <div class="decline-modal-header">
+        <h2 class="decline-modal-title" id="declineModalTitle">Cannot Attend</h2>
+        <button class="decline-close" id="closeDeclineModalButton" type="button">×</button>
+      </div>
+
+      <form class="decline-form" id="declineForm">
+        <div>
+          <div class="decline-label">Reason *</div>
+          <textarea
+            class="decline-textarea"
+            id="declineReasonInput"
+            maxlength="500"
+            placeholder="Briefly explain why you cannot attend this assignment."
+            required
+          ></textarea>
+        </div>
+
+        <div class="decline-error" id="declineError"></div>
+
+        <div class="decline-modal-actions">
+          <button class="button button-secondary" id="cancelDeclineButton" type="button">Cancel</button>
+          <button class="button button-decline" id="submitDeclineButton" type="submit">Send to Manager</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
 
@@ -508,6 +708,13 @@
 
     let currentProfile = null;
     let assignments = [];
+    let declineTurnoverId = null;
+
+    const declineModalBackdrop = document.getElementById("declineModalBackdrop");
+    const declineForm = document.getElementById("declineForm");
+    const declineReasonInput = document.getElementById("declineReasonInput");
+    const declineError = document.getElementById("declineError");
+    const submitDeclineButton = document.getElementById("submitDeclineButton");
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -635,6 +842,12 @@
           priority,
           same_day_turnover,
           final_notes,
+          attendance_status,
+          attendance_confirmed_at,
+          attendance_declined_at,
+          attendance_note,
+          attendance_response_at,
+          needs_reassignment,
           properties (
             property_name,
             property_code,
@@ -684,6 +897,234 @@
       return assignments.filter(item => item.status === filter);
     }
 
+
+    function getAttendanceStatus(turnover) {
+      return turnover.attendance_status || "pending";
+    }
+
+    function getAttendanceLabel(status) {
+      const labels = {
+        pending: "Confirmation Required",
+        confirmed: "Attendance Confirmed",
+        declined: "Cannot Attend"
+      };
+
+      return labels[status] || "Confirmation Required";
+    }
+
+    function attendanceClass(status) {
+      return `attendance-${status || "pending"}`;
+    }
+
+    function getAttendanceMessage(turnover) {
+      const status = getAttendanceStatus(turnover);
+
+      if (status === "confirmed") {
+        return turnover.attendance_confirmed_at
+          ? `Confirmed ${formatDateTimeShort(turnover.attendance_confirmed_at)}.`
+          : "You confirmed attendance for this assignment.";
+      }
+
+      if (status === "declined") {
+        return turnover.attendance_note
+          ? `Reason sent to manager: ${turnover.attendance_note}`
+          : "The manager has been notified that you cannot attend.";
+      }
+
+      return "Confirm that you will attend this assignment. If you cannot attend, notify the manager immediately.";
+    }
+
+    function formatDateTimeShort(value) {
+      if (!value) return "";
+
+      return new Intl.DateTimeFormat("en-CA", {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(new Date(value));
+    }
+
+    async function getManagerRecipients() {
+      const { data, error } = await db
+        .from("users")
+        .select("id")
+        .eq("company_id", currentProfile.company_id)
+        .in("role", ["admin", "manager"])
+        .eq("active", true);
+
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function notifyManagers(turnover, type, note = "") {
+      const recipients = await getManagerRecipients();
+      if (!recipients.length) return;
+
+      const propertyName =
+        turnover.properties?.property_name || "Assigned Property";
+
+      const isDecline = type === "declined";
+
+      const rows = recipients.map(recipient => ({
+        company_id: currentProfile.company_id,
+        property_id: turnover.property_id,
+        turnover_id: turnover.id,
+        recipient_user_id: recipient.id,
+        notification_type: isDecline
+          ? "cleaner_cannot_attend"
+          : "cleaner_attendance_confirmed",
+        severity: isDecline ? "critical" : "info",
+        title: isDecline
+          ? `${currentProfile.full_name} cannot attend`
+          : `${currentProfile.full_name} confirmed attendance`,
+        message: isDecline
+          ? `${currentProfile.full_name} cannot attend ${propertyName}. Reason: ${note || "No reason provided."}`
+          : `${currentProfile.full_name} confirmed attendance for ${propertyName}.`,
+        action_url: `turnovers.html`
+      }));
+
+      const { error } = await db.from("notifications").insert(rows);
+      if (error) throw error;
+    }
+
+    async function confirmAttendance(turnoverId, button) {
+      button.disabled = true;
+      button.textContent = "Confirming";
+
+      try {
+        const now = new Date().toISOString();
+
+        const { data, error } = await db
+          .from("turnovers")
+          .update({
+            attendance_status: "confirmed",
+            attendance_confirmed_at: now,
+            attendance_declined_at: null,
+            attendance_response_at: now,
+            attendance_note: null,
+            needs_reassignment: false,
+            status: "accepted"
+          })
+          .eq("id", turnoverId)
+          .eq("assigned_user_id", currentProfile.id)
+          .select(`
+            id,
+            property_id,
+            attendance_status,
+            attendance_confirmed_at,
+            attendance_declined_at,
+            attendance_response_at,
+            attendance_note,
+            needs_reassignment,
+            status,
+            properties (
+              property_name
+            )
+          `)
+          .single();
+
+        if (error) throw error;
+
+        const assignment = assignments.find(item => item.id === turnoverId);
+        if (assignment) Object.assign(assignment, data);
+
+        await notifyManagers(assignment || data, "confirmed");
+        renderSummary();
+        renderAssignments();
+        showToast("Attendance confirmed.");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Confirm";
+        showToast(error.message || "Attendance could not be confirmed.", "error");
+      }
+    }
+
+    function openDeclineModal(turnoverId) {
+      declineTurnoverId = turnoverId;
+      declineReasonInput.value = "";
+      declineError.textContent = "";
+      declineError.classList.remove("visible");
+      declineModalBackdrop.classList.add("open");
+      declineModalBackdrop.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      declineReasonInput.focus();
+    }
+
+    function closeDeclineModal() {
+      declineTurnoverId = null;
+      declineForm.reset();
+      declineError.textContent = "";
+      declineError.classList.remove("visible");
+      declineModalBackdrop.classList.remove("open");
+      declineModalBackdrop.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    async function submitDecline(event) {
+      event.preventDefault();
+
+      const note = declineReasonInput.value.trim();
+
+      if (!note) {
+        declineError.textContent = "Enter a reason before notifying the manager.";
+        declineError.classList.add("visible");
+        return;
+      }
+
+      submitDeclineButton.disabled = true;
+      submitDeclineButton.textContent = "Sending";
+
+      try {
+        const now = new Date().toISOString();
+
+        const { data, error } = await db
+          .from("turnovers")
+          .update({
+            attendance_status: "declined",
+            attendance_confirmed_at: null,
+            attendance_declined_at: now,
+            attendance_response_at: now,
+            attendance_note: note,
+            needs_reassignment: true
+          })
+          .eq("id", declineTurnoverId)
+          .eq("assigned_user_id", currentProfile.id)
+          .select(`
+            id,
+            property_id,
+            attendance_status,
+            attendance_confirmed_at,
+            attendance_declined_at,
+            attendance_response_at,
+            attendance_note,
+            needs_reassignment,
+            status,
+            properties (
+              property_name
+            )
+          `)
+          .single();
+
+        if (error) throw error;
+
+        const assignment = assignments.find(item => item.id === declineTurnoverId);
+        if (assignment) Object.assign(assignment, data);
+
+        await notifyManagers(assignment || data, "declined", note);
+        closeDeclineModal();
+        renderAssignments();
+        showToast("The manager has been notified.", "success");
+      } catch (error) {
+        declineError.textContent =
+          error.message || "The manager could not be notified.";
+        declineError.classList.add("visible");
+      } finally {
+        submitDeclineButton.disabled = false;
+        submitDeclineButton.textContent = "Send to Manager";
+      }
+    }
+
     function renderAssignments() {
       const filtered = getFilteredAssignments();
 
@@ -727,7 +1168,10 @@
                 ? "View Completed Work"
                 : "Start Assignment";
 
-        const canStart = ["unassigned", "assigned", "accepted"].includes(turnover.status);
+        const attendanceStatus = getAttendanceStatus(turnover);
+        const canStart =
+          ["unassigned", "assigned", "accepted"].includes(turnover.status) &&
+          attendanceStatus === "confirmed";
 
         return `
           <article class="assignment-card">
@@ -780,6 +1224,41 @@
                 </div>
               </div>
 
+              <div class="attendance-panel">
+                <div class="attendance-header">
+                  <div class="attendance-title">Attendance</div>
+                  <span class="attendance-badge ${attendanceClass(getAttendanceStatus(turnover))}">
+                    ${escapeHtml(getAttendanceLabel(getAttendanceStatus(turnover)))}
+                  </span>
+                </div>
+
+                <div class="attendance-message">
+                  ${escapeHtml(getAttendanceMessage(turnover))}
+                </div>
+
+                ${getAttendanceStatus(turnover) === "pending" ? `
+                  <div class="attendance-actions">
+                    <button
+                      class="button button-confirm"
+                      type="button"
+                      data-action="confirm-attendance"
+                      data-turnover-id="${escapeHtml(turnover.id)}"
+                    >
+                      Confirm
+                    </button>
+
+                    <button
+                      class="button button-decline"
+                      type="button"
+                      data-action="decline-attendance"
+                      data-turnover-id="${escapeHtml(turnover.id)}"
+                    >
+                      Cannot Attend
+                    </button>
+                  </div>
+                ` : ""}
+              </div>
+
               ${isOverdue(turnover) ? `
                 <div class="overdue-notice">
                   This assignment is past its scheduled completion time and requires immediate attention.
@@ -788,6 +1267,18 @@
             </div>
 
             <div class="assignment-footer">
+              ${attendanceStatus === "pending" ? `
+                <span class="state-text" style="margin-right:auto;">
+                  Confirm attendance before starting this assignment.
+                </span>
+              ` : ""}
+
+              ${attendanceStatus === "declined" ? `
+                <span class="state-text" style="margin-right:auto;">
+                  This assignment is awaiting manager reassignment.
+                </span>
+              ` : ""}
+
               ${canStart ? `
                 <button
                   class="button button-primary"
@@ -797,18 +1288,30 @@
                 >
                   ${escapeHtml(actionLabel)}
                 </button>
-              ` : `
+              ` : attendanceStatus === "confirmed" ? `
                 <a
                   class="button button-primary"
                   href="cleaner-turnover.html?id=${encodeURIComponent(turnover.id)}"
                 >
                   ${escapeHtml(actionLabel)}
                 </a>
-              `}
+              ` : ""}
             </div>
           </article>
         `;
       }).join("");
+
+      assignmentsContent.querySelectorAll('[data-action="confirm-attendance"]').forEach(button => {
+        button.addEventListener("click", () => {
+          confirmAttendance(button.dataset.turnoverId, button);
+        });
+      });
+
+      assignmentsContent.querySelectorAll('[data-action="decline-attendance"]').forEach(button => {
+        button.addEventListener("click", () => {
+          openDeclineModal(button.dataset.turnoverId);
+        });
+      });
 
       assignmentsContent.querySelectorAll('[data-action="start"]').forEach(button => {
         button.addEventListener("click", () => startAssignment(button.dataset.turnoverId, button));
@@ -844,6 +1347,16 @@
         await db.auth.signOut();
       } finally {
         window.location.href = "login.html";
+      }
+    });
+
+    document.getElementById("closeDeclineModalButton").addEventListener("click", closeDeclineModal);
+    document.getElementById("cancelDeclineButton").addEventListener("click", closeDeclineModal);
+    declineForm.addEventListener("submit", submitDecline);
+
+    declineModalBackdrop.addEventListener("click", event => {
+      if (event.target === declineModalBackdrop) {
+        closeDeclineModal();
       }
     });
 
