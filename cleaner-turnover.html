@@ -1407,10 +1407,10 @@
           <label class="issue-field">
             <span class="issue-label">Urgency *</span>
             <select class="issue-select" id="issueUrgencyInput" required>
-              <option value="low">Low</option>
-              <option value="medium" selected>Medium</option>
-              <option value="high">High</option>
-              <option value="urgent">Urgent</option>
+             <option value="normal">Normal</option>
+<option value="important" selected>Important</option>
+<option value="urgent">Urgent</option>
+<option value="emergency">Emergency</option>
             </select>
           </label>
 
@@ -2804,7 +2804,7 @@
     function openIssueModal() {
       clearIssueError();
       issueForm.reset();
-      issueUrgencyInput.value = "medium";
+     issueUrgencyInput.value = "important";
       issueFiles = [];
       renderIssueFileList();
 
