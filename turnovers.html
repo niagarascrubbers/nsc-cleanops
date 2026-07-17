@@ -3,19 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Turnovers | NSC CleanOps</title>
+  <title>Turnover Checklist | NSC CleanOps</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="variables.css">
-  <link rel="stylesheet" href="base.css">
-  <link rel="stylesheet" href="layout.css">
-  <link rel="stylesheet" href="components.css">
-  <link rel="stylesheet" href="panels.css">
-  <link rel="stylesheet" href="forms.css">
-  <link rel="stylesheet" href="tables.css">
 
   <style>
     :root {
@@ -26,18 +18,15 @@
       --blue-light: #eaf6fc;
       --background: #f5f8fb;
       --border: #dfe8ef;
-      --border-dark: #cbd9e3;
       --text: #17324d;
       --muted: #6c7e8f;
-      --white: #ffffff;
       --success: #1f8f64;
       --success-light: #e9f8f1;
-      --danger: #c94747;
-      --danger-light: #fff0f0;
       --warning: #aa7214;
       --warning-light: #fff8e7;
-      --shadow: 0 10px 30px rgba(18, 50, 77, 0.08);
-      --shadow-large: 0 24px 60px rgba(7, 31, 53, 0.18);
+      --danger: #c94747;
+      --danger-light: #fff0f0;
+      --shadow: 0 12px 32px rgba(18, 50, 77, 0.09);
     }
 
     * { box-sizing: border-box; }
@@ -50,228 +39,320 @@
       font-family: "Poppins", sans-serif;
     }
 
-    body.drawer-open { overflow: hidden; }
+    button, input, textarea { font: inherit; }
 
-    button, input, select, textarea { font: inherit; }
-    button { cursor: pointer; }
-
-    .app-shell {
-      display: grid;
-      grid-template-columns: 252px minmax(0, 1fr);
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      z-index: 40;
-      width: 252px;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
       background: var(--navy);
       color: white;
+      box-shadow: 0 8px 24px rgba(7, 31, 53, 0.16);
+    }
+
+    .header-inner {
+      width: min(1120px, calc(100% - 32px));
+      min-height: 72px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      min-height: 82px;
-      padding: 20px 22px;
-      border-bottom: 1px solid rgba(255,255,255,.09);
+      gap: 11px;
     }
 
     .brand-mark {
       display: grid;
       place-items: center;
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, #56b8e8, #2f8fca);
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--blue);
       font-family: "Montserrat", sans-serif;
+      font-size: 12px;
       font-weight: 700;
     }
 
     .brand-title {
       margin: 0;
       font-family: "Montserrat", sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
     }
 
     .brand-subtitle {
       margin-top: 2px;
       color: #a8c0d1;
+      font-size: 10px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .header-button {
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 9px;
+      background: rgba(255,255,255,.07);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 48px;
+    }
+
+    .overview-card,
+    .room-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .overview-card {
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .overview-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .property-name {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
+    }
+
+    .property-location {
+      margin-top: 6px;
+      color: var(--muted);
       font-size: 11px;
     }
 
-    .sidebar-nav {
-      flex: 1;
-      padding: 18px 14px;
-      overflow-y: auto;
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--warning-light);
+      color: var(--warning);
+      font-size: 9px;
+      font-weight: 600;
+      white-space: nowrap;
     }
 
-    .nav-label {
-      margin: 12px 12px 8px;
-      color: #7897ad;
-      font-size: 10px;
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .overview-item {
+      padding: 12px;
+      border: 1px solid #edf2f6;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .overview-label {
+      color: var(--muted);
+      font-size: 8px;
       font-weight: 600;
-      letter-spacing: 1.2px;
+      letter-spacing: .4px;
       text-transform: uppercase;
     }
 
-    .nav-link {
+    .overview-value {
+      margin-top: 5px;
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .progress-card {
+      margin-top: 17px;
+    }
+
+    .progress-row {
       display: flex;
-      align-items: center;
+      justify-content: space-between;
       gap: 12px;
-      min-height: 44px;
-      margin-bottom: 5px;
-      padding: 10px 13px;
-      color: #c9d8e3;
-      text-decoration: none;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 10px;
     }
 
-    .nav-link:hover,
-    .nav-link.active {
-      color: white;
-      background: rgba(65,163,216,.19);
+    .progress-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8eff4;
     }
 
-    .nav-link.active { box-shadow: inset 3px 0 0 #4eb4e6; }
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 999px;
+      transition: width .2s ease;
+    }
 
-    .nav-icon {
-      width: 20px;
-      height: 20px;
+    .room-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .room-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .room-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+    }
+
+    .room-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .task-list {
+      display: grid;
+    }
+
+    .task-item {
+      display: grid;
+      grid-template-columns: 28px minmax(0,1fr) auto;
+      gap: 12px;
+      align-items: start;
+      padding: 15px 18px;
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .task-item:last-child {
+      border-bottom: 0;
+    }
+
+    .task-number {
       display: grid;
       place-items: center;
-      border: 1px solid currentColor;
-      border-radius: 5px;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--blue-light);
+      color: #2078a9;
       font-size: 9px;
       font-weight: 700;
     }
 
-    .sidebar-footer {
-      padding: 16px;
-      border-top: 1px solid rgba(255,255,255,.09);
-    }
-
-    .user-card {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-
-    .user-avatar {
-      display: grid;
-      place-items: center;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: var(--blue);
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .user-name { font-size: 12px; font-weight: 600; }
-    .user-role { color: #8fa9bb; font-size: 10px; }
-
-    .main {
-      grid-column: 2;
-      min-width: 0;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 72px;
-      padding: 0 30px;
-      background: rgba(255,255,255,.96);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-    }
-
-    .breadcrumb {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .breadcrumb strong { color: var(--text); }
-
-    .icon-button {
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: white;
-      color: var(--text);
-    }
-
-    .page {
-      width: 100%;
-      max-width: 1480px;
-      margin: 0 auto;
-      padding: 30px;
-    }
-
-    .page-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 22px;
-      margin-bottom: 22px;
-    }
-
-    .page-title {
-      margin: 0;
+    .task-title {
       color: var(--navy-light);
-      font-family: "Montserrat", sans-serif;
-      font-size: clamp(25px,3vw,34px);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.5;
     }
 
-    .page-description {
-      margin: 7px 0 0;
+    .task-instructions {
+      margin-top: 4px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .task-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 7px;
+    }
+
+    .task-badge {
+      min-height: 22px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #f1f5f8;
+      color: #536b7e;
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .task-badge.required {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .task-badge.complete {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .task-controls {
+      display: grid;
+      gap: 8px;
+      min-width: 150px;
     }
 
     .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      min-height: 42px;
-      padding: 10px 17px;
+      min-height: 38px;
+      padding: 8px 12px;
       border: 1px solid transparent;
-      border-radius: 10px;
-      font-size: 12px;
+      border-radius: 9px;
+      font-size: 10px;
       font-weight: 600;
-      transition: .18s ease;
+      cursor: pointer;
     }
 
-    .button:disabled { cursor: not-allowed; opacity: .62; }
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: .58;
+    }
 
     .button-primary {
       color: white;
       background: var(--navy-light);
-      box-shadow: 0 7px 16px rgba(11,47,79,.16);
     }
 
-    .button-primary:hover:not(:disabled) { background: var(--navy); }
+    .button-primary:hover:not(:disabled) {
+      background: var(--navy);
+    }
 
     .button-secondary {
       color: var(--text);
       background: white;
       border-color: var(--border);
+    }
+
+    .button-success {
+      color: var(--success);
+      background: var(--success-light);
+      border-color: #c9eadc;
     }
 
     .button-danger {
@@ -280,594 +361,621 @@
       border-color: #efcaca;
     }
 
-    .button-small {
-      min-height: 34px;
-      padding: 7px 11px;
-      border-radius: 8px;
-      font-size: 10px;
+
+    .photo-panel {
+      margin-top: 10px;
+      padding: 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fbfdfe;
     }
 
-    .stats-grid {
+    .photo-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .photo-panel-title {
+      color: var(--navy-light);
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .photo-count {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .photo-upload-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .photo-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .photo-help {
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.5;
+    }
+
+    .photo-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap: 14px;
-      margin-bottom: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
     }
 
-    .stat-card {
-      padding: 18px;
+    .photo-preview {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+    }
+
+    .photo-preview img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+
+    .photo-preview-label {
+      padding: 6px;
+      color: var(--muted);
+      font-size: 7px;
+      text-align: center;
+    }
+
+    .photo-requirement-missing {
+      margin-top: 8px;
+      color: var(--danger);
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .notes-box {
+      margin-top: 9px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .notes-box textarea {
+      width: 100%;
+      min-height: 72px;
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      resize: vertical;
+      color: var(--text);
+      font-size: 10px;
+      outline: none;
+    }
+
+    .notes-box textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(47,143,202,.12);
+    }
+
+    .submit-bar {
+      position: sticky;
+      bottom: 0;
+      z-index: 15;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-top: 20px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,.97);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 16px 36px rgba(7,31,53,.16);
+      backdrop-filter: blur(10px);
+    }
+
+    .submit-text {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+
+    .checklist-toolbar {
+      position: sticky;
+      top: 82px;
+      z-index: 12;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: rgba(245, 248, 251, .96);
+      backdrop-filter: blur(10px);
+    }
+
+    .remaining-toggle.active {
+      color: white;
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .room-card {
+      overflow: hidden;
+    }
+
+    .room-header {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      text-align: left;
+      cursor: pointer;
+      background: white;
+      border: 0;
+    }
+
+    .room-header:hover {
+      background: #fbfdfe;
+    }
+
+    .room-header-main {
+      min-width: 0;
+    }
+
+    .room-heading-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .room-chevron {
+      width: 20px;
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 700;
+      transition: transform .2s ease;
+    }
+
+    .room-card.open .room-chevron {
+      transform: rotate(90deg);
+    }
+
+    .room-progress-summary {
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .room-progress-track {
+      height: 6px;
+      margin-top: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8eff4;
+    }
+
+    .room-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--blue);
+      transition: width .2s ease;
+    }
+
+    .room-card.complete .room-progress-fill {
+      background: var(--success);
+    }
+
+    .room-card.complete .room-title,
+    .room-card.complete .room-progress-summary {
+      color: var(--success);
+    }
+
+    .room-body {
+      display: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .room-card.open .room-body {
+      display: block;
+    }
+
+    .room-empty {
+      padding: 20px 18px;
+      color: var(--muted);
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .remaining-panel {
+      display: none;
+      margin-bottom: 15px;
+      overflow: hidden;
       background: white;
       border: 1px solid var(--border);
       border-radius: 14px;
       box-shadow: var(--shadow);
     }
 
-    .stat-label {
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .5px;
+    .remaining-panel.visible {
+      display: block;
     }
 
-    .stat-number {
-      margin-top: 7px;
-      color: var(--navy-light);
-      font-family: "Montserrat", sans-serif;
-      font-size: 25px;
-      font-weight: 700;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .toolbar {
-      display: grid;
-      grid-template-columns: minmax(220px,1fr) 220px 190px auto;
-      gap: 12px;
+    .remaining-panel-header {
+      display: flex;
       align-items: center;
-      padding: 16px;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 17px;
       border-bottom: 1px solid var(--border);
     }
 
-    .form-control {
+    .remaining-panel-title {
+      margin: 0;
+      color: var(--navy-light);
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+    }
+
+    .remaining-list {
+      display: grid;
+    }
+
+    .remaining-room {
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .remaining-room:last-child {
+      border-bottom: 0;
+    }
+
+    .remaining-room-title {
+      padding: 12px 17px 6px;
+      color: var(--navy-light);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .remaining-item {
       width: 100%;
-      min-height: 43px;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      padding: 8px 17px 11px;
+      border: 0;
       background: white;
       color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .remaining-item:hover {
+      background: #f8fbfd;
+    }
+
+    .remaining-box {
+      flex: 0 0 auto;
+      width: 15px;
+      height: 15px;
+      margin-top: 1px;
+      border: 1px solid #b9cad7;
+      border-radius: 4px;
+      background: white;
+    }
+
+    .remaining-photo {
+      display: block;
+      margin-top: 3px;
+      color: var(--danger);
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+
+    .inventory-list {
+      display: grid;
+    }
+
+    .inventory-item {
+      padding: 15px 18px;
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .inventory-item:last-child {
+      border-bottom: 0;
+    }
+
+    .inventory-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .inventory-item-name {
+      color: var(--navy-light);
       font-size: 11px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .inventory-location {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 8px;
+    }
+
+    .inventory-saved {
+      color: var(--success);
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .inventory-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .inventory-option {
+      position: relative;
+    }
+
+    .inventory-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .inventory-option label {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: white;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .inventory-option input:checked + label {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      color: #2078a9;
+      box-shadow: 0 0 0 2px rgba(47,143,202,.09);
+    }
+
+    .inventory-option.low input:checked + label {
+      border-color: #e5c170;
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .inventory-option.out input:checked + label,
+    .inventory-option.emergency input:checked + label {
+      border-color: #efbaba;
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .inventory-note {
+      width: 100%;
+      min-height: 58px;
+      margin-top: 9px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      resize: vertical;
+      color: var(--text);
+      font-size: 9px;
       outline: none;
     }
 
-    .form-control:focus {
+    .inventory-note:focus {
       border-color: var(--blue);
       box-shadow: 0 0 0 3px rgba(47,143,202,.12);
     }
 
-    .record-summary {
+    .inventory-empty {
+      padding: 22px 18px;
       color: var(--muted);
       font-size: 10px;
-      text-align: right;
-      white-space: nowrap;
+      line-height: 1.6;
+      text-align: center;
     }
 
-    .table-wrap { width: 100%; overflow-x: auto; }
-
-    .data-table {
-      width: 100%;
-      min-width: 1050px;
-      border-collapse: collapse;
-    }
-
-    .data-table th {
-      padding: 12px 16px;
-      background: #f8fafc;
-      border-bottom: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: .5px;
-      text-align: left;
-      text-transform: uppercase;
-    }
-
-    .data-table td {
-      padding: 14px 16px;
-      border-bottom: 1px solid #edf2f6;
-      font-size: 11px;
-      vertical-align: middle;
-    }
-
-    .record-title {
-      color: var(--navy-light);
-      font-weight: 600;
-    }
-
-    .record-subtitle {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 9px;
-    }
-
-    .status-badge,
-    .priority-badge {
-      display: inline-flex;
-      align-items: center;
-      min-height: 25px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      font-size: 9px;
-      font-weight: 600;
-    }
-
-    .status-unassigned { background: #f1f5f8; color: #536b7e; }
-    .status-assigned, .status-accepted { background: var(--blue-light); color: #2078a9; }
-    .status-in-progress { background: var(--warning-light); color: var(--warning); }
-    .status-review-required, .status-correction-required { background: #fff0e5; color: #b35f18; }
-    .status-completed { background: var(--success-light); color: var(--success); }
-    .status-cancelled { background: var(--danger-light); color: var(--danger); }
-
-    .priority-normal { background: #f1f5f8; color: #536b7e; }
-    .priority-same-day { background: var(--warning-light); color: var(--warning); }
-    .priority-urgent { background: var(--danger-light); color: var(--danger); }
-
-    .row-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 7px;
-    }
-
-    .loading-state,
-    .empty-state,
-    .error-state {
-      padding: 70px 24px;
+    .loading,
+    .error {
+      padding: 70px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
       text-align: center;
     }
 
     .spinner {
       width: 34px;
       height: 34px;
-      margin: 0 auto 15px;
+      margin: 0 auto 14px;
       border: 3px solid #dcecf4;
       border-top-color: var(--blue);
       border-radius: 50%;
       animation: spin .75s linear infinite;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
     .state-title {
       margin: 0 0 7px;
       color: var(--navy-light);
       font-family: "Montserrat", sans-serif;
-      font-size: 17px;
+      font-size: 16px;
     }
 
     .state-text {
-      max-width: 540px;
+      max-width: 520px;
       margin: 0 auto;
       color: var(--muted);
       font-size: 11px;
       line-height: 1.6;
     }
 
-    .drawer-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 90;
-      background: rgba(4,20,34,.52);
-      opacity: 0;
-      visibility: hidden;
-      transition: .2s ease;
-    }
-
-    .drawer-backdrop.open {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .drawer {
-      position: fixed;
-      inset: 0 0 0 auto;
-      z-index: 100;
-      width: min(560px,100%);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: white;
-      box-shadow: var(--shadow-large);
-      transform: translateX(100%);
-      transition: transform .25s ease;
-    }
-
-    .drawer.open { transform: translateX(0); }
-
-    .drawer-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 22px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .drawer-title {
-      margin: 0;
-      color: var(--navy-light);
-      font-family: "Montserrat", sans-serif;
-      font-size: 19px;
-    }
-
-    .drawer-subtitle {
-      margin: 5px 0 0;
-      color: var(--muted);
-      font-size: 10px;
-    }
-
-    .drawer-body {
-      flex: 1;
-      padding: 22px;
-      overflow-y: auto;
-    }
-
-    .drawer-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      padding: 16px 22px;
-      border-top: 1px solid var(--border);
-      background: #fbfdfe;
-    }
-
-    .form-grid { display: grid; gap: 17px; }
-    .form-row-two { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
-    .form-group { display: grid; gap: 7px; }
-
-    .form-label {
-      color: var(--navy-light);
-      font-size: 10px;
-      font-weight: 600;
-    }
-
-    .required { color: var(--danger); }
-
-    .form-help {
-      color: var(--muted);
-      font-size: 9px;
-      line-height: 1.5;
-    }
-
-    .checkbox-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 13px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #f8fafc;
-    }
-
-    .checkbox-row input {
-      width: 17px;
-      height: 17px;
-      margin-top: 1px;
-      accent-color: var(--blue);
-    }
-
-    .checkbox-title {
-      color: var(--navy-light);
-      font-size: 10px;
-      font-weight: 600;
-    }
-
-    .checkbox-description {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 9px;
-      line-height: 1.5;
-    }
-
-    .form-error {
-      display: none;
-      padding: 11px 12px;
-      border: 1px solid #efcaca;
-      border-radius: 9px;
-      background: var(--danger-light);
-      color: var(--danger);
-      font-size: 10px;
-      line-height: 1.5;
-    }
-
-    .form-error.show { display: block; }
-
-    .toast-container {
+    .toast {
       position: fixed;
       right: 18px;
       bottom: 18px;
-      z-index: 140;
-      display: grid;
-      gap: 10px;
-      width: min(360px,calc(100vw - 36px));
-    }
-
-    .toast {
+      z-index: 60;
+      width: min(360px, calc(100vw - 36px));
       padding: 13px 15px;
       border: 1px solid var(--border);
       border-left: 4px solid var(--success);
-      border-radius: 11px;
+      border-radius: 10px;
       background: white;
-      box-shadow: var(--shadow-large);
+      box-shadow: 0 20px 50px rgba(7,31,53,.2);
+      color: var(--text);
       font-size: 10px;
       line-height: 1.5;
     }
 
-    .toast.error { border-left-color: var(--danger); }
-
-    @media (max-width: 1100px) {
-      .stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-      .toolbar { grid-template-columns: 1fr 1fr; }
-      .record-summary { text-align: left; }
+    .toast.error {
+      border-left-color: var(--danger);
     }
 
-    @media (max-width: 900px) {
-      .app-shell { display: block; }
-      .sidebar { display: none; }
-      .main { grid-column: auto; }
-      .page { padding: 22px 17px; }
-      .topbar { padding: 0 18px; }
+    @media (max-width: 800px) {
+      .overview-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+
+      .task-item {
+        grid-template-columns: 28px minmax(0,1fr);
+      }
+
+      .task-controls {
+        grid-column: 2;
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+
+      .checklist-toolbar {
+        top: 78px;
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .checklist-toolbar .button {
+        width: 100%;
+      }
+
+      .room-header {
+        grid-template-columns: 1fr;
+      }
+
+      .room-progress-summary {
+        padding-left: 29px;
+      }
+
+      .inventory-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .submit-bar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .submit-bar .button {
+        width: 100%;
+      }
     }
 
-    @media (max-width: 650px) {
-      .page-header { flex-direction: column; }
-      .page-header .button { width: 100%; }
-      .stats-grid, .toolbar, .form-row-two { grid-template-columns: 1fr; }
-      .drawer-footer { flex-direction: column-reverse; }
-      .drawer-footer .button { width: 100%; }
+    @media (max-width: 500px) {
+      .header-inner,
+      .page {
+        width: min(100% - 22px, 1120px);
+      }
+
+      .overview-header {
+        flex-direction: column;
+      }
+
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .task-item {
+        grid-template-columns: 1fr;
+      }
+
+      .task-number,
+      .task-controls {
+        grid-column: 1;
+      }
+
+      .task-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-subtitle {
+        display: none;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
+  <header class="app-header">
+    <div class="header-inner">
       <div class="brand">
         <div class="brand-mark">NSC</div>
         <div>
           <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Operations Management</div>
+          <div class="brand-subtitle">Cleaner Turnover Checklist · Room Split v2.1</div>
         </div>
       </div>
 
-      <nav class="sidebar-nav">
-        <div class="nav-label">Workspace</div>
-        <a class="nav-link" href="manager-dashboard.html"><span class="nav-icon">DB</span>Dashboard</a>
-        <a class="nav-link" href="properties.html"><span class="nav-icon">PR</span>Properties</a>
-        <a class="nav-link active" href="turnovers.html"><span class="nav-icon">TO</span>Turnovers</a>
-        <a class="nav-link" href="#"><span class="nav-icon">AS</span>Assignments</a>
-
-        <div class="nav-label">Operations</div>
-        <a class="nav-link" href="#"><span class="nav-icon">CL</span>Checklists</a>
-        <a class="nav-link" href="#"><span class="nav-icon">IN</span>Inventory</a>
-        <a class="nav-link" href="#"><span class="nav-icon">PH</span>Photos</a>
-        <a class="nav-link" href="#"><span class="nav-icon">IS</span>Issues</a>
-        <a class="nav-link" href="#"><span class="nav-icon">RP</span>Reports</a>
-
-        <div class="nav-label">System</div>
-        <a class="nav-link" href="#"><span class="nav-icon">ST</span>Settings</a>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="user-card">
-          <div class="user-avatar">UP</div>
-          <div>
-            <div class="user-name" id="sidebarUserName">Uttam Preet</div>
-            <div class="user-role" id="sidebarUserRole">Administrator</div>
-          </div>
-        </div>
+      <div class="header-actions">
+        <button class="header-button" id="backButton" type="button">Assignments</button>
+        <button class="header-button" id="logoutButton" type="button">Sign Out</button>
       </div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <div class="breadcrumb"><strong>Turnovers</strong></div>
-        <button class="icon-button" id="logoutButton" type="button" title="Sign out">OUT</button>
-      </header>
-
-      <div class="page">
-        <section class="page-header">
-          <div>
-            <h1 class="page-title">Turnovers</h1>
-            <p class="page-description">
-              Schedule property cleaning, apply the correct checklist, and monitor operational progress.
-            </p>
-          </div>
-
-          <button class="button button-primary" id="addTurnoverButton" type="button">
-            Create Turnover
-          </button>
-        </section>
-
-        <section class="stats-grid">
-          <article class="stat-card">
-            <div class="stat-label">Total Turnovers</div>
-            <div class="stat-number" id="totalCount">0</div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">Upcoming</div>
-            <div class="stat-number" id="upcomingCount">0</div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">In Progress</div>
-            <div class="stat-number" id="inProgressCount">0</div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-label">Review Required</div>
-            <div class="stat-number" id="reviewCount">0</div>
-          </article>
-        </section>
-
-        <section class="card">
-          <div class="toolbar">
-            <input class="form-control" id="searchInput" type="search" placeholder="Search by property or status">
-
-            <select class="form-control" id="propertyFilter">
-              <option value="all">All properties</option>
-            </select>
-
-            <select class="form-control" id="statusFilter">
-              <option value="all">All statuses</option>
-              <option value="unassigned">Unassigned</option>
-              <option value="assigned">Assigned</option>
-              <option value="accepted">Accepted</option>
-              <option value="in_progress">In Progress</option>
-              <option value="review_required">Review Required</option>
-              <option value="correction_required">Correction Required</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-
-            <div class="record-summary" id="recordSummary">Loading turnovers.</div>
-          </div>
-
-          <div id="turnoversContent">
-            <div class="loading-state">
-              <div class="spinner"></div>
-              <h2 class="state-title">Loading turnovers</h2>
-              <p class="state-text">Retrieving turnover schedules and task progress.</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
-  </div>
-
-  <div class="drawer-backdrop" id="drawerBackdrop"></div>
-
-  <aside class="drawer" id="turnoverDrawer" aria-hidden="true">
-    <div class="drawer-header">
-      <div>
-        <h2 class="drawer-title">Create Turnover</h2>
-        <p class="drawer-subtitle">
-          Schedule a cleaning and generate its checklist tasks.
-        </p>
-      </div>
-      <button class="icon-button" id="closeDrawerButton" type="button" title="Close">Close</button>
     </div>
+  </header>
 
-    <form id="turnoverForm">
-      <div class="drawer-body">
-        <div class="form-grid">
-          <div class="form-error" id="formError"></div>
-
-          <div class="form-group">
-            <label class="form-label" for="propertyInput">
-              Property <span class="required">*</span>
-            </label>
-            <select class="form-control" id="propertyInput" required>
-              <option value="">Select a property</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="templateInput">
-              Checklist Template <span class="required">*</span>
-            </label>
-            <select class="form-control" id="templateInput" required disabled>
-              <option value="">Select a property first</option>
-            </select>
-            <div class="form-help">
-              Active checklist tasks will be copied into this turnover when it is created.
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="assignedCleanerInput">Assigned Cleaner</label>
-            <select class="form-control" id="assignedCleanerInput">
-              <option value="">Unassigned</option>
-            </select>
-            <div class="form-help">
-              Select the cleaner responsible for completing this turnover.
-            </div>
-          </div>
-
-          <div class="form-row-two">
-            <div class="form-group">
-              <label class="form-label" for="turnoverDateInput">
-                Turnover Date <span class="required">*</span>
-              </label>
-              <input class="form-control" id="turnoverDateInput" type="date" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="priorityInput">Priority</label>
-              <select class="form-control" id="priorityInput">
-                <option value="normal">Normal</option>
-                <option value="same_day">Same-Day Turnover</option>
-                <option value="urgent">Urgent</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row-two">
-            <div class="form-group">
-              <label class="form-label" for="scheduledStartInput">
-                Scheduled Start <span class="required">*</span>
-              </label>
-              <input class="form-control" id="scheduledStartInput" type="datetime-local" required>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="scheduledEndInput">
-                Scheduled End <span class="required">*</span>
-              </label>
-              <input class="form-control" id="scheduledEndInput" type="datetime-local" required>
-            </div>
-          </div>
-
-          <div class="form-row-two">
-            <div class="form-group">
-              <label class="form-label" for="guestCheckoutInput">Guest Checkout</label>
-              <input class="form-control" id="guestCheckoutInput" type="datetime-local">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="guestCheckinInput">Guest Check-In</label>
-              <input class="form-control" id="guestCheckinInput" type="datetime-local">
-            </div>
-          </div>
-
-          <label class="checkbox-row" for="sameDayInput">
-            <input id="sameDayInput" type="checkbox">
-            <span>
-              <span class="checkbox-title">Same-day turnover</span>
-              <span class="checkbox-description">
-                The departing guest and arriving guest are scheduled on the same date.
-              </span>
-            </span>
-          </label>
-
-          <div class="form-group">
-            <label class="form-label" for="notesInput">Manager Notes</label>
-            <textarea class="form-control" id="notesInput" rows="4" maxlength="1000" placeholder="Enter access details, special instructions, or scheduling notes."></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div class="drawer-footer">
-        <button class="button button-secondary" id="cancelButton" type="button">Cancel</button>
-        <button class="button button-primary" id="saveButton" type="submit">Create Turnover</button>
-      </div>
-    </form>
-  </aside>
-
-  <div class="toast-container" id="toastContainer"></div>
+  <main class="page" id="pageContent">
+    <div class="loading">
+      <div class="spinner"></div>
+      <h1 class="state-title">Loading turnover checklist</h1>
+      <p class="state-text">Retrieving property details and assigned checklist tasks.</p>
+    </div>
+  </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
@@ -875,41 +983,22 @@
   <script>
     "use strict";
 
+    console.info("NSC Cleaner Turnover Room Split v2.1 loaded");
+
     const db = window.nscSupabase || window.supabaseClient;
-
-    const turnoversContent = document.getElementById("turnoversContent");
-    const searchInput = document.getElementById("searchInput");
-    const propertyFilter = document.getElementById("propertyFilter");
-    const statusFilter = document.getElementById("statusFilter");
-    const recordSummary = document.getElementById("recordSummary");
-
-    const drawerBackdrop = document.getElementById("drawerBackdrop");
-    const turnoverDrawer = document.getElementById("turnoverDrawer");
-    const closeDrawerButton = document.getElementById("closeDrawerButton");
-    const addTurnoverButton = document.getElementById("addTurnoverButton");
-    const cancelButton = document.getElementById("cancelButton");
-    const turnoverForm = document.getElementById("turnoverForm");
-    const formError = document.getElementById("formError");
-    const saveButton = document.getElementById("saveButton");
-
-    const propertyInput = document.getElementById("propertyInput");
-    const templateInput = document.getElementById("templateInput");
-    const assignedCleanerInput = document.getElementById("assignedCleanerInput");
-    const turnoverDateInput = document.getElementById("turnoverDateInput");
-    const priorityInput = document.getElementById("priorityInput");
-    const scheduledStartInput = document.getElementById("scheduledStartInput");
-    const scheduledEndInput = document.getElementById("scheduledEndInput");
-    const guestCheckoutInput = document.getElementById("guestCheckoutInput");
-    const guestCheckinInput = document.getElementById("guestCheckinInput");
-    const sameDayInput = document.getElementById("sameDayInput");
-    const notesInput = document.getElementById("notesInput");
-    const toastContainer = document.getElementById("toastContainer");
+    const pageContent = document.getElementById("pageContent");
 
     let currentProfile = null;
-    let properties = [];
-    let cleaners = [];
-    let turnovers = [];
-    let filteredTurnovers = [];
+    let turnover = null;
+    let tasks = [];
+    let taskPhotos = [];
+    let roomGroups = [];
+    let displayedTasks = [];
+    let inventoryItems = [];
+    let inventoryCounts = [];
+    let openRoomKeys = new Set();
+    let roomsInitialized = false;
+    let remainingOnly = false;
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -920,84 +1009,54 @@
         .replaceAll("'", "&#039;");
     }
 
+    function getTurnoverId() {
+      return new URLSearchParams(window.location.search).get("id");
+    }
+
     function showToast(message, type = "success") {
+      document.querySelector(".toast")?.remove();
+
       const toast = document.createElement("div");
       toast.className = `toast ${type === "error" ? "error" : ""}`;
       toast.textContent = message;
-      toastContainer.appendChild(toast);
+      document.body.appendChild(toast);
+
       window.setTimeout(() => toast.remove(), 4300);
-    }
-
-    function showFormError(message) {
-      formError.textContent = message;
-      formError.classList.add("show");
-    }
-
-    function clearFormError() {
-      formError.textContent = "";
-      formError.classList.remove("show");
     }
 
     function formatDate(value) {
       if (!value) return "Not scheduled";
+
       return new Intl.DateTimeFormat("en-CA", {
-        year: "numeric",
+        weekday: "short",
         month: "short",
-        day: "numeric"
+        day: "numeric",
+        year: "numeric"
       }).format(new Date(`${value}T12:00:00`));
     }
 
-    function formatDateTime(value) {
-      if (!value) return "Not scheduled";
+    function formatTime(value) {
+      if (!value) return "Not entered";
+
       return new Intl.DateTimeFormat("en-CA", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
         hour: "numeric",
         minute: "2-digit"
       }).format(new Date(value));
     }
 
-    function formatStatus(value) {
-      const labels = {
-        unassigned: "Unassigned",
-        assigned: "Assigned",
-        accepted: "Accepted",
-        in_progress: "In Progress",
-        review_required: "Review Required",
-        correction_required: "Correction Required",
-        completed: "Completed",
-        cancelled: "Cancelled"
-      };
-      return labels[value] || value || "Unknown";
-    }
-
-    function formatPriority(value) {
-      const labels = {
-        normal: "Normal",
-        same_day: "Same-Day",
-        urgent: "Urgent"
-      };
-      return labels[value] || value || "Normal";
-    }
-
-    function cssStatus(value) {
-      return `status-${String(value || "unassigned").replaceAll("_", "-")}`;
-    }
-
-    function cssPriority(value) {
-      return `priority-${String(value || "normal").replaceAll("_", "-")}`;
-    }
-
     async function requireSession() {
       if (!db) throw new Error("Supabase client is unavailable.");
 
-      const { data: { session }, error } = await db.auth.getSession();
-      if (error) throw error;
+      const {
+        data: { session },
+        error: sessionError
+      } = await db.auth.getSession();
+
+      if (sessionError) throw sessionError;
 
       if (!session) {
         window.location.href = "login.html";
-        return null;
+        return false;
       }
 
       const { data: profile, error: profileError } = await db
@@ -1007,766 +1066,1406 @@
         .single();
 
       if (profileError) throw profileError;
-      if (!profile?.active) throw new Error("This user profile is inactive.");
+      if (!profile?.active) throw new Error("This user account is inactive.");
 
       currentProfile = profile;
-      document.getElementById("sidebarUserName").textContent = profile.full_name || "NSC Manager";
-      document.getElementById("sidebarUserRole").textContent =
-        profile.role === "admin" ? "Administrator" : "Manager";
-
-      return session;
+      return true;
     }
 
-    async function loadProperties() {
-      const { data, error } = await db
-        .from("properties")
-        .select("id, company_id, property_name, property_code, city, active")
-        .eq("active", true)
-        .order("property_name", { ascending: true });
+    async function loadTurnover() {
+      const turnoverId = getTurnoverId();
 
-      if (error) throw error;
-      properties = Array.isArray(data) ? data : [];
-
-      const options = properties.map(property => `
-        <option value="${escapeHtml(property.id)}">
-          ${escapeHtml(property.property_name || "Unnamed Property")}
-        </option>
-      `).join("");
-
-      propertyFilter.innerHTML = `<option value="all">All properties</option>${options}`;
-      propertyInput.innerHTML = `<option value="">Select a property</option>${options}`;
-    }
-
-    async function loadCleaners() {
-      const { data, error } = await db
-        .from("users")
-        .select("id, full_name, role, active, company_id")
-        .eq("company_id", currentProfile.company_id)
-        .eq("role", "cleaner")
-        .eq("active", true)
-        .order("full_name", { ascending: true });
-
-      if (error) throw error;
-
-      cleaners = Array.isArray(data) ? data : [];
-
-      assignedCleanerInput.innerHTML = `
-        <option value="">Unassigned</option>
-        ${cleaners.map(cleaner => `
-          <option value="${escapeHtml(cleaner.id)}">
-            ${escapeHtml(cleaner.full_name || "Unnamed Cleaner")}
-          </option>
-        `).join("")}
-      `;
-    }
-
-    function getCleanerName(cleanerId) {
-      if (!cleanerId) return "Unassigned";
-      return cleaners.find(cleaner => cleaner.id === cleanerId)?.full_name || "Assigned Cleaner";
-    }
-
-    async function loadTurnovers() {
-      turnoversContent.innerHTML = `
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <h2 class="state-title">Loading turnovers</h2>
-          <p class="state-text">Retrieving turnover schedules and task progress.</p>
-        </div>
-      `;
+      if (!turnoverId) {
+        throw new Error("No turnover was selected.");
+      }
 
       const { data, error } = await db
         .from("turnovers")
         .select(`
           id,
           property_id,
-          checklist_template_id,
+          company_id,
           assigned_user_id,
           turnover_date,
           scheduled_start,
           scheduled_end,
-          status,
-          priority,
-          same_day_turnover,
           guest_checkout_time,
           guest_checkin_time,
+          status,
+          priority,
           final_notes,
-          property_readiness_status,
-          created_at,
           properties (
             property_name,
             property_code,
-            city
-          ),
-          checklist_templates (
-            template_name
-          ),
-          turnover_tasks (
-            id,
-            task_status
+            address,
+            city,
+            province
           )
         `)
-        .order("turnover_date", { ascending: false })
-        .order("scheduled_start", { ascending: false });
+        .eq("id", turnoverId)
+        .single();
 
       if (error) throw error;
-      turnovers = Array.isArray(data) ? data : [];
-      applyFilters();
-      renderStatistics();
-    }
 
-    function applyFilters() {
-      const search = searchInput.value.trim().toLowerCase();
-      const propertyId = propertyFilter.value;
-      const status = statusFilter.value;
-
-      filteredTurnovers = turnovers.filter(turnover => {
-        const searchable = [
-          turnover.properties?.property_name,
-          turnover.properties?.property_code,
-          turnover.properties?.city,
-          formatStatus(turnover.status),
-          formatPriority(turnover.priority)
-        ].join(" ").toLowerCase();
-
-        return (!search || searchable.includes(search))
-          && (propertyId === "all" || turnover.property_id === propertyId)
-          && (status === "all" || turnover.status === status);
-      });
-
-      renderTurnovers();
-    }
-
-    function renderStatistics() {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      document.getElementById("totalCount").textContent = turnovers.length;
-      document.getElementById("upcomingCount").textContent = turnovers.filter(item =>
-        item.turnover_date && new Date(`${item.turnover_date}T12:00:00`) >= today
-        && !["completed", "cancelled"].includes(item.status)
-      ).length;
-      document.getElementById("inProgressCount").textContent =
-        turnovers.filter(item => item.status === "in_progress").length;
-      document.getElementById("reviewCount").textContent =
-        turnovers.filter(item => item.status === "review_required").length;
-    }
-
-    function renderTurnovers() {
-      recordSummary.textContent =
-        filteredTurnovers.length === turnovers.length
-          ? `${turnovers.length} turnover${turnovers.length === 1 ? "" : "s"}`
-          : `${filteredTurnovers.length} of ${turnovers.length} turnovers`;
-
-      if (!filteredTurnovers.length) {
-        turnoversContent.innerHTML = `
-          <div class="empty-state">
-            <h2 class="state-title">No turnovers found</h2>
-            <p class="state-text">
-              Create the first turnover or change the current search and filters.
-            </p>
-          </div>
-        `;
-        return;
+      if (data.assigned_user_id !== currentProfile.id && !["admin", "manager"].includes(currentProfile.role)) {
+        throw new Error("You are not assigned to this turnover.");
       }
 
-      turnoversContent.innerHTML = `
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Property</th>
-                <th>Turnover Date</th>
-                <th>Cleaning Window</th>
-                <th>Checklist</th>
-                <th>Assigned Cleaner</th>
-                <th>Task Progress</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th style="text-align:right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filteredTurnovers.map(turnover => {
-                const tasks = Array.isArray(turnover.turnover_tasks) ? turnover.turnover_tasks : [];
-                const completed = tasks.filter(task =>
-                  ["completed", "not_applicable"].includes(task.task_status)
-                ).length;
-
-                return `
-                  <tr>
-                    <td>
-                      <div class="record-title">
-                        ${escapeHtml(turnover.properties?.property_name || "Unknown Property")}
-                      </div>
-                      <div class="record-subtitle">
-                        ${escapeHtml(turnover.properties?.property_code || "")}
-                      </div>
-                    </td>
-                    <td>${escapeHtml(formatDate(turnover.turnover_date))}</td>
-                    <td>
-                      <div>${escapeHtml(formatDateTime(turnover.scheduled_start))}</div>
-                      <div class="record-subtitle">Ends ${escapeHtml(formatDateTime(turnover.scheduled_end))}</div>
-                    </td>
-                    <td>${escapeHtml(turnover.checklist_templates?.template_name || "No template")}</td>
-                    <td>
-                      <select
-                        class="form-control"
-                        data-action="assign-cleaner"
-                        data-turnover-id="${escapeHtml(turnover.id)}"
-                        style="min-width:170px; min-height:34px; padding:6px 9px;"
-                      >
-                        <option value="">Unassigned</option>
-                        ${cleaners.map(cleaner => `
-                          <option value="${escapeHtml(cleaner.id)}" ${turnover.assigned_user_id === cleaner.id ? "selected" : ""}>
-                            ${escapeHtml(cleaner.full_name || "Unnamed Cleaner")}
-                          </option>
-                        `).join("")}
-                      </select>
-                    </td>
-                    <td>${completed} of ${tasks.length} completed</td>
-                    <td>
-                      <span class="priority-badge ${cssPriority(turnover.priority)}">
-                        ${escapeHtml(formatPriority(turnover.priority))}
-                      </span>
-                    </td>
-                    <td>
-                      <span class="status-badge ${cssStatus(turnover.status)}">
-                        ${escapeHtml(formatStatus(turnover.status))}
-                      </span>
-                    </td>
-                    <td>
-                      <div class="row-actions">
-                        <button
-                          class="button button-secondary button-small"
-                          type="button"
-                          data-action="view-property"
-                          data-property-id="${escapeHtml(turnover.property_id)}"
-                        >
-                          Open Property
-                        </button>
-
-                        ${["review_required", "correction_required", "completed"].includes(turnover.status) ? `
-                          <button
-                            class="button button-primary button-small"
-                            type="button"
-                            data-action="review-turnover"
-                            data-turnover-id="${escapeHtml(turnover.id)}"
-                          >
-                            ${turnover.status === "completed" ? "View Review" : "Review Turnover"}
-                          </button>
-                        ` : ""}
-
-                        ${turnover.status !== "cancelled" && turnover.status !== "completed" ? `
-                          <button
-                            class="button button-danger button-small"
-                            type="button"
-                            data-action="cancel-turnover"
-                            data-turnover-id="${escapeHtml(turnover.id)}"
-                          >
-                            Cancel
-                          </button>
-                        ` : ""}
-                      </div>
-                    </td>
-                  </tr>
-                `;
-              }).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-      turnoversContent.querySelectorAll('[data-action="view-property"]').forEach(button => {
-        button.addEventListener("click", () => {
-          window.location.href = `property.html?id=${encodeURIComponent(button.dataset.propertyId)}`;
-        });
-      });
-
-      turnoversContent.querySelectorAll('[data-action="review-turnover"]').forEach(button => {
-        button.addEventListener("click", () => {
-          window.location.href =
-            `turnover-review.html?id=${encodeURIComponent(button.dataset.turnoverId)}`;
-        });
-      });
-
-      turnoversContent.querySelectorAll('[data-action="assign-cleaner"]').forEach(select => {
-        select.addEventListener("change", () => {
-          assignCleaner(select.dataset.turnoverId, select.value, select);
-        });
-      });
-
-      turnoversContent.querySelectorAll('[data-action="cancel-turnover"]').forEach(button => {
-        button.addEventListener("click", () => cancelTurnover(button.dataset.turnoverId, button));
-      });
+      turnover = data;
     }
 
-    function openDrawer() {
-      turnoverForm.reset();
-      clearFormError();
-      templateInput.disabled = true;
-      templateInput.innerHTML = `<option value="">Select a property first</option>`;
-
-      const now = new Date();
-      const today = now.toISOString().slice(0, 10);
-      turnoverDateInput.value = today;
-      priorityInput.value = "normal";
-      assignedCleanerInput.value = "";
-
-      turnoverDrawer.classList.add("open");
-      drawerBackdrop.classList.add("open");
-      turnoverDrawer.setAttribute("aria-hidden", "false");
-      document.body.classList.add("drawer-open");
-    }
-
-    function closeDrawer() {
-      turnoverDrawer.classList.remove("open");
-      drawerBackdrop.classList.remove("open");
-      turnoverDrawer.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("drawer-open");
-      clearFormError();
-    }
-
-    async function loadTemplatesForProperty(propertyId) {
-      templateInput.disabled = true;
-      templateInput.innerHTML = `<option value="">Loading checklist templates</option>`;
-
-      if (!propertyId) {
-        templateInput.innerHTML = `<option value="">Select a property first</option>`;
-        return;
-      }
-
+    async function loadTasks() {
       const { data, error } = await db
-        .from("checklist_templates")
-        .select("id, template_name, version_number")
-        .eq("property_id", propertyId)
-        .eq("active", true)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        templateInput.innerHTML = `<option value="">Unable to load templates</option>`;
-        showFormError(error.message);
-        return;
-      }
-
-      if (!data?.length) {
-        templateInput.innerHTML = `<option value="">No active checklist template is available</option>`;
-        return;
-      }
-
-      templateInput.innerHTML = data.map((template, index) => `
-        <option value="${escapeHtml(template.id)}" ${index === 0 ? "selected" : ""}>
-          ${escapeHtml(template.template_name)} — Version ${escapeHtml(template.version_number || "1.0")}
-        </option>
-      `).join("");
-
-      templateInput.disabled = false;
-    }
-
-    function toIsoOrNull(value) {
-      return value ? new Date(value).toISOString() : null;
-    }
-
-
-    function normalizeChecklistText(value) {
-      return String(value || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, " ");
-    }
-
-    function getPhotoRequirement(task) {
-      const roomName = normalizeChecklistText(
-        task.rooms?.room_name || task.section_name || ""
-      );
-
-      const taskText = normalizeChecklistText(task.task_text);
-      const combined = `${roomName} ${taskText}`;
-
-      const rules = [
-        {
-          matches: ["bed stripped", "strip bed", "remove bedding"],
-          count: 1,
-          instruction: "Upload a clear photo showing the bed fully stripped before new linens are installed."
-        },
-        {
-          matches: ["under bed", "beneath bed"],
-          count: 1,
-          instruction: "Upload a clear photo showing the cleaned area under the bed."
-        },
-        {
-          matches: ["bed made", "make bed", "finished bed"],
-          count: 1,
-          instruction: "Upload a final photo showing the bed fully made and guest-ready."
-        },
-        {
-          matches: ["microwave"],
-          count: 1,
-          instruction: "Upload a clear photo of the microwave interior after cleaning."
-        },
-        {
-          matches: ["fridge", "refrigerator"],
-          count: 1,
-          instruction: "Upload a clear photo of the refrigerator interior after cleaning."
-        },
-        {
-          matches: ["coffee maker", "coffee machine"],
-          count: 1,
-          instruction: "Upload a clear photo of the cleaned coffee maker and surrounding area."
-        },
-        {
-          matches: ["toaster", "crumb tray"],
-          count: 1,
-          instruction: "Upload a clear photo of the toaster crumb tray after cleaning."
-        },
-        {
-          matches: ["kettle"],
-          count: 1,
-          instruction: "Upload a clear photo of the cleaned kettle and base."
-        },
-        {
-          matches: ["oven"],
-          count: 1,
-          instruction: "Upload a clear photo of the oven interior after cleaning."
-        },
-        {
-          matches: ["stove", "cooktop", "range top"],
-          count: 1,
-          instruction: "Upload a clear photo of the cleaned stove or cooktop."
-        },
-        {
-          roomMatches: ["bathroom", "washroom"],
-          matches: ["final", "overview", "complete bathroom"],
-          count: 1,
-          instruction: "Upload a final overview photo showing the bathroom guest-ready."
-        },
-        {
-          roomMatches: ["bathroom", "washroom"],
-          matches: ["shower", "tub", "bathtub"],
-          count: 1,
-          instruction: "Upload a clear photo of the cleaned shower or bathtub."
-        },
-        {
-          roomMatches: ["bathroom", "washroom"],
-          matches: ["toilet"],
-          count: 1,
-          instruction: "Upload a clear photo of the cleaned toilet and surrounding floor."
-        },
-        {
-          roomMatches: ["bathroom", "washroom"],
-          matches: ["vanity", "sink", "mirror"],
-          count: 1,
-          instruction: "Upload a clear photo of the cleaned vanity, sink, and mirror."
-        },
-        {
-          roomMatches: ["living room", "lounge"],
-          matches: ["final", "overview", "complete"],
-          count: 1,
-          instruction: "Upload a final overview photo showing the living room guest-ready."
-        },
-        {
-          roomMatches: ["exterior", "outside"],
-          matches: ["front", "entrance"],
-          count: 1,
-          instruction: "Upload a clear photo of the front exterior and entrance."
-        },
-        {
-          roomMatches: ["exterior", "outside"],
-          matches: ["back", "rear", "patio"],
-          count: 1,
-          instruction: "Upload a clear photo of the rear exterior or patio area."
-        },
-        {
-          roomMatches: ["exterior", "outside"],
-          matches: ["bbq", "barbecue", "grill"],
-          count: 1,
-          instruction: "Upload a clear photo of the cleaned BBQ or grill area."
-        },
-        {
-          roomMatches: ["exterior", "outside"],
-          matches: ["garbage", "recycling", "waste"],
-          count: 1,
-          instruction: "Upload a clear photo of the garbage and recycling area."
-        },
-        {
-          matches: ["welcome binder"],
-          count: 1,
-          instruction: "Upload a photo showing the welcome binder placed correctly."
-        },
-        {
-          matches: ["welcome gift"],
-          count: 1,
-          instruction: "Upload a photo showing the welcome gift placed correctly."
-        },
-        {
-          roomMatches: ["entrance", "entry"],
-          matches: ["final", "overview", "guest ready", "guest-ready"],
-          count: 1,
-          instruction: "Upload a final photo showing the entrance guest-ready."
-        }
-      ];
-
-      for (const rule of rules) {
-        const roomMatches = !rule.roomMatches ||
-          rule.roomMatches.some(value => roomName.includes(value));
-
-        const textMatches = rule.matches.some(value => combined.includes(value));
-
-        if (roomMatches && textMatches) {
-          return {
-            requiredPhotoCount: rule.count,
-            instruction: rule.instruction
-          };
-        }
-      }
-
-      return null;
-    }
-
-    async function configureGeneratedPhotoRequirements(turnoverId) {
-      const { data: generatedTasks, error: loadError } = await db
         .from("turnover_tasks")
         .select(`
           id,
+          turnover_id,
           room_id,
           section_name,
           task_text,
-          cleaner_instructions,
+          task_code,
           required_photo_count,
+          task_status,
+          cleaner_note,
+          is_required,
           photo_required,
+          notes_required,
+          task_type,
+          category,
+          cleaner_instructions,
+          estimated_minutes,
+          required_supplies,
+          sort_order,
           rooms (
             room_name,
             room_code
           )
         `)
-        .eq("turnover_id", turnoverId);
+        .eq("turnover_id", turnover.id)
+        .order("sort_order", { ascending: true })
+        .order("task_text", { ascending: true });
 
-      if (loadError) throw loadError;
-
-      const updates = [];
-
-      for (const task of generatedTasks || []) {
-        const requirement = getPhotoRequirement(task);
-        if (!requirement) continue;
-
-        const existingInstructions = String(task.cleaner_instructions || "").trim();
-        const damageInstruction =
-          "If you discover damage, missing property, stains, breakage, or a maintenance concern, stop and upload a clear close-up photo plus a wider location photo before continuing.";
-
-        const instructions = [
-          existingInstructions,
-          requirement.instruction,
-          damageInstruction
-        ].filter(Boolean).join(" ");
-
-        updates.push(
-          db
-            .from("turnover_tasks")
-            .update({
-              photo_required: true,
-              required_photo_count: Math.max(
-                Number(task.required_photo_count) || 0,
-                requirement.requiredPhotoCount
-              ),
-              cleaner_instructions: instructions,
-              updated_at: new Date().toISOString()
-            })
-            .eq("id", task.id)
-            .eq("turnover_id", turnoverId)
-        );
-      }
-
-      if (!updates.length) return 0;
-
-      const results = await Promise.all(updates);
-      const failed = results.find(result => result.error);
-
-      if (failed?.error) throw failed.error;
-      return updates.length;
+      if (error) throw error;
+      tasks = Array.isArray(data) ? data : [];
     }
 
-    async function saveTurnover(event) {
-      event.preventDefault();
-      clearFormError();
 
-      const propertyId = propertyInput.value;
-      const templateId = templateInput.value;
-      const turnoverDate = turnoverDateInput.value;
-      const scheduledStart = toIsoOrNull(scheduledStartInput.value);
-      const scheduledEnd = toIsoOrNull(scheduledEndInput.value);
 
-      if (!propertyId) return showFormError("Select a property.");
-      if (!templateId) return showFormError("Select an active checklist template.");
-      if (!turnoverDate) return showFormError("Enter the turnover date.");
-      if (!scheduledStart || !scheduledEnd) return showFormError("Enter the scheduled start and end times.");
-      if (new Date(scheduledEnd) <= new Date(scheduledStart)) {
-        return showFormError("The scheduled end time must be later than the scheduled start time.");
-      }
+    async function loadInventory() {
+      const [itemsResult, countsResult] = await Promise.all([
+        db
+          .from("inventory_items")
+          .select(`
+            id,
+            property_id,
+            item_name,
+            item_code,
+            category,
+            unit_name,
+            location_note,
+            emergency_stock,
+            active,
+            sort_order
+          `)
+          .eq("property_id", turnover.property_id)
+          .eq("active", true)
+          .order("sort_order", { ascending: true })
+          .order("item_name", { ascending: true }),
 
-      const property = properties.find(item => item.id === propertyId);
-      if (!property) return showFormError("The selected property could not be found.");
+        db
+          .from("inventory_counts")
+          .select(`
+            id,
+            turnover_id,
+            inventory_item_id,
+            level_status,
+            stock_status,
+            emergency_stock_used,
+            cleaner_note,
+            counted_by,
+            counted_at
+          `)
+          .eq("turnover_id", turnover.id)
+      ]);
 
-      saveButton.disabled = true;
-      cancelButton.disabled = true;
-      closeDrawerButton.disabled = true;
-      saveButton.textContent = "Creating Turnover";
+      if (itemsResult.error) throw itemsResult.error;
+      if (countsResult.error) throw countsResult.error;
+
+      inventoryItems = Array.isArray(itemsResult.data) ? itemsResult.data : [];
+      inventoryCounts = Array.isArray(countsResult.data) ? countsResult.data : [];
+    }
+
+    function getInventoryCount(itemId) {
+      return inventoryCounts.find(count => count.inventory_item_id === itemId) || null;
+    }
+
+    function getInventorySelection(count) {
+      if (!count || count.stock_status === "unknown") return null;
+      if (count.emergency_stock_used) return "emergency";
+      if (count.stock_status === "red") return "out";
+      if (count.stock_status === "amber") return "low";
+      return "full";
+    }
+
+    function getInventoryProgress() {
+      const completed = inventoryItems.filter(item => {
+        const count = getInventoryCount(item.id);
+        return Boolean(getInventorySelection(count));
+      }).length;
+
+      return {
+        completed,
+        total: inventoryItems.length,
+        percent: inventoryItems.length
+          ? Math.round((completed / inventoryItems.length) * 100)
+          : 100
+      };
+    }
+
+    function inventoryValueToRecord(value) {
+      const mapping = {
+        full: {
+          level_status: "full",
+          stock_status: "green",
+          emergency_stock_used: false
+        },
+        low: {
+          level_status: "low",
+          stock_status: "amber",
+          emergency_stock_used: false
+        },
+        out: {
+          level_status: "out",
+          stock_status: "red",
+          emergency_stock_used: false
+        },
+        emergency: {
+          level_status: "emergency_stock_used",
+          stock_status: "red",
+          emergency_stock_used: true
+        }
+      };
+
+      return mapping[value] || null;
+    }
+
+    async function createInventoryNotifications(item, value) {
+      if (!["low", "out", "emergency"].includes(value)) return;
+
+      const { data: recipients, error: recipientsError } = await db
+        .from("users")
+        .select("id")
+        .eq("company_id", turnover.company_id || currentProfile.company_id)
+        .in("role", ["admin", "manager"])
+        .eq("active", true);
+
+      if (recipientsError) throw recipientsError;
+      if (!recipients?.length) return;
+
+      const severity = value === "low" ? "warning" : "critical";
+      const statusLabel = value === "emergency"
+        ? "Emergency stock used"
+        : value === "out"
+          ? "Out of stock"
+          : "Low stock";
+
+      const notificationRows = recipients.map(recipient => ({
+        company_id: turnover.company_id || currentProfile.company_id,
+        property_id: turnover.property_id,
+        turnover_id: turnover.id,
+        recipient_user_id: recipient.id,
+        notification_type: "inventory_alert",
+        severity,
+        title: `${statusLabel}: ${item.item_name}`,
+        message: `${item.item_name} was reported as ${statusLabel.toLowerCase()} during the turnover at ${turnover.properties?.property_name || "the property"}.`,
+        action_url: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
+      }));
+
+      const { error } = await db
+        .from("notifications")
+        .insert(notificationRows);
+
+      if (error) throw error;
+    }
+
+    async function saveInventoryCount(itemId, value, note, input) {
+      const item = inventoryItems.find(record => record.id === itemId);
+      const mapped = inventoryValueToRecord(value);
+
+      if (!item || !mapped) return;
+
+      const inventoryElement = input.closest("[data-inventory-item-id]");
+      inventoryElement?.querySelectorAll("input, textarea").forEach(control => {
+        control.disabled = true;
+      });
 
       try {
+        const existing = getInventoryCount(itemId);
+        const previousSelection = getInventorySelection(existing);
+
         const payload = {
-          company_id: property.company_id || currentProfile.company_id || null,
-          property_id: propertyId,
-          checklist_template_id: templateId,
-          turnover_date: turnoverDate,
-          scheduled_start: scheduledStart,
-          scheduled_end: scheduledEnd,
-          guest_checkout_time: toIsoOrNull(guestCheckoutInput.value),
-          guest_checkin_time: toIsoOrNull(guestCheckinInput.value),
-          priority: priorityInput.value,
-          same_day_turnover: sameDayInput.checked || priorityInput.value === "same_day",
-          assigned_user_id: assignedCleanerInput.value || null,
-          status: assignedCleanerInput.value ? "assigned" : "unassigned",
-          final_notes: notesInput.value.trim() || null,
-          property_readiness_status: "not_started",
-          owner_approval_status: "pending",
-          created_by: currentProfile.id
+          turnover_id: turnover.id,
+          inventory_item_id: itemId,
+          level_status: mapped.level_status,
+          stock_status: mapped.stock_status,
+          emergency_stock_used: mapped.emergency_stock_used,
+          cleaner_note: note || null,
+          counted_by: currentProfile.id,
+          counted_at: new Date().toISOString()
         };
 
-        const { data: turnover, error: insertError } = await db
-          .from("turnovers")
-          .insert(payload)
-          .select("id")
+        const { data, error } = await db
+          .from("inventory_counts")
+          .upsert(payload, {
+            onConflict: "turnover_id,inventory_item_id"
+          })
+          .select(`
+            id,
+            turnover_id,
+            inventory_item_id,
+            level_status,
+            stock_status,
+            emergency_stock_used,
+            cleaner_note,
+            counted_by,
+            counted_at
+          `)
           .single();
 
-        if (insertError) throw insertError;
+        if (error) throw error;
 
-        const { data: taskCount, error: taskError } = await db
-          .rpc("create_turnover_tasks", { p_turnover_id: turnover.id });
-
-        if (taskError) {
-          await db.from("turnovers").delete().eq("id", turnover.id);
-          throw new Error(`The turnover was not created because its checklist tasks could not be generated. ${taskError.message}`);
+        const index = inventoryCounts.findIndex(count => count.inventory_item_id === itemId);
+        if (index >= 0) {
+          inventoryCounts[index] = data;
+        } else {
+          inventoryCounts.push(data);
         }
 
-        const configuredPhotoTasks =
-          await configureGeneratedPhotoRequirements(turnover.id);
+        if (previousSelection !== value) {
+          await createInventoryNotifications(item, value);
+        }
 
-        closeDrawer();
-        await loadTurnovers();
-        showToast(
-          `Turnover created with ${taskCount || 0} checklist tasks and ${configuredPhotoTasks} mandatory photo requirement${configuredPhotoTasks === 1 ? "" : "s"}.`
+        renderPage();
+        showToast(`${item.item_name} inventory status saved.`);
+      } catch (error) {
+        inventoryElement?.querySelectorAll("input, textarea").forEach(control => {
+          control.disabled = false;
+        });
+        showToast(error.message || "The inventory status could not be saved.", "error");
+      }
+    }
+
+    async function loadPhotos() {
+      const { data, error } = await db
+        .from("photos")
+        .select(`
+          id,
+          turnover_id,
+          turnover_task_id,
+          room_id,
+          photo_type,
+          storage_path,
+          file_name,
+          mime_type,
+          file_size_bytes,
+          caption,
+          uploaded_by,
+          taken_at,
+          created_at
+        `)
+        .eq("turnover_id", turnover.id)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+
+      taskPhotos = Array.isArray(data) ? data : [];
+
+      await Promise.all(taskPhotos.map(async photo => {
+        const { data: signedData, error: signedError } = await db.storage
+          .from("turnover-photos")
+          .createSignedUrl(photo.storage_path, 3600);
+
+        photo.preview_url = signedError ? null : signedData?.signedUrl || null;
+      }));
+    }
+
+    function getPhotosForTask(taskId) {
+      return taskPhotos.filter(photo => photo.turnover_task_id === taskId);
+    }
+
+    function getRequiredPhotoCount(task) {
+      const configured = Number(task.required_photo_count) || 0;
+      return Math.max(configured, task.photo_required ? 1 : 0);
+    }
+
+    function getTaskProgress() {
+      const sourceTasks = displayedTasks.length ? displayedTasks : tasks;
+
+      const completed = sourceTasks.filter(task =>
+        ["completed", "not_applicable"].includes(task.task_status)
+      ).length;
+
+      return {
+        completed,
+        total: sourceTasks.length,
+        percent: sourceTasks.length
+          ? Math.round((completed / sourceTasks.length) * 100)
+          : 0
+      };
+    }
+
+    function normalizeGroupName(value) {
+      return String(value || "General Tasks")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+    }
+
+    function shouldNumberRoom(roomName) {
+      const normalized = normalizeGroupName(roomName);
+
+      return normalized === "bedroom"
+        || normalized === "bathroom"
+        || normalized === "bed room"
+        || normalized === "washroom";
+    }
+
+    function buildRoomGroups() {
+      const grouped = new Map();
+
+      tasks.forEach(task => {
+        const originalRoomName =
+          task.rooms?.room_name ||
+          task.section_name ||
+          "General Tasks";
+
+        const key = String(
+          task.room_id ||
+          `${normalizeGroupName(originalRoomName)}-${task.section_name || "general"}`
         );
-      } catch (error) {
-        console.error("Turnover creation failed:", error);
-        showFormError(error.message || "The turnover could not be created.");
-      } finally {
-        saveButton.disabled = false;
-        cancelButton.disabled = false;
-        closeDrawerButton.disabled = false;
-        saveButton.textContent = "Create Turnover";
+
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            key,
+            originalRoomName,
+            roomName: originalRoomName,
+            roomCode: task.rooms?.room_code || "",
+            items: []
+          });
+        }
+
+        grouped.get(key).items.push(task);
+      });
+
+      let rawGroups = Array.from(grouped.values());
+      const expandedGroups = [];
+
+      rawGroups.forEach(group => {
+        const normalizedRoom = normalizeGroupName(group.originalRoomName);
+
+        /*
+         * Some generated turnovers place every bedroom or bathroom task under
+         * one shared room_id. Detect repeated task sets and split them into
+         * Bedroom 1, Bedroom 2, Bedroom 3 or Bathroom 1, Bathroom 2.
+         */
+        if (shouldNumberRoom(group.originalRoomName)) {
+          const occurrencesByTask = new Map();
+
+          group.items.forEach(task => {
+            const normalizedTask = String(task.task_text || "")
+              .trim()
+              .toLowerCase()
+              .replace(/\s+/g, " ");
+
+            if (!occurrencesByTask.has(normalizedTask)) {
+              occurrencesByTask.set(normalizedTask, []);
+            }
+
+            occurrencesByTask.get(normalizedTask).push(task);
+          });
+
+          const roomCount = Math.max(
+            1,
+            ...Array.from(occurrencesByTask.values()).map(list => list.length)
+          );
+
+          if (roomCount > 1) {
+            const baseName =
+              normalizedRoom === "washroom"
+                ? "Bathroom"
+                : normalizedRoom === "bed room"
+                  ? "Bedroom"
+                  : group.originalRoomName;
+
+            for (let roomIndex = 0; roomIndex < roomCount; roomIndex += 1) {
+              const roomItems = [];
+
+              occurrencesByTask.forEach(taskOccurrences => {
+                if (taskOccurrences[roomIndex]) {
+                  roomItems.push(taskOccurrences[roomIndex]);
+                }
+              });
+
+              roomItems.sort((a, b) => {
+                const sortDifference =
+                  (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0);
+
+                if (sortDifference !== 0) return sortDifference;
+
+                return String(a.task_text || "")
+                  .localeCompare(String(b.task_text || ""));
+              });
+
+              expandedGroups.push({
+                key: `${group.key}__${roomIndex + 1}`,
+                originalRoomName: group.originalRoomName,
+                roomName: `${baseName} ${roomIndex + 1}`,
+                roomCode: group.roomCode,
+                items: roomItems
+              });
+            }
+
+            return;
+          }
+        }
+
+        /*
+         * Remove exact duplicate tasks from ordinary rooms.
+         */
+        const seenTasks = new Set();
+
+        group.items = group.items.filter(task => {
+          const duplicateKey = String(task.task_text || "")
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, " ");
+
+          if (seenTasks.has(duplicateKey)) return false;
+          seenTasks.add(duplicateKey);
+          return true;
+        });
+
+        expandedGroups.push(group);
+      });
+
+      roomGroups = expandedGroups;
+
+      /*
+       * Final Inspection is generated once for every physical room in the old
+       * template. Keep one section and one copy of each final task.
+       */
+      const finalGroups = roomGroups.filter(group => {
+        const normalized = normalizeGroupName(group.originalRoomName);
+        return normalized === "final inspection"
+          || normalized === "final walkthrough";
+      });
+
+      if (finalGroups.length) {
+        const allFinalTasks = finalGroups.flatMap(group => group.items);
+        const seenFinalTasks = new Set();
+
+        const uniqueFinalTasks = allFinalTasks.filter(task => {
+          const normalizedTask = String(task.task_text || "")
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, " ");
+
+          if (seenFinalTasks.has(normalizedTask)) return false;
+          seenFinalTasks.add(normalizedTask);
+          return true;
+        });
+
+        roomGroups = roomGroups.filter(group => !finalGroups.includes(group));
+
+        roomGroups.push({
+          key: "__final_inspection__",
+          originalRoomName: "Final Inspection",
+          roomName: "Final Inspection",
+          roomCode: "FINAL_INSPECTION",
+          items: uniqueFinalTasks
+        });
+      }
+
+      roomGroups.push({
+        key: "__inventory__",
+        roomName: "Inventory",
+        items: [],
+        isInventory: true
+      });
+
+      displayedTasks = roomGroups
+        .filter(group => !group.isInventory)
+        .flatMap(group => group.items);
+
+      if (!roomsInitialized && roomGroups.length) {
+        const firstIncomplete = roomGroups.find(group =>
+          getIncompleteTasks(group).length
+        );
+
+        openRoomKeys.add((firstIncomplete || roomGroups[0]).key);
+        roomsInitialized = true;
       }
     }
 
-    async function assignCleaner(turnoverId, cleanerId, select) {
-      const turnover = turnovers.find(item => item.id === turnoverId);
-      if (!turnover) return;
+    function getRoomProgress(group) {
+      if (group.isInventory) return getInventoryProgress();
 
-      const previousCleanerId = turnover.assigned_user_id || "";
-      select.disabled = true;
+      const completed = group.items.filter(task =>
+        ["completed", "not_applicable"].includes(task.task_status)
+      ).length;
 
-      try {
-        const nextStatus = cleanerId
-          ? (turnover.status === "unassigned" ? "assigned" : turnover.status)
-          : (["assigned", "accepted"].includes(turnover.status) ? "unassigned" : turnover.status);
-
-        const { error } = await db
-          .from("turnovers")
-          .update({
-            assigned_user_id: cleanerId || null,
-            status: nextStatus
-          })
-          .eq("id", turnoverId);
-
-        if (error) throw error;
-
-        turnover.assigned_user_id = cleanerId || null;
-        turnover.status = nextStatus;
-
-        showToast(cleanerId
-          ? `Turnover assigned to ${getCleanerName(cleanerId)}.`
-          : "Cleaner assignment removed.");
-
-        await loadTurnovers();
-      } catch (error) {
-        select.value = previousCleanerId;
-        select.disabled = false;
-        showToast(error.message || "The cleaner assignment could not be updated.", "error");
-      }
+      return {
+        completed,
+        total: group.items.length,
+        percent: group.items.length
+          ? Math.round((completed / group.items.length) * 100)
+          : 0
+      };
     }
 
-    async function cancelTurnover(turnoverId, button) {
-      const turnover = turnovers.find(item => item.id === turnoverId);
-      if (!turnover) return;
-
-      const propertyName = turnover.properties?.property_name || "this property";
-      if (!window.confirm(`Cancel the scheduled turnover for ${propertyName}?`)) return;
-
-      button.disabled = true;
-      button.textContent = "Cancelling";
-
-      try {
-        const { error } = await db
-          .from("turnovers")
-          .update({ status: "cancelled" })
-          .eq("id", turnoverId);
-
-        if (error) throw error;
-        await loadTurnovers();
-        showToast("The turnover has been cancelled.");
-      } catch (error) {
-        button.disabled = false;
-        button.textContent = "Cancel";
-        showToast(error.message || "The turnover could not be cancelled.", "error");
+    function getIncompleteTasks(group) {
+      if (group.isInventory) {
+        return inventoryItems
+          .filter(item => !getInventorySelection(getInventoryCount(item.id)))
+          .map(item => ({
+            id: `inventory-${item.id}`,
+            inventoryItemId: item.id,
+            task_text: item.item_name,
+            isInventory: true
+          }));
       }
+
+      return group.items.filter(task =>
+        !["completed", "not_applicable"].includes(task.task_status)
+      );
     }
 
-    async function initialize() {
-      try {
-        await requireSession();
-        await loadProperties();
-        await loadCleaners();
-        await loadTurnovers();
-      } catch (error) {
-        console.error("Turnovers page failed:", error);
-        turnoversContent.innerHTML = `
-          <div class="error-state">
-            <h2 class="state-title">Unable to load turnovers</h2>
-            <p class="state-text">${escapeHtml(error.message || "An unexpected error occurred.")}</p>
+    function getMissingPhotoCount(task) {
+      if (task.isInventory) return 0;
+
+      return Math.max(
+        getRequiredPhotoCount(task) - getPhotosForTask(task.id).length,
+        0
+      );
+    }
+
+    function renderRemainingPanel() {
+      const groupsWithRemaining = roomGroups
+        .map(group => ({
+          ...group,
+          remaining: getIncompleteTasks(group)
+        }))
+        .filter(group => group.remaining.length);
+
+      if (!groupsWithRemaining.length) {
+        return `
+          <section class="remaining-panel visible" id="remainingPanel">
+            <div class="remaining-panel-header">
+              <h2 class="remaining-panel-title">Remaining Tasks</h2>
+            </div>
+            <div class="room-empty">All checklist tasks are complete.</div>
+          </section>
+        `;
+      }
+
+      return `
+        <section class="remaining-panel visible" id="remainingPanel">
+          <div class="remaining-panel-header">
+            <h2 class="remaining-panel-title">Remaining Tasks</h2>
+            <strong>${groupsWithRemaining.reduce((sum, group) => sum + group.remaining.length, 0)} remaining</strong>
+          </div>
+
+          <div class="remaining-list">
+            ${groupsWithRemaining.map(group => `
+              <div class="remaining-room">
+                <div class="remaining-room-title">${escapeHtml(group.roomName)}</div>
+
+                ${group.remaining.map(task => {
+                  const missingPhotos = getMissingPhotoCount(task);
+
+                  return `
+                    <button
+                      class="remaining-item"
+                      type="button"
+                      data-open-room="${escapeHtml(group.key)}"
+                      data-focus-task="${escapeHtml(task.id)}"
+                      ${task.inventoryItemId ? `data-focus-inventory="${escapeHtml(task.inventoryItemId)}"` : ""}
+                    >
+                      <span class="remaining-box"></span>
+                      <span>
+                        ${escapeHtml(task.task_text)}
+                        ${missingPhotos > 0 ? `
+                          <span class="remaining-photo">
+                            ${missingPhotos} required photo${missingPhotos === 1 ? "" : "s"} missing
+                          </span>
+                        ` : ""}
+                      </span>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+
+    function renderInventoryRoom() {
+      const locked = turnover.status === "review_required" || turnover.status === "completed";
+
+      if (!inventoryItems.length) {
+        return `
+          <div class="inventory-empty">
+            No active inventory items are configured for this property.
           </div>
         `;
       }
+
+      return `
+        <div class="inventory-list">
+          ${inventoryItems.map(item => {
+            const count = getInventoryCount(item.id);
+            const selected = getInventorySelection(count);
+            const inputName = `inventory-${item.id}`;
+
+            return `
+              <div class="inventory-item" data-inventory-item-id="${escapeHtml(item.id)}">
+                <div class="inventory-item-header">
+                  <div>
+                    <div class="inventory-item-name">${escapeHtml(item.item_name)}</div>
+                    ${item.location_note ? `
+                      <div class="inventory-location">${escapeHtml(item.location_note)}</div>
+                    ` : ""}
+                  </div>
+
+                  ${selected ? `<span class="inventory-saved">Saved</span>` : ""}
+                </div>
+
+                <div class="inventory-options">
+                  ${[
+                    ["full", "Full", ""],
+                    ["low", "Low", "low"],
+                    ["out", "Out", "out"],
+                    ["emergency", "Emergency Stock Used", "emergency"]
+                  ].map(([value, label, className]) => `
+                    <div class="inventory-option ${className}">
+                      <input
+                        type="radio"
+                        id="${escapeHtml(inputName)}-${value}"
+                        name="${escapeHtml(inputName)}"
+                        value="${value}"
+                        data-role="inventory-status"
+                        ${selected === value ? "checked" : ""}
+                        ${locked ? "disabled" : ""}
+                      >
+                      <label for="${escapeHtml(inputName)}-${value}">${label}</label>
+                    </div>
+                  `).join("")}
+                </div>
+
+                <textarea
+                  class="inventory-note"
+                  data-role="inventory-note"
+                  placeholder="Optional inventory note"
+                  ${locked ? "disabled" : ""}
+                >${escapeHtml(count?.cleaner_note || "")}</textarea>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
     }
 
-    addTurnoverButton.addEventListener("click", openDrawer);
-    closeDrawerButton.addEventListener("click", closeDrawer);
-    cancelButton.addEventListener("click", closeDrawer);
-    drawerBackdrop.addEventListener("click", closeDrawer);
-    propertyInput.addEventListener("change", () => loadTemplatesForProperty(propertyInput.value));
-    turnoverForm.addEventListener("submit", saveTurnover);
-    searchInput.addEventListener("input", applyFilters);
-    propertyFilter.addEventListener("change", applyFilters);
-    statusFilter.addEventListener("change", applyFilters);
+    function renderRoomCard(group) {
+      const progress = getRoomProgress(group);
+      const visibleTasks = remainingOnly ? getIncompleteTasks(group) : group.items;
+      const isOpen = openRoomKeys.has(group.key);
+      const complete = progress.total > 0 && progress.completed === progress.total;
 
-    priorityInput.addEventListener("change", () => {
-      sameDayInput.checked = priorityInput.value === "same_day";
-    });
+      return `
+        <article
+          class="room-card ${isOpen ? "open" : ""} ${complete ? "complete" : ""}"
+          data-room-key="${escapeHtml(group.key)}"
+        >
+          <button
+            class="room-header"
+            type="button"
+            data-action="toggle-room"
+            data-room-key="${escapeHtml(group.key)}"
+            aria-expanded="${isOpen ? "true" : "false"}"
+          >
+            <div class="room-header-main">
+              <div class="room-heading-row">
+                <span class="room-chevron">›</span>
+                <h2 class="room-title">${escapeHtml(group.roomName)}</h2>
+              </div>
 
-    turnoverDateInput.addEventListener("change", () => {
-      const date = turnoverDateInput.value;
-      if (!date) return;
+              <div class="room-progress-track">
+                <div class="room-progress-fill" style="width:${progress.percent}%"></div>
+              </div>
+            </div>
 
-      if (!scheduledStartInput.value) scheduledStartInput.value = `${date}T11:00`;
-      if (!scheduledEndInput.value) scheduledEndInput.value = `${date}T15:00`;
-      if (!guestCheckoutInput.value) guestCheckoutInput.value = `${date}T11:00`;
-      if (!guestCheckinInput.value) guestCheckinInput.value = `${date}T16:00`;
+            <div class="room-progress-summary">
+              ${group.isInventory && progress.total === 0
+                ? "Not Configured"
+                : `${progress.completed} / ${progress.total} Complete`}
+            </div>
+          </button>
+
+          <div class="room-body">
+            ${group.isInventory
+              ? renderInventoryRoom()
+              : visibleTasks.length ? `
+                <div class="task-list">
+                  ${visibleTasks.map((task, index) => renderTask(task, index + 1)).join("")}
+                </div>
+              ` : `
+                <div class="room-empty">
+                  ${remainingOnly ? "No incomplete tasks remain in this room." : "No checklist tasks are assigned to this room."}
+                </div>
+              `}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderPage() {
+      buildRoomGroups();
+
+      const location = [
+        turnover.properties?.address,
+        turnover.properties?.city,
+        turnover.properties?.province
+      ].filter(Boolean).join(", ");
+
+      const progress = getTaskProgress();
+
+      pageContent.innerHTML = `
+        <section class="overview-card">
+          <div class="overview-header">
+            <div>
+              <h1 class="property-name">${escapeHtml(turnover.properties?.property_name || "Assigned Property")}</h1>
+              <div class="property-location">${escapeHtml(location || "Address not entered")}</div>
+            </div>
+
+            <span class="status-badge">${escapeHtml(turnover.status.replaceAll("_", " "))}</span>
+          </div>
+
+          <div class="overview-grid">
+            <div class="overview-item">
+              <div class="overview-label">Turnover Date</div>
+              <div class="overview-value">${escapeHtml(formatDate(turnover.turnover_date))}</div>
+            </div>
+
+            <div class="overview-item">
+              <div class="overview-label">Scheduled Start</div>
+              <div class="overview-value">${escapeHtml(formatTime(turnover.scheduled_start))}</div>
+            </div>
+
+            <div class="overview-item">
+              <div class="overview-label">Scheduled End</div>
+              <div class="overview-value">${escapeHtml(formatTime(turnover.scheduled_end))}</div>
+            </div>
+
+            <div class="overview-item">
+              <div class="overview-label">Guest Check-In</div>
+              <div class="overview-value">${escapeHtml(formatTime(turnover.guest_checkin_time))}</div>
+            </div>
+          </div>
+
+          <div class="progress-card">
+            <div class="progress-row">
+              <span>Checklist progress</span>
+              <strong id="progressText">${progress.completed} of ${progress.total} tasks completed</strong>
+            </div>
+
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill" style="width:${progress.percent}%"></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="checklist-toolbar">
+          <div>
+            <strong>Room Checklist</strong>
+            <div class="room-meta">Open one room at a time to complete the turnover.</div>
+          </div>
+
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button
+              class="button button-secondary"
+              id="openAllRoomsButton"
+              type="button"
+            >
+              Open All
+            </button>
+
+            <button
+              class="button button-secondary"
+              id="collapseAllRoomsButton"
+              type="button"
+            >
+              Collapse All
+            </button>
+
+            <button
+              class="button button-secondary remaining-toggle ${remainingOnly ? "active" : ""}"
+              id="remainingToggle"
+              type="button"
+            >
+              ${remainingOnly ? "Show All Tasks" : "Show Remaining Tasks"}
+            </button>
+          </div>
+        </div>
+
+        ${remainingOnly ? renderRemainingPanel() : ""}
+
+        <section class="room-list">
+          ${roomGroups.map(renderRoomCard).join("")}
+        </section>
+
+        <div class="submit-bar">
+          <div class="submit-text">
+            Complete every mandatory task before submitting this turnover for manager review.
+          </div>
+
+          <button class="button button-primary" id="submitTurnoverButton" type="button">
+            Submit for Review
+          </button>
+        </div>
+      `;
+
+      registerPageEvents();
+      registerTaskEvents();
+      document.getElementById("submitTurnoverButton").addEventListener("click", submitTurnover);
+    }
+
+    function registerPageEvents() {
+      document.getElementById("remainingToggle")?.addEventListener("click", () => {
+        remainingOnly = !remainingOnly;
+
+        if (remainingOnly) {
+          const hasOpenRemainingRoom = roomGroups.some(group =>
+            openRoomKeys.has(group.key) && getIncompleteTasks(group).length
+          );
+
+          if (!hasOpenRemainingRoom) {
+            const firstRemaining = roomGroups.find(group => getIncompleteTasks(group).length);
+            openRoomKeys.clear();
+
+            if (firstRemaining) {
+              openRoomKeys.add(firstRemaining.key);
+            }
+          }
+        }
+
+        renderPage();
+      });
+
+      pageContent.querySelectorAll('[data-action="toggle-room"]').forEach(button => {
+        button.addEventListener("click", () => {
+          const roomKey = button.dataset.roomKey;
+
+          if (openRoomKeys.has(roomKey)) {
+            openRoomKeys.delete(roomKey);
+          } else {
+            openRoomKeys.add(roomKey);
+          }
+
+          renderPage();
+        });
+      });
+
+      document.getElementById("openAllRoomsButton")?.addEventListener("click", () => {
+        openRoomKeys = new Set(roomGroups.map(group => group.key));
+        renderPage();
+      });
+
+      document.getElementById("collapseAllRoomsButton")?.addEventListener("click", () => {
+        openRoomKeys.clear();
+        renderPage();
+      });
+
+      pageContent.querySelectorAll('[data-role="inventory-status"]').forEach(input => {
+        input.addEventListener("change", () => {
+          const itemElement = input.closest("[data-inventory-item-id]");
+          const itemId = itemElement?.dataset.inventoryItemId;
+          const note = itemElement?.querySelector('[data-role="inventory-note"]')?.value.trim() || "";
+
+          if (itemId) {
+            saveInventoryCount(itemId, input.value, note, input);
+          }
+        });
+      });
+
+      pageContent.querySelectorAll("[data-open-room]").forEach(button => {
+        button.addEventListener("click", () => {
+          openRoomKeys.add(button.dataset.openRoom);
+          const taskId = button.dataset.focusTask;
+          renderPage();
+
+          const inventoryItemId = button.dataset.focusInventory;
+
+          window.requestAnimationFrame(() => {
+            const selector = inventoryItemId
+              ? `[data-inventory-item-id="${CSS.escape(inventoryItemId)}"]`
+              : `[data-task-id="${CSS.escape(taskId)}"]`;
+
+            const targetElement = pageContent.querySelector(selector);
+            targetElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+        });
+      });
+    }
+
+
+    function renderTask(task, number) {
+      const isComplete = task.task_status === "completed";
+      const isNA = task.task_status === "not_applicable";
+      const locked = turnover.status === "review_required" || turnover.status === "completed";
+      const photos = getPhotosForTask(task.id);
+      const requiredPhotoCount = getRequiredPhotoCount(task);
+      const photoRequirementMet = photos.length >= requiredPhotoCount;
+
+      return `
+        <div class="task-item" data-task-id="${escapeHtml(task.id)}">
+          <div class="task-number">${number}</div>
+
+          <div>
+            <div class="task-title">${escapeHtml(task.task_text)}</div>
+
+            ${task.cleaner_instructions ? `
+              <div class="task-instructions">${escapeHtml(task.cleaner_instructions)}</div>
+            ` : ""}
+
+            <div class="task-badges">
+              ${task.is_required ? `<span class="task-badge required">Mandatory Task</span>` : ""}
+              ${requiredPhotoCount > 0
+                ? `<span class="task-badge required">${requiredPhotoCount} Required Photo${requiredPhotoCount === 1 ? "" : "s"}</span>` : ""}
+              ${task.notes_required ? `<span class="task-badge required">Required Note</span>` : ""}
+              ${task.estimated_minutes ? `<span class="task-badge">${escapeHtml(task.estimated_minutes)} minutes</span>` : ""}
+              ${isComplete ? `<span class="task-badge complete">Completed</span>` : ""}
+              ${isNA ? `<span class="task-badge">Not Applicable</span>` : ""}
+            </div>
+
+            <div class="photo-panel">
+              <div class="photo-panel-header">
+                <span class="photo-panel-title">Task Photos</span>
+                <span class="photo-count">${photos.length}${requiredPhotoCount ? ` of ${requiredPhotoCount} required` : " uploaded"}</span>
+              </div>
+
+              <div class="photo-upload-row">
+                <input
+                  class="photo-input"
+                  id="photoInput-${escapeHtml(task.id)}"
+                  data-role="photo-input"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  capture="environment"
+                  ${locked ? "disabled" : ""}
+                >
+
+                <label
+                  class="button button-secondary"
+                  for="photoInput-${escapeHtml(task.id)}"
+                >
+                  Upload Task Photo
+                </label>
+
+                <span class="photo-help">JPEG, PNG or WebP. Maximum file size is 25 MB.</span>
+              </div>
+
+              ${requiredPhotoCount > 0 && !photoRequirementMet ? `
+                <div class="photo-requirement-missing">
+                  ${requiredPhotoCount - photos.length} more required photo${requiredPhotoCount - photos.length === 1 ? "" : "s"} must be uploaded.
+                </div>
+              ` : ""}
+
+              ${photos.length ? `
+                <div class="photo-grid">
+                  ${photos.map((photo, index) => `
+                    <div class="photo-preview">
+                      ${photo.preview_url
+                        ? `<img src="${escapeHtml(photo.preview_url)}" alt="Task photo ${index + 1}">`
+                        : `<div class="photo-preview-label">Preview unavailable</div>`
+                      }
+                      <div class="photo-preview-label">Task photo ${index + 1}</div>
+                    </div>
+                  `).join("")}
+                </div>
+              ` : ""}
+            </div>
+
+            <div class="notes-box">
+              <textarea
+                data-role="note"
+                placeholder="Add a cleaner note for this task."
+                ${locked ? "disabled" : ""}
+              >${escapeHtml(task.cleaner_note || "")}</textarea>
+            </div>
+          </div>
+
+          <div class="task-controls">
+            <button
+              class="button ${isComplete ? "button-success" : "button-primary"}"
+              type="button"
+              data-action="complete"
+              ${locked ? "disabled" : ""}
+            >
+              ${isComplete ? "Completed" : "Mark Complete"}
+            </button>
+
+            <button
+              class="button button-secondary"
+              type="button"
+              data-action="save-note"
+              ${locked ? "disabled" : ""}
+            >
+              Save Note
+            </button>
+
+            <button
+              class="button button-danger"
+              type="button"
+              data-action="not-applicable"
+              ${task.is_required || locked ? "disabled" : ""}
+            >
+              Not Applicable
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function registerTaskEvents() {
+      pageContent.querySelectorAll("[data-task-id]").forEach(taskElement => {
+        const taskId = taskElement.dataset.taskId;
+
+        taskElement.querySelector('[data-action="complete"]')
+          .addEventListener("click", event => completeTask(taskId, taskElement, event.currentTarget));
+
+        taskElement.querySelector('[data-action="save-note"]')
+          .addEventListener("click", event => saveTaskNote(taskId, taskElement, event.currentTarget));
+
+        taskElement.querySelector('[data-action="not-applicable"]')
+          .addEventListener("click", event => markNotApplicable(taskId, event.currentTarget));
+
+        taskElement.querySelector('[data-role="photo-input"]')
+          .addEventListener("change", event => uploadTaskPhoto(taskId, event.currentTarget));
+      });
+    }
+
+
+    function getFileExtension(file) {
+      const mimeExtensions = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp"
+      };
+
+      return mimeExtensions[file.type] || "jpg";
+    }
+
+    async function uploadTaskPhoto(taskId, input) {
+      const task = tasks.find(item => item.id === taskId);
+      const file = input.files?.[0];
+
+      if (!task || !file) return;
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 25 * 1024 * 1024;
+
+      if (!allowedTypes.includes(file.type)) {
+        input.value = "";
+        showToast("Upload a JPEG, PNG, or WebP image.", "error");
+        return;
+      }
+
+      if (file.size > maxSize) {
+        input.value = "";
+        showToast("The selected photo is larger than 25 MB.", "error");
+        return;
+      }
+
+      const taskElement = input.closest("[data-task-id]");
+      const uploadLabel = taskElement?.querySelector(`label[for="${input.id}"]`);
+      const previousLabel = uploadLabel?.textContent || "Upload Task Photo";
+
+      input.disabled = true;
+      if (uploadLabel) uploadLabel.textContent = "Uploading Photo";
+
+      const extension = getFileExtension(file);
+      const uniqueName = `${crypto.randomUUID()}.${extension}`;
+      const storagePath = `${currentProfile.id}/${turnover.id}/${taskId}/${uniqueName}`;
+
+      try {
+        const { error: storageError } = await db.storage
+          .from("turnover-photos")
+          .upload(storagePath, file, {
+            cacheControl: "3600",
+            contentType: file.type,
+            upsert: false
+          });
+
+        if (storageError) throw storageError;
+
+        const { data: photoRecord, error: databaseError } = await db
+          .from("photos")
+          .insert({
+            turnover_id: turnover.id,
+            turnover_task_id: taskId,
+            room_id: task.room_id || null,
+            photo_type: "after",
+            storage_path: storagePath,
+            file_name: file.name,
+            mime_type: file.type,
+            file_size_bytes: file.size,
+            uploaded_by: currentProfile.id,
+            taken_at: new Date().toISOString()
+          })
+          .select(`
+            id,
+            turnover_id,
+            turnover_task_id,
+            room_id,
+            photo_type,
+            storage_path,
+            file_name,
+            mime_type,
+            file_size_bytes,
+            caption,
+            uploaded_by,
+            taken_at,
+            created_at
+          `)
+          .single();
+
+        if (databaseError) {
+          await db.storage.from("turnover-photos").remove([storagePath]);
+          throw databaseError;
+        }
+
+        const { data: signedData } = await db.storage
+          .from("turnover-photos")
+          .createSignedUrl(storagePath, 3600);
+
+        photoRecord.preview_url = signedData?.signedUrl || null;
+        taskPhotos.push(photoRecord);
+
+        renderPage();
+        showToast("The task photo has been uploaded successfully.");
+      } catch (error) {
+        input.disabled = false;
+        input.value = "";
+        if (uploadLabel) uploadLabel.textContent = previousLabel;
+        showToast(error.message || "The photo could not be uploaded.", "error");
+      }
+    }
+
+    async function saveTaskNote(taskId, taskElement, button) {
+      const note = taskElement.querySelector('[data-role="note"]').value.trim();
+
+      button.disabled = true;
+      button.textContent = "Saving Note";
+
+      try {
+        const { error } = await db
+          .from("turnover_tasks")
+          .update({
+            cleaner_note: note || null,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", taskId)
+          .eq("turnover_id", turnover.id);
+
+        if (error) throw error;
+
+        const task = tasks.find(item => item.id === taskId);
+        if (task) task.cleaner_note = note || null;
+
+        showToast("The task note has been saved.");
+      } catch (error) {
+        showToast(error.message || "The note could not be saved.", "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Save Note";
+      }
+    }
+
+    async function completeTask(taskId, taskElement, button) {
+      const task = tasks.find(item => item.id === taskId);
+      if (!task) return;
+
+      const note = taskElement.querySelector('[data-role="note"]').value.trim();
+
+      if (task.notes_required && !note) {
+        showToast("A cleaner note is required before this task can be completed.", "error");
+        return;
+      }
+
+      const requiredPhotoCount = getRequiredPhotoCount(task);
+      const uploadedPhotoCount = getPhotosForTask(task.id).length;
+
+      if (uploadedPhotoCount < requiredPhotoCount) {
+        const remaining = requiredPhotoCount - uploadedPhotoCount;
+        showToast(`${remaining} required photo${remaining === 1 ? " remains" : "s remain"} before this task can be completed.`, "error");
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Saving";
+
+      try {
+        const { error } = await db
+          .from("turnover_tasks")
+          .update({
+            task_status: "completed",
+            cleaner_note: note || null,
+            completed_by: currentProfile.id,
+            completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", taskId)
+          .eq("turnover_id", turnover.id);
+
+        if (error) throw error;
+
+        task.task_status = "completed";
+        task.cleaner_note = note || null;
+
+        renderPage();
+        showToast("The task has been marked complete.");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Mark Complete";
+        showToast(error.message || "The task could not be completed.", "error");
+      }
+    }
+
+    async function markNotApplicable(taskId, button) {
+      const task = tasks.find(item => item.id === taskId);
+      if (!task || task.is_required) return;
+
+      button.disabled = true;
+      button.textContent = "Saving";
+
+      try {
+        const { error } = await db
+          .from("turnover_tasks")
+          .update({
+            task_status: "not_applicable",
+            completed_by: currentProfile.id,
+            completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", taskId)
+          .eq("turnover_id", turnover.id);
+
+        if (error) throw error;
+
+        task.task_status = "not_applicable";
+        renderPage();
+        showToast("The task has been marked not applicable.");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Not Applicable";
+        showToast(error.message || "The task could not be updated.", "error");
+      }
+    }
+
+    async function submitTurnover() {
+      const validationTasks = displayedTasks.length ? displayedTasks : tasks;
+
+      const incompleteRequired = validationTasks.filter(task =>
+        task.is_required && !["completed", "not_applicable"].includes(task.task_status)
+      );
+
+      const missingRequiredPhotos = validationTasks.filter(task =>
+        getPhotosForTask(task.id).length < getRequiredPhotoCount(task)
+      );
+
+      const incompleteInventory = inventoryItems.filter(item =>
+        !getInventorySelection(getInventoryCount(item.id))
+      );
+
+      if (incompleteRequired.length || missingRequiredPhotos.length || incompleteInventory.length) {
+        const missingTaskNames = incompleteRequired
+          .slice(0, 3)
+          .map(task => task.task_text);
+
+        const missingPhotoNames = missingRequiredPhotos
+          .filter(task => !incompleteRequired.some(item => item.id === task.id))
+          .slice(0, 3)
+          .map(task => `${task.task_text} photo`);
+
+        const missingInventoryNames = incompleteInventory
+          .slice(0, 3)
+          .map(item => `${item.item_name} inventory`);
+
+        const remainingNames = [
+          ...missingTaskNames,
+          ...missingPhotoNames,
+          ...missingInventoryNames
+        ].slice(0, 4);
+
+        const totalRemaining =
+          incompleteRequired.length +
+          missingRequiredPhotos.length +
+          incompleteInventory.length;
+
+        remainingOnly = true;
+
+        const firstMissing = incompleteRequired[0] || missingRequiredPhotos[0];
+
+        if (firstMissing) {
+          const firstGroup = roomGroups.find(group =>
+            !group.isInventory && group.items.some(task => task.id === firstMissing.id)
+          );
+
+          if (firstGroup) {
+            openRoomKeys.add(firstGroup.key);
+          }
+        } else if (incompleteInventory.length) {
+          openRoomKeys.add("__inventory__");
+        }
+
+        renderPage();
+
+        showToast(
+          `Cannot submit. ${totalRemaining} requirement${totalRemaining === 1 ? "" : "s"} remain: ${remainingNames.join(", ")}${totalRemaining > remainingNames.length ? "…" : ""}`,
+          "error"
+        );
+        return;
+      }
+
+      const button = document.getElementById("submitTurnoverButton");
+      button.disabled = true;
+      button.textContent = "Submitting";
+
+      try {
+        const { error } = await db
+          .from("turnovers")
+          .update({
+            status: "review_required",
+            property_readiness_status: "needs_review"
+          })
+          .eq("id", turnover.id);
+
+        if (error) throw error;
+
+        turnover.status = "review_required";
+        renderPage();
+        showToast("The turnover has been submitted for manager review.");
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Submit for Review";
+        showToast(error.message || "The turnover could not be submitted.", "error");
+      }
+    }
+
+    document.getElementById("backButton").addEventListener("click", () => {
+      window.location.href = "cleaner-dashboard.html";
     });
 
     document.getElementById("logoutButton").addEventListener("click", async () => {
@@ -1776,6 +2475,30 @@
         window.location.href = "login.html";
       }
     });
+
+    async function initialize() {
+      try {
+        const authenticated = await requireSession();
+        if (!authenticated) return;
+
+        await loadTurnover();
+        await Promise.all([
+          loadTasks(),
+          loadInventory(),
+          loadPhotos()
+        ]);
+        renderPage();
+      } catch (error) {
+        console.error("Cleaner turnover page failed:", error);
+
+        pageContent.innerHTML = `
+          <div class="error">
+            <h1 class="state-title">Unable to load turnover checklist</h1>
+            <p class="state-text">${escapeHtml(error.message || "An unexpected error occurred.")}</p>
+          </div>
+        `;
+      }
+    }
 
     initialize();
   </script>
