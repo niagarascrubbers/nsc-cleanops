@@ -1,898 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Turnover Review | NSC CleanOps</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --navy: #071f35;
-      --navy-light: #0b2f4f;
-      --blue: #2f8fca;
-      --blue-light: #eaf6fc;
-      --background: #f5f8fb;
-      --border: #dfe8ef;
-      --text: #17324d;
-      --muted: #6c7e8f;
-      --success: #1f8f64;
-      --success-light: #e9f8f1;
-      --warning: #aa7214;
-      --warning-light: #fff8e7;
-      --danger: #c94747;
-      --danger-light: #fff0f0;
-      --shadow: 0 12px 32px rgba(18, 50, 77, 0.09);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--background);
-      color: var(--text);
-      font-family: "Poppins", sans-serif;
-    }
-
-    button, textarea { font: inherit; }
-
-    .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: var(--navy);
-      color: white;
-      box-shadow: 0 8px 24px rgba(7, 31, 53, 0.16);
-    }
-
-    .header-inner {
-      width: min(1180px, calc(100% - 32px));
-      min-height: 72px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-
-    .brand-mark {
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 11px;
-      background: var(--blue);
-      font-family: "Montserrat", sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .brand-title {
-      margin: 0;
-      font-family: "Montserrat", sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    .brand-subtitle {
-      margin-top: 2px;
-      color: #a8c0d1;
-      font-size: 10px;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .header-button {
-      min-height: 38px;
-      padding: 8px 13px;
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 9px;
-      background: rgba(255,255,255,.07);
-      color: white;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .page {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 48px;
-    }
-
-    .overview,
-    .review-card,
-    .task-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .overview {
-      padding: 20px;
-      margin-bottom: 18px;
-    }
-
-    .overview-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .property-name {
-      margin: 0;
-      color: var(--navy-light);
-      font-family: "Montserrat", sans-serif;
-      font-size: 24px;
-    }
-
-    .property-location {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      min-height: 26px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: var(--warning-light);
-      color: var(--warning);
-      font-size: 9px;
-      font-weight: 600;
-    }
-
-    .overview-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .overview-item {
-      padding: 12px;
-      border: 1px solid #edf2f6;
-      border-radius: 10px;
-      background: #f8fafc;
-    }
-
-    .overview-label {
-      color: var(--muted);
-      font-size: 8px;
-      font-weight: 600;
-      letter-spacing: .4px;
-      text-transform: uppercase;
-    }
-
-    .overview-value {
-      margin-top: 5px;
-      color: var(--navy-light);
-      font-size: 10px;
-      font-weight: 600;
-      line-height: 1.5;
-    }
-
-    .task-list {
-      display: grid;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .task-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .task-title {
-      margin: 0;
-      color: var(--navy-light);
-      font-family: "Montserrat", sans-serif;
-      font-size: 15px;
-    }
-
-    .task-meta {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 9px;
-    }
-
-    .task-body {
-      padding: 16px 18px;
-    }
-
-    .task-row {
-      display: grid;
-      grid-template-columns: minmax(0,1fr) 190px;
-      gap: 18px;
-    }
-
-    .task-text {
-      color: var(--navy-light);
-      font-size: 11px;
-      font-weight: 600;
-      line-height: 1.5;
-    }
-
-    .task-note {
-      margin-top: 8px;
-      padding: 10px 11px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      background: #f8fafc;
-      color: var(--muted);
-      font-size: 9px;
-      line-height: 1.5;
-    }
-
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 8px;
-    }
-
-    .badge {
-      padding: 3px 7px;
-      border-radius: 999px;
-      background: #f1f5f8;
-      color: #536b7e;
-      font-size: 8px;
-      font-weight: 600;
-    }
-
-    .badge.complete {
-      background: var(--success-light);
-      color: var(--success);
-    }
-
-    .badge.warning {
-      background: var(--warning-light);
-      color: var(--warning);
-    }
-
-    .photos {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 8px;
-    }
-
-    .photo {
-      aspect-ratio: 1;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #f8fafc;
-    }
-
-    .photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .no-photo {
-      display: grid;
-      place-items: center;
-      min-height: 90px;
-      border: 1px dashed var(--border);
-      border-radius: 10px;
-      color: var(--muted);
-      font-size: 9px;
-      text-align: center;
-      padding: 10px;
-    }
-
-    .review-card {
-      padding: 20px;
-    }
-
-    .review-title {
-      margin: 0;
-      color: var(--navy-light);
-      font-family: "Montserrat", sans-serif;
-      font-size: 18px;
-    }
-
-    .review-description {
-      margin: 6px 0 14px;
-      color: var(--muted);
-      font-size: 10px;
-      line-height: 1.6;
-    }
-
-    .review-card textarea {
-      width: 100%;
-      min-height: 110px;
-      padding: 11px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      resize: vertical;
-      color: var(--text);
-      font-size: 10px;
-      outline: none;
-    }
-
-    .review-card textarea:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(47,143,202,.12);
-    }
-
-    .review-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 9px;
-      margin-top: 14px;
-    }
-
-    .button {
-      min-height: 40px;
-      padding: 9px 15px;
-      border: 1px solid transparent;
-      border-radius: 9px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .button:disabled {
-      cursor: not-allowed;
-      opacity: .6;
-    }
-
-    .button-primary {
-      color: white;
-      background: var(--navy-light);
-    }
-
-    .button-danger {
-      color: var(--danger);
-      background: white;
-      border-color: #efcaca;
-    }
-
-    .loading,
-    .error {
-      padding: 70px 20px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-
-    .spinner {
-      width: 34px;
-      height: 34px;
-      margin: 0 auto 14px;
-      border: 3px solid #dcecf4;
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin .75s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .state-title {
-      margin: 0 0 7px;
-      color: var(--navy-light);
-      font-family: "Montserrat", sans-serif;
-      font-size: 16px;
-    }
-
-    .state-text {
-      max-width: 520px;
-      margin: 0 auto;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.6;
-    }
-
-    .toast {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 60;
-      width: min(360px, calc(100vw - 36px));
-      padding: 13px 15px;
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--success);
-      border-radius: 10px;
-      background: white;
-      box-shadow: 0 20px 50px rgba(7,31,53,.2);
-      color: var(--text);
-      font-size: 10px;
-      line-height: 1.5;
-    }
-
-    .toast.error { border-left-color: var(--danger); }
-
-    @media (max-width: 800px) {
-      .overview-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .task-row { grid-template-columns: 1fr; }
-      .photos { grid-template-columns: repeat(3, minmax(0,1fr)); }
-    }
-
-    @media (max-width: 520px) {
-      .header-inner,
-      .page {
-        width: min(100% - 22px, 1180px);
-      }
-
-      .overview-header {
-        flex-direction: column;
-      }
-
-      .overview-grid,
-      .photos {
-        grid-template-columns: 1fr;
-      }
-
-      .review-actions {
-        flex-direction: column-reverse;
-      }
-
-      .review-actions .button {
-        width: 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Turnover Review | NSC CleanOps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071f35;--navy2:#0b2f4f;--blue:#2f8fca;--blue-light:#eaf6fc;--bg:#f5f8fb;--border:#dfe8ef;--text:#17324d;--muted:#6c7e8f;--green:#1f8f64;--green-light:#e9f8f1;--amber:#aa7214;--amber-light:#fff8e7;--red:#c94747;--red-light:#fff0f0;--shadow:0 12px 32px rgba(18,50,77,.09)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Poppins",sans-serif}button,textarea{font:inherit}
+header{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff}.header{width:min(1180px,calc(100% - 30px));min-height:70px;margin:auto;display:flex;justify-content:space-between;align-items:center}.brand{font-family:"Montserrat";font-weight:700}.sub{font-size:9px;color:#afc3d2;margin-top:3px}.head-actions{display:flex;gap:8px}.head-btn{padding:8px 12px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer}
+main{width:min(1180px,calc(100% - 30px));margin:auto;padding:24px 0 45px}.panel{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}.panel-body{padding:18px}.title{margin:0;font-family:"Montserrat";font-size:20px}.muted{color:var(--muted);font-size:10px;line-height:1.5}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}.metric{padding:11px;border:1px solid #edf2f6;border-radius:9px;background:#f8fafc}.metric label{display:block;color:var(--muted);font-size:7px;text-transform:uppercase}.metric strong{display:block;margin-top:4px;font-size:10px}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:14px 17px;border-bottom:1px solid var(--border)}.section-head h2{margin:0;font-family:"Montserrat";font-size:15px}
+.badge{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:700}.green{background:var(--green-light);color:var(--green)}.amber{background:var(--amber-light);color:var(--amber)}.red{background:var(--red-light);color:var(--red)}.blue{background:var(--blue-light);color:#2078a9}
+.issue{padding:15px 17px;border-bottom:1px solid var(--border)}.issue:last-child{border-bottom:0}.issue-top{display:flex;justify-content:space-between;gap:12px}.issue-title{font-size:11px;font-weight:700}.issue-meta,.issue-desc{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin-top:11px}.photo{overflow:hidden;border:1px solid var(--border);border-radius:9px;background:#f8fafc}.photo img{display:block;width:100%;aspect-ratio:1;object-fit:cover}.photo-cap{padding:6px;font-size:7px;color:var(--muted)}
+.task{padding:14px 17px;border-bottom:1px solid var(--border)}.task:last-child{border-bottom:0}.task-title{font-size:10px;font-weight:700}.task-meta{margin-top:4px;color:var(--muted);font-size:8px}.empty{padding:24px;text-align:center;color:var(--muted);font-size:10px}.loading{padding:60px;text-align:center}.btn{display:inline-flex;min-height:36px;align-items:center;justify-content:center;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);text-decoration:none;font-size:9px;font-weight:600;cursor:pointer}.btn-primary{background:var(--navy2);color:#fff;border-color:var(--navy2)}
+.review-box textarea{width:100%;min-height:100px;padding:10px;border:1px solid var(--border);border-radius:9px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+@media(max-width:800px){.grid4{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.grid4{grid-template-columns:1fr}.issue-top{flex-direction:column}}
+</style>
 </head>
-
 <body>
-  <header class="app-header">
-    <div class="header-inner">
-      <div class="brand">
-        <div class="brand-mark">NSC</div>
-        <div>
-          <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Manager Turnover Review</div>
-        </div>
-      </div>
-
-      <div class="header-actions">
-        <button class="header-button" id="backButton" type="button">Turnovers</button>
-        <button class="header-button" id="logoutButton" type="button">Sign Out</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="page" id="pageContent">
-    <div class="loading">
-      <div class="spinner"></div>
-      <h1 class="state-title">Loading turnover review</h1>
-      <p class="state-text">Retrieving completed tasks and submitted photos.</p>
-    </div>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js"></script>
-
-  <script>
-    "use strict";
-
-    const db = window.nscSupabase || window.supabaseClient;
-    const pageContent = document.getElementById("pageContent");
-
-    let currentProfile = null;
-    let turnover = null;
-    let tasks = [];
-    let photos = [];
-
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function getTurnoverId() {
-      return new URLSearchParams(window.location.search).get("id");
-    }
-
-    function showToast(message, type = "success") {
-      document.querySelector(".toast")?.remove();
-
-      const toast = document.createElement("div");
-      toast.className = `toast ${type === "error" ? "error" : ""}`;
-      toast.textContent = message;
-      document.body.appendChild(toast);
-
-      window.setTimeout(() => toast.remove(), 4300);
-    }
-
-    function formatDate(value) {
-      if (!value) return "Not scheduled";
-
-      return new Intl.DateTimeFormat("en-CA", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-      }).format(new Date(`${value}T12:00:00`));
-    }
-
-    function formatTime(value) {
-      if (!value) return "Not entered";
-
-      return new Intl.DateTimeFormat("en-CA", {
-        hour: "numeric",
-        minute: "2-digit"
-      }).format(new Date(value));
-    }
-
-    async function signedPhotoUrl(path) {
-      const { data, error } = await db.storage
-        .from("turnover-photos")
-        .createSignedUrl(path, 3600);
-
-      if (error) return null;
-      return data?.signedUrl || null;
-    }
-
-    async function requireManagerSession() {
-      if (!db) throw new Error("Supabase client is unavailable.");
-
-      const {
-        data: { session },
-        error: sessionError
-      } = await db.auth.getSession();
-
-      if (sessionError) throw sessionError;
-
-      if (!session) {
-        window.location.href = "login.html";
-        return false;
-      }
-
-      const { data: profile, error: profileError } = await db
-        .from("users")
-        .select("id, full_name, role, active")
-        .eq("auth_user_id", session.user.id)
-        .single();
-
-      if (profileError) throw profileError;
-      if (!profile?.active) throw new Error("This user account is inactive.");
-      if (!["admin", "manager"].includes(profile.role)) {
-        throw new Error("Manager access is required.");
-      }
-
-      currentProfile = profile;
-      return true;
-    }
-
-    async function loadData() {
-      const turnoverId = getTurnoverId();
-      if (!turnoverId) throw new Error("No turnover was selected.");
-
-      const { data: turnoverData, error: turnoverError } = await db
-        .from("turnovers")
-        .select(`
-          id,
-          turnover_date,
-          scheduled_start,
-          scheduled_end,
-          guest_checkin_time,
-          status,
-          review_notes,
-          properties (
-            property_name,
-            address,
-            city,
-            province
-          ),
-          users:assigned_user_id (
-            full_name
-          )
-        `)
-        .eq("id", turnoverId)
-        .single();
-
-      if (turnoverError) throw turnoverError;
-      turnover = turnoverData;
-
-      const { data: taskData, error: taskError } = await db
-        .from("turnover_tasks")
-        .select(`
-          id,
-          room_id,
-          section_name,
-          task_text,
-          task_status,
-          cleaner_note,
-          is_required,
-          required_photo_count,
-          manager_status,
-          rooms (
-            room_name
-          )
-        `)
-        .eq("turnover_id", turnoverId)
-        .order("sort_order", { ascending: true });
-
-      if (taskError) throw taskError;
-      tasks = Array.isArray(taskData) ? taskData : [];
-
-      const { data: photoData, error: photoError } = await db
-        .from("photos")
-        .select("id, turnover_task_id, storage_path, caption, created_at")
-        .eq("turnover_id", turnoverId)
-        .order("created_at", { ascending: true });
-
-      if (photoError) throw photoError;
-
-      photos = await Promise.all((photoData || []).map(async photo => ({
-        ...photo,
-        signed_url: await signedPhotoUrl(photo.storage_path)
-      })));
-    }
-
-    function renderPage() {
-      const location = [
-        turnover.properties?.address,
-        turnover.properties?.city,
-        turnover.properties?.province
-      ].filter(Boolean).join(", ");
-
-      pageContent.innerHTML = `
-        <section class="overview">
-          <div class="overview-header">
-            <div>
-              <h1 class="property-name">${escapeHtml(turnover.properties?.property_name || "Turnover Review")}</h1>
-              <div class="property-location">${escapeHtml(location || "Address not entered")}</div>
-            </div>
-
-            <span class="status-badge">${escapeHtml((turnover.status || "").replaceAll("_", " "))}</span>
-          </div>
-
-          <div class="overview-grid">
-            <div class="overview-item">
-              <div class="overview-label">Turnover Date</div>
-              <div class="overview-value">${escapeHtml(formatDate(turnover.turnover_date))}</div>
-            </div>
-
-            <div class="overview-item">
-              <div class="overview-label">Scheduled Start</div>
-              <div class="overview-value">${escapeHtml(formatTime(turnover.scheduled_start))}</div>
-            </div>
-
-            <div class="overview-item">
-              <div class="overview-label">Scheduled End</div>
-              <div class="overview-value">${escapeHtml(formatTime(turnover.scheduled_end))}</div>
-            </div>
-
-            <div class="overview-item">
-              <div class="overview-label">Assigned Cleaner</div>
-              <div class="overview-value">${escapeHtml(turnover.users?.full_name || "Unassigned")}</div>
-            </div>
-          </div>
-        </section>
-
-        <section class="task-list">
-          ${tasks.map((task, index) => {
-            const taskPhotos = photos.filter(photo => photo.turnover_task_id === task.id);
-
-            return `
-              <article class="task-card">
-                <div class="task-header">
-                  <div>
-                    <h2 class="task-title">${index + 1}. ${escapeHtml(task.task_text)}</h2>
-                    <div class="task-meta">${escapeHtml(task.rooms?.room_name || task.section_name || "General Task")}</div>
-                  </div>
-                </div>
-
-                <div class="task-body">
-                  <div class="task-row">
-                    <div>
-                      <div class="task-text">Cleaner submission</div>
-
-                      <div class="badges">
-                        <span class="badge ${task.task_status === "completed" ? "complete" : "warning"}">
-                          ${escapeHtml((task.task_status || "pending").replaceAll("_", " "))}
-                        </span>
-                        ${task.is_required ? `<span class="badge warning">Mandatory Task</span>` : ""}
-                        ${Number(task.required_photo_count) > 0
-                          ? `<span class="badge warning">${taskPhotos.length} of ${task.required_photo_count} required photos</span>`
-                          : ""}
-                      </div>
-
-                      <div class="task-note">
-                        ${task.cleaner_note
-                          ? escapeHtml(task.cleaner_note)
-                          : "No cleaner note was submitted for this task."
-                        }
-                      </div>
-                    </div>
-
-                    <div class="photos">
-                      ${taskPhotos.length
-                        ? taskPhotos.map(photo => photo.signed_url
-                            ? `<a class="photo" href="${escapeHtml(photo.signed_url)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(photo.signed_url)}" alt="Turnover task photo"></a>`
-                            : `<div class="no-photo">Photo preview unavailable</div>`
-                          ).join("")
-                        : `<div class="no-photo">No photos submitted</div>`
-                      }
-                    </div>
-                  </div>
-                </div>
-              </article>
-            `;
-          }).join("")}
-        </section>
-
-        <section class="review-card">
-          <h2 class="review-title">Manager Review</h2>
-          <p class="review-description">
-            Approve the turnover when all work meets the required standard. When corrections are needed, enter clear instructions before returning it to the cleaner.
-          </p>
-
-          <textarea id="reviewNotes" placeholder="Enter manager review notes or correction instructions.">${escapeHtml(turnover.review_notes || "")}</textarea>
-
-          <div class="review-actions">
-            <button class="button button-danger" id="rejectButton" type="button">Request Corrections</button>
-            <button class="button button-primary" id="approveButton" type="button">Approve Turnover</button>
-          </div>
-        </section>
-      `;
-
-      document.getElementById("approveButton").addEventListener("click", approveTurnover);
-      document.getElementById("rejectButton").addEventListener("click", rejectTurnover);
-    }
-
-    async function approveTurnover() {
-      const button = document.getElementById("approveButton");
-      const notes = document.getElementById("reviewNotes").value.trim();
-
-      button.disabled = true;
-      button.textContent = "Approving";
-
-      try {
-        const now = new Date().toISOString();
-
-        const { error: taskError } = await db
-          .from("turnover_tasks")
-          .update({
-            manager_status: "approved",
-            reviewed_by: currentProfile.id,
-            reviewed_at: now
-          })
-          .eq("turnover_id", turnover.id);
-
-        if (taskError) throw taskError;
-
-        const { error } = await db
-          .from("turnovers")
-          .update({
-            status: "completed",
-            property_readiness_status: "approved",
-            owner_approval_status: "approved",
-            review_notes: notes || null,
-            reviewed_by: currentProfile.id,
-            reviewed_at: now
-          })
-          .eq("id", turnover.id);
-
-        if (error) throw error;
-
-        showToast("The turnover has been approved.");
-        window.setTimeout(() => {
-          window.location.href = "turnovers.html";
-        }, 900);
-      } catch (error) {
-        button.disabled = false;
-        button.textContent = "Approve Turnover";
-        showToast(error.message || "The turnover could not be approved.", "error");
-      }
-    }
-
-    async function rejectTurnover() {
-      const notes = document.getElementById("reviewNotes").value.trim();
-
-      if (!notes) {
-        showToast("Enter correction instructions before returning the turnover.", "error");
-        return;
-      }
-
-      const button = document.getElementById("rejectButton");
-      button.disabled = true;
-      button.textContent = "Returning Turnover";
-
-      try {
-        const now = new Date().toISOString();
-
-        const { error: taskError } = await db
-          .from("turnover_tasks")
-          .update({
-            manager_status: "rejected",
-            manager_note: notes,
-            reviewed_by: currentProfile.id,
-            reviewed_at: now
-          })
-          .eq("turnover_id", turnover.id);
-
-        if (taskError) throw taskError;
-
-        const { error } = await db
-          .from("turnovers")
-          .update({
-            status: "correction_required",
-            property_readiness_status: "correction_required",
-            owner_approval_status: "rejected",
-            review_notes: notes,
-            reviewed_by: currentProfile.id,
-            reviewed_at: now
-          })
-          .eq("id", turnover.id);
-
-        if (error) throw error;
-
-        showToast("The turnover has been returned for corrections.");
-        window.setTimeout(() => {
-          window.location.href = "turnovers.html";
-        }, 900);
-      } catch (error) {
-        button.disabled = false;
-        button.textContent = "Request Corrections";
-        showToast(error.message || "The turnover could not be returned.", "error");
-      }
-    }
-
-    document.getElementById("backButton").addEventListener("click", () => {
-      window.location.href = "turnovers.html";
-    });
-
-    document.getElementById("logoutButton").addEventListener("click", async () => {
-      try {
-        await db.auth.signOut();
-      } finally {
-        window.location.href = "login.html";
-      }
-    });
-
-    async function initialize() {
-      try {
-        const authenticated = await requireManagerSession();
-        if (!authenticated) return;
-
-        await loadData();
-        renderPage();
-      } catch (error) {
-        console.error("Turnover review failed:", error);
-
-        pageContent.innerHTML = `
-          <div class="error">
-            <h1 class="state-title">Unable to load turnover review</h1>
-            <p class="state-text">${escapeHtml(error.message || "An unexpected error occurred.")}</p>
-          </div>
-        `;
-      }
-    }
-
-    initialize();
-  </script>
+<header><div class="header"><div><div class="brand">NSC CleanOps</div><div class="sub">Manager Turnover Review · Operations V2</div></div><div class="head-actions"><button class="head-btn" id="backBtn">Turnovers</button><button class="head-btn" id="logoutBtn">Sign Out</button></div></div></header>
+<main id="page"><div class="loading">Loading turnover review…</div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client.js"></script>
+<script>
+"use strict";
+const db=window.nscSupabase||window.supabaseClient; const page=document.getElementById("page");
+let profile,turnover,tasks=[],photos=[],issues=[],inventory=[];
+const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+const fmtDate=v=>v?new Intl.DateTimeFormat("en-CA",{weekday:"short",month:"short",day:"numeric",year:"numeric"}).format(new Date(v)):"Not scheduled";
+const fmtTime=v=>v?new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit"}).format(new Date(v)):"Not recorded";
+const id=()=>new URLSearchParams(location.search).get("id");
+async function signed(path){if(!path)return null;const {data,error}=await db.storage.from("turnover-photos").createSignedUrl(path,3600);return error?null:data?.signedUrl}
+async function auth(){const {data:{session}}=await db.auth.getSession();if(!session){location.href="login.html";return false}const {data,error}=await db.from("users").select("id,full_name,role,active").eq("auth_user_id",session.user.id).single();if(error)throw error;if(!data?.active||!["admin","manager"].includes(data.role))throw new Error("Manager access required.");profile=data;return true}
+async function load(){
+ const tid=id();if(!tid)throw new Error("No turnover selected.");
+ const [t,ta,p,i,inv]=await Promise.all([
+  db.from("turnovers").select(`
+   id,property_id,turnover_date,scheduled_start,scheduled_end,guest_checkin_time,status,review_notes,
+   attendance_status,attendance_note,attendance_response_at,needs_reassignment,
+   check_in_time,check_out_time,check_in_accuracy,check_out_accuracy,check_in_distance,check_out_distance,
+   properties(property_name,address,city,province),users:assigned_user_id(full_name)
+  `).eq("id",tid).single(),
+  db.from("turnover_tasks").select(`id,room_id,section_name,task_text,task_status,cleaner_note,is_required,required_photo_count,manager_status,rooms(room_name)`).eq("turnover_id",tid).order("sort_order"),
+  db.from("photos").select(`id,turnover_task_id,issue_id,room_id,photo_type,storage_path,caption,created_at`).eq("turnover_id",tid).order("created_at"),
+  db.from("issues").select(`id,room_id,issue_type,title,description,urgency,issue_status,prevents_guest_ready,reported_by,created_at,rooms(room_name),users:reported_by(full_name)`).eq("turnover_id",tid).order("created_at",{ascending:false}),
+  db.from("inventory_counts").select(`id,quantity_remaining,stock_status,level_status,emergency_stock_used,cleaner_note,counted_at,inventory_items(item_name,target_quantity,unit_name)`).eq("turnover_id",tid).order("counted_at")
+ ]);
+ if(t.error)throw t.error;if(ta.error)throw ta.error;if(p.error)throw p.error;if(i.error)throw i.error;if(inv.error)throw inv.error;
+ turnover=t.data;tasks=ta.data||[];issues=i.data||[];inventory=inv.data||[];
+ photos=await Promise.all((p.data||[]).map(async x=>({...x,url:await signed(x.storage_path)})));
+}
+function issuePhotos(issueId){return photos.filter(p=>p.issue_id===issueId)}
+function taskPhotos(taskId){return photos.filter(p=>p.turnover_task_id===taskId)}
+function render(){
+ const loc=[turnover.properties?.address,turnover.properties?.city,turnover.properties?.province].filter(Boolean).join(", ");
+ const issueHtml=issues.map(i=>{const ps=issuePhotos(i.id);return `
+  <div class="issue">
+   <div class="issue-top"><div><div class="issue-title">${esc(i.title||"Reported issue")}</div><div class="issue-meta">${esc(i.issue_type?.replaceAll("_"," ")||"Issue")} · ${esc(i.rooms?.room_name||"General")} · ${esc(i.users?.full_name||"Cleaner")} · ${esc(fmtDate(i.created_at))}</div></div><div><span class="badge ${i.urgency==="emergency"||i.urgency==="urgent"?"red":"amber"}">${esc(i.urgency||"normal")}</span> ${i.prevents_guest_ready?'<span class="badge red">Guest Blocker</span>':""}</div></div>
+   <div class="issue-desc">${esc(i.description||"")}</div>
+   <div class="photos">${ps.length?ps.map(p=>`<div class="photo">${p.url?`<a href="${esc(p.url)}" target="_blank"><img src="${esc(p.url)}" alt="Issue photo"></a>`:""}<div class="photo-cap">${esc(p.caption||"Issue photo")}</div></div>`).join(""):'<div class="empty">No issue photos found.</div>'}</div>
+  </div>`}).join("")||'<div class="empty">No issues reported for this turnover.</div>';
+
+ const taskHtml=tasks.map(t=>{const ps=taskPhotos(t.id);return `<div class="task"><div class="task-title">${esc(t.task_text)}</div><div class="task-meta">${esc(t.rooms?.room_name||t.section_name||"General")} · ${esc((t.task_status||"pending").replaceAll("_"," "))}${t.cleaner_note?` · Note: ${esc(t.cleaner_note)}`:""}</div>${ps.length?`<div class="photos">${ps.map(p=>`<div class="photo">${p.url?`<a href="${esc(p.url)}" target="_blank"><img src="${esc(p.url)}" alt="Task photo"></a>`:""}<div class="photo-cap">${esc(p.caption||"Task photo")}</div></div>`).join("")}</div>`:""}</div>`}).join("")||'<div class="empty">No checklist tasks found.</div>';
+
+ const invHtml=inventory.map(c=>{const item=c.inventory_items||{};return `<div class="issue"><div class="issue-top"><div class="issue-title">${esc(item.item_name||"Inventory item")}</div><span class="badge ${c.stock_status==="red"?"red":c.stock_status==="amber"?"amber":"green"}">${esc(c.emergency_stock_used?"Emergency stock used":c.stock_status||"unknown")}</span></div><div class="issue-meta">Count: ${esc(c.quantity_remaining)} / Target: ${esc(item.target_quantity)} ${esc(item.unit_name||"")}${c.cleaner_note?` · ${esc(c.cleaner_note)}`:""}</div></div>`}).join("")||'<div class="empty">No inventory count submitted.</div>';
+
+ page.innerHTML=`
+  <section class="panel"><div class="panel-body"><h1 class="title">${esc(turnover.properties?.property_name||"Turnover Review")}</h1><div class="muted">${esc(loc||"Address not entered")}</div>
+   <div class="grid4">
+    <div class="metric"><label>Cleaner</label><strong>${esc(turnover.users?.full_name||"Unassigned")}</strong></div>
+    <div class="metric"><label>Attendance</label><strong>${esc(turnover.attendance_status||"pending")}</strong></div>
+    <div class="metric"><label>Clock In</label><strong>${esc(fmtTime(turnover.check_in_time))}</strong></div>
+    <div class="metric"><label>Clock Out</label><strong>${esc(fmtTime(turnover.check_out_time))}</strong></div>
+    <div class="metric"><label>Turnover Date</label><strong>${esc(fmtDate(turnover.turnover_date))}</strong></div>
+    <div class="metric"><label>Check-in Distance</label><strong>${turnover.check_in_distance==null?"Not recorded":Math.round(turnover.check_in_distance)+" m"}</strong></div>
+    <div class="metric"><label>Check-out Distance</label><strong>${turnover.check_out_distance==null?"Not recorded":Math.round(turnover.check_out_distance)+" m"}</strong></div>
+    <div class="metric"><label>Status</label><strong>${esc((turnover.status||"").replaceAll("_"," "))}</strong></div>
+   </div>
+   ${turnover.attendance_note?`<div class="issue-desc" style="margin-top:12px"><strong>Attendance note:</strong> ${esc(turnover.attendance_note)}</div>`:""}
+  </div></section>
+  <section class="panel"><div class="section-head"><h2>Reported Issues & Photos</h2><span class="badge ${issues.some(i=>i.prevents_guest_ready)?"red":"blue"}">${issues.length} issue${issues.length===1?"":"s"}</span></div>${issueHtml}</section>
+  <section class="panel"><div class="section-head"><h2>Inventory Summary</h2></div>${invHtml}</section>
+  <section class="panel"><div class="section-head"><h2>Completed Checklist & Photos</h2></div>${taskHtml}</section>
+  <section class="panel review-box"><div class="panel-body"><h2 class="title" style="font-size:16px">Manager Review</h2><p class="muted">Approve the turnover or return it for correction.</p><textarea id="reviewNotes" placeholder="Manager review notes">${esc(turnover.review_notes||"")}</textarea><div class="actions"><button class="btn" id="correctionBtn">Request Correction</button><button class="btn btn-primary" id="approveBtn">Approve Turnover</button></div></div></section>`;
+ document.getElementById("approveBtn").addEventListener("click",()=>saveReview("completed"));
+ document.getElementById("correctionBtn").addEventListener("click",()=>saveReview("correction_required"));
+}
+async function saveReview(status){
+ const notes=document.getElementById("reviewNotes").value.trim();
+ const {error}=await db.from("turnovers").update({status,review_notes:notes||null}).eq("id",turnover.id);
+ if(error){alert(error.message);return} location.reload();
+}
+document.getElementById("backBtn").onclick=()=>location.href="turnovers.html";
+document.getElementById("logoutBtn").onclick=async()=>{await db.auth.signOut();location.href="login.html"};
+(async()=>{try{if(!await auth())return;await load();render()}catch(e){page.innerHTML=`<div class="panel"><div class="empty">${esc(e.message||"Unable to load turnover review.")}</div></div>`}})();
+</script>
 </body>
 </html>
