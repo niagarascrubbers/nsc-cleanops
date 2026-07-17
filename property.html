@@ -1226,8 +1226,8 @@
           Properties
         </a>
 
-        <a class="nav-link" href="turnovers.html">
-          <span class="nav-icon">TO</span>
+        <a class="nav-link" href="#">
+          <span class="nav-icon">□</span>
           Turnovers
         </a>
 
@@ -1469,42 +1469,15 @@
             <textarea class="form-control" id="taskText" rows="3" maxlength="250" placeholder="Example: Clean and disinfect countertops" required></textarea>
           </div>
 
-          <div class="form-row-two">
-            <div class="form-group">
-              <label class="form-label" for="taskType">Task Type</label>
-              <select class="form-control" id="taskType">
-                <option value="checkbox">Completed / Checkbox</option>
-                <option value="pass_fail">Pass / Fail Inspection</option>
-                <option value="photo_only">Photo Only</option>
-                <option value="information">Information Only</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="taskCategory">Category</label>
-              <select class="form-control" id="taskCategory">
-                <option value="cleaning">Cleaning</option>
-                <option value="inspection">Inspection</option>
-                <option value="restocking">Restocking</option>
-                <option value="safety">Safety</option>
-              </select>
-            </div>
-          </div>
-
           <div class="form-group">
-            <label class="form-label" for="taskInstructions">Cleaner Instructions</label>
-            <textarea class="form-control" id="taskInstructions" rows="3" maxlength="500" placeholder="Explain the required result, product, method or safety instruction"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="taskSupplies">Required Supplies</label>
-            <input class="form-control" id="taskSupplies" type="text" maxlength="250" placeholder="Example: Microfibre cloth, neutral cleaner, mop">
+            <label class="form-label" for="taskInstructions">Instructions</label>
+            <textarea class="form-control" id="taskInstructions" rows="3" maxlength="500" placeholder="Optional cleaner instructions"></textarea>
           </div>
 
           <div class="form-row-two">
             <div class="form-group">
-              <label class="form-label" for="taskEstimatedMinutes">Estimated Minutes</label>
-              <input class="form-control" id="taskEstimatedMinutes" type="number" min="0" max="480" step="1" placeholder="Example: 5">
+              <label class="form-label" for="taskSortOrder">Sort Order</label>
+              <input class="form-control" id="taskSortOrder" type="number" min="0" max="9999" step="1" value="10">
             </div>
 
             <div class="form-group">
@@ -1512,27 +1485,6 @@
               <input class="form-control" id="taskPhotoCount" type="number" min="0" max="10" step="1" value="0">
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="form-label" for="taskSortOrder">Sort Order</label>
-            <input class="form-control" id="taskSortOrder" type="number" min="0" max="9999" step="1" value="10">
-          </div>
-
-          <label class="checkbox-row" for="taskRequired">
-            <input id="taskRequired" type="checkbox" checked>
-            <span>
-              <span class="checkbox-title">Mandatory Task</span>
-              <span class="checkbox-description">The cleaner must complete this task before submitting the turnover.</span>
-            </span>
-          </label>
-
-          <label class="checkbox-row" for="taskNotesRequired">
-            <input id="taskNotesRequired" type="checkbox">
-            <span>
-              <span class="checkbox-title">Notes Required</span>
-              <span class="checkbox-description">The cleaner must enter a note before completing this task.</span>
-            </span>
-          </label>
 
           <label class="checkbox-row" for="taskAllowNA">
             <input id="taskAllowNA" type="checkbox" checked>
@@ -1562,14 +1514,1588 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js"></script>
+  <script src="supabase-client.js"></script>
 
-<script src="js/property-ui.js"></script>
-<script src="js/property-main.js"></script>
-<script src="js/property-rooms.js"></script>
-<script src="js/property-checklists.js"></script>
-<script src="js/property-inventory.js"></script>
-<script src="js/property-photos.js"></script>
-<script src="js/property-issues.js"></script>
-<script src="js/property-reports.js"></script>
-<script src="js/property-settings.js"></script>
+  <script>
+    "use strict";
+
+    const pageContent = document.getElementById("pageContent");
+    const breadcrumbName = document.getElementById("breadcrumbName");
+    const logoutButton = document.getElementById("logoutButton");
+
+    const drawerBackdrop = document.getElementById("drawerBackdrop");
+    const roomDrawer = document.getElementById("roomDrawer");
+    const drawerCloseButton = document.getElementById("drawerCloseButton");
+    const cancelRoomButton = document.getElementById("cancelRoomButton");
+    const roomForm = document.getElementById("roomForm");
+    const roomFormError = document.getElementById("roomFormError");
+    const drawerTitle = document.getElementById("drawerTitle");
+    const drawerSubtitle = document.getElementById("drawerSubtitle");
+    const saveRoomButton = document.getElementById("saveRoomButton");
+    const roomNameInput = document.getElementById("roomName");
+    const roomCodeInput = document.getElementById("roomCode");
+    const roomTypeInput = document.getElementById("roomType");
+    const sortOrderInput = document.getElementById("sortOrder");
+    const roomActiveInput = document.getElementById("roomActive");
+    const toastContainer = document.getElementById("toastContainer");
+
+    const taskDrawerBackdrop = document.getElementById("taskDrawerBackdrop");
+    const taskDrawer = document.getElementById("taskDrawer");
+    const taskDrawerCloseButton = document.getElementById("taskDrawerCloseButton");
+    const cancelTaskButton = document.getElementById("cancelTaskButton");
+    const taskForm = document.getElementById("taskForm");
+    const taskFormError = document.getElementById("taskFormError");
+    const taskDrawerTitle = document.getElementById("taskDrawerTitle");
+    const taskDrawerSubtitle = document.getElementById("taskDrawerSubtitle");
+    const saveTaskButton = document.getElementById("saveTaskButton");
+    const taskSectionInput = document.getElementById("taskSection");
+    const taskTextInput = document.getElementById("taskText");
+    const taskInstructionsInput = document.getElementById("taskInstructions");
+    const taskSortOrderInput = document.getElementById("taskSortOrder");
+    const taskPhotoCountInput = document.getElementById("taskPhotoCount");
+    const taskAllowNAInput = document.getElementById("taskAllowNA");
+    const taskActiveInput = document.getElementById("taskActive");
+
+    const db = window.nscSupabase || window.supabaseClient;
+
+    let currentProperty = null;
+    let currentCounts = null;
+    let rooms = [];
+    let filteredRooms = [];
+    let activeTab = "overview";
+    let editingRoomId = null;
+    let roomNameManuallyEdited = false;
+    let checklistTemplate = null;
+    let checklistItems = [];
+    let selectedChecklistRoomId = null;
+    let editingTaskId = null;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttribute(value) {
+      return escapeHtml(value);
+    }
+
+    function formatType(value) {
+      const labels = {
+        airbnb: "Airbnb / Short-Term Rental",
+        commercial: "Commercial",
+        office: "Office",
+        construction: "Construction",
+        industrial: "Industrial",
+        residential: "Residential",
+        other: "Other"
+      };
+
+      return labels[value] || value || "Not specified";
+    }
+
+    function formatRoomType(value) {
+      const labels = {
+        entrance: "Entrance / Foyer",
+        kitchen: "Kitchen",
+        bathroom: "Bathroom / Washroom",
+        bedroom: "Bedroom",
+        living_room: "Living Room",
+        dining_room: "Dining Room",
+        office: "Office",
+        boardroom: "Boardroom",
+        hallway: "Hallway / Corridor",
+        stairwell: "Stairwell",
+        laundry: "Laundry Room",
+        storage: "Storage Room",
+        lounge: "Lounge",
+        fitness: "Fitness Room",
+        mudroom: "Mudroom",
+        open_area: "Open Area",
+        exterior: "Exterior Area",
+        other: "Other"
+      };
+
+      return labels[value] || value || "Other";
+    }
+
+    function displayValue(value, fallback = "Not entered") {
+      return value === null || value === undefined || value === ""
+        ? fallback
+        : escapeHtml(value);
+    }
+
+    function normalizeRoomCode(value) {
+      return String(value || "")
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 40);
+    }
+
+    function getPropertyId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    function showToast(message, type = "success") {
+      const toast = document.createElement("div");
+      toast.className = `toast ${type === "error" ? "error" : ""}`;
+      toast.textContent = message;
+
+      toastContainer.appendChild(toast);
+
+      window.setTimeout(() => {
+        toast.remove();
+      }, 4200);
+    }
+
+    async function requireSession() {
+      if (!db) {
+        throw new Error(
+          "Supabase client is unavailable. Check that supabase-client.js loads correctly."
+        );
+      }
+
+      const {
+        data: { session },
+        error
+      } = await db.auth.getSession();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!session) {
+        window.location.href = "login.html";
+        return false;
+      }
+
+      return true;
+    }
+
+    async function getCount(tableName, propertyId, filters = []) {
+      try {
+        let query = db
+          .from(tableName)
+          .select("*", { count: "exact", head: true })
+          .eq("property_id", propertyId);
+
+        filters.forEach((filter) => {
+          query = query.eq(filter.column, filter.value);
+        });
+
+        const { count, error } = await query;
+
+        if (error) {
+          console.warn(`Could not count ${tableName}:`, error.message);
+          return 0;
+        }
+
+        return count || 0;
+      } catch (error) {
+        console.warn(`Could not count ${tableName}:`, error.message);
+        return 0;
+      }
+    }
+
+    async function loadProperty() {
+      const propertyId = getPropertyId();
+
+      if (!propertyId) {
+        showError(
+          "Property not selected",
+          "No property ID was provided. Return to the Properties page and select a property."
+        );
+        return;
+      }
+
+      const authenticated = await requireSession();
+
+      if (!authenticated) {
+        return;
+      }
+
+      const { data: property, error } = await db
+        .from("properties")
+        .select(`
+          id,
+          property_name,
+          property_code,
+          property_type,
+          address,
+          city,
+          province,
+          postal_code,
+          latitude,
+          longitude,
+          gps_radius,
+          owner_name,
+          owner_email,
+          owner_phone,
+          listing_url,
+          active,
+          created_at,
+          updated_at
+        `)
+        .eq("id", propertyId)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      currentProperty = property;
+
+      const [
+        roomCount,
+        inventoryCount,
+        turnoverCount,
+        photoCount,
+        issueCount
+      ] = await Promise.all([
+        getCount("rooms", propertyId),
+        getCount("inventory_items", propertyId),
+        getCount("turnovers", propertyId),
+        getCount("photos", propertyId),
+        getCount("issues", propertyId, [{ column: "status", value: "open" }])
+      ]);
+
+      currentCounts = {
+        roomCount,
+        inventoryCount,
+        turnoverCount,
+        photoCount,
+        issueCount
+      };
+
+      renderPropertyShell();
+      await loadRooms(false);
+      await loadChecklistData();
+    }
+
+    function renderPropertyShell() {
+      const property = currentProperty;
+      const counts = currentCounts;
+
+      const location = [
+        property.city,
+        property.province,
+        property.postal_code
+      ].filter(Boolean).join(", ");
+
+      breadcrumbName.textContent =
+        property.property_name || "Property";
+
+      document.title =
+        `${property.property_name || "Property"} | NSC CleanOps`;
+
+      pageContent.innerHTML = `
+        <section class="property-header">
+          <div>
+            <h1 class="property-title">
+              ${escapeHtml(property.property_name || "Unnamed Property")}
+            </h1>
+
+            <div class="property-meta">
+              <span>${escapeHtml(property.property_code || "No code")}</span>
+              <span>${escapeHtml(formatType(property.property_type))}</span>
+
+              <span class="status-badge ${property.active === false ? "inactive" : ""}">
+                <span class="status-dot"></span>
+                ${property.active === false ? "Inactive" : "Active"}
+              </span>
+            </div>
+          </div>
+
+          <button
+            class="button button-secondary"
+            id="backToPropertiesButton"
+            type="button"
+          >
+            ← Back to Properties
+          </button>
+        </section>
+
+        <nav class="tab-bar" aria-label="Property modules">
+          <button class="tab-link active" type="button" data-tab="overview">Overview</button>
+          <button class="tab-link" type="button" data-tab="rooms">Rooms</button>
+          <button class="tab-link" type="button" data-placeholder-tab="inventory">Inventory</button>
+          <button class="tab-link" type="button" data-placeholder-tab="photos">Photos</button>
+          <button class="tab-link" type="button" data-placeholder-tab="turnovers">Turnovers</button>
+          <button class="tab-link" type="button" data-tab="checklists">Checklists</button>
+          <button class="tab-link" type="button" data-placeholder-tab="reports">Reports</button>
+          <button class="tab-link" type="button" data-placeholder-tab="issues">Issues</button>
+          <button class="tab-link" type="button" data-placeholder-tab="settings">Settings</button>
+        </nav>
+
+        <section class="tab-panel" id="overviewPanel" data-panel="overview">
+          <div class="overview-grid">
+            <article class="card">
+              <div class="card-header">
+                <h2 class="card-title">Property Overview</h2>
+                <p class="card-description">
+                  Core location, access and client information.
+                </p>
+              </div>
+
+              <div class="card-body">
+                <div class="details-grid">
+                  <div class="detail-item">
+                    <div class="detail-label">Street Address</div>
+                    <div class="detail-value">
+                      ${displayValue(property.address)}
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">City and Province</div>
+                    <div class="detail-value">
+                      ${displayValue(location)}
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">Property Type</div>
+                    <div class="detail-value">
+                      ${escapeHtml(formatType(property.property_type))}
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">GPS Check-In Radius</div>
+                    <div class="detail-value">
+                      ${displayValue(property.gps_radius, "150")} metres
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">Owner Name</div>
+                    <div class="detail-value">
+                      ${displayValue(property.owner_name)}
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">Owner Phone</div>
+                    <div class="detail-value">
+                      ${displayValue(property.owner_phone)}
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">Owner Email</div>
+                    <div class="detail-value">
+                      ${property.owner_email
+                        ? `<a href="mailto:${escapeAttribute(property.owner_email)}">${escapeHtml(property.owner_email)}</a>`
+                        : "Not entered"
+                      }
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">Listing</div>
+                    <div class="detail-value">
+                      ${property.listing_url
+                        ? `<a href="${escapeAttribute(property.listing_url)}" target="_blank" rel="noopener noreferrer">Open property listing ↗</a>`
+                        : "No listing URL entered"
+                      }
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">Latitude</div>
+                    <div class="detail-value">
+                      ${displayValue(property.latitude)}
+                    </div>
+                  </div>
+
+                  <div class="detail-item">
+                    <div class="detail-label">Longitude</div>
+                    <div class="detail-value">
+                      ${displayValue(property.longitude)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <aside class="card">
+              <div class="card-header">
+                <h2 class="card-title">Operations Summary</h2>
+                <p class="card-description">
+                  Records currently connected to this property.
+                </p>
+              </div>
+
+              <div class="card-body">
+                <div class="stats-list">
+                  <div class="stat-row">
+                    <span class="stat-name">Rooms</span>
+                    <strong class="stat-value" id="overviewRoomCount">${counts.roomCount}</strong>
+                  </div>
+
+                  <div class="stat-row">
+                    <span class="stat-name">Inventory Items</span>
+                    <strong class="stat-value">${counts.inventoryCount}</strong>
+                  </div>
+
+                  <div class="stat-row">
+                    <span class="stat-name">Turnovers</span>
+                    <strong class="stat-value">${counts.turnoverCount}</strong>
+                  </div>
+
+                  <div class="stat-row">
+                    <span class="stat-name">Photos</span>
+                    <strong class="stat-value">${counts.photoCount}</strong>
+                  </div>
+
+                  <div class="stat-row">
+                    <span class="stat-name">Open Issues</span>
+                    <strong class="stat-value">${counts.issueCount}</strong>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="roomsPanel" data-panel="rooms" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Rooms</h2>
+              <p class="module-description">
+                Manage every room and service area connected to this property.
+              </p>
+            </div>
+
+            <button class="button button-primary" id="addRoomButton" type="button">
+              + Add Room
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="rooms-toolbar">
+              <div class="search-box">
+                <span>⌕</span>
+                <input
+                  id="roomSearchInput"
+                  type="search"
+                  placeholder="Search by room name, code or type"
+                  autocomplete="off"
+                >
+              </div>
+
+              <select class="filter-select" id="roomStatusFilter">
+                <option value="all">All rooms</option>
+                <option value="active">Active only</option>
+                <option value="inactive">Inactive only</option>
+              </select>
+
+              <div class="room-summary" id="roomSummary">
+                Loading rooms…
+              </div>
+            </div>
+
+            <div id="roomsContent">
+              <div class="inline-loading">
+                <div class="spinner spinner-small"></div>
+                Loading rooms
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <section class="tab-panel" id="checklistsPanel" data-panel="checklists" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Checklist Manager</h2>
+              <p class="module-description">
+                Review and manage room-specific cleaning tasks for this property.
+              </p>
+            </div>
+          </div>
+
+          <div class="checklist-layout">
+            <aside class="card">
+              <div class="card-header">
+                <h3 class="card-title">Rooms</h3>
+                <p class="card-description">Choose a room to view its checklist.</p>
+              </div>
+              <div class="room-selector" id="checklistRoomSelector">
+                <div class="inline-loading">
+                  <div class="spinner spinner-small"></div>
+                  Loading rooms
+                </div>
+              </div>
+            </aside>
+
+            <section class="card">
+              <div id="checklistContent">
+                <div class="empty-state">
+                  <div class="empty-icon">✓</div>
+                  <h3 class="empty-title">Select a room</h3>
+                  <p class="empty-text">Choose a room to view and manage its checklist tasks.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      `;
+
+      registerPropertyEvents();
+      switchTab(activeTab);
+    }
+
+    function registerPropertyEvents() {
+      document
+        .getElementById("backToPropertiesButton")
+        .addEventListener("click", () => {
+          window.location.href = "properties.html";
+        });
+
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          switchTab(button.dataset.tab);
+        });
+      });
+
+      document.querySelectorAll("[data-placeholder-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const tabName = button.dataset.placeholderTab;
+
+          showToast(
+            `${tabName.charAt(0).toUpperCase() + tabName.slice(1)} will be built after the Rooms module is tested.`
+          );
+        });
+      });
+
+      document
+        .getElementById("addRoomButton")
+        .addEventListener("click", () => openRoomDrawer());
+
+      document
+        .getElementById("roomSearchInput")
+        .addEventListener("input", applyRoomFilters);
+
+      document
+        .getElementById("roomStatusFilter")
+        .addEventListener("change", applyRoomFilters);
+    }
+
+    function switchTab(tabName) {
+      activeTab = tabName;
+
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tabName);
+      });
+
+      document.querySelectorAll("[data-panel]").forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== tabName;
+      });
+
+      if (tabName === "checklists") {
+        renderChecklistRoomSelector();
+        renderSelectedChecklist();
+      }
+    }
+
+    async function loadRooms(showLoading = true) {
+      if (!currentProperty) {
+        return;
+      }
+
+      const roomsContent = document.getElementById("roomsContent");
+
+      if (showLoading && roomsContent) {
+        roomsContent.innerHTML = `
+          <div class="inline-loading">
+            <div class="spinner spinner-small"></div>
+            Loading rooms
+          </div>
+        `;
+      }
+
+      const { data, error } = await db
+        .from("rooms")
+        .select(`
+          id,
+          property_id,
+          room_name,
+          room_code,
+          room_type,
+          sort_order,
+          active
+        `)
+        .eq("property_id", currentProperty.id)
+        .order("sort_order", { ascending: true })
+        .order("room_name", { ascending: true });
+
+      if (error) {
+        throw error;
+      }
+
+      rooms = Array.isArray(data) ? data : [];
+      currentCounts.roomCount = rooms.length;
+
+      const overviewRoomCount = document.getElementById("overviewRoomCount");
+
+      if (overviewRoomCount) {
+        overviewRoomCount.textContent = rooms.length;
+      }
+
+      applyRoomFilters();
+    }
+
+    function applyRoomFilters() {
+      const searchInput = document.getElementById("roomSearchInput");
+      const statusFilter = document.getElementById("roomStatusFilter");
+
+      const searchTerm = (searchInput?.value || "").trim().toLowerCase();
+      const status = statusFilter?.value || "all";
+
+      filteredRooms = rooms.filter((room) => {
+        const searchableText = [
+          room.room_name,
+          room.room_code,
+          formatRoomType(room.room_type),
+          room.room_type
+        ].join(" ").toLowerCase();
+
+        const matchesSearch =
+          !searchTerm || searchableText.includes(searchTerm);
+
+        const matchesStatus =
+          status === "all" ||
+          (status === "active" && room.active !== false) ||
+          (status === "inactive" && room.active === false);
+
+        return matchesSearch && matchesStatus;
+      });
+
+      renderRooms();
+    }
+
+    function renderRooms() {
+      const roomsContent = document.getElementById("roomsContent");
+      const roomSummary = document.getElementById("roomSummary");
+
+      if (!roomsContent || !roomSummary) {
+        return;
+      }
+
+      roomSummary.textContent =
+        filteredRooms.length === rooms.length
+          ? `${rooms.length} room${rooms.length === 1 ? "" : "s"}`
+          : `${filteredRooms.length} of ${rooms.length} rooms`;
+
+      if (!filteredRooms.length) {
+        const hasRooms = rooms.length > 0;
+
+        roomsContent.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">${hasRooms ? "⌕" : "▦"}</div>
+            <h3 class="empty-title">
+              ${hasRooms ? "No rooms match your filters" : "No rooms added yet"}
+            </h3>
+            <p class="empty-text">
+              ${hasRooms
+                ? "Try changing the search term or status filter."
+                : "Add the first room or service area for this property."
+              }
+            </p>
+            ${hasRooms
+              ? ""
+              : `<button class="button button-primary" id="emptyAddRoomButton" type="button">+ Add First Room</button>`
+            }
+          </div>
+        `;
+
+        const emptyAddRoomButton =
+          document.getElementById("emptyAddRoomButton");
+
+        if (emptyAddRoomButton) {
+          emptyAddRoomButton.addEventListener("click", () => openRoomDrawer());
+        }
+
+        return;
+      }
+
+      roomsContent.innerHTML = `
+        <div class="table-wrap">
+          <table class="rooms-table">
+            <thead>
+              <tr>
+                <th>Room Name</th>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Sort Order</th>
+                <th>Status</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${filteredRooms.map((room) => `
+                <tr>
+                  <td>
+                    <span class="room-name">${escapeHtml(room.room_name)}</span>
+                  </td>
+
+                  <td>
+                    <span class="room-code">${escapeHtml(room.room_code)}</span>
+                  </td>
+
+                  <td>
+                    <span class="room-type-badge">
+                      ${escapeHtml(formatRoomType(room.room_type))}
+                    </span>
+                  </td>
+
+                  <td>${Number.isFinite(Number(room.sort_order)) ? Number(room.sort_order) : 0}</td>
+
+                  <td>
+                    <span class="status-badge ${room.active === false ? "inactive" : ""}">
+                      <span class="status-dot"></span>
+                      ${room.active === false ? "Inactive" : "Active"}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div class="row-actions">
+                      <button
+                        class="button button-secondary button-small"
+                        type="button"
+                        data-action="edit-room"
+                        data-room-id="${escapeAttribute(room.id)}"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        class="button ${room.active === false ? "button-blue" : "button-danger"} button-small"
+                        type="button"
+                        data-action="toggle-room"
+                        data-room-id="${escapeAttribute(room.id)}"
+                      >
+                        ${room.active === false ? "Activate" : "Deactivate"}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      roomsContent
+        .querySelectorAll('[data-action="edit-room"]')
+        .forEach((button) => {
+          button.addEventListener("click", () => {
+            const room = rooms.find(
+              (item) => item.id === button.dataset.roomId
+            );
+
+            if (room) {
+              openRoomDrawer(room);
+            }
+          });
+        });
+
+      roomsContent
+        .querySelectorAll('[data-action="toggle-room"]')
+        .forEach((button) => {
+          button.addEventListener("click", () => {
+            toggleRoomStatus(button.dataset.roomId, button);
+          });
+        });
+    }
+
+    function openRoomDrawer(room = null) {
+      editingRoomId = room?.id || null;
+      roomNameManuallyEdited = Boolean(room);
+
+      roomForm.reset();
+      roomFormError.classList.remove("show");
+      roomFormError.textContent = "";
+
+      if (room) {
+        drawerTitle.textContent = "Edit Room";
+        drawerSubtitle.textContent =
+          "Update this room or service area's information.";
+        saveRoomButton.textContent = "Save Changes";
+
+        roomNameInput.value = room.room_name || "";
+        roomCodeInput.value = room.room_code || "";
+        roomTypeInput.value = room.room_type || "other";
+        sortOrderInput.value =
+          Number.isFinite(Number(room.sort_order))
+            ? Number(room.sort_order)
+            : 10;
+        roomActiveInput.checked = room.active !== false;
+      } else {
+        drawerTitle.textContent = "Add Room";
+        drawerSubtitle.textContent =
+          "Add a room or service area to this property.";
+        saveRoomButton.textContent = "Save Room";
+
+        roomNameInput.value = "";
+        roomCodeInput.value = "";
+        roomTypeInput.value = "";
+        sortOrderInput.value = getNextSortOrder();
+        roomActiveInput.checked = true;
+      }
+
+      roomDrawer.classList.add("open");
+      drawerBackdrop.classList.add("open");
+      roomDrawer.setAttribute("aria-hidden", "false");
+      document.body.classList.add("drawer-open");
+
+      window.setTimeout(() => {
+        roomNameInput.focus();
+      }, 150);
+    }
+
+    function closeRoomDrawer() {
+      roomDrawer.classList.remove("open");
+      drawerBackdrop.classList.remove("open");
+      roomDrawer.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("drawer-open");
+
+      editingRoomId = null;
+      roomFormError.classList.remove("show");
+      roomFormError.textContent = "";
+    }
+
+    function getNextSortOrder() {
+      if (!rooms.length) {
+        return 10;
+      }
+
+      const highest = Math.max(
+        ...rooms.map((room) => Number(room.sort_order) || 0)
+      );
+
+      return highest + 10;
+    }
+
+    async function saveRoom(event) {
+      event.preventDefault();
+
+      if (!currentProperty) {
+        return;
+      }
+
+      const roomName = roomNameInput.value.trim();
+      const roomCode = normalizeRoomCode(roomCodeInput.value);
+      const roomType = roomTypeInput.value;
+      const sortOrder = Number.parseInt(sortOrderInput.value, 10);
+
+      if (!roomName) {
+        showRoomFormError("Enter a room name.");
+        roomNameInput.focus();
+        return;
+      }
+
+      if (!roomCode) {
+        showRoomFormError("Enter a valid room code.");
+        roomCodeInput.focus();
+        return;
+      }
+
+      if (!roomType) {
+        showRoomFormError("Select a room type.");
+        roomTypeInput.focus();
+        return;
+      }
+
+      const duplicate = rooms.find((room) =>
+        room.room_code?.toUpperCase() === roomCode &&
+        room.id !== editingRoomId
+      );
+
+      if (duplicate) {
+        showRoomFormError(
+          `The room code ${roomCode} is already used by ${duplicate.room_name}.`
+        );
+        roomCodeInput.focus();
+        return;
+      }
+
+      const payload = {
+        property_id: currentProperty.id,
+        room_name: roomName,
+        room_code: roomCode,
+        room_type: roomType,
+        sort_order: Number.isFinite(sortOrder) ? sortOrder : 10,
+        active: roomActiveInput.checked
+      };
+
+      const wasEditing = Boolean(editingRoomId);
+
+      setRoomFormSaving(true);
+      roomFormError.classList.remove("show");
+
+      try {
+        let result;
+
+        if (editingRoomId) {
+          result = await db
+            .from("rooms")
+            .update(payload)
+            .eq("id", editingRoomId)
+            .eq("property_id", currentProperty.id)
+            .select()
+            .single();
+        } else {
+          result = await db
+            .from("rooms")
+            .insert(payload)
+            .select()
+            .single();
+        }
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        closeRoomDrawer();
+        await loadRooms();
+
+        showToast(
+          wasEditing
+            ? "Room updated successfully."
+            : "Room added successfully."
+        );
+      } catch (error) {
+        console.error("Room save failed:", error);
+
+        const message =
+          error.code === "23505"
+            ? "That room code already exists for this property."
+            : error.message || "The room could not be saved.";
+
+        showRoomFormError(message);
+      } finally {
+        setRoomFormSaving(false);
+      }
+    }
+
+    function showRoomFormError(message) {
+      roomFormError.textContent = message;
+      roomFormError.classList.add("show");
+    }
+
+    function setRoomFormSaving(isSaving) {
+      saveRoomButton.disabled = isSaving;
+      cancelRoomButton.disabled = isSaving;
+      drawerCloseButton.disabled = isSaving;
+
+      saveRoomButton.textContent = isSaving
+        ? "Saving…"
+        : editingRoomId
+          ? "Save Changes"
+          : "Save Room";
+    }
+
+    async function toggleRoomStatus(roomId, button) {
+      const room = rooms.find((item) => item.id === roomId);
+
+      if (!room || !currentProperty) {
+        return;
+      }
+
+      const nextActive = room.active === false;
+
+      const confirmationMessage = nextActive
+        ? `Activate "${room.room_name}"?`
+        : `Deactivate "${room.room_name}"? It will remain in the system but will not be available for new operational assignments.`;
+
+      if (!window.confirm(confirmationMessage)) {
+        return;
+      }
+
+      button.disabled = true;
+      const previousText = button.textContent;
+      button.textContent = nextActive ? "Activating…" : "Deactivating…";
+
+      try {
+        const { error } = await db
+          .from("rooms")
+          .update({ active: nextActive })
+          .eq("id", room.id)
+          .eq("property_id", currentProperty.id);
+
+        if (error) {
+          throw error;
+        }
+
+        await loadRooms();
+
+        showToast(
+          nextActive
+            ? `${room.room_name} activated.`
+            : `${room.room_name} deactivated.`
+        );
+      } catch (error) {
+        console.error("Room status update failed:", error);
+        button.disabled = false;
+        button.textContent = previousText;
+
+        showToast(
+          error.message || "Room status could not be updated.",
+          "error"
+        );
+      }
+    }
+
+
+    async function loadChecklistData() {
+      if (!currentProperty) {
+        return;
+      }
+
+      const { data: templates, error: templateError } = await db
+        .from("checklist_templates")
+        .select("id, property_id, template_name, template_code, active")
+        .eq("property_id", currentProperty.id)
+        .eq("active", true)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (templateError) {
+        console.warn("Checklist template could not be loaded:", templateError.message);
+        checklistTemplate = null;
+        checklistItems = [];
+        renderChecklistRoomSelector();
+        renderSelectedChecklist();
+        return;
+      }
+
+      checklistTemplate = templates?.[0] || null;
+
+      if (!checklistTemplate) {
+        checklistItems = [];
+        renderChecklistRoomSelector();
+        renderSelectedChecklist();
+        return;
+      }
+
+      const { data: items, error: itemsError } = await db
+        .from("checklist_template_items")
+        .select(`
+          id,
+          template_id,
+          room_id,
+          section_name,
+          task_text,
+          task_code,
+          instructions,
+          required_photo_count,
+          allow_not_applicable,
+          issue_requires_photo,
+          sort_order,
+          active
+        `)
+        .eq("template_id", checklistTemplate.id)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
+
+      if (itemsError) {
+        throw itemsError;
+      }
+
+      checklistItems = Array.isArray(items) ? items : [];
+
+      if (!selectedChecklistRoomId) {
+        const firstRoomWithTasks = rooms.find((room) =>
+          checklistItems.some((item) => item.room_id === room.id)
+        );
+        selectedChecklistRoomId = firstRoomWithTasks?.id || rooms[0]?.id || null;
+      }
+
+      renderChecklistRoomSelector();
+      renderSelectedChecklist();
+    }
+
+    function getRoomChecklistItems(roomId) {
+      return checklistItems
+        .filter((item) => item.room_id === roomId)
+        .sort((a, b) =>
+          (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0)
+        );
+    }
+
+    function renderChecklistRoomSelector() {
+      const container = document.getElementById("checklistRoomSelector");
+
+      if (!container) {
+        return;
+      }
+
+      if (!rooms.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p class="empty-text">No rooms are available for this property.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = rooms
+        .filter((room) => room.active !== false)
+        .map((room) => {
+          const count = getRoomChecklistItems(room.id)
+            .filter((item) => item.active !== false).length;
+
+          return `
+            <button
+              class="room-selector-button ${selectedChecklistRoomId === room.id ? "active" : ""}"
+              type="button"
+              data-checklist-room-id="${escapeAttribute(room.id)}"
+            >
+              <span>${escapeHtml(room.room_name)}</span>
+              <span class="room-selector-count">${count}</span>
+            </button>
+          `;
+        })
+        .join("");
+
+      container.querySelectorAll("[data-checklist-room-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedChecklistRoomId = button.dataset.checklistRoomId;
+          renderChecklistRoomSelector();
+          renderSelectedChecklist();
+        });
+      });
+    }
+
+    function renderSelectedChecklist() {
+      const container = document.getElementById("checklistContent");
+
+      if (!container) {
+        return;
+      }
+
+      if (!checklistTemplate) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">✓</div>
+            <h3 class="empty-title">No checklist template found</h3>
+            <p class="empty-text">
+              Create an active checklist template for this property before adding tasks.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      const room = rooms.find((item) => item.id === selectedChecklistRoomId);
+
+      if (!room) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">✓</div>
+            <h3 class="empty-title">Select a room</h3>
+            <p class="empty-text">Choose a room to view and manage its checklist tasks.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const roomItems = getRoomChecklistItems(room.id);
+      const grouped = roomItems.reduce((result, item) => {
+        const section = item.section_name || "General";
+        if (!result[section]) result[section] = [];
+        result[section].push(item);
+        return result;
+      }, {});
+
+      container.innerHTML = `
+        <div class="checklist-toolbar">
+          <div>
+            <h3 class="checklist-room-title">${escapeHtml(room.room_name)} Checklist</h3>
+            <div class="checklist-room-meta">
+              ${roomItems.length} task${roomItems.length === 1 ? "" : "s"} · ${escapeHtml(checklistTemplate.template_name)}
+            </div>
+          </div>
+
+          <button class="button button-primary" id="addChecklistTaskButton" type="button">
+            + Add Task
+          </button>
+        </div>
+
+        ${roomItems.length
+          ? `<div class="checklist-sections">
+              ${Object.entries(grouped).map(([sectionName, items]) => `
+                <section class="checklist-section">
+                  <div class="checklist-section-header">
+                    <h4 class="checklist-section-title">${escapeHtml(sectionName)}</h4>
+                    <span class="room-summary">${items.length} task${items.length === 1 ? "" : "s"}</span>
+                  </div>
+
+                  ${items.map((item) => `
+                    <div class="checklist-task">
+                      <div class="task-order">${Number(item.sort_order) || 0}</div>
+
+                      <div>
+                        <div class="task-title">${escapeHtml(item.task_text)}</div>
+                        ${item.instructions
+                          ? `<div class="task-instructions">${escapeHtml(item.instructions)}</div>`
+                          : ""
+                        }
+
+                        <div class="task-badges">
+                          ${Number(item.required_photo_count) > 0
+                            ? `<span class="task-badge photo">📷 ${Number(item.required_photo_count)} required</span>`
+                            : ""
+                          }
+                          ${item.allow_not_applicable
+                            ? `<span class="task-badge">N/A allowed</span>`
+                            : `<span class="task-badge">Required</span>`
+                          }
+                          ${item.active === false
+                            ? `<span class="task-badge inactive">Inactive</span>`
+                            : ""
+                          }
+                        </div>
+                      </div>
+
+                      <div class="task-actions">
+                        <button
+                          class="button button-secondary button-small"
+                          type="button"
+                          data-edit-task-id="${escapeAttribute(item.id)}"
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          class="button ${item.active === false ? "button-blue" : "button-danger"} button-small"
+                          type="button"
+                          data-toggle-task-id="${escapeAttribute(item.id)}"
+                        >
+                          ${item.active === false ? "Activate" : "Deactivate"}
+                        </button>
+                      </div>
+                    </div>
+                  `).join("")}
+                </section>
+              `).join("")}
+            </div>`
+          : `<div class="empty-state">
+              <div class="empty-icon">✓</div>
+              <h3 class="empty-title">No tasks for this room</h3>
+              <p class="empty-text">Add the first cleaning task for ${escapeHtml(room.room_name)}.</p>
+            </div>`
+        }
+      `;
+
+      document
+        .getElementById("addChecklistTaskButton")
+        .addEventListener("click", () => openTaskDrawer());
+
+      container.querySelectorAll("[data-edit-task-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const task = checklistItems.find((item) => item.id === button.dataset.editTaskId);
+          if (task) openTaskDrawer(task);
+        });
+      });
+
+      container.querySelectorAll("[data-toggle-task-id]").forEach((button) => {
+        button.addEventListener("click", () =>
+          toggleTaskStatus(button.dataset.toggleTaskId, button)
+        );
+      });
+    }
+
+    function openTaskDrawer(task = null) {
+      const room = rooms.find((item) => item.id === selectedChecklistRoomId);
+
+      if (!room || !checklistTemplate) {
+        showToast("Select a room with an active checklist template.", "error");
+        return;
+      }
+
+      editingTaskId = task?.id || null;
+      taskForm.reset();
+      taskFormError.classList.remove("show");
+      taskFormError.textContent = "";
+
+      if (task) {
+        taskDrawerTitle.textContent = "Edit Checklist Task";
+        taskDrawerSubtitle.textContent = `Update the task for ${room.room_name}.`;
+        saveTaskButton.textContent = "Save Changes";
+        taskSectionInput.value = task.section_name || formatRoomType(room.room_type);
+        taskTextInput.value = task.task_text || "";
+        taskInstructionsInput.value = task.instructions || "";
+        taskSortOrderInput.value = Number(task.sort_order) || 10;
+        taskPhotoCountInput.value = Number(task.required_photo_count) || 0;
+        taskAllowNAInput.checked = task.allow_not_applicable !== false;
+        taskActiveInput.checked = task.active !== false;
+      } else {
+        taskDrawerTitle.textContent = "Add Checklist Task";
+        taskDrawerSubtitle.textContent = `Add a cleaning task to ${room.room_name}.`;
+        saveTaskButton.textContent = "Save Task";
+        taskSectionInput.value = formatRoomType(room.room_type);
+        taskTextInput.value = "";
+        taskInstructionsInput.value = "";
+        taskSortOrderInput.value = getNextTaskSortOrder(room.id);
+        taskPhotoCountInput.value = 0;
+        taskAllowNAInput.checked = true;
+        taskActiveInput.checked = true;
+      }
+
+      taskDrawer.classList.add("open");
+      taskDrawerBackdrop.classList.add("open");
+      taskDrawer.setAttribute("aria-hidden", "false");
+      document.body.classList.add("drawer-open");
+
+      window.setTimeout(() => taskTextInput.focus(), 150);
+    }
+
+    function closeTaskDrawer() {
+      taskDrawer.classList.remove("open");
+      taskDrawerBackdrop.classList.remove("open");
+      taskDrawer.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("drawer-open");
+      editingTaskId = null;
+      taskFormError.classList.remove("show");
+      taskFormError.textContent = "";
+    }
+
+    function getNextTaskSortOrder(roomId) {
+      const items = getRoomChecklistItems(roomId);
+      if (!items.length) return 10;
+      return Math.max(...items.map((item) => Number(item.sort_order) || 0)) + 10;
+    }
+
+    function generateTaskCode(room, taskText) {
+      const taskPart = String(taskText || "")
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 45);
+
+      return `${room.room_code}_${taskPart || "TASK"}`;
+    }
+
+    async function saveChecklistTask(event) {
+      event.preventDefault();
+
+      const room = rooms.find((item) => item.id === selectedChecklistRoomId);
+
+      if (!room || !checklistTemplate) {
+        return;
+      }
+
+      const sectionName = taskSectionInput.value.trim();
+      const taskText = taskTextInput.value.trim();
+      const instructions = taskInstructionsInput.value.trim();
+      const sortOrder = Number.parseInt(taskSortOrderInput.value, 10);
+      const requiredPhotoCount = Number.parseInt(taskPhotoCountInput.value, 10);
+
+      if (!sectionName || !taskText) {
+        showTaskFormError("Enter both a section name and task.");
+        return;
+      }
+
+      const existingTask = checklistItems.find((item) => item.id === editingTaskId);
+
+      const payload = {
+        template_id: checklistTemplate.id,
+        room_id: room.id,
+        section_name: sectionName,
+        task_text: taskText,
+        task_code: existingTask?.task_code || generateTaskCode(room, taskText),
+        instructions: instructions || null,
+        required_photo_count: Number.isFinite(requiredPhotoCount) ? requiredPhotoCount : 0,
+        allow_not_applicable: taskAllowNAInput.checked,
+        issue_requires_photo: true,
+        sort_order: Number.isFinite(sortOrder) ? sortOrder : 10,
+        active: taskActiveInput.checked
+      };
+
+      setTaskFormSaving(true);
+
+      try {
+        let result;
+
+        if (editingTaskId) {
+          result = await db
+            .from("checklist_template_items")
+            .update(payload)
+            .eq("id", editingTaskId)
+            .eq("template_id", checklistTemplate.id)
+            .select()
+            .single();
+        } else {
+          result = await db
+            .from("checklist_template_items")
+            .insert(payload)
+            .select()
+            .single();
+        }
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        const wasEditing = Boolean(editingTaskId);
+        closeTaskDrawer();
+        await loadChecklistData();
+        showToast(wasEditing ? "Checklist task updated." : "Checklist task added.");
+      } catch (error) {
+        console.error("Checklist task save failed:", error);
+        showTaskFormError(error.message || "The checklist task could not be saved.");
+      } finally {
+        setTaskFormSaving(false);
+      }
+    }
+
+    function showTaskFormError(message) {
+      taskFormError.textContent = message;
+      taskFormError.classList.add("show");
+    }
+
+    function setTaskFormSaving(isSaving) {
+      saveTaskButton.disabled = isSaving;
+      cancelTaskButton.disabled = isSaving;
+      taskDrawerCloseButton.disabled = isSaving;
+      saveTaskButton.textContent = isSaving
+        ? "Saving…"
+        : editingTaskId
+          ? "Save Changes"
+          : "Save Task";
+    }
+
+    async function toggleTaskStatus(taskId, button) {
+      const task = checklistItems.find((item) => item.id === taskId);
+
+      if (!task) {
+        return;
+      }
+
+      const nextActive = task.active === false;
+
+      if (!window.confirm(
+        `${nextActive ? "Activate" : "Deactivate"} "${task.task_text}"?`
+      )) {
+        return;
+      }
+
+      button.disabled = true;
+
+      try {
+        const { error } = await db
+          .from("checklist_template_items")
+          .update({ active: nextActive })
+          .eq("id", task.id)
+          .eq("template_id", checklistTemplate.id);
+
+        if (error) {
+          throw error;
+        }
+
+        await loadChecklistData();
+        showToast(nextActive ? "Checklist task activated." : "Checklist task deactivated.");
+      } catch (error) {
+        console.error("Checklist task status failed:", error);
+        button.disabled = false;
+        showToast(error.message || "Task status could not be updated.", "error");
+      }
+    }
+
+    function showError(title, message) {
+      pageContent.innerHTML = `
+        <div class="error-state">
+          <h1 class="state-title">${escapeHtml(title)}</h1>
+
+          <p class="state-text">
+            ${escapeHtml(message)}
+          </p>
+
+          <button
+            class="button button-primary"
+            id="returnToPropertiesButton"
+            type="button"
+          >
+            Return to Properties
+          </button>
+        </div>
+      `;
+
+      document
+        .getElementById("returnToPropertiesButton")
+        .addEventListener("click", () => {
+          window.location.href = "properties.html";
+        });
+    }
+
+    async function logout() {
+      try {
+        await db.auth.signOut();
+      } finally {
+        window.location.href = "login.html";
+      }
+    }
+
+    roomNameInput.addEventListener("input", () => {
+      if (!editingRoomId && !roomNameManuallyEdited) {
+        roomCodeInput.value = normalizeRoomCode(roomNameInput.value);
+      }
+    });
+
+    roomCodeInput.addEventListener("input", () => {
+      roomNameManuallyEdited = true;
+      const cursorPosition = roomCodeInput.selectionStart;
+      roomCodeInput.value = normalizeRoomCode(roomCodeInput.value);
+
+      if (cursorPosition !== null) {
+        roomCodeInput.setSelectionRange(
+          roomCodeInput.value.length,
+          roomCodeInput.value.length
+        );
+      }
+    });
+
+    roomForm.addEventListener("submit", saveRoom);
+    taskForm.addEventListener("submit", saveChecklistTask);
+    taskDrawerCloseButton.addEventListener("click", closeTaskDrawer);
+    cancelTaskButton.addEventListener("click", closeTaskDrawer);
+    taskDrawerBackdrop.addEventListener("click", closeTaskDrawer);
+    drawerCloseButton.addEventListener("click", closeRoomDrawer);
+    cancelRoomButton.addEventListener("click", closeRoomDrawer);
+    drawerBackdrop.addEventListener("click", closeRoomDrawer);
+    logoutButton.addEventListener("click", logout);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      if (taskDrawer.classList.contains("open")) {
+        closeTaskDrawer();
+      } else if (roomDrawer.classList.contains("open")) {
+        closeRoomDrawer();
+      }
+    });
+
+    loadProperty().catch((error) => {
+      console.error("Property page failed:", error);
+
+      showError(
+        "Property could not be loaded",
+        error.message || "An unexpected error occurred."
+      );
+    });
+  </script>
+</body>
+</html>
