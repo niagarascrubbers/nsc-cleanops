@@ -1206,80 +1206,20 @@
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-mark">NSC</div>
-
-        <div>
-          <p class="brand-title">NSC CleanOps</p>
-          <div class="brand-subtitle">Operations Management</div>
-        </div>
+        <div><h1 class="brand-title">NSC CleanOps</h1><div class="brand-subtitle">Operations Management</div></div>
       </div>
-
-      <nav class="sidebar-nav">
-        <div class="nav-label">Workspace</div>
-
-        <a class="nav-link" href="manager-dashboard.html">
-          <span class="nav-icon">⌂</span>
-          Dashboard
-        </a>
-
-        <a class="nav-link active" href="properties.html">
-          <span class="nav-icon">▦</span>
-          Properties
-        </a>
-
-        <a class="nav-link" href="turnovers.html">
-          <span class="nav-icon">TO</span>
-          Turnovers
-        </a>
-
-        <a class="nav-link" href="#">
-          <span class="nav-icon">✓</span>
-          Assignments
-        </a>
-
-        <div class="nav-label">Operations</div>
-
-        <a class="nav-link" href="#">
-          <span class="nav-icon">≡</span>
-          Checklists
-        </a>
-
-        <a class="nav-link" href="#">
-          <span class="nav-icon">▤</span>
-          Inventory
-        </a>
-
-        <a class="nav-link" href="#">
-          <span class="nav-icon">◫</span>
-          Photos
-        </a>
-
-        <a class="nav-link" href="#">
-          <span class="nav-icon">!</span>
-          Issues
-        </a>
-
-        <a class="nav-link" href="#">
-          <span class="nav-icon">▥</span>
-          Reports
-        </a>
-
-        <div class="nav-label">System</div>
-
-        <a class="nav-link" href="#">
-          <span class="nav-icon">⚙</span>
-          Settings
-        </a>
+      <nav class="sidebar-nav" aria-label="Manager navigation">
+        <div class="nav-section-label">Workspace</div>
+        <a class="nav-link " href="manager-dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+        <a class="nav-link active" href="properties.html"><span class="nav-icon">▦</span><span>Properties</span></a>
+        <a class="nav-link " href="finance.html"><span class="nav-icon">$</span><span>Finance</span></a>
       </nav>
-
       <div class="sidebar-footer">
-        <div class="user-card">
+        <div class="user-card" style="margin-bottom:12px">
           <div class="user-avatar">UP</div>
-
-          <div>
-            <div class="user-name">Uttam Preet</div>
-            <div class="user-role">Administrator</div>
-          </div>
+          <div><div class="user-name">Uttam Preet</div><div class="user-role">Administrator</div></div>
         </div>
+        <button id="logoutButton" type="button" style="width:100%;min-height:40px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;font:inherit;font-size:11px;font-weight:600;cursor:pointer">Sign Out</button>
       </div>
     </aside>
 
