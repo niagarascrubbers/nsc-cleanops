@@ -3,164 +3,573 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manager Operations | NSC CleanOps</title>
+  <title>Manager Dashboard | NSC CleanOps</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --navy:#071f35; --navy2:#0b2f4f; --blue:#2f8fca; --blue-light:#eaf6fc;
-      --bg:#f5f8fb; --surface:#fff; --border:#dfe8ef; --text:#17324d; --muted:#6c7e8f;
-      --green:#1f8f64; --green-light:#e9f8f1; --amber:#aa7214; --amber-light:#fff8e7;
-      --red:#c94747; --red-light:#fff0f0; --shadow:0 12px 32px rgba(18,50,77,.09);
+      --navy-900: #0b2239;
+      --navy-800: #123a5a;
+      --water-500: #2aa7c9;
+      --surface: #ffffff;
+      --background: #f4f8fb;
+      --border: #dce7ef;
+      --text-primary: #18324a;
+      --text-secondary: #6b7f90;
+      --success: #2f8f68;
+      --warning: #d89b2b;
+      --danger: #c65555;
+      --shadow: 0 12px 30px rgba(11, 34, 57, 0.08);
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:"Poppins",sans-serif}
-    button{font:inherit}
-    .shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
-    .sidebar{position:fixed;inset:0 auto 0 0;width:250px;padding:26px 20px;background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;display:flex;flex-direction:column}
-    .brand{padding:0 8px 24px;border-bottom:1px solid rgba(255,255,255,.12)}
-    .brand h1{margin:0;font-family:"Montserrat";font-size:22px}.brand p{margin:6px 0 0;color:#afc3d2;font-size:11px}
-    .nav{display:grid;gap:7px;margin-top:24px}.nav a{padding:11px 13px;border-radius:9px;color:#d5e2eb;text-decoration:none;font-size:13px}.nav a:hover,.nav a.active{background:rgba(47,143,202,.2);color:#fff}
-    .logout{margin-top:auto;padding:11px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer}
-    .main{grid-column:2;min-width:0}.topbar{min-height:72px;padding:17px 30px;background:#fff;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-    .topbar h2{margin:0;font-family:"Montserrat";font-size:20px}.topbar span{color:var(--muted);font-size:12px}
-    .content{padding:28px}.hero h3{margin:0;font-family:"Montserrat";font-size:29px}.hero p{margin:8px 0 24px;color:var(--muted);font-size:13px}
-    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:20px}
-    .card,.panel{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
-    .card{padding:17px}.card-label{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px}.card-value{margin-top:7px;font-family:"Montserrat";font-size:27px;font-weight:700}.card-note{margin-top:5px;color:var(--muted);font-size:9px}
-    .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}.panel{padding:19px;margin-bottom:18px}.panel-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.panel-title{margin:0;font-family:"Montserrat";font-size:16px}.panel-link{color:var(--blue);text-decoration:none;font-size:10px;font-weight:600}
-    .alert{padding:12px 0;border-bottom:1px solid var(--border)}.alert:last-child{border-bottom:0}.alert-head{display:flex;justify-content:space-between;gap:10px}.alert-title{font-size:11px;font-weight:700}.alert-meta,.alert-body{margin-top:4px;color:var(--muted);font-size:9px;line-height:1.5}
-    .pill{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:700;white-space:nowrap}.pill-red{color:var(--red);background:var(--red-light)}.pill-amber{color:var(--amber);background:var(--amber-light)}.pill-green{color:var(--green);background:var(--green-light)}.pill-blue{color:#2078a9;background:var(--blue-light)}
-    .row-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);text-decoration:none;font-size:9px;font-weight:600;cursor:pointer}.btn-primary{background:var(--navy2);color:#fff;border-color:var(--navy2)}
-    .empty{padding:24px 8px;text-align:center;color:var(--muted);font-size:10px}.loading{padding:42px;text-align:center}.spinner{width:30px;height:30px;margin:0 auto 10px;border:3px solid #dcecf4;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-    .inventory-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:10px}.inventory-line:last-child{border-bottom:0}
-    @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
-    @media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{display:none}.main{grid-column:1}.content,.topbar{padding-left:18px;padding-right:18px}.stats{grid-template-columns:1fr}}
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      font-family: "Poppins", sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 260px;
+      height: 100vh;
+      background: linear-gradient(180deg, var(--navy-900), var(--navy-800));
+      color: white;
+      padding: 28px 22px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      padding: 0 10px 28px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      margin-bottom: 26px;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      margin: 6px 0 0;
+      font-size: 12px;
+      color: rgba(255,255,255,.68);
+    }
+
+    .nav-label {
+      margin: 0 10px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.48);
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav a {
+      color: rgba(255,255,255,.76);
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: rgba(42,167,201,.16);
+      color: white;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 24px;
+    }
+
+    .signout-button {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 10px;
+      background: rgba(255,255,255,.06);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .main-area {
+      grid-column: 2;
+      min-width: 0;
+    }
+
+    .topbar {
+      min-height: 76px;
+      padding: 18px 34px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .topbar-meta {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .content { padding: 34px; }
+
+    .hero { margin-bottom: 28px; }
+
+    .hero h2 {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card,
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card { padding: 22px; }
+
+    .stat-label {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .stat-value {
+      margin: 12px 0 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--navy-900);
+    }
+
+    .stat-note {
+      margin: 8px 0 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 22px;
+    }
+
+    .panel { padding: 24px; }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .panel-link {
+      color: var(--water-500);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .activity-item,
+    .status-row {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .activity-item:last-child,
+    .status-row:last-child { border-bottom: none; }
+
+    .activity-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .activity-meta {
+      margin: 5px 0 0;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .quick-actions {
+      display: grid;
+      gap: 12px;
+    }
+
+    .quick-action {
+      display: block;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+      background: #fbfdff;
+    }
+
+    .quick-action strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .quick-action span {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .status-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-green { color: var(--success); background: #e8f5ef; }
+    .status-amber { color: var(--warning); background: #fff4dc; }
+    .status-red { color: var(--danger); background: #fdeaea; }
+
+    @media (max-width: 1100px) {
+      .stat-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main-area { grid-column: 1; }
+      .topbar, .content { padding-left: 20px; padding-right: 20px; }
+      .stat-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
+
 <body>
-<div class="shell">
-  <aside class="sidebar">
-    <div class="brand"><h1>NSC CleanOps</h1><p>Manager Operations · V2</p></div>
-    <nav class="nav">
-      <a class="active" href="manager-dashboard.html">Dashboard</a>
-      <a href="properties.html">Properties</a>
-      <a href="turnovers.html">Turnovers</a>
-      <a href="turnovers.html?filter=reassignment">Reassignment</a>
-      <a href="turnovers.html?filter=review">Reviews</a>
-    </nav>
-    <button class="logout" id="logoutButton">Sign Out</button>
-  </aside>
-  <main class="main">
-    <header class="topbar"><h2>Manager Dashboard</h2><span>Niagara Scrubbers Cleaning Inc.</span></header>
-    <section class="content">
-      <div class="hero"><h3 id="welcome">Operations Center</h3><p>Live visibility into attendance, issues, inventory, and turnover progress.</p></div>
-      <section class="stats">
-        <article class="card"><div class="card-label">Today's Turnovers</div><div class="card-value" id="todayCount">0</div><div class="card-note">Scheduled today</div></article>
-        <article class="card"><div class="card-label">Needs Reassignment</div><div class="card-value" id="reassignCount">0</div><div class="card-note">Cleaner declined</div></article>
-        <article class="card"><div class="card-label">Open Issues</div><div class="card-value" id="issueCount">0</div><div class="card-note">Unresolved reports</div></article>
-        <article class="card"><div class="card-label">Guest Blockers</div><div class="card-value" id="blockerCount">0</div><div class="card-note">Prevent guest readiness</div></article>
-        <article class="card"><div class="card-label">Low / Red Inventory</div><div class="card-value" id="inventoryCount">0</div><div class="card-note">Needs restocking</div></article>
-      </section>
-      <div id="dashboardContent" class="loading"><div class="spinner"></div>Loading operations</div>
-    </section>
-  </main>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js"></script>
-<script>
-"use strict";
-const db = window.nscSupabase || window.supabaseClient;
-let currentProfile=null, turnovers=[], issues=[], inventoryCounts=[];
-const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-const fmtDate=v=>v?new Intl.DateTimeFormat("en-CA",{month:"short",day:"numeric",year:"numeric"}).format(new Date(v)):"Not scheduled";
-const fmtTime=v=>v?new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit"}).format(new Date(v)):"Not recorded";
-async function requireManager(){
-  if(!db) throw new Error("Supabase client unavailable.");
-  const {data:{session},error}=await db.auth.getSession(); if(error) throw error;
-  if(!session){location.href="login.html";return false}
-  const {data,error:pe}=await db.from("users").select("id,full_name,role,company_id,active").eq("auth_user_id",session.user.id).single();
-  if(pe) throw pe; if(!data?.active||!["admin","manager"].includes(data.role)) throw new Error("Manager access required.");
-  currentProfile=data; document.getElementById("welcome").textContent=`Welcome, ${(data.full_name||"Manager").split(" ")[0]}`; return true;
-}
-async function loadData(){
-  const [t,i,c]=await Promise.all([
-    db.from("turnovers").select(`
-      id,property_id,assigned_user_id,turnover_date,scheduled_start,scheduled_end,status,
-      attendance_status,attendance_note,attendance_response_at,needs_reassignment,
-      check_in_time,check_out_time,check_in_distance,check_out_distance,
-      properties(property_name,address,city,province),
-      users:assigned_user_id(full_name)
-    `).order("turnover_date",{ascending:false}).limit(100),
-    db.from("issues").select(`
-      id,turnover_id,property_id,room_id,issue_type,title,description,urgency,issue_status,
-      prevents_guest_ready,reported_by,created_at,
-      properties(property_name),users:reported_by(full_name),rooms(room_name)
-    `).in("issue_status",["open","acknowledged","in_progress"]).order("created_at",{ascending:false}).limit(100),
-    db.from("inventory_counts").select(`
-      id,turnover_id,inventory_item_id,quantity_remaining,stock_status,level_status,
-      emergency_stock_used,counted_at,inventory_items(item_name,target_quantity,property_id,properties(property_name))
-    `).in("stock_status",["amber","red"]).order("counted_at",{ascending:false}).limit(100)
-  ]);
-  if(t.error) throw t.error;if(i.error) throw i.error;if(c.error) throw c.error;
-  turnovers=t.data||[];issues=i.data||[];inventoryCounts=c.data||[];
-}
-function render(){
-  const today=new Date(); const dateKey=today.toISOString().slice(0,10);
-  const todayTurnovers=turnovers.filter(t=>t.turnover_date===dateKey);
-  const reassign=turnovers.filter(t=>t.needs_reassignment||t.attendance_status==="declined");
-  const blockers=issues.filter(i=>i.prevents_guest_ready);
-  document.getElementById("todayCount").textContent=todayTurnovers.length;
-  document.getElementById("reassignCount").textContent=reassign.length;
-  document.getElementById("issueCount").textContent=issues.length;
-  document.getElementById("blockerCount").textContent=blockers.length;
-  document.getElementById("inventoryCount").textContent=inventoryCounts.length;
-
-  const issueHtml=issues.slice(0,8).map(i=>`
-    <div class="alert">
-      <div class="alert-head"><div class="alert-title">${esc(i.title||"Reported issue")}</div><span class="pill ${i.urgency==="emergency"||i.urgency==="urgent"?"pill-red":"pill-amber"}">${esc(i.urgency||"normal")}</span></div>
-      <div class="alert-meta">${esc(i.properties?.property_name||"Property")} · ${esc(i.rooms?.room_name||"General")} · ${esc(i.users?.full_name||"Cleaner")} · ${esc(fmtDate(i.created_at))}</div>
-      <div class="alert-body">${esc(i.description||"")}</div>
-      <div class="row-actions"><a class="btn btn-primary" href="turnover-review.html?id=${encodeURIComponent(i.turnover_id)}">View Issue & Photos</a></div>
-    </div>`).join("") || `<div class="empty">No open issues.</div>`;
-
-  const reassignHtml=reassign.slice(0,8).map(t=>`
-    <div class="alert">
-      <div class="alert-head"><div class="alert-title">${esc(t.properties?.property_name||"Turnover")}</div><span class="pill pill-red">Needs Reassignment</span></div>
-      <div class="alert-meta">${esc(t.users?.full_name||"Cleaner")} · ${esc(fmtDate(t.turnover_date))} · ${esc(fmtTime(t.scheduled_start))}</div>
-      <div class="alert-body">${esc(t.attendance_note||"Cleaner declined attendance.")}</div>
-      <div class="row-actions"><a class="btn btn-primary" href="turnovers.html">Reassign Cleaner</a><a class="btn" href="turnover-review.html?id=${encodeURIComponent(t.id)}">Open Turnover</a></div>
-    </div>`).join("") || `<div class="empty">No assignments need reassignment.</div>`;
-
-  const invHtml=inventoryCounts.slice(0,10).map(c=>{
-    const item=c.inventory_items||{}; const target=Number(item.target_quantity)||0; const qty=Number(c.quantity_remaining)||0;
-    return `<div class="inventory-line"><div><strong>${esc(item.item_name||"Inventory item")}</strong><div class="alert-meta">${esc(item.properties?.property_name||"Property")} · ${qty}/${target}</div></div><span class="pill ${c.stock_status==="red"?"pill-red":"pill-amber"}">${esc(c.emergency_stock_used?"Emergency":c.stock_status)}</span></div>`;
-  }).join("") || `<div class="empty">No low inventory alerts.</div>`;
-
-  const live=todayTurnovers.map(t=>`
-    <div class="alert">
-      <div class="alert-head"><div class="alert-title">${esc(t.properties?.property_name||"Turnover")}</div><span class="pill ${t.status==="in_progress"?"pill-amber":t.status==="completed"?"pill-green":"pill-blue"}">${esc((t.status||"assigned").replaceAll("_"," "))}</span></div>
-      <div class="alert-meta">${esc(t.users?.full_name||"Unassigned")} · ${esc(fmtTime(t.scheduled_start))}–${esc(fmtTime(t.scheduled_end))}</div>
-      <div class="alert-body">Attendance: ${esc(t.attendance_status||"pending")} · Clock in: ${esc(fmtTime(t.check_in_time))} · Clock out: ${esc(fmtTime(t.check_out_time))}</div>
-      <div class="row-actions"><a class="btn" href="turnover-review.html?id=${encodeURIComponent(t.id)}">Open Review</a></div>
-    </div>`).join("") || `<div class="empty">No turnovers scheduled today.</div>`;
-
-  document.getElementById("dashboardContent").className="";
-  document.getElementById("dashboardContent").innerHTML=`
-    <div class="grid">
-      <div>
-        <section class="panel"><div class="panel-header"><h4 class="panel-title">Needs Reassignment</h4><a class="panel-link" href="turnovers.html">View turnovers</a></div>${reassignHtml}</section>
-        <section class="panel"><div class="panel-header"><h4 class="panel-title">Open Issue Queue</h4></div>${issueHtml}</section>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1 class="brand-name">NSC CleanOps</h1>
+        <p class="brand-subtitle">Niagara Scrubbers Operations Platform</p>
       </div>
-      <div>
-        <section class="panel"><div class="panel-header"><h4 class="panel-title">Today's Live Operations</h4></div>${live}</section>
-        <section class="panel"><div class="panel-header"><h4 class="panel-title">Inventory Alerts</h4></div>${invHtml}</section>
+
+      <p class="nav-label">Operations</p>
+
+      <nav class="nav">
+        <a href="manager-dashboard.html" class="active">Dashboard</a>
+        <a href="properties.html">Properties</a>
+        <a href="#">Turnovers</a>
+        <a href="#">Cleaners</a>
+        <a href="#">Inventory</a>
+        <a href="#">Reports</a>
+        <a href="#">Issues</a>
+        <a href="#">Notifications</a>
+        <a href="#">Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="signout-button" id="logout-button" type="button">Sign Out</button>
       </div>
-    </div>`;
-}
-document.getElementById("logoutButton").addEventListener("click",async()=>{await db.auth.signOut();location.href="login.html"});
-(async()=>{try{if(!await requireManager())return;await loadData();render()}catch(e){document.getElementById("dashboardContent").innerHTML=`<div class="panel"><div class="empty">${esc(e.message||"Unable to load dashboard.")}</div></div>`}})();
-</script>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <h2 class="topbar-title">Manager Dashboard</h2>
+        <div class="topbar-meta">Niagara Scrubbers Cleaning Inc.</div>
+      </header>
+
+      <main class="content">
+        <section class="hero">
+          <h2 id="welcome-heading">Welcome back</h2>
+          <p>Monitor operations, review property activity, and manage cleaning workflows.</p>
+        </section>
+
+        <section class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-label">Active Properties</p>
+            <p class="stat-value" id="active-properties">—</p>
+            <p class="stat-note" id="active-properties-note">Loading</p>
+          </article>
+
+          <article class="stat-card">
+            <p class="stat-label">Today's Turnovers</p>
+            <p class="stat-value" id="today-turnovers">0</p>
+            <p class="stat-note">Turnovers not connected yet</p>
+          </article>
+
+          <article class="stat-card">
+            <p class="stat-label">Open Issues</p>
+            <p class="stat-value" id="open-issues">0</p>
+            <p class="stat-note">Issues not connected yet</p>
+          </article>
+
+          <article class="stat-card">
+            <p class="stat-label">Low Inventory</p>
+            <p class="stat-value" id="low-inventory">0</p>
+            <p class="stat-note">Inventory not connected yet</p>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Recent Properties</h3>
+              <a href="properties.html" class="panel-link">View all</a>
+            </div>
+            <div id="recent-properties"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Quick Actions</h3>
+            </div>
+
+            <div class="quick-actions">
+              <a href="properties.html" class="quick-action">
+                <strong>Manage Properties</strong>
+                <span>View and update property records.</span>
+              </a>
+
+              <a href="#" class="quick-action">
+                <strong>Create Turnover</strong>
+                <span>Turnover scheduling will be connected next.</span>
+              </a>
+
+              <a href="#" class="quick-action">
+                <strong>Review Reports</strong>
+                <span>Reporting will be connected later.</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">Inventory Status</h3>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Green stock items</span>
+              <span class="status-pill status-green">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Amber stock items</span>
+              <span class="status-pill status-amber">0</span>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Red stock items</span>
+              <span class="status-pill status-red">0</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title">System Status</h3>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Authentication</span>
+              <span class="status-pill status-green">Active</span>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Database</span>
+              <span class="status-pill status-green" id="database-status">Connected</span>
+            </div>
+
+            <div class="status-row">
+              <span class="status-name">Storage</span>
+              <span class="status-pill status-green">Connected</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    "use strict";
+
+    const db = window.nscSupabase || window.supabaseClient;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function loadDashboard() {
+      if (!db) {
+        throw new Error("Supabase client is unavailable.");
+      }
+
+      const {
+        data: { session },
+        error: sessionError
+      } = await db.auth.getSession();
+
+      if (sessionError || !session) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const { data: profile, error: profileError } = await db
+        .from("users")
+        .select("full_name, company_id, active")
+        .eq("auth_user_id", session.user.id)
+        .single();
+
+      if (profileError) {
+        throw profileError;
+      }
+
+      if (!profile.active) {
+        throw new Error("This user account is inactive.");
+      }
+
+      const firstName = (profile.full_name || "Manager").trim().split(/\s+/)[0];
+      document.getElementById("welcome-heading").textContent = `Welcome back, ${firstName}`;
+
+      const { data: properties, error: propertiesError } = await db
+        .from("properties")
+        .select("id, property_name, property_code, city, province, active")
+        .eq("company_id", profile.company_id)
+        .order("property_name", { ascending: true });
+
+      if (propertiesError) {
+        throw propertiesError;
+      }
+
+      const propertyList = Array.isArray(properties) ? properties : [];
+      const activeProperties = propertyList.filter(item => item.active !== false);
+
+      document.getElementById("active-properties").textContent = activeProperties.length;
+      document.getElementById("active-properties-note").textContent =
+        activeProperties.length === 1
+          ? "1 active property"
+          : `${activeProperties.length} active properties`;
+
+      const recentContainer = document.getElementById("recent-properties");
+
+      if (!propertyList.length) {
+        recentContainer.innerHTML = `
+          <div class="activity-item">
+            <p class="activity-title">No properties found</p>
+            <p class="activity-meta">Add a property to begin using NSC CleanOps.</p>
+          </div>
+        `;
+        return;
+      }
+
+      recentContainer.innerHTML = propertyList.slice(0, 5).map(property => {
+        const location = [property.city, property.province].filter(Boolean).join(", ");
+
+        return `
+          <div class="activity-item">
+            <p class="activity-title">${escapeHtml(property.property_name || "Unnamed Property")}</p>
+            <p class="activity-meta">
+              ${escapeHtml(property.property_code || "No code")}
+              ${location ? ` · ${escapeHtml(location)}` : ""}
+              · ${property.active === false ? "Inactive" : "Active"}
+            </p>
+          </div>
+        `;
+      }).join("");
+    }
+
+    document
+      .getElementById("logout-button")
+      .addEventListener("click", async () => {
+        await db.auth.signOut();
+        window.location.href = "login.html";
+      });
+
+    loadDashboard().catch(error => {
+      console.error("Dashboard failed:", error);
+
+      document.getElementById("active-properties").textContent = "0";
+      document.getElementById("active-properties-note").textContent =
+        error.message || "Dashboard could not load";
+
+      const databaseStatus = document.getElementById("database-status");
+      databaseStatus.textContent = "Error";
+      databaseStatus.className = "status-pill status-red";
+    });
+  </script>
 </body>
 </html>
