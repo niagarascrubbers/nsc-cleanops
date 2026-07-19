@@ -2034,33 +2034,33 @@
 
           <div class="payroll-summary-grid">
             <article class="stat-card metric-accent">
-              <div class="stat-label">Gross Payroll This Month</div>
+              <div class="stat-label">Payroll This Month</div>
               <div class="stat-value" id="payrollGrossMonth">$0.00</div>
-              <div class="stat-note">Before employee deductions</div>
+              <div class="stat-note">Gross payroll recorded</div>
             </article>
 
             <article class="stat-card metric-success">
               <div class="stat-label">Net Pay This Month</div>
               <div class="stat-value" id="payrollNetMonth">$0.00</div>
-              <div class="stat-note positive">Employee take-home pay</div>
+              <div class="stat-note positive">Total employee take-home pay</div>
             </article>
 
             <article class="stat-card metric-warning">
-              <div class="stat-label">Employer Costs</div>
-              <div class="stat-value" id="payrollEmployerMonth">$0.00</div>
-              <div class="stat-note">CPP, EI, WSIB and other costs</div>
+              <div class="stat-label">Labour Cost This Month</div>
+              <div class="stat-value" id="payrollTotalCostMonth">$0.00</div>
+              <div class="stat-note">Amount used in profit calculations</div>
             </article>
 
             <article class="stat-card">
-              <div class="stat-label">Total Payroll Cost</div>
-              <div class="stat-value" id="payrollTotalCostMonth">$0.00</div>
-              <div class="stat-note">Gross pay plus employer costs</div>
+              <div class="stat-label">Hours This Month</div>
+              <div class="stat-value" id="payrollHoursMonth">0.00</div>
+              <div class="stat-note">Total employee hours recorded</div>
             </article>
 
             <article class="stat-card metric-danger">
-              <div class="stat-label">Approved / Unpaid</div>
+              <div class="stat-label">Recorded / Unpaid</div>
               <div class="stat-value" id="payrollApprovedUnpaid">$0.00</div>
-              <div class="stat-note warning">Ready for payment</div>
+              <div class="stat-note warning">Labour cost not marked paid</div>
             </article>
           </div>
 
@@ -2068,9 +2068,9 @@
             <section class="panel">
               <div class="panel-header">
                 <div>
-                  <h3 class="panel-title" id="payrollFormTitle">Create Payroll Record</h3>
+                  <h3 class="panel-title" id="payrollFormTitle">Add Payroll Summary</h3>
                   <p class="panel-subtitle">
-                    Record employee hours, deductions and total employer cost.
+                    Enter the totals from QuickBooks for profit and labour-cost tracking.
                   </p>
                 </div>
               </div>
@@ -2110,138 +2110,57 @@
                     <label for="payrollStatus">Status *</label>
                     <select id="payrollStatus" required>
                       <option value="draft">Draft</option>
-                      <option value="approved">Approved</option>
+                      <option value="approved">Recorded</option>
                       <option value="paid">Paid</option>
                       <option value="cancelled">Cancelled</option>
                     </select>
                   </div>
 
                   <div class="field">
-                    <label for="payrollRegularHours">Regular Hours</label>
-                    <input type="number" id="payrollRegularHours" min="0" step="0.01" value="0">
+                    <label for="payrollTotalHours">Total Hours *</label>
+                    <input type="number" id="payrollTotalHours" min="0" step="0.01" value="0" required>
                   </div>
 
                   <div class="field">
-                    <label for="payrollRegularRate">Regular Hourly Rate</label>
-                    <input type="number" id="payrollRegularRate" min="0" step="0.01" value="0">
+                    <label for="payrollGrossPay">Gross Pay *</label>
+                    <input type="number" id="payrollGrossPay" min="0" step="0.01" value="0" required>
                   </div>
 
                   <div class="field">
-                    <label for="payrollOvertimeHours">Overtime Hours</label>
-                    <input type="number" id="payrollOvertimeHours" min="0" step="0.01" value="0">
+                    <label for="payrollNetPay">Net Pay *</label>
+                    <input type="number" id="payrollNetPay" min="0" step="0.01" value="0" required>
                   </div>
 
                   <div class="field">
-                    <label for="payrollOvertimeRate">Overtime Hourly Rate</label>
-                    <input type="number" id="payrollOvertimeRate" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollVacationPay">Vacation Pay</label>
-                    <input type="number" id="payrollVacationPay" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollBonusPay">Bonus Pay</label>
-                    <input type="number" id="payrollBonusPay" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollOtherEarnings">Other Earnings</label>
-                    <input type="number" id="payrollOtherEarnings" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollIncomeTax">Income Tax Deduction</label>
-                    <input type="number" id="payrollIncomeTax" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollEmployeeCpp">Employee CPP</label>
-                    <input type="number" id="payrollEmployeeCpp" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollEmployeeEi">Employee EI</label>
-                    <input type="number" id="payrollEmployeeEi" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollOtherDeductions">Other Deductions</label>
-                    <input type="number" id="payrollOtherDeductions" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollEmployerCpp">Employer CPP</label>
-                    <input type="number" id="payrollEmployerCpp" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollEmployerEi">Employer EI</label>
-                    <input type="number" id="payrollEmployerEi" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollWsib">WSIB Cost</label>
-                    <input type="number" id="payrollWsib" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollOtherEmployerCosts">Other Employer Costs</label>
-                    <input type="number" id="payrollOtherEmployerCosts" min="0" step="0.01" value="0">
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollPaymentMethod">Payment Method</label>
-                    <select id="payrollPaymentMethod">
-                      <option value="">Not selected</option>
-                      <option>E-Transfer</option>
-                      <option>Direct Deposit</option>
-                      <option>Cheque</option>
-                      <option>Cash</option>
-                      <option>Other</option>
-                    </select>
-                  </div>
-
-                  <div class="field">
-                    <label for="payrollPaymentReference">Payment Reference</label>
-                    <input type="text" id="payrollPaymentReference" maxlength="160">
+                    <label for="payrollTotalLabourCost">Total Labour Cost *</label>
+                    <input type="number" id="payrollTotalLabourCost" min="0" step="0.01" value="0" required>
+                    <div class="field-help">
+                      Enter the full cost to the business from QuickBooks. Reports subtract this amount from revenue.
+                    </div>
                   </div>
 
                   <div class="field full-width">
                     <label for="payrollNotes">Notes</label>
-                    <textarea id="payrollNotes" maxlength="1500" placeholder="Payroll notes, adjustments or internal reference"></textarea>
+                    <textarea id="payrollNotes" maxlength="1500" placeholder="Optional payroll notes or QuickBooks reference"></textarea>
                   </div>
                 </div>
 
                 <div class="payroll-calculation-box">
                   <div class="payroll-calculation-row">
-                    <span>Regular Pay</span>
-                    <strong id="payrollCalcRegular">$0.00</strong>
-                  </div>
-                  <div class="payroll-calculation-row">
-                    <span>Overtime Pay</span>
-                    <strong id="payrollCalcOvertime">$0.00</strong>
-                  </div>
-                  <div class="payroll-calculation-row total">
                     <span>Gross Pay</span>
                     <strong id="payrollCalcGross">$0.00</strong>
-                  </div>
-                  <div class="payroll-calculation-row">
-                    <span>Total Employee Deductions</span>
-                    <strong id="payrollCalcDeductions">$0.00</strong>
                   </div>
                   <div class="payroll-calculation-row net">
                     <span>Net Pay</span>
                     <strong id="payrollCalcNet">$0.00</strong>
                   </div>
-                  <div class="payroll-calculation-row">
-                    <span>Total Employer Costs</span>
-                    <strong id="payrollCalcEmployer">$0.00</strong>
-                  </div>
                   <div class="payroll-calculation-row cost">
-                    <span>Total Payroll Cost</span>
+                    <span>Total Labour Cost Used in Reports</span>
                     <strong id="payrollCalcTotalCost">$0.00</strong>
+                  </div>
+                  <div class="payroll-calculation-row">
+                    <span>Average Labour Cost per Hour</span>
+                    <strong id="payrollCalcAverageCost">$0.00</strong>
                   </div>
                 </div>
 
@@ -2249,7 +2168,7 @@
 
                 <div class="form-actions">
                   <button type="button" class="secondary-btn" id="cancelPayrollEdit" hidden>Cancel Edit</button>
-                  <button type="submit" class="primary-btn" id="savePayrollButton">Save Payroll</button>
+                  <button type="submit" class="primary-btn" id="savePayrollButton">Save Payroll Summary</button>
                 </div>
               </form>
             </section>
@@ -2259,7 +2178,7 @@
                 <div>
                   <h3 class="panel-title">Payroll Filters</h3>
                   <p class="panel-subtitle">
-                    Search employee payroll records and payment status.
+                    Search employee payroll summaries and payment status.
                   </p>
                 </div>
               </div>
@@ -2267,7 +2186,7 @@
               <div class="form-grid">
                 <div class="field full-width">
                   <label for="payrollSearch">Search</label>
-                  <input type="search" id="payrollSearch" placeholder="Search employee, payment reference or notes">
+                  <input type="search" id="payrollSearch" placeholder="Search employee or notes">
                 </div>
 
                 <div class="field">
@@ -2275,7 +2194,7 @@
                   <select id="payrollFilterStatus">
                     <option value="">All statuses</option>
                     <option value="draft">Draft</option>
-                    <option value="approved">Approved</option>
+                    <option value="approved">Recorded</option>
                     <option value="paid">Paid</option>
                     <option value="cancelled">Cancelled</option>
                   </select>
@@ -2305,6 +2224,10 @@
 
               <div class="compact-summary">
                 <div class="summary-row">
+                  <span>Filtered hours</span>
+                  <strong id="filteredPayrollHours">0.00</strong>
+                </div>
+                <div class="summary-row">
                   <span>Filtered gross pay</span>
                   <strong id="filteredPayrollGross">$0.00</strong>
                 </div>
@@ -2313,7 +2236,7 @@
                   <strong id="filteredPayrollNet">$0.00</strong>
                 </div>
                 <div class="summary-row">
-                  <span>Filtered total cost</span>
+                  <span>Filtered labour cost</span>
                   <strong id="filteredPayrollCost">$0.00</strong>
                 </div>
               </div>
@@ -2325,7 +2248,7 @@
               <div>
                 <h3 class="panel-title">Payroll History</h3>
                 <p class="panel-subtitle">
-                  Review employee earnings, deductions and payment status.
+                  QuickBooks payroll totals used for labour-cost and profit reporting.
                 </p>
               </div>
 
@@ -2341,10 +2264,9 @@
                     <th>Pay Date</th>
                     <th class="number-cell">Hours</th>
                     <th class="number-cell">Gross Pay</th>
-                    <th class="number-cell">Deductions</th>
                     <th class="number-cell">Net Pay</th>
-                    <th class="number-cell">Employer Cost</th>
-                    <th class="number-cell">Total Cost</th>
+                    <th class="number-cell">Labour Cost</th>
+                    <th class="number-cell">Avg. Cost / Hour</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -2352,7 +2274,7 @@
 
                 <tbody id="payrollTableBody">
                   <tr>
-                    <td colspan="11" class="table-empty">Loading payroll...</td>
+                    <td colspan="10" class="table-empty">Loading payroll...</td>
                   </tr>
                 </tbody>
               </table>
@@ -3902,8 +3824,9 @@
 
 
 
+
   // ============================================================
-  // PAYROLL MANAGEMENT
+  // SIMPLIFIED PAYROLL / LABOUR COST TRACKING
   // ============================================================
 
   function setPayrollMessage(message = "", type = "") {
@@ -3917,54 +3840,18 @@
   }
 
   function calculatePayrollPreview() {
-    const regularPay =
-      payrollNumber("payrollRegularHours")
-      * payrollNumber("payrollRegularRate");
+    const hours = payrollNumber("payrollTotalHours");
+    const grossPay = payrollNumber("payrollGrossPay");
+    const netPay = payrollNumber("payrollNetPay");
+    const totalCost = payrollNumber("payrollTotalLabourCost");
+    const averageCost = hours > 0 ? totalCost / hours : 0;
 
-    const overtimePay =
-      payrollNumber("payrollOvertimeHours")
-      * payrollNumber("payrollOvertimeRate");
-
-    const grossPay =
-      regularPay
-      + overtimePay
-      + payrollNumber("payrollVacationPay")
-      + payrollNumber("payrollBonusPay")
-      + payrollNumber("payrollOtherEarnings");
-
-    const deductions =
-      payrollNumber("payrollIncomeTax")
-      + payrollNumber("payrollEmployeeCpp")
-      + payrollNumber("payrollEmployeeEi")
-      + payrollNumber("payrollOtherDeductions");
-
-    const netPay = Math.max(grossPay - deductions, 0);
-
-    const employerCost =
-      payrollNumber("payrollEmployerCpp")
-      + payrollNumber("payrollEmployerEi")
-      + payrollNumber("payrollWsib")
-      + payrollNumber("payrollOtherEmployerCosts");
-
-    const totalCost = grossPay + employerCost;
-
-    document.getElementById("payrollCalcRegular").textContent = money(regularPay);
-    document.getElementById("payrollCalcOvertime").textContent = money(overtimePay);
     document.getElementById("payrollCalcGross").textContent = money(grossPay);
-    document.getElementById("payrollCalcDeductions").textContent = money(deductions);
     document.getElementById("payrollCalcNet").textContent = money(netPay);
-    document.getElementById("payrollCalcEmployer").textContent = money(employerCost);
     document.getElementById("payrollCalcTotalCost").textContent = money(totalCost);
+    document.getElementById("payrollCalcAverageCost").textContent = money(averageCost);
 
-    return {
-      regularPay,
-      overtimePay,
-      grossPay,
-      deductions,
-      netPay,
-      employerCost,
-      totalCost
-    };
+    return { hours, grossPay, netPay, totalCost, averageCost };
   }
 
   function currentBiweeklyPeriod() {
@@ -3989,29 +3876,13 @@
     document.getElementById("payrollPeriodEnd").value = period.end;
     document.getElementById("payrollPayDate").value = period.payDate;
     document.getElementById("payrollStatus").value = "draft";
+    document.getElementById("payrollTotalHours").value = "0";
+    document.getElementById("payrollGrossPay").value = "0";
+    document.getElementById("payrollNetPay").value = "0";
+    document.getElementById("payrollTotalLabourCost").value = "0";
 
-    [
-      "payrollRegularHours",
-      "payrollRegularRate",
-      "payrollOvertimeHours",
-      "payrollOvertimeRate",
-      "payrollVacationPay",
-      "payrollBonusPay",
-      "payrollOtherEarnings",
-      "payrollIncomeTax",
-      "payrollEmployeeCpp",
-      "payrollEmployeeEi",
-      "payrollOtherDeductions",
-      "payrollEmployerCpp",
-      "payrollEmployerEi",
-      "payrollWsib",
-      "payrollOtherEmployerCosts"
-    ].forEach(id => {
-      document.getElementById(id).value = "0";
-    });
-
-    document.getElementById("payrollFormTitle").textContent = "Create Payroll Record";
-    document.getElementById("savePayrollButton").textContent = "Save Payroll";
+    document.getElementById("payrollFormTitle").textContent = "Add Payroll Summary";
+    document.getElementById("savePayrollButton").textContent = "Save Payroll Summary";
     document.getElementById("cancelPayrollEdit").hidden = true;
 
     setPayrollMessage();
@@ -4058,15 +3929,9 @@
       .select(`
         id,company_id,employee_user_id,employee_name,
         pay_period_start,pay_period_end,pay_date,
-        regular_hours,regular_rate,regular_pay,
-        overtime_hours,overtime_rate,overtime_pay,
-        vacation_pay,bonus_pay,other_earnings,gross_pay,
-        income_tax,employee_cpp,employee_ei,other_deductions,
-        total_deductions,net_pay,
-        employer_cpp,employer_ei,wsib_cost,other_employer_costs,
-        total_employer_cost,total_payroll_cost,
-        payroll_status,payment_method,payment_reference,
-        paid_at,paid_by,notes,created_by,created_at,updated_at
+        regular_hours,gross_pay,net_pay,total_payroll_cost,
+        payroll_status,notes,created_by,created_at,updated_at,
+        paid_at,paid_by
       `)
       .order("pay_date", { ascending: false })
       .order("created_at", { ascending: false });
@@ -4080,7 +3945,7 @@
   function payrollStatusLabel(status) {
     const labels = {
       draft: "Draft",
-      approved: "Approved",
+      approved: "Recorded",
       paid: "Paid",
       cancelled: "Cancelled"
     };
@@ -4099,37 +3964,18 @@
     document.getElementById("payrollPeriodEnd").value = item.pay_period_end || "";
     document.getElementById("payrollPayDate").value = item.pay_date || "";
     document.getElementById("payrollStatus").value = item.payroll_status || "draft";
-
-    const fieldValues = {
-      payrollRegularHours: item.regular_hours,
-      payrollRegularRate: item.regular_rate,
-      payrollOvertimeHours: item.overtime_hours,
-      payrollOvertimeRate: item.overtime_rate,
-      payrollVacationPay: item.vacation_pay,
-      payrollBonusPay: item.bonus_pay,
-      payrollOtherEarnings: item.other_earnings,
-      payrollIncomeTax: item.income_tax,
-      payrollEmployeeCpp: item.employee_cpp,
-      payrollEmployeeEi: item.employee_ei,
-      payrollOtherDeductions: item.other_deductions,
-      payrollEmployerCpp: item.employer_cpp,
-      payrollEmployerEi: item.employer_ei,
-      payrollWsib: item.wsib_cost,
-      payrollOtherEmployerCosts: item.other_employer_costs
-    };
-
-    Object.entries(fieldValues).forEach(([id, value]) => {
-      document.getElementById(id).value = Number(value || 0).toFixed(2);
-    });
-
-    document.getElementById("payrollPaymentMethod").value =
-      item.payment_method || "";
-    document.getElementById("payrollPaymentReference").value =
-      item.payment_reference || "";
+    document.getElementById("payrollTotalHours").value =
+      Number(item.regular_hours || 0).toFixed(2);
+    document.getElementById("payrollGrossPay").value =
+      Number(item.gross_pay || 0).toFixed(2);
+    document.getElementById("payrollNetPay").value =
+      Number(item.net_pay || 0).toFixed(2);
+    document.getElementById("payrollTotalLabourCost").value =
+      Number(item.total_payroll_cost || 0).toFixed(2);
     document.getElementById("payrollNotes").value = item.notes || "";
 
-    document.getElementById("payrollFormTitle").textContent = "Edit Payroll Record";
-    document.getElementById("savePayrollButton").textContent = "Update Payroll";
+    document.getElementById("payrollFormTitle").textContent = "Edit Payroll Summary";
+    document.getElementById("savePayrollButton").textContent = "Update Payroll Summary";
     document.getElementById("cancelPayrollEdit").hidden = false;
 
     setPayrollMessage();
@@ -4149,14 +3995,22 @@
     const saveButton = document.getElementById("savePayrollButton");
     const calculations = calculatePayrollPreview();
 
-    if (calculations.deductions > calculations.grossPay) {
-      setPayrollMessage("Total deductions cannot exceed gross pay.", "error");
+    if (calculations.netPay > calculations.grossPay) {
+      setPayrollMessage("Net pay cannot be greater than gross pay.", "error");
       return;
+    }
+
+    if (calculations.totalCost < calculations.grossPay) {
+      setPayrollMessage(
+        "Total labour cost is usually equal to or greater than gross pay. Please confirm the QuickBooks total.",
+        "warning"
+      );
+    } else {
+      setPayrollMessage();
     }
 
     saveButton.disabled = true;
     saveButton.textContent = id ? "Updating..." : "Saving...";
-    setPayrollMessage();
 
     try {
       const payrollStatus = document.getElementById("payrollStatus").value;
@@ -4169,38 +4023,40 @@
         pay_period_end: document.getElementById("payrollPeriodEnd").value,
         pay_date: document.getElementById("payrollPayDate").value,
 
-        regular_hours: payrollNumber("payrollRegularHours"),
-        regular_rate: payrollNumber("payrollRegularRate"),
-        regular_pay: calculations.regularPay,
-
-        overtime_hours: payrollNumber("payrollOvertimeHours"),
-        overtime_rate: payrollNumber("payrollOvertimeRate"),
-        overtime_pay: calculations.overtimePay,
-
-        vacation_pay: payrollNumber("payrollVacationPay"),
-        bonus_pay: payrollNumber("payrollBonusPay"),
-        other_earnings: payrollNumber("payrollOtherEarnings"),
+        regular_hours: calculations.hours,
+        regular_rate: 0,
+        regular_pay: calculations.grossPay,
+        overtime_hours: 0,
+        overtime_rate: 0,
+        overtime_pay: 0,
+        vacation_pay: 0,
+        bonus_pay: 0,
+        other_earnings: 0,
         gross_pay: calculations.grossPay,
 
-        income_tax: payrollNumber("payrollIncomeTax"),
-        employee_cpp: payrollNumber("payrollEmployeeCpp"),
-        employee_ei: payrollNumber("payrollEmployeeEi"),
-        other_deductions: payrollNumber("payrollOtherDeductions"),
-        total_deductions: calculations.deductions,
+        income_tax: Math.max(calculations.grossPay - calculations.netPay, 0),
+        employee_cpp: 0,
+        employee_ei: 0,
+        other_deductions: 0,
+        total_deductions: Math.max(calculations.grossPay - calculations.netPay, 0),
         net_pay: calculations.netPay,
 
-        employer_cpp: payrollNumber("payrollEmployerCpp"),
-        employer_ei: payrollNumber("payrollEmployerEi"),
-        wsib_cost: payrollNumber("payrollWsib"),
-        other_employer_costs: payrollNumber("payrollOtherEmployerCosts"),
-        total_employer_cost: calculations.employerCost,
+        employer_cpp: 0,
+        employer_ei: 0,
+        wsib_cost: 0,
+        other_employer_costs: Math.max(
+          calculations.totalCost - calculations.grossPay,
+          0
+        ),
+        total_employer_cost: Math.max(
+          calculations.totalCost - calculations.grossPay,
+          0
+        ),
         total_payroll_cost: calculations.totalCost,
 
         payroll_status: payrollStatus,
-        payment_method:
-          document.getElementById("payrollPaymentMethod").value || null,
-        payment_reference:
-          document.getElementById("payrollPaymentReference").value.trim() || null,
+        payment_method: null,
+        payment_reference: null,
         paid_at: payrollStatus === "paid" ? new Date().toISOString() : null,
         paid_by: payrollStatus === "paid" ? currentProfile.id : null,
         notes: document.getElementById("payrollNotes").value.trim() || null,
@@ -4229,38 +4085,27 @@
 
       setPayrollMessage(
         id
-          ? "Payroll record updated successfully."
-          : "Payroll record saved successfully.",
+          ? "Payroll summary updated successfully."
+          : "Payroll summary saved successfully.",
         "success"
       );
     } catch (error) {
       console.error(error);
-      setPayrollMessage(error.message || "Unable to save payroll.", "error");
+      setPayrollMessage(error.message || "Unable to save payroll summary.", "error");
     } finally {
       saveButton.disabled = false;
       saveButton.textContent =
         document.getElementById("payrollId").value
-          ? "Update Payroll"
-          : "Save Payroll";
+          ? "Update Payroll Summary"
+          : "Save Payroll Summary";
     }
   });
 
   [
-    "payrollRegularHours",
-    "payrollRegularRate",
-    "payrollOvertimeHours",
-    "payrollOvertimeRate",
-    "payrollVacationPay",
-    "payrollBonusPay",
-    "payrollOtherEarnings",
-    "payrollIncomeTax",
-    "payrollEmployeeCpp",
-    "payrollEmployeeEi",
-    "payrollOtherDeductions",
-    "payrollEmployerCpp",
-    "payrollEmployerEi",
-    "payrollWsib",
-    "payrollOtherEmployerCosts"
+    "payrollTotalHours",
+    "payrollGrossPay",
+    "payrollNetPay",
+    "payrollTotalLabourCost"
   ].forEach(id => {
     document.getElementById(id).addEventListener("input", calculatePayrollPreview);
   });
@@ -4271,22 +4116,13 @@
   );
 
   async function updatePayrollStatus(id, status) {
-    const item = payrollRecords.find(record => record.id === id);
-    if (!item) return;
-
     try {
       const payload = {
         payroll_status: status,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
+        paid_at: status === "paid" ? new Date().toISOString() : null,
+        paid_by: status === "paid" ? currentProfile.id : null
       };
-
-      if (status === "paid") {
-        payload.paid_at = new Date().toISOString();
-        payload.paid_by = currentProfile.id;
-      } else {
-        payload.paid_at = null;
-        payload.paid_by = null;
-      }
 
       const { error } = await db
         .from("finance_payroll")
@@ -4294,7 +4130,6 @@
         .eq("id", id);
 
       if (error) throw error;
-
       await loadPayroll();
     } catch (error) {
       alert(error.message || "Unable to update payroll status.");
@@ -4305,9 +4140,7 @@
     const item = payrollRecords.find(record => record.id === id);
     if (!item) return;
 
-    if (!confirm(`Delete payroll record for ${item.employee_name}?`)) {
-      return;
-    }
+    if (!confirm(`Delete payroll summary for ${item.employee_name}?`)) return;
 
     try {
       const { error } = await db
@@ -4323,31 +4156,25 @@
         resetPayrollForm();
       }
     } catch (error) {
-      alert(error.message || "Unable to delete payroll record.");
+      alert(error.message || "Unable to delete payroll summary.");
     }
   }
 
   function filteredPayroll() {
     const search =
       document.getElementById("payrollSearch").value.trim().toLowerCase();
-    const status =
-      document.getElementById("payrollFilterStatus").value;
-    const employeeId =
-      document.getElementById("payrollFilterEmployee").value;
-    const from =
-      document.getElementById("payrollFilterFrom").value;
-    const to =
-      document.getElementById("payrollFilterTo").value;
+    const status = document.getElementById("payrollFilterStatus").value;
+    const employeeId = document.getElementById("payrollFilterEmployee").value;
+    const from = document.getElementById("payrollFilterFrom").value;
+    const to = document.getElementById("payrollFilterTo").value;
 
     return payrollRecords.filter(item => {
-      const text = [
+      const searchableText = [
         item.employee_name,
-        item.payment_method,
-        item.payment_reference,
         item.notes
       ].join(" ").toLowerCase();
 
-      return (!search || text.includes(search))
+      return (!search || searchableText.includes(search))
         && (!status || item.payroll_status === status)
         && (!employeeId || item.employee_user_id === employeeId)
         && (!from || item.pay_date >= from)
@@ -4365,31 +4192,31 @@
       const payDate = new Date(`${item.pay_date}T12:00:00`);
 
       if (payDate >= monthStart) {
+        sum.hours += Number(item.regular_hours || 0);
         sum.gross += Number(item.gross_pay || 0);
         sum.net += Number(item.net_pay || 0);
-        sum.employer += Number(item.total_employer_cost || 0);
         sum.totalCost += Number(item.total_payroll_cost || 0);
       }
 
       if (item.payroll_status === "approved") {
-        sum.approvedUnpaid += Number(item.net_pay || 0);
+        sum.approvedUnpaid += Number(item.total_payroll_cost || 0);
       }
 
       return sum;
     }, {
+      hours: 0,
       gross: 0,
       net: 0,
-      employer: 0,
       totalCost: 0,
       approvedUnpaid: 0
     });
 
+    document.getElementById("payrollHoursMonth").textContent =
+      totals.hours.toFixed(2);
     document.getElementById("payrollGrossMonth").textContent =
       money(totals.gross);
     document.getElementById("payrollNetMonth").textContent =
       money(totals.net);
-    document.getElementById("payrollEmployerMonth").textContent =
-      money(totals.employer);
     document.getElementById("payrollTotalCostMonth").textContent =
       money(totals.totalCost);
     document.getElementById("payrollApprovedUnpaid").textContent =
@@ -4405,13 +4232,16 @@
 
     const filteredTotals = records.reduce((sum, item) => {
       if (item.payroll_status !== "cancelled") {
+        sum.hours += Number(item.regular_hours || 0);
         sum.gross += Number(item.gross_pay || 0);
         sum.net += Number(item.net_pay || 0);
         sum.cost += Number(item.total_payroll_cost || 0);
       }
       return sum;
-    }, { gross: 0, net: 0, cost: 0 });
+    }, { hours: 0, gross: 0, net: 0, cost: 0 });
 
+    document.getElementById("filteredPayrollHours").textContent =
+      filteredTotals.hours.toFixed(2);
     document.getElementById("filteredPayrollGross").textContent =
       money(filteredTotals.gross);
     document.getElementById("filteredPayrollNet").textContent =
@@ -4421,17 +4251,14 @@
 
     tbody.innerHTML = records.length
       ? records.map(item => {
-          const totalHours =
-            Number(item.regular_hours || 0)
-            + Number(item.overtime_hours || 0);
+          const hours = Number(item.regular_hours || 0);
+          const labourCost = Number(item.total_payroll_cost || 0);
+          const averageCost = hours > 0 ? labourCost / hours : 0;
 
           return `
             <tr>
               <td>
                 <div class="employee-name">${esc(item.employee_name)}</div>
-                ${item.payment_reference
-                  ? `<div class="field-help">Ref: ${esc(item.payment_reference)}</div>`
-                  : ""}
               </td>
 
               <td>
@@ -4440,12 +4267,11 @@
               </td>
 
               <td>${esc(item.pay_date)}</td>
-              <td class="number-cell">${esc(totalHours.toFixed(2))}</td>
+              <td class="number-cell">${esc(hours.toFixed(2))}</td>
               <td class="number-cell">${esc(money(item.gross_pay))}</td>
-              <td class="number-cell">${esc(money(item.total_deductions))}</td>
-              <td class="number-cell"><strong>${esc(money(item.net_pay))}</strong></td>
-              <td class="number-cell">${esc(money(item.total_employer_cost))}</td>
-              <td class="number-cell"><strong>${esc(money(item.total_payroll_cost))}</strong></td>
+              <td class="number-cell">${esc(money(item.net_pay))}</td>
+              <td class="number-cell"><strong>${esc(money(labourCost))}</strong></td>
+              <td class="number-cell">${esc(money(averageCost))}</td>
 
               <td>
                 <span class="status-pill ${esc(item.payroll_status)}">
@@ -4456,7 +4282,7 @@
               <td>
                 <div class="table-actions">
                   ${item.payroll_status === "draft"
-                    ? `<button class="table-action-btn" data-payroll-action="approve" data-id="${esc(item.id)}">Approve</button>`
+                    ? `<button class="table-action-btn" data-payroll-action="approve" data-id="${esc(item.id)}">Record</button>`
                     : ""}
 
                   ${item.payroll_status === "approved"
@@ -4475,7 +4301,7 @@
             </tr>
           `;
         }).join("")
-      : `<tr><td colspan="11" class="table-empty">No payroll records match the selected filters.</td></tr>`;
+      : `<tr><td colspan="10" class="table-empty">No payroll summaries match the selected filters.</td></tr>`;
 
     updatePayrollTotals();
   }
@@ -4515,7 +4341,6 @@
     document.getElementById("payrollFilterTo").value = "";
     renderPayroll();
   });
-
 
 
   // ============================================================
