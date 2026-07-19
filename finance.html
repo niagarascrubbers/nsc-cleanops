@@ -490,6 +490,76 @@
 
 
 /* =========================================================
+   CLEAN FINANCE OVERVIEW
+========================================================= */
+.finance-primary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.finance-primary-card {
+  min-height: 126px;
+  padding: 19px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 8px 22px rgba(18, 50, 77, 0.06);
+}
+.finance-primary-label {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.finance-primary-value {
+  margin-top: 12px;
+  color: var(--navy-900);
+  font-family: "Montserrat", sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -.5px;
+}
+.finance-date-value { font-size: 22px; }
+.finance-primary-note {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 9px;
+}
+.finance-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.finance-summary-panel { margin-bottom: 0; }
+.finance-compact-list { display: grid; }
+.finance-compact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+}
+.finance-compact-row:last-child { border-bottom: 0; }
+.finance-compact-row span { color: var(--muted); }
+.finance-compact-row strong {
+  font-family: "Montserrat", sans-serif;
+  font-size: 11px;
+}
+.finance-bottom-grid .panel { margin-bottom: 0; }
+@media (max-width: 1080px) {
+  .finance-primary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .finance-overview-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 650px) {
+  .finance-primary-grid { grid-template-columns: 1fr; }
+}
+
+/* =========================================================
    EXPENSE FORMS AND TABLE
 ========================================================= */
 
@@ -1189,90 +1259,17 @@
          SIDEBAR
     ======================================================== -->
     <aside class="sidebar" id="sidebar">
-
-      <div class="brand">
-        <h1 class="brand-name">NSC CleanOps</h1>
-        <p class="brand-subtitle">Operations Management</p>
-      </div>
-
+      <div class="brand"><p class="brand-name">NSC CleanOps</p><p class="brand-subtitle">Operations Management</p></div>
       <div class="nav-section-label">Workspace</div>
-
-      <nav class="sidebar-nav">
-        <a href="manager-dashboard.html">
-          <span class="nav-icon">⌂</span>
-          Dashboard
-        </a>
-
-        <a href="properties.html">
-          <span class="nav-icon">▦</span>
-          Properties
-        </a>
-
-        <a href="turnovers.html">
-          <span class="nav-icon">□</span>
-          Turnovers
-        </a>
-
-        <a href="assignments.html">
-          <span class="nav-icon">✓</span>
-          Assignments
-        </a>
+      <nav class="sidebar-nav" aria-label="Manager navigation">
+        <a href="manager-dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+        <a href="properties.html"><span class="nav-icon">▦</span><span>Properties</span></a>
+        <a class="active" href="finance.html"><span class="nav-icon">$</span><span>Finance</span></a>
       </nav>
-
-      <div class="nav-section-label">Operations</div>
-
-      <nav class="sidebar-nav">
-        <a href="checklists.html">
-          <span class="nav-icon">≡</span>
-          Checklists
-        </a>
-
-        <a href="inventory.html">
-          <span class="nav-icon">▤</span>
-          Inventory
-        </a>
-
-        <a href="photos.html">
-          <span class="nav-icon">◫</span>
-          Photos
-        </a>
-
-        <a href="issues.html">
-          <span class="nav-icon">!</span>
-          Issues
-        </a>
-
-        <a href="reports.html">
-          <span class="nav-icon">▥</span>
-          Reports
-        </a>
-
-        <a href="finance.html" class="active">
-          <span class="nav-icon">$</span>
-          Finance
-        </a>
-      </nav>
-
-      <div class="nav-section-label">System</div>
-
-      <nav class="sidebar-nav">
-        <a href="settings.html">
-          <span class="nav-icon">⚙</span>
-          Settings
-        </a>
-      </nav>
-
       <div class="sidebar-footer">
-        <div class="user-card">
-          <p class="user-name" id="sidebarUserName">Uttam Preet</p>
-          <p class="user-role" id="sidebarUserRole">Manager</p>
-        </div>
-
-        <button class="sign-out-btn" id="signOutButton" type="button">
-          Sign Out
-        </button>
+        <div class="user-card"><p class="user-name" id="sidebarUserName">Uttam Preet</p><p class="user-role" id="sidebarUserRole">Administrator</p></div>
+        <button class="sign-out-btn" id="signOutButton" type="button">Sign Out</button>
       </div>
-
     </aside>
 
     <!-- =======================================================
@@ -1368,126 +1365,91 @@
         <!-- ===================================================
              OVERVIEW TAB
         ==================================================== -->
-        <section
-          class="tab-panel active"
-          id="overviewPanel"
-        >
+        <section class="tab-panel active" id="overviewPanel">
 
-          <div class="stats-grid">
-
-            <article class="stat-card">
-              <div class="stat-label">Revenue Today</div>
-              <div class="stat-value" id="revenueToday">$0.00</div>
-              <div class="stat-note">Before HST</div>
+          <div class="finance-primary-grid">
+            <article class="finance-primary-card">
+              <div class="finance-primary-label">Revenue This Month</div>
+              <div class="finance-primary-value" id="revenueThisMonth">$0.00</div>
+              <div class="finance-primary-note">Before HST</div>
             </article>
 
-            <article class="stat-card">
-              <div class="stat-label">Revenue This Week</div>
-              <div class="stat-value" id="revenueThisWeek">$0.00</div>
-              <div class="stat-note">Before HST</div>
+            <article class="finance-primary-card">
+              <div class="finance-primary-label">Expenses This Month</div>
+              <div class="finance-primary-value" id="expensesThisMonth">$0.00</div>
+              <div class="finance-primary-note">Before HST</div>
             </article>
 
-            <article class="stat-card">
-              <div class="stat-label">Revenue This Month</div>
-              <div class="stat-value" id="revenueThisMonth">$0.00</div>
-              <div class="stat-note">Before HST</div>
+            <article class="finance-primary-card">
+              <div class="finance-primary-label">Outstanding</div>
+              <div class="finance-primary-value" id="outstandingPayments">$0.00</div>
+              <div class="finance-primary-note">Unpaid invoices</div>
             </article>
 
-            <article class="stat-card">
-              <div class="stat-label">Expenses This Month</div>
-              <div class="stat-value" id="expensesThisMonth">$0.00</div>
-              <div class="stat-note">Before HST</div>
+            <article class="finance-primary-card">
+              <div class="finance-primary-label">Next Payday</div>
+              <div class="finance-primary-value finance-date-value" id="nextPayday">Jul 22</div>
+              <div class="finance-primary-note">Biweekly payroll schedule</div>
             </article>
-
           </div>
 
-          <div class="stats-grid">
+          <div class="finance-overview-grid">
+            <section class="panel finance-summary-panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Revenue Activity</h3>
+                  <p class="panel-subtitle">Current operating period</p>
+                </div>
+              </div>
+              <div class="finance-compact-list">
+                <div class="finance-compact-row"><span>Today</span><strong id="revenueToday">$0.00</strong></div>
+                <div class="finance-compact-row"><span>This week</span><strong id="revenueThisWeek">$0.00</strong></div>
+                <div class="finance-compact-row"><span>This month</span><strong id="revenueThisMonthMirror">—</strong></div>
+              </div>
+            </section>
 
-            <article class="stat-card">
-              <div class="stat-label">HST Collected</div>
-              <div class="stat-value" id="hstCollected">$0.00</div>
-              <div class="stat-note">Current month</div>
-            </article>
+            <section class="panel finance-summary-panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">HST Position</h3>
+                  <p class="panel-subtitle">Current month</p>
+                </div>
+              </div>
+              <div class="finance-compact-list">
+                <div class="finance-compact-row"><span>Collected</span><strong id="hstCollected">$0.00</strong></div>
+                <div class="finance-compact-row"><span>Paid</span><strong id="hstPaid">$0.00</strong></div>
+                <div class="finance-compact-row"><span>Net owing</span><strong id="netHstOwing">$0.00</strong></div>
+              </div>
+            </section>
 
-            <article class="stat-card">
-              <div class="stat-label">HST Paid</div>
-              <div class="stat-value" id="hstPaid">$0.00</div>
-              <div class="stat-note">Current month</div>
-            </article>
-
-            <article class="stat-card">
-              <div class="stat-label">Net HST Owing</div>
-              <div class="stat-value" id="netHstOwing">$0.00</div>
-              <div class="stat-note">Collected minus paid</div>
-            </article>
-
-            <article class="stat-card">
-              <div class="stat-label">Outstanding Payments</div>
-              <div class="stat-value" id="outstandingPayments">$0.00</div>
-              <div class="stat-note warning">Unpaid invoices</div>
-            </article>
-
+            <section class="panel finance-summary-panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Labour Today</h3>
+                  <p class="panel-subtitle">Scheduled versus completed</p>
+                </div>
+              </div>
+              <div class="finance-compact-list">
+                <div class="finance-compact-row"><span>Scheduled hours</span><strong id="scheduledHoursToday">0.0</strong></div>
+                <div class="finance-compact-row"><span>Completed hours</span><strong id="completedHoursToday">0.0</strong></div>
+                <div class="finance-compact-row"><span>Payroll review</span><strong id="nextPayrollReview">Jul 21</strong></div>
+              </div>
+            </section>
           </div>
 
-          <div class="stats-grid">
-
-            <article class="stat-card">
-              <div class="stat-label">Hours Scheduled Today</div>
-              <div class="stat-value" id="scheduledHoursToday">0.0</div>
-              <div class="stat-note">From today's turnovers</div>
-            </article>
-
-            <article class="stat-card">
-              <div class="stat-label">Hours Completed Today</div>
-              <div class="stat-value" id="completedHoursToday">0.0</div>
-              <div class="stat-note">Clock-in to clock-out</div>
-            </article>
-
-            <article class="stat-card">
-              <div class="stat-label">Next Payroll Review</div>
-              <div class="stat-value" id="nextPayrollReview">Jul 21</div>
-              <div class="stat-note">Every second Tuesday</div>
-            </article>
-
-            <article class="stat-card">
-              <div class="stat-label">Next Payday</div>
-              <div class="stat-value" id="nextPayday">Jul 22</div>
-              <div class="stat-note">Every second Wednesday</div>
-            </article>
-
-          </div>
-
-          <div class="two-column-grid">
-
+          <div class="two-column-grid finance-bottom-grid">
             <section class="panel">
               <div class="panel-header">
                 <div>
                   <h3 class="panel-title">Property Revenue</h3>
-                  <p class="panel-subtitle">
-                    Revenue totals will appear by property.
-                  </p>
+                  <p class="panel-subtitle">Revenue totals by property</p>
                 </div>
-
                 <span class="status-pill blue">This Month</span>
               </div>
-
               <div id="propertyRevenueSummary">
-
-                <div class="summary-row">
-                  <span>Red Maple Retreat</span>
-                  <strong>$0.00</strong>
-                </div>
-
-                <div class="summary-row">
-                  <span>Additional properties</span>
-                  <strong>$0.00</strong>
-                </div>
-
-                <div class="summary-row">
-                  <span>Total revenue before HST</span>
-                  <strong>$0.00</strong>
-                </div>
-
+                <div class="summary-row"><span>Red Maple Retreat</span><strong>$0.00</strong></div>
+                <div class="summary-row"><span>Additional properties</span><strong>$0.00</strong></div>
+                <div class="summary-row"><span>Total revenue before HST</span><strong>$0.00</strong></div>
               </div>
             </section>
 
@@ -1495,41 +1457,18 @@
               <div class="panel-header">
                 <div>
                   <h3 class="panel-title">Payment Status</h3>
-                  <p class="panel-subtitle">
-                    Invoice and payment activity.
-                  </p>
+                  <p class="panel-subtitle">Invoice and payment activity</p>
                 </div>
-
-                <span class="status-pill blue">Live Tracking</span>
+                <span class="status-pill blue">Live</span>
               </div>
-
               <div id="paymentStatusSummary">
-
-                <div class="summary-row">
-                  <span>Paid invoices</span>
-                  <strong>0</strong>
-                </div>
-
-                <div class="summary-row">
-                  <span>Unpaid invoices</span>
-                  <strong>0</strong>
-                </div>
-
-                <div class="summary-row">
-                  <span>Overdue invoices</span>
-                  <strong>0</strong>
-                </div>
-
-                <div class="summary-row">
-                  <span>Total received</span>
-                  <strong>$0.00</strong>
-                </div>
-
+                <div class="summary-row"><span>Paid invoices</span><strong>0</strong></div>
+                <div class="summary-row"><span>Unpaid invoices</span><strong>0</strong></div>
+                <div class="summary-row"><span>Overdue invoices</span><strong>0</strong></div>
+                <div class="summary-row"><span>Total received</span><strong>$0.00</strong></div>
               </div>
             </section>
-
           </div>
-
         </section>
 
 <!-- ===================================================
@@ -2651,6 +2590,13 @@
 
   const financeTabs = document.querySelectorAll(".finance-tab");
   const tabPanels = document.querySelectorAll(".tab-panel");
+  function syncFinanceOverviewMirrors() {
+    const source = document.getElementById("revenueThisMonth");
+    const mirror = document.getElementById("revenueThisMonthMirror");
+    if (source && mirror) mirror.textContent = source.textContent;
+  }
+  setInterval(syncFinanceOverviewMirrors, 500);
+
 
   financeTabs.forEach(tab => {
     tab.addEventListener("click", () => {
