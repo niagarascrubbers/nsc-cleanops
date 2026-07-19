@@ -1876,15 +1876,11 @@
         </section>
 
         <nav class="tab-bar" aria-label="Property modules">
-          <button class="tab-link active" type="button" data-tab="overview">Overview</button>
+          <button class="tab-link active" type="button" data-tab="overview">Property Info</button>
           <button class="tab-link" type="button" data-tab="rooms">Rooms</button>
-          <button class="tab-link" type="button" data-placeholder-tab="inventory">Inventory</button>
-          <button class="tab-link" type="button" data-placeholder-tab="photos">Photos</button>
-          <button class="tab-link" type="button" onclick="window.location.href='turnovers.html'">Turnovers</button>
           <button class="tab-link" type="button" data-tab="checklists">Checklists</button>
-          <button class="tab-link" type="button" data-placeholder-tab="reports">Reports</button>
-          <button class="tab-link" type="button" data-placeholder-tab="issues">Issues</button>
-          <button class="tab-link" type="button" data-placeholder-tab="settings">Settings</button>
+          <button class="tab-link" type="button" data-tab="settings">Settings</button>
+          <button class="tab-link" type="button" id="propertyTurnoversButton">View Turnovers ↗</button>
         </nav>
 
         <section class="tab-panel" id="overviewPanel" data-panel="overview">
@@ -2100,6 +2096,68 @@
             </section>
           </div>
         </section>
+
+        <section class="tab-panel" id="settingsPanel" data-panel="settings" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Property Settings</h2>
+              <p class="module-description">
+                Property configuration used for GPS, owner contact and listing access.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="details-grid">
+                <div class="detail-item">
+                  <div class="detail-label">Property Name</div>
+                  <div class="detail-value">${displayValue(property.property_name)}</div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Property Code</div>
+                  <div class="detail-value">${displayValue(property.property_code)}</div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">GPS Radius</div>
+                  <div class="detail-value">${displayValue(property.gps_radius, "150")} metres</div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Status</div>
+                  <div class="detail-value">${property.active === false ? "Inactive" : "Active"}</div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Owner Name</div>
+                  <div class="detail-value">${displayValue(property.owner_name)}</div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Owner Email</div>
+                  <div class="detail-value">${displayValue(property.owner_email)}</div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Owner Phone</div>
+                  <div class="detail-value">${displayValue(property.owner_phone)}</div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-label">Listing</div>
+                  <div class="detail-value">
+                    ${property.listing_url
+                      ? `<a href="${escapeAttribute(property.listing_url)}" target="_blank" rel="noopener noreferrer">Open property listing ↗</a>`
+                      : "No listing URL entered"
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       `;
 
       registerPropertyEvents();
@@ -2119,15 +2177,16 @@
         });
       });
 
-      document.querySelectorAll("[data-placeholder-tab]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const tabName = button.dataset.placeholderTab;
+      const propertyTurnoversButton =
+        document.getElementById("propertyTurnoversButton");
 
-          showToast(
-            `${tabName.charAt(0).toUpperCase() + tabName.slice(1)} will be built after the Rooms module is tested.`
-          );
+      if (propertyTurnoversButton) {
+        propertyTurnoversButton.addEventListener("click", () => {
+          window.location.href =
+            `turnovers.html?property_id=${encodeURIComponent(currentProperty.id)}`;
         });
-      });
+      }
+
 
       document
         .getElementById("addRoomButton")
