@@ -28,7 +28,7 @@
     .content{padding:28px}.hero h3{margin:0;font-family:"Montserrat";font-size:29px}.hero p{margin:8px 0 24px;color:var(--muted);font-size:13px}
     .stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:20px}
     .card,.panel{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
-    .card{padding:17px}.card-label{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px}.card-value{margin-top:7px;font-family:"Montserrat";font-size:27px;font-weight:700}.card-note{margin-top:5px;color:var(--muted);font-size:9px}
+    .card{padding:17px}.stat-link{display:block;color:inherit;text-decoration:none;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.stat-link:hover,.stat-link:focus-visible{transform:translateY(-2px);border-color:#b9d4e5;box-shadow:0 16px 36px rgba(18,50,77,.13);outline:none}.stat-link:active{transform:translateY(0)}.dashboard-anchor{scroll-margin-top:92px}.dashboard-anchor:target{box-shadow:0 0 0 3px rgba(47,143,202,.16),var(--shadow);border-color:#9fcbe3}.card-label{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px}.card-value{margin-top:7px;font-family:"Montserrat";font-size:27px;font-weight:700}.card-note{margin-top:5px;color:var(--muted);font-size:9px}
     .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}.panel{padding:19px;margin-bottom:18px}.panel-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.panel-title{margin:0;font-family:"Montserrat";font-size:16px}.panel-link{color:var(--blue);text-decoration:none;font-size:10px;font-weight:600}
     .alert{padding:12px 0;border-bottom:1px solid var(--border)}.alert:last-child{border-bottom:0}.alert-head{display:flex;justify-content:space-between;gap:10px}.alert-title{font-size:11px;font-weight:700}.alert-meta,.alert-body{margin-top:4px;color:var(--muted);font-size:9px;line-height:1.5}
     .pill{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:700;white-space:nowrap}.pill-red{color:var(--red);background:var(--red-light)}.pill-amber{color:var(--amber);background:var(--amber-light)}.pill-green{color:var(--green);background:var(--green-light)}.pill-blue{color:#2078a9;background:var(--blue-light)}
@@ -99,13 +99,13 @@
     </header>
     <section class="content">
       <div class="hero"><h3 id="welcome">Operations Center</h3><p>Today’s cleaning operations, upcoming work, alerts, activity, and business performance in one place.</p></div>
-      <section class="stats">
-        <article class="card"><div class="card-label">Today's Turnovers</div><div class="card-value" id="todayCount">0</div><div class="card-note">Scheduled today</div></article>
-        <article class="card"><div class="card-label">Overdue Cleans</div><div class="card-value" id="overdueCount">0</div><div class="card-note">Past due and incomplete</div></article>
-        <article class="card"><div class="card-label">Needs Reassignment</div><div class="card-value" id="reassignCount">0</div><div class="card-note">Cleaner declined</div></article>
-        <article class="card"><div class="card-label">Open Issues</div><div class="card-value" id="issueCount">0</div><div class="card-note">Unresolved reports</div></article>
-        <article class="card"><div class="card-label">Guest Blockers</div><div class="card-value" id="blockerCount">0</div><div class="card-note">Prevent guest readiness</div></article>
-        <article class="card"><div class="card-label">Low / Red Inventory</div><div class="card-value" id="inventoryCount">0</div><div class="card-note">Needs restocking</div></article>
+      <section class="stats" aria-label="Dashboard shortcuts">
+        <a class="card stat-link" href="#today-turnovers" aria-label="View today's turnovers"><div class="card-label">Today's Turnovers</div><div class="card-value" id="todayCount">0</div><div class="card-note">Scheduled today · View</div></a>
+        <a class="card stat-link" href="#attention-required" aria-label="View overdue cleans"><div class="card-label">Overdue Cleans</div><div class="card-value" id="overdueCount">0</div><div class="card-note">Past due and incomplete · View</div></a>
+        <a class="card stat-link" href="#reassignment-queue" aria-label="View turnovers needing reassignment"><div class="card-label">Needs Reassignment</div><div class="card-value" id="reassignCount">0</div><div class="card-note">Cleaner declined · View</div></a>
+        <a class="card stat-link" href="#issue-queue" aria-label="View open issues"><div class="card-label">Open Issues</div><div class="card-value" id="issueCount">0</div><div class="card-note">Unresolved reports · View</div></a>
+        <a class="card stat-link" href="#issue-queue" aria-label="View guest blockers"><div class="card-label">Guest Blockers</div><div class="card-value" id="blockerCount">0</div><div class="card-note">Prevent guest readiness · View</div></a>
+        <a class="card stat-link" href="#inventory-alerts" aria-label="View low inventory"><div class="card-label">Low / Red Inventory</div><div class="card-value" id="inventoryCount">0</div><div class="card-note">Needs restocking · View</div></a>
       </section>
       <div id="dashboardContent" class="loading"><div class="spinner"></div>Loading operations</div>
     </section>
@@ -779,7 +779,7 @@ function render() {
 
   document.getElementById("dashboardContent").className = "";
   document.getElementById("dashboardContent").innerHTML = `
-    <section class="panel attention-panel">
+    <section class="panel attention-panel dashboard-anchor" id="attention-required">
       <div class="panel-header">
         <h4 class="panel-title">Attention Required</h4>
         <a class="panel-link" href="turnovers.html?filter=overdue">View overdue turnovers</a>
@@ -789,7 +789,7 @@ function render() {
 
     <div class="grid">
       <div class="section-stack">
-        <section class="panel compact-panel">
+        <section class="panel compact-panel dashboard-anchor" id="today-turnovers">
           <div class="panel-header">
             <h4 class="panel-title">Today's Turnovers</h4>
             <a class="panel-link" href="turnovers.html">View all</a>
@@ -805,11 +805,20 @@ function render() {
           ${reviewsHtml}
         </section>
 
-        <section class="panel compact-panel">
+        <section class="panel compact-panel dashboard-anchor" id="issue-queue">
           <div class="panel-header">
             <h4 class="panel-title">Issue Queue</h4>
+            <span class="panel-link">Open reports and guest blockers</span>
           </div>
           ${issueHtml}
+        </section>
+
+        <section class="panel compact-panel dashboard-anchor" id="reassignment-queue">
+          <div class="panel-header">
+            <h4 class="panel-title">Reassignment Queue</h4>
+            <a class="panel-link" href="turnovers.html?filter=reassignment">Open turnover list</a>
+          </div>
+          ${reassignHtml}
         </section>
       </div>
 
@@ -822,7 +831,7 @@ function render() {
           ${cleanerStatusHtml}
         </section>
 
-        <section class="panel compact-panel">
+        <section class="panel compact-panel dashboard-anchor" id="inventory-alerts">
           <div class="panel-header">
             <h4 class="panel-title">Inventory Alerts</h4>
           </div>
