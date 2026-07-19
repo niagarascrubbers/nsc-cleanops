@@ -650,7 +650,7 @@
       <div class="sidebar-footer">
         <div class="user-card" style="margin-bottom:12px">
           <div class="user-avatar">UP</div>
-          <div><div class="user-name">Uttam Preet</div><div class="user-role">Administrator</div></div>
+          <div><div class="user-name" id="sidebarUserName">Uttam Preet</div><div class="user-role" id="sidebarUserRole">Administrator</div></div>
         </div>
         <button id="logoutButton" type="button" style="width:100%;min-height:40px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;font:inherit;font-size:11px;font-weight:600;cursor:pointer">Sign Out</button>
       </div>
@@ -659,7 +659,7 @@
     <main class="main">
       <header class="topbar">
         <div class="breadcrumb"><strong>Turnovers</strong></div>
-        <button class="icon-button" id="logoutButton" type="button" title="Sign out">OUT</button>
+        <button class="icon-button" id="topbarLogoutButton" type="button" title="Sign out">OUT</button>
       </header>
 
       <div class="page">
@@ -1751,13 +1751,16 @@
       if (!guestCheckinInput.value) guestCheckinInput.value = `${date}T16:00`;
     });
 
-    document.getElementById("logoutButton").addEventListener("click", async () => {
+    async function handleLogout() {
       try {
         await db.auth.signOut();
       } finally {
         window.location.href = "login.html";
       }
-    });
+    }
+
+    document.getElementById("logoutButton")?.addEventListener("click", handleLogout);
+    document.getElementById("topbarLogoutButton")?.addEventListener("click", handleLogout);
 
     initialize();
   </script>
