@@ -198,6 +198,28 @@
       font-size: 10px;
     }
 
+    .sidebar-signout {
+      width: 100%;
+      min-height: 42px;
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.17);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      transition: 0.18s ease;
+    }
+
+    .sidebar-signout:hover {
+      background: rgba(255, 255, 255, 0.11);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
     .main {
       grid-column: 2;
       min-width: 0;
@@ -1198,28 +1220,212 @@
         width: 100%;
       }
     }
-  </style>
+  
+
+/* =========================================================
+   SHARED MANAGER SIDEBAR — IDENTICAL ACROSS ALL PAGES
+========================================================= */
+.app-shell,
+.shell {
+  grid-template-columns: 250px minmax(0, 1fr) !important;
+}
+
+.sidebar {
+  position: fixed !important;
+  inset: 0 auto 0 0 !important;
+  width: 250px !important;
+  height: 100vh !important;
+  padding: 26px 20px !important;
+  background: linear-gradient(180deg, #071f35, #0b2f4f) !important;
+  color: #ffffff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border-right: 0 !important;
+  z-index: 40 !important;
+  overflow: hidden !important;
+}
+
+.sidebar .brand {
+  display: block !important;
+  min-height: 0 !important;
+  padding: 0 8px 24px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.sidebar .brand h1,
+.sidebar .brand .brand-title,
+.sidebar .brand .brand-name {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+
+.sidebar .brand p,
+.sidebar .brand .brand-subtitle {
+  margin: 6px 0 0 !important;
+  color: #afc3d2 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+}
+
+.sidebar .brand-mark,
+.sidebar .nav-section-label,
+.sidebar .nav-label,
+.sidebar .nav-icon,
+.sidebar .user-avatar {
+  display: none !important;
+}
+
+.sidebar .manager-nav,
+.sidebar .nav,
+.sidebar .sidebar-nav {
+  display: grid !important;
+  gap: 7px !important;
+  margin: 24px 0 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.sidebar .manager-nav a,
+.sidebar .nav a,
+.sidebar .sidebar-nav a,
+.sidebar a.nav-link {
+  display: block !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 11px 13px !important;
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #d5e2eb !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  font-weight: 400 !important;
+  text-decoration: none !important;
+}
+
+.sidebar .manager-nav a:hover,
+.sidebar .manager-nav a.active,
+.sidebar .nav a:hover,
+.sidebar .nav a.active,
+.sidebar .sidebar-nav a:hover,
+.sidebar .sidebar-nav a.active,
+.sidebar a.nav-link:hover,
+.sidebar a.nav-link.active {
+  background: rgba(47, 143, 202, 0.20) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.sidebar .manager-sidebar-footer,
+.sidebar .sidebar-footer {
+  margin-top: auto !important;
+  padding: 16px 0 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.sidebar .manager-user,
+.sidebar .user-card {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 4px 14px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.sidebar .manager-user-name,
+.sidebar .user-name {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+}
+
+.sidebar .manager-user-role,
+.sidebar .user-role {
+  margin: 2px 0 0 !important;
+  color: #9fb6c7 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 10px !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+}
+
+.sidebar .manager-signout,
+.sidebar .logout,
+.sidebar .sign-out-btn,
+.sidebar .sidebar-signout,
+.sidebar #logoutButton,
+.sidebar #signOutButton {
+  width: 100% !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.20) !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #ffffff !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+}
+
+.sidebar .manager-signout:hover,
+.sidebar .logout:hover,
+.sidebar .sign-out-btn:hover,
+.sidebar .sidebar-signout:hover,
+.sidebar #logoutButton:hover,
+.sidebar #signOutButton:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.main {
+  grid-column: 2 !important;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    padding: 26px 20px !important;
+  }
+}
+
+</style>
 </head>
 
 <body>
   <div class="app-shell">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-mark">NSC</div>
-        <div><h1 class="brand-title">NSC CleanOps</h1><div class="brand-subtitle">Operations Management</div></div>
+        <h1>NSC CleanOps</h1>
+        <p>Operations Management</p>
       </div>
-      <nav class="sidebar-nav" aria-label="Manager navigation">
-        <div class="nav-section-label">Workspace</div>
-        <a class="nav-link " href="manager-dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
-        <a class="nav-link active" href="properties.html"><span class="nav-icon">▦</span><span>Properties</span></a>
-        <a class="nav-link " href="finance.html"><span class="nav-icon">$</span><span>Finance</span></a>
+
+      <nav class="manager-nav" aria-label="Manager navigation">
+        <a href="manager-dashboard.html">Dashboard</a>
+        <a class="active" href="properties.html">Properties</a>
+        <a href="finance.html">Finance</a>
       </nav>
-      <div class="sidebar-footer">
-        <div class="user-card" style="margin-bottom:12px">
-          <div class="user-avatar">UP</div>
-          <div><div class="user-name">Uttam Preet</div><div class="user-role">Administrator</div></div>
+
+      <div class="manager-sidebar-footer">
+        <div class="manager-user">
+          <div class="manager-user-name">Uttam Preet</div>
+          <div class="manager-user-role">Administrator</div>
         </div>
-        <button id="logoutButton" type="button" style="width:100%;min-height:40px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;font:inherit;font-size:11px;font-weight:600;cursor:pointer">Sign Out</button>
+        <button class="manager-signout" id="logoutButton" type="button">Sign Out</button>
       </div>
     </aside>
 
@@ -1232,9 +1438,7 @@
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-button" id="logoutButton" type="button" title="Sign out">
-            ↪
-          </button>
+          <a class="icon-button" href="properties.html" title="Back to properties" aria-label="Back to properties">←</a>
         </div>
       </header>
 
@@ -1633,6 +1837,13 @@
 
     function getPropertyId() {
       const params = new URLSearchParams(window.location.search);
+      const requestedTab = params.get("tab");
+      const allowedTabs = ["overview", "rooms", "checklists", "inventory", "photos", "issues", "reports", "settings"];
+
+      if (allowedTabs.includes(requestedTab)) {
+        activeTab = requestedTab;
+      }
+
       return params.get("id");
     }
 
@@ -1815,12 +2026,16 @@
           </button>
         </section>
 
-        <nav class="tab-bar" aria-label="Property modules">
-          <button class="tab-link active" type="button" data-tab="overview">Property Info</button>
+        <nav class="tab-bar" aria-label="Property workspace">
+          <button class="tab-link active" type="button" data-tab="overview">Overview</button>
           <button class="tab-link" type="button" data-tab="rooms">Rooms</button>
+          <button class="tab-link" type="button" id="propertyTurnoversButton">Turnovers</button>
           <button class="tab-link" type="button" data-tab="checklists">Checklists</button>
+          <button class="tab-link" type="button" data-workspace-module="inventory">Inventory</button>
+          <button class="tab-link" type="button" data-workspace-module="photos">Photos</button>
+          <button class="tab-link" type="button" data-workspace-module="issues">Issues</button>
+          <button class="tab-link" type="button" data-workspace-module="reports">Reports</button>
           <button class="tab-link" type="button" data-tab="settings">Settings</button>
-          <button class="tab-link" type="button" id="propertyTurnoversButton">View Turnovers ↗</button>
         </nav>
 
         <section class="tab-panel" id="overviewPanel" data-panel="overview">
@@ -1829,7 +2044,7 @@
               <div class="card-header">
                 <h2 class="card-title">Property Overview</h2>
                 <p class="card-description">
-                  Core location, access and client information.
+                  Property details, access information and operating setup.
                 </p>
               </div>
 
@@ -2037,6 +2252,66 @@
           </div>
         </section>
 
+        <section class="tab-panel" id="inventoryPanel" data-panel="inventory" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Inventory</h2>
+              <p class="module-description">Review property stock levels and open the turnover workspace for quantity updates.</p>
+            </div>
+          </div>
+          <div class="card"><div class="card-body"><div class="empty-state">
+            <div class="empty-icon">▤</div>
+            <h3 class="empty-title">Property inventory workspace</h3>
+            <p class="empty-text">Inventory records remain connected to this property. Use a turnover record to complete live cleaner quantity checks.</p>
+            <button class="button button-primary" type="button" data-open-property-turnovers>Open Property Turnovers</button>
+          </div></div></div>
+        </section>
+
+        <section class="tab-panel" id="photosPanel" data-panel="photos" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Photos</h2>
+              <p class="module-description">Access completion, task and issue photos through this property's turnover records.</p>
+            </div>
+          </div>
+          <div class="card"><div class="card-body"><div class="empty-state">
+            <div class="empty-icon">◫</div>
+            <h3 class="empty-title">Property photo history</h3>
+            <p class="empty-text">Photos are tied to individual turnovers so the original task and cleaner context is preserved.</p>
+            <button class="button button-primary" type="button" data-open-property-turnovers>Open Property Turnovers</button>
+          </div></div></div>
+        </section>
+
+        <section class="tab-panel" id="issuesPanel" data-panel="issues" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Issues</h2>
+              <p class="module-description">Review property issues within the turnover where each report was submitted.</p>
+            </div>
+          </div>
+          <div class="card"><div class="card-body"><div class="empty-state">
+            <div class="empty-icon">!</div>
+            <h3 class="empty-title">Property issue records</h3>
+            <p class="empty-text">Issue reports remain attached to their turnover, room, cleaner and supporting photos.</p>
+            <button class="button button-primary" type="button" data-open-property-turnovers>Open Property Turnovers</button>
+          </div></div></div>
+        </section>
+
+        <section class="tab-panel" id="reportsPanel" data-panel="reports" hidden>
+          <div class="module-header">
+            <div>
+              <h2 class="module-title">Reports</h2>
+              <p class="module-description">Use property turnover records as the source for completion and operational reporting.</p>
+            </div>
+          </div>
+          <div class="card"><div class="card-body"><div class="empty-state">
+            <div class="empty-icon">▥</div>
+            <h3 class="empty-title">Property reporting workspace</h3>
+            <p class="empty-text">Open the property's turnovers to review completed tasks, photos, inventory checks and issue history.</p>
+            <button class="button button-primary" type="button" data-open-property-turnovers>Open Property Turnovers</button>
+          </div></div></div>
+        </section>
+
         <section class="tab-panel" id="settingsPanel" data-panel="settings" hidden>
           <div class="module-header">
             <div>
@@ -2128,6 +2403,18 @@
       }
 
 
+      document.querySelectorAll("[data-workspace-module]").forEach((button) => {
+        button.addEventListener("click", () => switchTab(button.dataset.workspaceModule));
+      });
+
+      document.querySelectorAll("[data-open-property-turnovers]").forEach((button) => {
+        button.addEventListener("click", () => {
+          window.location.href =
+            `turnovers.html?property_id=${encodeURIComponent(currentProperty.id)}`;
+        });
+      });
+
+
       document
         .getElementById("addRoomButton")
         .addEventListener("click", () => openRoomDrawer());
@@ -2144,8 +2431,9 @@
     function switchTab(tabName) {
       activeTab = tabName;
 
-      document.querySelectorAll("[data-tab]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.tab === tabName);
+      document.querySelectorAll("[data-tab], [data-workspace-module]").forEach((button) => {
+        const buttonTab = button.dataset.tab || button.dataset.workspaceModule;
+        button.classList.toggle("active", buttonTab === tabName);
       });
 
       document.querySelectorAll("[data-panel]").forEach((panel) => {

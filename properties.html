@@ -1023,28 +1023,212 @@
         display: none;
       }
     }
-  </style>
+  
+
+/* =========================================================
+   SHARED MANAGER SIDEBAR — IDENTICAL ACROSS ALL PAGES
+========================================================= */
+.app-shell,
+.shell {
+  grid-template-columns: 250px minmax(0, 1fr) !important;
+}
+
+.sidebar {
+  position: fixed !important;
+  inset: 0 auto 0 0 !important;
+  width: 250px !important;
+  height: 100vh !important;
+  padding: 26px 20px !important;
+  background: linear-gradient(180deg, #071f35, #0b2f4f) !important;
+  color: #ffffff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border-right: 0 !important;
+  z-index: 40 !important;
+  overflow: hidden !important;
+}
+
+.sidebar .brand {
+  display: block !important;
+  min-height: 0 !important;
+  padding: 0 8px 24px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.sidebar .brand h1,
+.sidebar .brand .brand-title,
+.sidebar .brand .brand-name {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+
+.sidebar .brand p,
+.sidebar .brand .brand-subtitle {
+  margin: 6px 0 0 !important;
+  color: #afc3d2 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+}
+
+.sidebar .brand-mark,
+.sidebar .nav-section-label,
+.sidebar .nav-label,
+.sidebar .nav-icon,
+.sidebar .user-avatar {
+  display: none !important;
+}
+
+.sidebar .manager-nav,
+.sidebar .nav,
+.sidebar .sidebar-nav {
+  display: grid !important;
+  gap: 7px !important;
+  margin: 24px 0 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.sidebar .manager-nav a,
+.sidebar .nav a,
+.sidebar .sidebar-nav a,
+.sidebar a.nav-link {
+  display: block !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 11px 13px !important;
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #d5e2eb !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  font-weight: 400 !important;
+  text-decoration: none !important;
+}
+
+.sidebar .manager-nav a:hover,
+.sidebar .manager-nav a.active,
+.sidebar .nav a:hover,
+.sidebar .nav a.active,
+.sidebar .sidebar-nav a:hover,
+.sidebar .sidebar-nav a.active,
+.sidebar a.nav-link:hover,
+.sidebar a.nav-link.active {
+  background: rgba(47, 143, 202, 0.20) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.sidebar .manager-sidebar-footer,
+.sidebar .sidebar-footer {
+  margin-top: auto !important;
+  padding: 16px 0 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.sidebar .manager-user,
+.sidebar .user-card {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 4px 14px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.sidebar .manager-user-name,
+.sidebar .user-name {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+}
+
+.sidebar .manager-user-role,
+.sidebar .user-role {
+  margin: 2px 0 0 !important;
+  color: #9fb6c7 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 10px !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+}
+
+.sidebar .manager-signout,
+.sidebar .logout,
+.sidebar .sign-out-btn,
+.sidebar .sidebar-signout,
+.sidebar #logoutButton,
+.sidebar #signOutButton {
+  width: 100% !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.20) !important;
+  border-radius: 9px !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #ffffff !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+}
+
+.sidebar .manager-signout:hover,
+.sidebar .logout:hover,
+.sidebar .sign-out-btn:hover,
+.sidebar .sidebar-signout:hover,
+.sidebar #logoutButton:hover,
+.sidebar #signOutButton:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.main {
+  grid-column: 2 !important;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    padding: 26px 20px !important;
+  }
+}
+
+</style>
 </head>
 
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-mark">NSC</div>
-        <div><h1 class="brand-title">NSC CleanOps</h1><div class="brand-subtitle">Operations Management</div></div>
+        <h1>NSC CleanOps</h1>
+        <p>Operations Management</p>
       </div>
-      <nav class="sidebar-nav" aria-label="Manager navigation">
-        <div class="nav-section-label">Workspace</div>
-        <a class="nav-link " href="manager-dashboard.html"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
-        <a class="nav-link active" href="properties.html"><span class="nav-icon">▦</span><span>Properties</span></a>
-        <a class="nav-link " href="finance.html"><span class="nav-icon">$</span><span>Finance</span></a>
+
+      <nav class="manager-nav" aria-label="Manager navigation">
+        <a href="manager-dashboard.html">Dashboard</a>
+        <a class="active" href="properties.html">Properties</a>
+        <a href="finance.html">Finance</a>
       </nav>
-      <div class="sidebar-footer">
-        <div class="user-card" style="margin-bottom:12px">
-          <div class="user-avatar">UP</div>
-          <div><div class="user-name">Uttam Preet</div><div class="user-role">Administrator</div></div>
+
+      <div class="manager-sidebar-footer">
+        <div class="manager-user">
+          <div class="manager-user-name">Uttam Preet</div>
+          <div class="manager-user-role">Administrator</div>
         </div>
-        <button id="logoutButton" type="button" style="width:100%;min-height:40px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;font:inherit;font-size:11px;font-weight:600;cursor:pointer">Sign Out</button>
+        <button class="manager-signout" id="logoutButton" type="button">Sign Out</button>
       </div>
     </aside>
 
