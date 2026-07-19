@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Dashboard | NSC CleanOps</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,10 +68,359 @@
     @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
     @media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{display:none}.main{grid-column:1}.content,.topbar{padding-left:18px;padding-right:18px}.stats{grid-template-columns:1fr}}
   </style>
+<style>
+
+/* =========================================================
+   NSC CLEANOPS — UNIVERSAL MOBILE LAYOUT FIX
+========================================================= */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.nsc-mobile-menu {
+  display: none;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--border, #dfe8ef);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--text, #17324d);
+  font-size: 20px;
+  line-height: 1;
+  place-items: center;
+  cursor: pointer;
+}
+
+.nsc-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 890;
+  display: none;
+  background: rgba(7, 31, 53, 0.52);
+  backdrop-filter: blur(2px);
+}
+
+.nsc-sidebar-backdrop.open {
+  display: block;
+}
+
+@media (max-width: 780px) {
+  body.sidebar-open,
+  body.nsc-menu-open {
+    overflow: hidden;
+  }
+
+  .app-shell,
+  .shell {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .sidebar {
+    display: flex !important;
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    z-index: 900 !important;
+    width: min(84vw, 280px) !important;
+    max-width: 280px !important;
+    height: 100dvh !important;
+    padding: 22px 16px !important;
+    transform: translateX(-105%) !important;
+    transition: transform .24s ease !important;
+    overflow-y: auto !important;
+    box-shadow: 18px 0 48px rgba(7, 31, 53, .25) !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  .main,
+  .main-content {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .topbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    width: 100% !important;
+    min-height: 68px !important;
+    padding: 11px 14px !important;
+    gap: 11px !important;
+    background: rgba(255,255,255,.97) !important;
+  }
+
+  .topbar-left,
+  .topbar > div:first-child {
+    min-width: 0;
+  }
+
+  .nsc-mobile-menu,
+  .mobile-menu,
+  .mobile-menu-btn {
+    display: inline-grid !important;
+    place-items: center !important;
+  }
+
+  .topbar-title,
+  .topbar h1,
+  .topbar h2 {
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+  }
+
+  .topbar-subtitle,
+  .topbar p,
+  .topbar span:not(.live-time):not(.live-date) {
+    font-size: 10px !important;
+    line-height: 1.45 !important;
+  }
+
+  .live-clock,
+  .dashboard-clock {
+    display: none !important;
+  }
+
+  .content,
+  .page {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 20px 14px 34px !important;
+  }
+
+  .hero h3,
+  .page-title,
+  .page-heading h2,
+  .property-title {
+    font-size: clamp(25px, 8vw, 32px) !important;
+    line-height: 1.16 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .hero p,
+  .page-description,
+  .page-heading p,
+  .property-meta {
+    font-size: 12px !important;
+    line-height: 1.65 !important;
+  }
+
+  .page-header,
+  .property-header,
+  .module-header,
+  .panel-header {
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .page-header,
+  .property-header,
+  .module-header {
+    flex-direction: column !important;
+  }
+
+  .stats,
+  .stats-grid,
+  .report-kpi-grid,
+  .payroll-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .stat-card,
+  .stats .card,
+  .report-kpi-card {
+    min-width: 0 !important;
+    min-height: 112px !important;
+    padding: 14px !important;
+    border-radius: 13px !important;
+  }
+
+  .card-value,
+  .stat-number,
+  .stat-value,
+  .report-kpi-value {
+    font-size: 23px !important;
+  }
+
+  .card-label,
+  .stat-label,
+  .report-kpi-label {
+    font-size: 8px !important;
+    line-height: 1.4 !important;
+  }
+
+  .card-note,
+  .stat-note,
+  .report-kpi-note {
+    font-size: 8px !important;
+    line-height: 1.45 !important;
+  }
+
+  .grid,
+  .overview-grid,
+  .two-column-grid,
+  .details-grid,
+  .form-grid,
+  .report-grid,
+  .report-toolbar,
+  .toolbar,
+  .filter-row,
+  .rooms-toolbar {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .panel,
+  .card {
+    max-width: 100% !important;
+  }
+
+  .panel,
+  .card-body,
+  .card-header {
+    overflow-wrap: anywhere;
+  }
+
+  .panel {
+    padding: 15px !important;
+  }
+
+  .finance-tabs,
+  .tab-bar,
+  .tabs,
+  [role="tablist"] {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 8px !important;
+    padding: 5px !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .finance-tabs::-webkit-scrollbar,
+  .tab-bar::-webkit-scrollbar,
+  .tabs::-webkit-scrollbar,
+  [role="tablist"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  .finance-tab,
+  .tab-link,
+  [role="tab"] {
+    flex: 0 0 auto !important;
+    min-height: 42px !important;
+    white-space: nowrap !important;
+  }
+
+  .table-wrap,
+  .table-responsive,
+  .data-table-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table,
+  table {
+    font-size: 10px !important;
+  }
+
+  .button,
+  .btn,
+  .primary-btn,
+  .secondary-btn,
+  .danger-btn,
+  .table-action-btn {
+    min-height: 42px !important;
+  }
+
+  .page-header > .button,
+  .module-header > .button,
+  .property-header .button,
+  .form-actions .button,
+  .form-actions .primary-btn,
+  .form-actions .secondary-btn {
+    width: 100% !important;
+  }
+
+  .form-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  input,
+  select,
+  textarea,
+  .form-control,
+  .control,
+  .filter-select {
+    max-width: 100% !important;
+    font-size: 16px !important;
+  }
+
+  .drawer,
+  .modal-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  .notification {
+    grid-template-columns: 9px minmax(0, 1fr) !important;
+  }
+
+  .notification-time {
+    grid-column: 2 !important;
+    white-space: normal !important;
+  }
+
+  .alert-head,
+  .summary-row,
+  .inventory-line,
+  .cleaner-row {
+    align-items: flex-start !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .content,
+  .page {
+    padding-left: 11px !important;
+    padding-right: 11px !important;
+  }
+
+  .stats,
+  .stats-grid,
+  .report-kpi-grid,
+  .payroll-summary-grid {
+    gap: 8px !important;
+  }
+
+  .stat-card,
+  .stats .card,
+  .report-kpi-card {
+    padding: 12px !important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="shell">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="brand"><h1>NSC CleanOps</h1><p>Operations Management</p></div>
     <nav class="nav" aria-label="Manager navigation">
       <a class="active" href="manager-dashboard.html">Dashboard</a>
@@ -86,8 +435,10 @@
       <button class="logout" id="logoutButton" type="button">Sign Out</button>
     </div>
   </aside>
+  <div class="nsc-sidebar-backdrop" id="nscSidebarBackdrop"></div>
   <main class="main">
     <header class="topbar">
+      <button class="nsc-mobile-menu" id="nscMobileMenuButton" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
       <div>
         <h2>Manager Dashboard</h2>
         <span>Niagara Scrubbers Cleaning Inc.</span>
@@ -924,5 +1275,39 @@ document.getElementById("logoutButton").addEventListener("click", async () => {
   }
 })();
 </script>
+
+<script>
+(() => {
+  const sidebar = document.getElementById('sidebar') || document.querySelector('.sidebar');
+  const button = document.getElementById('nscMobileMenuButton');
+  const backdrop = document.getElementById('nscSidebarBackdrop');
+  if (!sidebar || !button || !backdrop) return;
+
+  const openMenu = () => {
+    sidebar.classList.add('open');
+    backdrop.classList.add('open');
+    document.body.classList.add('nsc-menu-open');
+    button.setAttribute('aria-expanded', 'true');
+  };
+
+  const closeMenu = () => {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('open');
+    document.body.classList.remove('nsc-menu-open');
+    button.setAttribute('aria-expanded', 'false');
+  };
+
+  button.addEventListener('click', () => sidebar.classList.contains('open') ? closeMenu() : openMenu());
+  backdrop.addEventListener('click', closeMenu);
+  sidebar.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeMenu();
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 780) closeMenu();
+  });
+})();
+</script>
+
 </body>
 </html>
