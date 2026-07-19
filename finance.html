@@ -488,6 +488,169 @@
       line-height: 1.7;
     }
 
+
+/* =========================================================
+   EXPENSE FORMS AND TABLE
+========================================================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field.full-width {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 11px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: #ffffff;
+  color: var(--text);
+  outline: none;
+}
+
+.field textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(47, 143, 202, 0.12);
+}
+
+.field input[readonly] {
+  background: #f6f8fa;
+  color: var(--muted);
+}
+
+.field-help {
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn,
+.table-action-btn {
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-btn {
+  border: 1px solid var(--navy-900);
+  background: var(--navy-900);
+  color: #ffffff;
+}
+
+.secondary-btn,
+.table-action-btn {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+}
+
+.danger-btn {
+  border: 1px solid #efcccc;
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.form-message {
+  min-height: 18px;
+  margin-top: 12px;
+  font-size: 9px;
+}
+
+.form-message.success { color: var(--green); }
+.form-message.error { color: var(--red); }
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+  font-size: 9px;
+}
+
+.data-table th {
+  color: var(--muted);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.45px;
+}
+
+.data-table .number-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table-empty {
+  padding: 34px !important;
+  color: var(--muted);
+  text-align: center !important;
+}
+
+.table-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 650px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full-width {
+    grid-column: auto;
+  }
+}
+
     /* =========================================================
        MOBILE
     ========================================================= */
@@ -909,26 +1072,230 @@
 
         </section>
 
-        <!-- ===================================================
-             EXPENSES PLACEHOLDER
-        ==================================================== -->
-        <section
-          class="tab-panel"
-          id="expensesPanel"
-        >
-          <section class="panel placeholder-panel">
-            <div class="placeholder-inner">
-              <div class="placeholder-icon">🧾</div>
-              <h3>Expenses</h3>
-              <p>
-                In Part 2, this section will receive the complete expense form,
-                receipt upload, history table, edit controls and delete controls.
-              </p>
-            </div>
-          </section>
-        </section>
+<!-- ===================================================
+     EXPENSES TAB
+==================================================== -->
+<section class="tab-panel" id="expensesPanel">
 
-        <!-- ===================================================
+  <div class="stats-grid">
+    <article class="stat-card">
+      <div class="stat-label">Expenses Today</div>
+      <div class="stat-value" id="expenseTodayTotal">$0.00</div>
+      <div class="stat-note">Before HST</div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-label">Expenses This Week</div>
+      <div class="stat-value" id="expenseWeekTotal">$0.00</div>
+      <div class="stat-note">Before HST</div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-label">Expenses This Month</div>
+      <div class="stat-value" id="expenseMonthTotal">$0.00</div>
+      <div class="stat-note">Before HST</div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-label">HST Paid This Month</div>
+      <div class="stat-value" id="expenseMonthHst">$0.00</div>
+      <div class="stat-note">Input tax credits</div>
+    </article>
+  </div>
+
+  <div class="two-column-grid">
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h3 class="panel-title" id="expenseFormTitle">Add Expense</h3>
+          <p class="panel-subtitle">Record a business expense and attach a receipt.</p>
+        </div>
+      </div>
+
+      <form id="expenseForm" novalidate>
+        <input type="hidden" id="expenseId">
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="expenseDate">Expense Date *</label>
+            <input type="date" id="expenseDate" required>
+          </div>
+
+          <div class="field">
+            <label for="expenseVendor">Vendor *</label>
+            <input type="text" id="expenseVendor" maxlength="120" placeholder="Example: Home Depot" required>
+          </div>
+
+          <div class="field">
+            <label for="expenseCategory">Category *</label>
+            <select id="expenseCategory" required>
+              <option value="">Select category</option>
+              <option>Cleaning Supplies</option>
+              <option>Equipment</option>
+              <option>Vehicle</option>
+              <option>Fuel</option>
+              <option>Insurance</option>
+              <option>Payroll</option>
+              <option>Software</option>
+              <option>Marketing</option>
+              <option>Office</option>
+              <option>Utilities</option>
+              <option>Professional Fees</option>
+              <option>Training</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="expenseProperty">Property</label>
+            <select id="expenseProperty">
+              <option value="">Company-wide / No property</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="expenseBeforeHst">Expense Before HST *</label>
+            <input type="number" id="expenseBeforeHst" min="0" step="0.01" placeholder="0.00" required>
+          </div>
+
+          <div class="field">
+            <label for="expenseHstPaid">HST Paid</label>
+            <input type="number" id="expenseHstPaid" min="0" step="0.01" placeholder="0.00">
+          </div>
+
+          <div class="field">
+            <label for="expenseReceiptTotal">Total Receipt</label>
+            <input type="number" id="expenseReceiptTotal" step="0.01" value="0.00" readonly>
+          </div>
+
+          <div class="field">
+            <label for="expensePaymentMethod">Payment Method *</label>
+            <select id="expensePaymentMethod" required>
+              <option value="">Select method</option>
+              <option>Business Credit Card</option>
+              <option>Business Debit Card</option>
+              <option>E-Transfer</option>
+              <option>Cash</option>
+              <option>Personal Card - Reimbursement</option>
+              <option>Cheque</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field full-width">
+            <label for="expenseNotes">Notes</label>
+            <textarea id="expenseNotes" rows="4" maxlength="1000" placeholder="Optional expense details"></textarea>
+          </div>
+
+          <div class="field full-width">
+            <label for="expenseReceipt">Receipt Upload</label>
+            <input type="file" id="expenseReceipt" accept="image/*,.pdf">
+            <div class="field-help" id="receiptFileHelp">Accepted formats: images and PDF.</div>
+          </div>
+        </div>
+
+        <div class="form-message" id="expenseFormMessage"></div>
+
+        <div class="form-actions">
+          <button type="button" class="secondary-btn" id="cancelExpenseEdit" hidden>Cancel Edit</button>
+          <button type="submit" class="primary-btn" id="saveExpenseButton">Save Expense</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h3 class="panel-title">Expense Filters</h3>
+          <p class="panel-subtitle">Search and narrow the expense history.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field full-width">
+          <label for="expenseSearch">Search</label>
+          <input type="search" id="expenseSearch" placeholder="Search vendor, category, property or notes">
+        </div>
+
+        <div class="field">
+          <label for="expenseFilterCategory">Category</label>
+          <select id="expenseFilterCategory">
+            <option value="">All categories</option>
+            <option>Cleaning Supplies</option>
+            <option>Equipment</option>
+            <option>Vehicle</option>
+            <option>Fuel</option>
+            <option>Insurance</option>
+            <option>Payroll</option>
+            <option>Software</option>
+            <option>Marketing</option>
+            <option>Office</option>
+            <option>Utilities</option>
+            <option>Professional Fees</option>
+            <option>Training</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="expenseFilterProperty">Property</label>
+          <select id="expenseFilterProperty">
+            <option value="">All properties</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="expenseFilterFrom">From</label>
+          <input type="date" id="expenseFilterFrom">
+        </div>
+
+        <div class="field">
+          <label for="expenseFilterTo">To</label>
+          <input type="date" id="expenseFilterTo">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-btn" id="clearExpenseFilters">Clear Filters</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <h3 class="panel-title">Expense History</h3>
+        <p class="panel-subtitle">Saved business expenses and attached receipts.</p>
+      </div>
+      <span class="status-pill blue" id="expenseRecordCount">0 Records</span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Vendor</th>
+            <th>Category</th>
+            <th>Property</th>
+            <th class="number-cell">Before HST</th>
+            <th class="number-cell">HST</th>
+            <th class="number-cell">Total</th>
+            <th>Receipt</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="expenseTableBody">
+          <tr>
+            <td colspan="9" class="table-empty">Loading expenses...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+
+<!-- ===================================================
              REVENUE PLACEHOLDER
         ==================================================== -->
         <section
@@ -970,102 +1337,515 @@
     </main>
   </div>
 
-  <script>
-    // =========================================================
-    // LIVE CLOCK
-    // =========================================================
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
 
-    function updateLiveClock() {
-      const now = new Date();
+<script>
+  "use strict";
 
-      document.getElementById("liveTime").textContent =
-        new Intl.DateTimeFormat("en-CA", {
-          hour: "numeric",
-          minute: "2-digit",
-          second: "2-digit"
-        }).format(now);
+  const db = window.nscSupabase || window.supabaseClient || null;
+  let currentProfile = null;
+  let expenses = [];
+  let properties = [];
 
-      document.getElementById("liveDate").textContent =
-        new Intl.DateTimeFormat("en-CA", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          year: "numeric"
-        }).format(now);
+  const moneyFormat = new Intl.NumberFormat("en-CA", {
+    style: "currency",
+    currency: "CAD"
+  });
+
+  const money = value => moneyFormat.format(Number(value || 0));
+
+  const esc = value => String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+  function localDateKey(date = new Date()) {
+    return [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0")
+    ].join("-");
+  }
+
+  function updateLiveClock() {
+    const now = new Date();
+
+    document.getElementById("liveTime").textContent =
+      new Intl.DateTimeFormat("en-CA", {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit"
+      }).format(now);
+
+    document.getElementById("liveDate").textContent =
+      new Intl.DateTimeFormat("en-CA", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      }).format(now);
+  }
+
+  updateLiveClock();
+  setInterval(updateLiveClock, 1000);
+
+  const financeTabs = document.querySelectorAll(".finance-tab");
+  const tabPanels = document.querySelectorAll(".tab-panel");
+
+  financeTabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      financeTabs.forEach(item => item.classList.remove("active"));
+      tabPanels.forEach(item => item.classList.remove("active"));
+
+      tab.classList.add("active");
+      document.getElementById(`${tab.dataset.tab}Panel`)?.classList.add("active");
+    });
+  });
+
+  const sidebar = document.getElementById("sidebar");
+  const mobileMenuButton = document.getElementById("mobileMenuButton");
+
+  mobileMenuButton.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+  });
+
+  document.addEventListener("click", event => {
+    if (
+      window.matchMedia("(max-width: 780px)").matches &&
+      sidebar.classList.contains("open") &&
+      !sidebar.contains(event.target) &&
+      !mobileMenuButton.contains(event.target)
+    ) {
+      sidebar.classList.remove("open");
+    }
+  });
+
+  function setMessage(message = "", type = "") {
+    const element = document.getElementById("expenseFormMessage");
+    element.textContent = message;
+    element.className = `form-message ${type}`.trim();
+  }
+
+  async function requireManager() {
+    if (!db) throw new Error("Supabase client is unavailable.");
+
+    const { data: { session }, error } = await db.auth.getSession();
+    if (error) throw error;
+
+    if (!session) {
+      location.href = "login.html";
+      return false;
     }
 
-    updateLiveClock();
-    setInterval(updateLiveClock, 1000);
+    const { data, error: profileError } = await db
+      .from("users")
+      .select("id,full_name,role,company_id,active")
+      .eq("auth_user_id", session.user.id)
+      .single();
 
-    // =========================================================
-    // FINANCE TABS
-    // =========================================================
+    if (profileError) throw profileError;
 
-    const financeTabs = document.querySelectorAll(".finance-tab");
-    const tabPanels = document.querySelectorAll(".tab-panel");
+    if (!data?.active || !["admin", "manager"].includes(data.role)) {
+      throw new Error("Manager access required.");
+    }
 
-    financeTabs.forEach((tabButton) => {
-      tabButton.addEventListener("click", () => {
-        const selectedTab = tabButton.dataset.tab;
+    currentProfile = data;
+    document.getElementById("sidebarUserName").textContent = data.full_name || "Manager";
+    document.getElementById("sidebarUserRole").textContent =
+      data.role === "admin" ? "Administrator" : "Manager";
 
-        financeTabs.forEach((button) => {
-          button.classList.remove("active");
-        });
+    return true;
+  }
 
-        tabPanels.forEach((panel) => {
-          panel.classList.remove("active");
-        });
+  async function loadProperties() {
+    const { data, error } = await db
+      .from("properties")
+      .select("id,property_name")
+      .order("property_name");
 
-        tabButton.classList.add("active");
+    if (error) throw error;
 
-        const selectedPanel = document.getElementById(
-          `${selectedTab}Panel`
-        );
+    properties = data || [];
+    const options = properties.map(property =>
+      `<option value="${esc(property.id)}">${esc(property.property_name)}</option>`
+    ).join("");
 
-        if (selectedPanel) {
-          selectedPanel.classList.add("active");
-        }
-      });
+    document.getElementById("expenseProperty").innerHTML =
+      `<option value="">Company-wide / No property</option>${options}`;
+
+    document.getElementById("expenseFilterProperty").innerHTML =
+      `<option value="">All properties</option>${options}`;
+  }
+
+  async function loadExpenses() {
+    const { data, error } = await db
+      .from("finance_expenses")
+      .select(`
+        id,expense_date,vendor,category,property_id,
+        amount_before_hst,hst_paid,receipt_total,
+        payment_method,notes,receipt_path,receipt_name,
+        created_by,created_at,updated_at,
+        properties(property_name)
+      `)
+      .order("expense_date", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    expenses = data || [];
+    renderExpenses();
+  }
+
+  function calculateTotal() {
+    const before = Number(document.getElementById("expenseBeforeHst").value || 0);
+    const hst = Number(document.getElementById("expenseHstPaid").value || 0);
+    document.getElementById("expenseReceiptTotal").value = (before + hst).toFixed(2);
+  }
+
+  document.getElementById("expenseBeforeHst").addEventListener("input", calculateTotal);
+  document.getElementById("expenseHstPaid").addEventListener("input", calculateTotal);
+
+  function resetForm() {
+    document.getElementById("expenseForm").reset();
+    document.getElementById("expenseId").value = "";
+    document.getElementById("expenseDate").value = localDateKey();
+    document.getElementById("expenseReceiptTotal").value = "0.00";
+    document.getElementById("expenseFormTitle").textContent = "Add Expense";
+    document.getElementById("saveExpenseButton").textContent = "Save Expense";
+    document.getElementById("cancelExpenseEdit").hidden = true;
+    document.getElementById("receiptFileHelp").textContent =
+      "Accepted formats: images and PDF.";
+    setMessage();
+  }
+
+  function editExpense(id) {
+    const item = expenses.find(expense => expense.id === id);
+    if (!item) return;
+
+    document.getElementById("expenseId").value = item.id;
+    document.getElementById("expenseDate").value = item.expense_date || "";
+    document.getElementById("expenseVendor").value = item.vendor || "";
+    document.getElementById("expenseCategory").value = item.category || "";
+    document.getElementById("expenseProperty").value = item.property_id || "";
+    document.getElementById("expenseBeforeHst").value =
+      Number(item.amount_before_hst || 0).toFixed(2);
+    document.getElementById("expenseHstPaid").value =
+      Number(item.hst_paid || 0).toFixed(2);
+    document.getElementById("expenseReceiptTotal").value =
+      Number(item.receipt_total || 0).toFixed(2);
+    document.getElementById("expensePaymentMethod").value =
+      item.payment_method || "";
+    document.getElementById("expenseNotes").value = item.notes || "";
+
+    document.getElementById("expenseFormTitle").textContent = "Edit Expense";
+    document.getElementById("saveExpenseButton").textContent = "Update Expense";
+    document.getElementById("cancelExpenseEdit").hidden = false;
+    document.getElementById("receiptFileHelp").textContent =
+      item.receipt_name
+        ? `Current receipt: ${item.receipt_name}. Choose a new file to replace it.`
+        : "No receipt is attached.";
+
+    document.getElementById("expensesPanel").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
     });
+  }
 
-    // =========================================================
-    // MOBILE SIDEBAR
-    // =========================================================
+  async function uploadReceipt(file, expenseId) {
+    if (!file) return null;
 
-    const sidebar = document.getElementById("sidebar");
-    const mobileMenuButton =
-      document.getElementById("mobileMenuButton");
+    const extension = (file.name.split(".").pop() || "file")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
 
-    mobileMenuButton.addEventListener("click", () => {
-      sidebar.classList.toggle("open");
-    });
+    const path =
+      `${currentProfile.company_id}/${expenseId}/${Date.now()}.${extension || "file"}`;
 
-    document.addEventListener("click", (event) => {
-      const isMobile =
-        window.matchMedia("(max-width: 780px)").matches;
+    const { error } = await db.storage
+      .from("finance-receipts")
+      .upload(path, file, { upsert: false });
 
-      if (
-        isMobile &&
-        sidebar.classList.contains("open") &&
-        !sidebar.contains(event.target) &&
-        !mobileMenuButton.contains(event.target)
-      ) {
-        sidebar.classList.remove("open");
+    if (error) throw error;
+
+    return { path, name: file.name };
+  }
+
+  async function removeReceipt(path) {
+    if (!path) return;
+    const { error } = await db.storage.from("finance-receipts").remove([path]);
+    if (error) console.warn(error);
+  }
+
+  document.getElementById("expenseForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!event.currentTarget.reportValidity()) return;
+
+    const id = document.getElementById("expenseId").value;
+    const existing = expenses.find(item => item.id === id);
+    const before = Number(document.getElementById("expenseBeforeHst").value || 0);
+    const hst = Number(document.getElementById("expenseHstPaid").value || 0);
+    const saveButton = document.getElementById("saveExpenseButton");
+
+    saveButton.disabled = true;
+    saveButton.textContent = id ? "Updating..." : "Saving...";
+    setMessage();
+
+    try {
+      const payload = {
+        company_id: currentProfile.company_id,
+        expense_date: document.getElementById("expenseDate").value,
+        vendor: document.getElementById("expenseVendor").value.trim(),
+        category: document.getElementById("expenseCategory").value,
+        property_id: document.getElementById("expenseProperty").value || null,
+        amount_before_hst: before,
+        hst_paid: hst,
+        receipt_total: before + hst,
+        payment_method: document.getElementById("expensePaymentMethod").value,
+        notes: document.getElementById("expenseNotes").value.trim() || null,
+        updated_at: new Date().toISOString()
+      };
+
+      let saved;
+
+      if (id) {
+        const { data, error } = await db
+          .from("finance_expenses")
+          .update(payload)
+          .eq("id", id)
+          .select()
+          .single();
+
+        if (error) throw error;
+        saved = data;
+      } else {
+        payload.created_by = currentProfile.id;
+
+        const { data, error } = await db
+          .from("finance_expenses")
+          .insert(payload)
+          .select()
+          .single();
+
+        if (error) throw error;
+        saved = data;
       }
+
+      const file = document.getElementById("expenseReceipt").files[0];
+
+      if (file) {
+        const uploaded = await uploadReceipt(file, saved.id);
+
+        const { error } = await db
+          .from("finance_expenses")
+          .update({
+            receipt_path: uploaded.path,
+            receipt_name: uploaded.name,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", saved.id);
+
+        if (error) throw error;
+
+        if (existing?.receipt_path) {
+          await removeReceipt(existing.receipt_path);
+        }
+      }
+
+      await loadExpenses();
+      resetForm();
+      setMessage(id ? "Expense updated successfully." : "Expense saved successfully.", "success");
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message || "Unable to save expense.", "error");
+    } finally {
+      saveButton.disabled = false;
+      saveButton.textContent = document.getElementById("expenseId").value
+        ? "Update Expense"
+        : "Save Expense";
+    }
+  });
+
+  document.getElementById("cancelExpenseEdit").addEventListener("click", resetForm);
+
+  async function deleteExpense(id) {
+    const item = expenses.find(expense => expense.id === id);
+    if (!item || !confirm(`Delete the expense from ${item.vendor}?`)) return;
+
+    try {
+      const { error } = await db.from("finance_expenses").delete().eq("id", id);
+      if (error) throw error;
+
+      if (item.receipt_path) await removeReceipt(item.receipt_path);
+      await loadExpenses();
+    } catch (error) {
+      alert(error.message || "Unable to delete expense.");
+    }
+  }
+
+  async function viewReceipt(id) {
+    const item = expenses.find(expense => expense.id === id);
+    if (!item?.receipt_path) return;
+
+    try {
+      const { data, error } = await db.storage
+        .from("finance-receipts")
+        .createSignedUrl(item.receipt_path, 60);
+
+      if (error) throw error;
+      window.open(data.signedUrl, "_blank", "noopener");
+    } catch (error) {
+      alert(error.message || "Unable to open receipt.");
+    }
+  }
+
+  function filteredExpenses() {
+    const search = document.getElementById("expenseSearch").value.trim().toLowerCase();
+    const category = document.getElementById("expenseFilterCategory").value;
+    const propertyId = document.getElementById("expenseFilterProperty").value;
+    const from = document.getElementById("expenseFilterFrom").value;
+    const to = document.getElementById("expenseFilterTo").value;
+
+    return expenses.filter(item => {
+      const text = [
+        item.vendor,
+        item.category,
+        item.notes,
+        item.payment_method,
+        item.properties?.property_name
+      ].join(" ").toLowerCase();
+
+      return (!search || text.includes(search))
+        && (!category || item.category === category)
+        && (!propertyId || item.property_id === propertyId)
+        && (!from || item.expense_date >= from)
+        && (!to || item.expense_date <= to);
+    });
+  }
+
+  function updateTotals() {
+    const now = new Date();
+    const today = localDateKey(now);
+
+    const weekStart = new Date(now);
+    const day = weekStart.getDay();
+    weekStart.setDate(weekStart.getDate() - (day === 0 ? 6 : day - 1));
+    weekStart.setHours(0, 0, 0, 0);
+
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const totals = expenses.reduce((sum, item) => {
+      const date = new Date(`${item.expense_date}T12:00:00`);
+      const before = Number(item.amount_before_hst || 0);
+      const hst = Number(item.hst_paid || 0);
+
+      if (item.expense_date === today) sum.today += before;
+      if (date >= weekStart) sum.week += before;
+      if (date >= monthStart) {
+        sum.month += before;
+        sum.hst += hst;
+      }
+
+      return sum;
+    }, { today: 0, week: 0, month: 0, hst: 0 });
+
+    document.getElementById("expenseTodayTotal").textContent = money(totals.today);
+    document.getElementById("expenseWeekTotal").textContent = money(totals.week);
+    document.getElementById("expenseMonthTotal").textContent = money(totals.month);
+    document.getElementById("expenseMonthHst").textContent = money(totals.hst);
+
+    document.getElementById("expensesThisMonth").textContent = money(totals.month);
+    document.getElementById("hstPaid").textContent = money(totals.hst);
+    document.getElementById("netHstOwing").textContent = money(-totals.hst);
+  }
+
+  function renderExpenses() {
+    const records = filteredExpenses();
+    const tbody = document.getElementById("expenseTableBody");
+
+    document.getElementById("expenseRecordCount").textContent =
+      `${records.length} ${records.length === 1 ? "Record" : "Records"}`;
+
+    tbody.innerHTML = records.length
+      ? records.map(item => `
+          <tr>
+            <td>${esc(item.expense_date)}</td>
+            <td>
+              <strong>${esc(item.vendor)}</strong>
+              <div class="field-help">${esc(item.payment_method)}</div>
+            </td>
+            <td>${esc(item.category)}</td>
+            <td>${esc(item.properties?.property_name || "Company-wide")}</td>
+            <td class="number-cell">${esc(money(item.amount_before_hst))}</td>
+            <td class="number-cell">${esc(money(item.hst_paid))}</td>
+            <td class="number-cell"><strong>${esc(money(item.receipt_total))}</strong></td>
+            <td>
+              ${item.receipt_path
+                ? `<button class="table-action-btn" data-action="receipt" data-id="${esc(item.id)}">View Receipt</button>`
+                : `<span class="field-help">No receipt</span>`}
+            </td>
+            <td>
+              <div class="table-actions">
+                <button class="table-action-btn" data-action="edit" data-id="${esc(item.id)}">Edit</button>
+                <button class="danger-btn" data-action="delete" data-id="${esc(item.id)}">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `).join("")
+      : `<tr><td colspan="9" class="table-empty">No expenses match the selected filters.</td></tr>`;
+
+    updateTotals();
+  }
+
+  document.getElementById("expenseTableBody").addEventListener("click", event => {
+    const button = event.target.closest("[data-action]");
+    if (!button) return;
+
+    if (button.dataset.action === "edit") editExpense(button.dataset.id);
+    if (button.dataset.action === "delete") deleteExpense(button.dataset.id);
+    if (button.dataset.action === "receipt") viewReceipt(button.dataset.id);
+  });
+
+  ["expenseSearch", "expenseFilterCategory", "expenseFilterProperty", "expenseFilterFrom", "expenseFilterTo"]
+    .forEach(id => {
+      document.getElementById(id).addEventListener(
+        id === "expenseSearch" ? "input" : "change",
+        renderExpenses
+      );
     });
 
-    // =========================================================
-    // TEMPORARY SIGN OUT BUTTON
-    // Supabase sign-out will be connected in a later part.
-    // =========================================================
+  document.getElementById("clearExpenseFilters").addEventListener("click", () => {
+    document.getElementById("expenseSearch").value = "";
+    document.getElementById("expenseFilterCategory").value = "";
+    document.getElementById("expenseFilterProperty").value = "";
+    document.getElementById("expenseFilterFrom").value = "";
+    document.getElementById("expenseFilterTo").value = "";
+    renderExpenses();
+  });
 
-    document
-      .getElementById("signOutButton")
-      .addEventListener("click", () => {
-        alert(
-          "The Supabase sign-out connection will be added when we connect the Finance page to the database."
-        );
-      });
-  </script>
+  document.getElementById("signOutButton").addEventListener("click", async () => {
+    if (db) await db.auth.signOut();
+    location.href = "login.html";
+  });
+
+  async function initializeFinance() {
+    resetForm();
+
+    try {
+      if (!await requireManager()) return;
+      await loadProperties();
+      await loadExpenses();
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message || "Unable to load Finance.", "error");
+      document.getElementById("expenseTableBody").innerHTML =
+        `<tr><td colspan="9" class="table-empty">${esc(error.message || "Unable to load expenses.")}</td></tr>`;
+    }
+  }
+
+  initializeFinance();
+</script>
 </body>
 </html>
