@@ -651,6 +651,138 @@
   }
 }
 
+
+    /* =========================================================
+       REVENUE MANAGEMENT
+    ========================================================= */
+
+    .metric-accent {
+      border-top: 3px solid var(--blue-500);
+    }
+
+    .metric-warning {
+      border-top: 3px solid #d39a35;
+    }
+
+    .metric-success {
+      border-top: 3px solid var(--green);
+    }
+
+    .metric-danger {
+      border-top: 3px solid var(--red);
+    }
+
+    .status-pill.draft {
+      background: #eef2f5;
+      color: #5c6d7b;
+    }
+
+    .status-pill.sent {
+      background: var(--blue-100);
+      color: #2479a8;
+    }
+
+    .status-pill.partially-paid {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .status-pill.paid {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .status-pill.overdue,
+    .status-pill.cancelled {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .invoice-number {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .balance-due {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .balance-clear {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .compact-summary {
+      display: grid;
+      gap: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(7, 31, 53, 0.62);
+    }
+
+    .modal-backdrop[hidden] {
+      display: none;
+    }
+
+    .modal-card {
+      width: min(560px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--surface);
+      box-shadow: 0 24px 70px rgba(7, 31, 53, 0.26);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .modal-invoice-summary {
+      margin-bottom: 16px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f7f9fb;
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    .button-row-left {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .loading-note {
+      color: var(--muted);
+      font-size: 9px;
+    }
+
     /* =========================================================
        MOBILE
     ========================================================= */
@@ -1040,7 +1172,7 @@
                   </p>
                 </div>
 
-                <span class="status-pill amber">Setup Required</span>
+                <span class="status-pill blue">Live Tracking</span>
               </div>
 
               <div id="paymentStatusSummary">
@@ -1296,20 +1428,273 @@
 </section>
 
 <!-- ===================================================
-             REVENUE PLACEHOLDER
+             REVENUE & PAYMENTS TAB
         ==================================================== -->
-        <section
-          class="tab-panel"
-          id="revenuePanel"
-        >
-          <section class="panel placeholder-panel">
-            <div class="placeholder-inner">
-              <div class="placeholder-icon">💵</div>
-              <h3>Revenue & Payments</h3>
-              <p>
-                This section will include property invoices, revenue before HST,
-                HST collected, outstanding balances and Confirm Paid controls.
-              </p>
+        <section class="tab-panel" id="revenuePanel">
+
+          <div class="stats-grid">
+            <article class="stat-card metric-accent">
+              <div class="stat-label">Revenue Today</div>
+              <div class="stat-value" id="revenueTabToday">$0.00</div>
+              <div class="stat-note">Before HST</div>
+            </article>
+
+            <article class="stat-card metric-accent">
+              <div class="stat-label">Revenue This Month</div>
+              <div class="stat-value" id="revenueTabMonth">$0.00</div>
+              <div class="stat-note">Before HST</div>
+            </article>
+
+            <article class="stat-card metric-success">
+              <div class="stat-label">Payments Received</div>
+              <div class="stat-value" id="revenueTabReceived">$0.00</div>
+              <div class="stat-note">All confirmed payments</div>
+            </article>
+
+            <article class="stat-card metric-danger">
+              <div class="stat-label">Outstanding Balance</div>
+              <div class="stat-value" id="revenueTabOutstanding">$0.00</div>
+              <div class="stat-note warning">Excludes cancelled invoices</div>
+            </article>
+          </div>
+
+          <div class="stats-grid">
+            <article class="stat-card">
+              <div class="stat-label">HST Collected This Month</div>
+              <div class="stat-value" id="revenueTabHst">$0.00</div>
+              <div class="stat-note">From current-month invoices</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Paid Invoices</div>
+              <div class="stat-value" id="revenuePaidCount">0</div>
+              <div class="stat-note positive">Fully paid</div>
+            </article>
+
+            <article class="stat-card metric-warning">
+              <div class="stat-label">Open Invoices</div>
+              <div class="stat-value" id="revenueOpenCount">0</div>
+              <div class="stat-note">Sent, partial or overdue</div>
+            </article>
+
+            <article class="stat-card metric-danger">
+              <div class="stat-label">Overdue Invoices</div>
+              <div class="stat-value" id="revenueOverdueCount">0</div>
+              <div class="stat-note warning">Past due and unpaid</div>
+            </article>
+          </div>
+
+          <div class="two-column-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title" id="revenueFormTitle">Create Invoice</h3>
+                  <p class="panel-subtitle">
+                    Record property billing, HST and invoice terms.
+                  </p>
+                </div>
+              </div>
+
+              <form id="revenueForm" novalidate>
+                <input type="hidden" id="revenueId">
+
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="revenueInvoiceNumber">Invoice Number *</label>
+                    <input type="text" id="revenueInvoiceNumber" maxlength="60" required>
+                    <div class="field-help">Generated automatically for new invoices. You may edit it before saving.</div>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueStatus">Invoice Status *</label>
+                    <select id="revenueStatus" required>
+                      <option value="draft">Draft</option>
+                      <option value="sent">Sent</option>
+                      <option value="partially_paid">Partially Paid</option>
+                      <option value="paid">Paid</option>
+                      <option value="overdue">Overdue</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueClient">Client / Billing Name *</label>
+                    <input type="text" id="revenueClient" maxlength="160" placeholder="Client or company name" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueProperty">Property</label>
+                    <select id="revenueProperty">
+                      <option value="">Company-wide / No property</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueInvoiceDate">Invoice Date *</label>
+                    <input type="date" id="revenueInvoiceDate" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueDueDate">Due Date *</label>
+                    <input type="date" id="revenueDueDate" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueBeforeHst">Revenue Before HST *</label>
+                    <input type="number" id="revenueBeforeHst" min="0" step="0.01" placeholder="0.00" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueHst">HST Collected</label>
+                    <input type="number" id="revenueHst" min="0" step="0.01" placeholder="0.00">
+                    <div class="field-help">
+                      Use Calculate 13% or enter the exact HST shown on the invoice.
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueInvoiceTotal">Invoice Total</label>
+                    <input type="number" id="revenueInvoiceTotal" step="0.01" value="0.00" readonly>
+                  </div>
+
+                  <div class="field">
+                    <label for="revenueAmountPaid">Amount Already Paid</label>
+                    <input type="number" id="revenueAmountPaid" min="0" step="0.01" value="0.00">
+                    <div class="field-help">
+                      For new payments after saving, use Record Payment in the invoice table.
+                    </div>
+                  </div>
+
+                  <div class="field full-width">
+                    <label for="revenueNotes">Notes</label>
+                    <textarea id="revenueNotes" maxlength="1500" placeholder="Billing period, service details, purchase order or internal notes"></textarea>
+                  </div>
+                </div>
+
+                <div class="form-message" id="revenueFormMessage"></div>
+
+                <div class="form-actions">
+                  <button type="button" class="secondary-btn" id="calculateRevenueHst">Calculate 13% HST</button>
+                  <button type="button" class="secondary-btn" id="cancelRevenueEdit" hidden>Cancel Edit</button>
+                  <button type="submit" class="primary-btn" id="saveRevenueButton">Save Invoice</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Revenue Filters</h3>
+                  <p class="panel-subtitle">
+                    Search invoices, clients, properties and payment status.
+                  </p>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field full-width">
+                  <label for="revenueSearch">Search</label>
+                  <input type="search" id="revenueSearch" placeholder="Search invoice, client, property, reference or notes">
+                </div>
+
+                <div class="field">
+                  <label for="revenueFilterStatus">Status</label>
+                  <select id="revenueFilterStatus">
+                    <option value="">All statuses</option>
+                    <option value="draft">Draft</option>
+                    <option value="sent">Sent</option>
+                    <option value="partially_paid">Partially Paid</option>
+                    <option value="paid">Paid</option>
+                    <option value="overdue">Overdue</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="revenueFilterProperty">Property</label>
+                  <select id="revenueFilterProperty">
+                    <option value="">All properties</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="revenueFilterFrom">Invoice Date From</label>
+                  <input type="date" id="revenueFilterFrom">
+                </div>
+
+                <div class="field">
+                  <label for="revenueFilterTo">Invoice Date To</label>
+                  <input type="date" id="revenueFilterTo">
+                </div>
+
+                <div class="field">
+                  <label for="revenueFilterDue">Due</label>
+                  <select id="revenueFilterDue">
+                    <option value="">All due dates</option>
+                    <option value="overdue">Overdue only</option>
+                    <option value="due_7">Due within 7 days</option>
+                    <option value="due_30">Due within 30 days</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="secondary-btn" id="clearRevenueFilters">Clear Filters</button>
+              </div>
+
+              <div class="compact-summary" id="revenueFilterSummary">
+                <div class="summary-row">
+                  <span>Filtered invoice total</span>
+                  <strong id="filteredInvoiceTotal">$0.00</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Filtered amount paid</span>
+                  <strong id="filteredAmountPaid">$0.00</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Filtered balance due</span>
+                  <strong id="filteredBalanceDue">$0.00</strong>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">Revenue & Invoice History</h3>
+                <p class="panel-subtitle">
+                  Track billing, outstanding balances and payment confirmations.
+                </p>
+              </div>
+
+              <span class="status-pill blue" id="revenueRecordCount">0 Records</span>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Invoice</th>
+                    <th>Client / Property</th>
+                    <th>Invoice Date</th>
+                    <th>Due Date</th>
+                    <th class="number-cell">Before HST</th>
+                    <th class="number-cell">HST</th>
+                    <th class="number-cell">Total</th>
+                    <th class="number-cell">Paid</th>
+                    <th class="number-cell">Balance</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody id="revenueTableBody">
+                  <tr>
+                    <td colspan="11" class="table-empty">Loading revenue...</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
         </section>
@@ -1323,7 +1708,7 @@
         >
           <section class="panel placeholder-panel">
             <div class="placeholder-inner">
-              <div class="placeholder-icon">👥</div>
+              <div class="placeholder-icon">PR</div>
               <h3>Payroll</h3>
               <p>
                 This section will include biweekly payroll periods, review dates,
@@ -1337,6 +1722,58 @@
     </main>
   </div>
 
+
+  <div class="modal-backdrop" id="paymentModal" hidden>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+      <div class="modal-header">
+        <div>
+          <h3 class="panel-title" id="paymentModalTitle">Record Payment</h3>
+          <p class="panel-subtitle">Confirm a partial or full invoice payment.</p>
+        </div>
+        <button class="modal-close" id="closePaymentModal" type="button" aria-label="Close">×</button>
+      </div>
+
+      <div class="modal-invoice-summary" id="paymentInvoiceSummary"></div>
+
+      <form id="paymentForm" novalidate>
+        <input type="hidden" id="paymentRevenueId">
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="paymentAmount">Payment Amount *</label>
+            <input type="number" id="paymentAmount" min="0.01" step="0.01" required>
+          </div>
+
+          <div class="field">
+            <label for="paymentMethod">Payment Method *</label>
+            <select id="paymentMethod" required>
+              <option value="">Select method</option>
+              <option>E-Transfer</option>
+              <option>Cheque</option>
+              <option>Direct Deposit</option>
+              <option>Credit Card</option>
+              <option>Debit Card</option>
+              <option>Cash</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field full-width">
+            <label for="paymentReference">Payment Reference</label>
+            <input type="text" id="paymentReference" maxlength="160" placeholder="Transaction ID, cheque number or reference">
+          </div>
+        </div>
+
+        <div class="form-message" id="paymentFormMessage"></div>
+
+        <div class="form-actions">
+          <button type="button" class="secondary-btn" id="cancelPaymentButton">Cancel</button>
+          <button type="submit" class="primary-btn" id="confirmPaymentButton">Confirm Payment</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
 
@@ -1346,6 +1783,7 @@
   const db = window.nscSupabase || window.supabaseClient || null;
   let currentProfile = null;
   let expenses = [];
+  let revenues = [];
   let properties = [];
 
   const moneyFormat = new Intl.NumberFormat("en-CA", {
@@ -1477,6 +1915,12 @@
       `<option value="">Company-wide / No property</option>${options}`;
 
     document.getElementById("expenseFilterProperty").innerHTML =
+      `<option value="">All properties</option>${options}`;
+
+    document.getElementById("revenueProperty").innerHTML =
+      `<option value="">Company-wide / No property</option>${options}`;
+
+    document.getElementById("revenueFilterProperty").innerHTML =
       `<option value="">All properties</option>${options}`;
   }
 
@@ -1758,7 +2202,16 @@
 
     document.getElementById("expensesThisMonth").textContent = money(totals.month);
     document.getElementById("hstPaid").textContent = money(totals.hst);
-    document.getElementById("netHstOwing").textContent = money(-totals.hst);
+    const currentMonthHstCollected = revenues.reduce((total, item) => {
+      if (item.invoice_status === "cancelled") return total;
+      const date = new Date(`${item.invoice_date}T12:00:00`);
+      return date >= monthStart
+        ? total + Number(item.hst_collected || 0)
+        : total;
+    }, 0);
+
+    document.getElementById("netHstOwing").textContent =
+      money(currentMonthHstCollected - totals.hst);
   }
 
   function renderExpenses() {
@@ -1825,6 +2278,728 @@
     renderExpenses();
   });
 
+
+  // ============================================================
+  // REVENUE MANAGEMENT
+  // ============================================================
+
+  function setRevenueMessage(message = "", type = "") {
+    const element = document.getElementById("revenueFormMessage");
+    element.textContent = message;
+    element.className = `form-message ${type}`.trim();
+  }
+
+  function setPaymentMessage(message = "", type = "") {
+    const element = document.getElementById("paymentFormMessage");
+    element.textContent = message;
+    element.className = `form-message ${type}`.trim();
+  }
+
+  function addDays(dateKey, days) {
+    const date = new Date(`${dateKey}T12:00:00`);
+    date.setDate(date.getDate() + days);
+    return localDateKey(date);
+  }
+
+  function revenueStatusLabel(status) {
+    const labels = {
+      draft: "Draft",
+      sent: "Sent",
+      partially_paid: "Partially Paid",
+      paid: "Paid",
+      overdue: "Overdue",
+      cancelled: "Cancelled"
+    };
+
+    return labels[status] || status || "Unknown";
+  }
+
+  function revenueStatusClass(status) {
+    return String(status || "draft").replaceAll("_", "-");
+  }
+
+  function revenueIsPastDue(item) {
+    return item.invoice_status !== "paid"
+      && item.invoice_status !== "cancelled"
+      && Number(item.outstanding_balance || 0) > 0
+      && item.due_date < localDateKey();
+  }
+
+  function calculateRevenueTotal() {
+    const before = Number(document.getElementById("revenueBeforeHst").value || 0);
+    const hst = Number(document.getElementById("revenueHst").value || 0);
+    const total = before + hst;
+
+    document.getElementById("revenueInvoiceTotal").value = total.toFixed(2);
+
+    const amountPaidInput = document.getElementById("revenueAmountPaid");
+    if (Number(amountPaidInput.value || 0) > total) {
+      amountPaidInput.value = total.toFixed(2);
+    }
+  }
+
+  async function generateInvoiceNumber() {
+    try {
+      const { data, error } = await db.rpc("generate_finance_invoice_number");
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error("Invoice number generation failed:", error);
+      return `NSC-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
+    }
+  }
+
+  async function resetRevenueForm() {
+    document.getElementById("revenueForm").reset();
+    document.getElementById("revenueId").value = "";
+
+    const today = localDateKey();
+    document.getElementById("revenueInvoiceDate").value = today;
+    document.getElementById("revenueDueDate").value = addDays(today, 30);
+    document.getElementById("revenueStatus").value = "draft";
+    document.getElementById("revenueInvoiceTotal").value = "0.00";
+    document.getElementById("revenueAmountPaid").value = "0.00";
+
+    document.getElementById("revenueFormTitle").textContent = "Create Invoice";
+    document.getElementById("saveRevenueButton").textContent = "Save Invoice";
+    document.getElementById("cancelRevenueEdit").hidden = true;
+    setRevenueMessage();
+
+    if (db && currentProfile) {
+      document.getElementById("revenueInvoiceNumber").value =
+        await generateInvoiceNumber();
+    } else {
+      document.getElementById("revenueInvoiceNumber").value = "";
+    }
+  }
+
+  async function loadRevenue() {
+    const { data, error } = await db
+      .from("finance_revenue")
+      .select(`
+        id,company_id,property_id,invoice_number,client_name,
+        invoice_date,due_date,amount_before_hst,hst_collected,
+        invoice_total,amount_paid,outstanding_balance,invoice_status,
+        payment_method,payment_reference,payment_confirmed_at,
+        payment_confirmed_by,notes,created_by,created_at,updated_at,
+        properties(property_name)
+      `)
+      .order("invoice_date", { ascending: false })
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    revenues = data || [];
+    renderRevenue();
+  }
+
+  function editRevenue(id) {
+    const item = revenues.find(revenue => revenue.id === id);
+    if (!item) return;
+
+    document.getElementById("revenueId").value = item.id;
+    document.getElementById("revenueInvoiceNumber").value = item.invoice_number || "";
+    document.getElementById("revenueClient").value = item.client_name || "";
+    document.getElementById("revenueProperty").value = item.property_id || "";
+    document.getElementById("revenueInvoiceDate").value = item.invoice_date || "";
+    document.getElementById("revenueDueDate").value = item.due_date || "";
+    document.getElementById("revenueBeforeHst").value =
+      Number(item.amount_before_hst || 0).toFixed(2);
+    document.getElementById("revenueHst").value =
+      Number(item.hst_collected || 0).toFixed(2);
+    document.getElementById("revenueInvoiceTotal").value =
+      Number(item.invoice_total || 0).toFixed(2);
+    document.getElementById("revenueAmountPaid").value =
+      Number(item.amount_paid || 0).toFixed(2);
+    document.getElementById("revenueStatus").value = item.invoice_status || "draft";
+    document.getElementById("revenueNotes").value = item.notes || "";
+
+    document.getElementById("revenueFormTitle").textContent = "Edit Invoice";
+    document.getElementById("saveRevenueButton").textContent = "Update Invoice";
+    document.getElementById("cancelRevenueEdit").hidden = false;
+    setRevenueMessage();
+
+    document.getElementById("revenuePanel").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+  document.getElementById("revenueForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!event.currentTarget.reportValidity()) return;
+
+    const id = document.getElementById("revenueId").value;
+    const saveButton = document.getElementById("saveRevenueButton");
+
+    const before = Number(document.getElementById("revenueBeforeHst").value || 0);
+    const hst = Number(document.getElementById("revenueHst").value || 0);
+    const invoiceTotal = before + hst;
+    const amountPaid = Number(document.getElementById("revenueAmountPaid").value || 0);
+
+    if (amountPaid > invoiceTotal) {
+      setRevenueMessage("Amount paid cannot exceed the invoice total.", "error");
+      return;
+    }
+
+    saveButton.disabled = true;
+    saveButton.textContent = id ? "Updating..." : "Saving...";
+    setRevenueMessage();
+
+    try {
+      const payload = {
+        company_id: currentProfile.company_id,
+        property_id: document.getElementById("revenueProperty").value || null,
+        invoice_number: document.getElementById("revenueInvoiceNumber").value.trim(),
+        client_name: document.getElementById("revenueClient").value.trim(),
+        invoice_date: document.getElementById("revenueInvoiceDate").value,
+        due_date: document.getElementById("revenueDueDate").value,
+        amount_before_hst: before,
+        hst_collected: hst,
+        invoice_total: invoiceTotal,
+        amount_paid: amountPaid,
+        outstanding_balance: Math.max(invoiceTotal - amountPaid, 0),
+        invoice_status: document.getElementById("revenueStatus").value,
+        notes: document.getElementById("revenueNotes").value.trim() || null,
+        updated_at: new Date().toISOString()
+      };
+
+      if (payload.invoice_status === "paid") {
+        payload.amount_paid = invoiceTotal;
+        payload.outstanding_balance = 0;
+        payload.payment_confirmed_at = new Date().toISOString();
+        payload.payment_confirmed_by = currentProfile.id;
+      }
+
+      if (id) {
+        const { error } = await db
+          .from("finance_revenue")
+          .update(payload)
+          .eq("id", id);
+
+        if (error) throw error;
+      } else {
+        payload.created_by = currentProfile.id;
+
+        const { error } = await db
+          .from("finance_revenue")
+          .insert(payload);
+
+        if (error) throw error;
+      }
+
+      await loadRevenue();
+      await resetRevenueForm();
+      setRevenueMessage(id ? "Invoice updated successfully." : "Invoice saved successfully.", "success");
+    } catch (error) {
+      console.error(error);
+      setRevenueMessage(error.message || "Unable to save invoice.", "error");
+    } finally {
+      saveButton.disabled = false;
+      saveButton.textContent = document.getElementById("revenueId").value
+        ? "Update Invoice"
+        : "Save Invoice";
+    }
+  });
+
+  document.getElementById("revenueBeforeHst").addEventListener("input", calculateRevenueTotal);
+  document.getElementById("revenueHst").addEventListener("input", calculateRevenueTotal);
+
+  document.getElementById("calculateRevenueHst").addEventListener("click", () => {
+    const before = Number(document.getElementById("revenueBeforeHst").value || 0);
+    document.getElementById("revenueHst").value = (before * 0.13).toFixed(2);
+    calculateRevenueTotal();
+  });
+
+  document.getElementById("cancelRevenueEdit").addEventListener("click", resetRevenueForm);
+
+  async function deleteRevenue(id) {
+    const item = revenues.find(revenue => revenue.id === id);
+    if (!item) return;
+
+    if (!confirm(`Delete invoice ${item.invoice_number}? This cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await db
+        .from("finance_revenue")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      await loadRevenue();
+
+      if (document.getElementById("revenueId").value === id) {
+        await resetRevenueForm();
+      }
+    } catch (error) {
+      alert(error.message || "Unable to delete invoice.");
+    }
+  }
+
+  async function markInvoiceSent(id) {
+    const item = revenues.find(revenue => revenue.id === id);
+    if (!item) return;
+
+    try {
+      const nextStatus = item.due_date < localDateKey() ? "overdue" : "sent";
+
+      const { error } = await db
+        .from("finance_revenue")
+        .update({
+          invoice_status: nextStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+      await loadRevenue();
+    } catch (error) {
+      alert(error.message || "Unable to update invoice status.");
+    }
+  }
+
+  async function cancelInvoice(id) {
+    const item = revenues.find(revenue => revenue.id === id);
+    if (!item) return;
+
+    if (!confirm(`Cancel invoice ${item.invoice_number}?`)) return;
+
+    try {
+      const { error } = await db
+        .from("finance_revenue")
+        .update({
+          invoice_status: "cancelled",
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+      await loadRevenue();
+    } catch (error) {
+      alert(error.message || "Unable to cancel invoice.");
+    }
+  }
+
+  function openPaymentModal(id) {
+    const item = revenues.find(revenue => revenue.id === id);
+    if (!item) return;
+
+    const balance = Number(item.outstanding_balance || 0);
+
+    if (balance <= 0 || item.invoice_status === "cancelled") {
+      alert("This invoice does not have a payable outstanding balance.");
+      return;
+    }
+
+    document.getElementById("paymentForm").reset();
+    document.getElementById("paymentRevenueId").value = item.id;
+    document.getElementById("paymentAmount").value = balance.toFixed(2);
+    document.getElementById("paymentAmount").max = balance.toFixed(2);
+
+    document.getElementById("paymentInvoiceSummary").innerHTML = `
+      <strong>${esc(item.invoice_number)}</strong><br>
+      ${esc(item.client_name)}<br>
+      Invoice total: ${esc(money(item.invoice_total))}<br>
+      Previously paid: ${esc(money(item.amount_paid))}<br>
+      Balance due: <strong>${esc(money(balance))}</strong>
+    `;
+
+    setPaymentMessage();
+    document.getElementById("paymentModal").hidden = false;
+    document.body.style.overflow = "hidden";
+    document.getElementById("paymentAmount").focus();
+  }
+
+  function closePaymentModal() {
+    document.getElementById("paymentModal").hidden = true;
+    document.body.style.overflow = "";
+    document.getElementById("paymentForm").reset();
+    setPaymentMessage();
+  }
+
+  document.getElementById("closePaymentModal").addEventListener("click", closePaymentModal);
+  document.getElementById("cancelPaymentButton").addEventListener("click", closePaymentModal);
+
+  document.getElementById("paymentModal").addEventListener("click", event => {
+    if (event.target.id === "paymentModal") closePaymentModal();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !document.getElementById("paymentModal").hidden) {
+      closePaymentModal();
+    }
+  });
+
+  document.getElementById("paymentForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!event.currentTarget.reportValidity()) return;
+
+    const id = document.getElementById("paymentRevenueId").value;
+    const item = revenues.find(revenue => revenue.id === id);
+    if (!item) return;
+
+    const payment = Number(document.getElementById("paymentAmount").value || 0);
+    const balance = Number(item.outstanding_balance || 0);
+
+    if (payment <= 0 || payment > balance) {
+      setPaymentMessage(`Payment must be more than $0.00 and no more than ${money(balance)}.`, "error");
+      return;
+    }
+
+    const totalPaid = Number(item.amount_paid || 0) + payment;
+    const fullyPaid = totalPaid >= Number(item.invoice_total || 0);
+    const confirmButton = document.getElementById("confirmPaymentButton");
+
+    confirmButton.disabled = true;
+    confirmButton.textContent = "Confirming...";
+    setPaymentMessage();
+
+    try {
+      const { error } = await db
+        .from("finance_revenue")
+        .update({
+          amount_paid: totalPaid,
+          outstanding_balance: Math.max(Number(item.invoice_total || 0) - totalPaid, 0),
+          invoice_status: fullyPaid ? "paid" : "partially_paid",
+          payment_method: document.getElementById("paymentMethod").value,
+          payment_reference: document.getElementById("paymentReference").value.trim() || null,
+          payment_confirmed_at: fullyPaid ? new Date().toISOString() : null,
+          payment_confirmed_by: fullyPaid ? currentProfile.id : null,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      closePaymentModal();
+      await loadRevenue();
+    } catch (error) {
+      console.error(error);
+      setPaymentMessage(error.message || "Unable to confirm payment.", "error");
+    } finally {
+      confirmButton.disabled = false;
+      confirmButton.textContent = "Confirm Payment";
+    }
+  });
+
+  function filteredRevenue() {
+    const search = document.getElementById("revenueSearch").value.trim().toLowerCase();
+    const status = document.getElementById("revenueFilterStatus").value;
+    const propertyId = document.getElementById("revenueFilterProperty").value;
+    const from = document.getElementById("revenueFilterFrom").value;
+    const to = document.getElementById("revenueFilterTo").value;
+    const dueFilter = document.getElementById("revenueFilterDue").value;
+
+    const today = new Date(`${localDateKey()}T12:00:00`);
+    const due7 = new Date(today);
+    due7.setDate(due7.getDate() + 7);
+    const due30 = new Date(today);
+    due30.setDate(due30.getDate() + 30);
+
+    return revenues.filter(item => {
+      const text = [
+        item.invoice_number,
+        item.client_name,
+        item.notes,
+        item.payment_method,
+        item.payment_reference,
+        item.properties?.property_name
+      ].join(" ").toLowerCase();
+
+      const dueDate = new Date(`${item.due_date}T12:00:00`);
+
+      let dueMatches = true;
+
+      if (dueFilter === "overdue") {
+        dueMatches = revenueIsPastDue(item);
+      } else if (dueFilter === "due_7") {
+        dueMatches =
+          item.invoice_status !== "paid"
+          && item.invoice_status !== "cancelled"
+          && dueDate >= today
+          && dueDate <= due7;
+      } else if (dueFilter === "due_30") {
+        dueMatches =
+          item.invoice_status !== "paid"
+          && item.invoice_status !== "cancelled"
+          && dueDate >= today
+          && dueDate <= due30;
+      }
+
+      return (!search || text.includes(search))
+        && (!status || item.invoice_status === status)
+        && (!propertyId || item.property_id === propertyId)
+        && (!from || item.invoice_date >= from)
+        && (!to || item.invoice_date <= to)
+        && dueMatches;
+    });
+  }
+
+  function updateRevenueTotals() {
+    const now = new Date();
+    const today = localDateKey(now);
+
+    const weekStart = new Date(now);
+    const day = weekStart.getDay();
+    weekStart.setDate(weekStart.getDate() - (day === 0 ? 6 : day - 1));
+    weekStart.setHours(0, 0, 0, 0);
+
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+
+    const totals = revenues.reduce((sum, item) => {
+      if (item.invoice_status === "cancelled") return sum;
+
+      const invoiceDate = new Date(`${item.invoice_date}T12:00:00`);
+      const before = Number(item.amount_before_hst || 0);
+      const hst = Number(item.hst_collected || 0);
+      const paid = Number(item.amount_paid || 0);
+      const outstanding = Number(item.outstanding_balance || 0);
+
+      if (item.invoice_date === today) sum.today += before;
+      if (invoiceDate >= weekStart) sum.week += before;
+      if (invoiceDate >= monthStart) {
+        sum.month += before;
+        sum.monthHst += hst;
+      }
+      if (invoiceDate >= yearStart) sum.year += before;
+
+      sum.received += paid;
+      sum.outstanding += outstanding;
+
+      if (item.invoice_status === "paid") sum.paidCount += 1;
+      if (["sent", "partially_paid", "overdue"].includes(item.invoice_status)) {
+        sum.openCount += 1;
+      }
+      if (revenueIsPastDue(item)) sum.overdueCount += 1;
+
+      return sum;
+    }, {
+      today: 0,
+      week: 0,
+      month: 0,
+      monthHst: 0,
+      year: 0,
+      received: 0,
+      outstanding: 0,
+      paidCount: 0,
+      openCount: 0,
+      overdueCount: 0
+    });
+
+    document.getElementById("revenueTabToday").textContent = money(totals.today);
+    document.getElementById("revenueTabMonth").textContent = money(totals.month);
+    document.getElementById("revenueTabReceived").textContent = money(totals.received);
+    document.getElementById("revenueTabOutstanding").textContent = money(totals.outstanding);
+    document.getElementById("revenueTabHst").textContent = money(totals.monthHst);
+    document.getElementById("revenuePaidCount").textContent = totals.paidCount;
+    document.getElementById("revenueOpenCount").textContent = totals.openCount;
+    document.getElementById("revenueOverdueCount").textContent = totals.overdueCount;
+
+    document.getElementById("revenueToday").textContent = money(totals.today);
+    document.getElementById("revenueThisWeek").textContent = money(totals.week);
+    document.getElementById("revenueThisMonth").textContent = money(totals.month);
+    document.getElementById("hstCollected").textContent = money(totals.monthHst);
+    document.getElementById("outstandingPayments").textContent = money(totals.outstanding);
+
+    const expenseHst = expenses.reduce((total, item) => {
+      const date = new Date(`${item.expense_date}T12:00:00`);
+      return date >= monthStart
+        ? total + Number(item.hst_paid || 0)
+        : total;
+    }, 0);
+
+    document.getElementById("netHstOwing").textContent =
+      money(totals.monthHst - expenseHst);
+
+    const propertyTotals = new Map();
+
+    revenues.forEach(item => {
+      if (item.invoice_status === "cancelled") return;
+      const date = new Date(`${item.invoice_date}T12:00:00`);
+      if (date < monthStart) return;
+
+      const name = item.properties?.property_name || "Company-wide / No property";
+      propertyTotals.set(
+        name,
+        (propertyTotals.get(name) || 0) + Number(item.amount_before_hst || 0)
+      );
+    });
+
+    const propertyRows = [...propertyTotals.entries()]
+      .sort((a, b) => b[1] - a[1]);
+
+    document.getElementById("propertyRevenueSummary").innerHTML = propertyRows.length
+      ? propertyRows.map(([name, total]) => `
+          <div class="summary-row">
+            <span>${esc(name)}</span>
+            <strong>${esc(money(total))}</strong>
+          </div>
+        `).join("") + `
+          <div class="summary-row">
+            <span>Total revenue before HST</span>
+            <strong>${esc(money(totals.month))}</strong>
+          </div>
+        `
+      : `
+          <div class="summary-row">
+            <span>No current-month revenue recorded</span>
+            <strong>${esc(money(0))}</strong>
+          </div>
+        `;
+
+    document.getElementById("paymentStatusSummary").innerHTML = `
+      <div class="summary-row">
+        <span>Paid invoices</span>
+        <strong>${totals.paidCount}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Open invoices</span>
+        <strong>${totals.openCount}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Overdue invoices</span>
+        <strong>${totals.overdueCount}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Total received</span>
+        <strong>${esc(money(totals.received))}</strong>
+      </div>
+    `;
+  }
+
+  function renderRevenue() {
+    const records = filteredRevenue();
+    const tbody = document.getElementById("revenueTableBody");
+
+    document.getElementById("revenueRecordCount").textContent =
+      `${records.length} ${records.length === 1 ? "Record" : "Records"}`;
+
+    const filteredTotals = records.reduce((sum, item) => {
+      if (item.invoice_status !== "cancelled") {
+        sum.total += Number(item.invoice_total || 0);
+        sum.paid += Number(item.amount_paid || 0);
+        sum.balance += Number(item.outstanding_balance || 0);
+      }
+      return sum;
+    }, { total: 0, paid: 0, balance: 0 });
+
+    document.getElementById("filteredInvoiceTotal").textContent = money(filteredTotals.total);
+    document.getElementById("filteredAmountPaid").textContent = money(filteredTotals.paid);
+    document.getElementById("filteredBalanceDue").textContent = money(filteredTotals.balance);
+
+    tbody.innerHTML = records.length
+      ? records.map(item => {
+          const effectiveStatus = revenueIsPastDue(item)
+            ? "overdue"
+            : item.invoice_status;
+
+          const canReceivePayment =
+            item.invoice_status !== "paid"
+            && item.invoice_status !== "cancelled"
+            && Number(item.outstanding_balance || 0) > 0;
+
+          return `
+            <tr>
+              <td>
+                <div class="invoice-number">${esc(item.invoice_number)}</div>
+                ${item.payment_reference
+                  ? `<div class="field-help">Ref: ${esc(item.payment_reference)}</div>`
+                  : ""}
+              </td>
+
+              <td>
+                <strong>${esc(item.client_name)}</strong>
+                <div class="field-help">${esc(item.properties?.property_name || "No property")}</div>
+              </td>
+
+              <td>${esc(item.invoice_date)}</td>
+              <td>${esc(item.due_date)}</td>
+              <td class="number-cell">${esc(money(item.amount_before_hst))}</td>
+              <td class="number-cell">${esc(money(item.hst_collected))}</td>
+              <td class="number-cell"><strong>${esc(money(item.invoice_total))}</strong></td>
+              <td class="number-cell">${esc(money(item.amount_paid))}</td>
+              <td class="number-cell">
+                <span class="${Number(item.outstanding_balance || 0) > 0 ? "balance-due" : "balance-clear"}">
+                  ${esc(money(item.outstanding_balance))}
+                </span>
+              </td>
+
+              <td>
+                <span class="status-pill ${esc(revenueStatusClass(effectiveStatus))}">
+                  ${esc(revenueStatusLabel(effectiveStatus))}
+                </span>
+              </td>
+
+              <td>
+                <div class="table-actions">
+                  ${item.invoice_status === "draft"
+                    ? `<button class="table-action-btn" data-revenue-action="sent" data-id="${esc(item.id)}">Mark Sent</button>`
+                    : ""}
+
+                  ${canReceivePayment
+                    ? `<button class="primary-btn" data-revenue-action="payment" data-id="${esc(item.id)}">Record Payment</button>`
+                    : ""}
+
+                  <button class="table-action-btn" data-revenue-action="edit" data-id="${esc(item.id)}">Edit</button>
+
+                  ${item.invoice_status !== "cancelled" && item.invoice_status !== "paid"
+                    ? `<button class="table-action-btn" data-revenue-action="cancel" data-id="${esc(item.id)}">Cancel</button>`
+                    : ""}
+
+                  <button class="danger-btn" data-revenue-action="delete" data-id="${esc(item.id)}">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("")
+      : `<tr><td colspan="11" class="table-empty">No invoices match the selected filters.</td></tr>`;
+
+    updateRevenueTotals();
+  }
+
+  document.getElementById("revenueTableBody").addEventListener("click", event => {
+    const button = event.target.closest("[data-revenue-action]");
+    if (!button) return;
+
+    const action = button.dataset.revenueAction;
+    const id = button.dataset.id;
+
+    if (action === "edit") editRevenue(id);
+    if (action === "delete") deleteRevenue(id);
+    if (action === "sent") markInvoiceSent(id);
+    if (action === "payment") openPaymentModal(id);
+    if (action === "cancel") cancelInvoice(id);
+  });
+
+  [
+    "revenueSearch",
+    "revenueFilterStatus",
+    "revenueFilterProperty",
+    "revenueFilterFrom",
+    "revenueFilterTo",
+    "revenueFilterDue"
+  ].forEach(id => {
+    document.getElementById(id).addEventListener(
+      id === "revenueSearch" ? "input" : "change",
+      renderRevenue
+    );
+  });
+
+  document.getElementById("clearRevenueFilters").addEventListener("click", () => {
+    document.getElementById("revenueSearch").value = "";
+    document.getElementById("revenueFilterStatus").value = "";
+    document.getElementById("revenueFilterProperty").value = "";
+    document.getElementById("revenueFilterFrom").value = "";
+    document.getElementById("revenueFilterTo").value = "";
+    document.getElementById("revenueFilterDue").value = "";
+    renderRevenue();
+  });
+
+
   document.getElementById("signOutButton").addEventListener("click", async () => {
     if (db) await db.auth.signOut();
     location.href = "login.html";
@@ -1835,13 +3010,47 @@
 
     try {
       if (!await requireManager()) return;
+
       await loadProperties();
-      await loadExpenses();
+      await resetRevenueForm();
+
+      const results = await Promise.allSettled([
+        loadExpenses(),
+        loadRevenue()
+      ]);
+
+      const expenseResult = results[0];
+      const revenueResult = results[1];
+
+      if (expenseResult.status === "rejected") {
+        console.error(expenseResult.reason);
+        setMessage(
+          expenseResult.reason?.message || "Unable to load expenses.",
+          "error"
+        );
+        document.getElementById("expenseTableBody").innerHTML =
+          `<tr><td colspan="9" class="table-empty">${esc(
+            expenseResult.reason?.message || "Unable to load expenses."
+          )}</td></tr>`;
+      }
+
+      if (revenueResult.status === "rejected") {
+        console.error(revenueResult.reason);
+        setRevenueMessage(
+          revenueResult.reason?.message || "Unable to load revenue.",
+          "error"
+        );
+        document.getElementById("revenueTableBody").innerHTML =
+          `<tr><td colspan="11" class="table-empty">${esc(
+            revenueResult.reason?.message || "Unable to load revenue."
+          )}</td></tr>`;
+      }
+
+      updateRevenueTotals();
     } catch (error) {
       console.error(error);
       setMessage(error.message || "Unable to load Finance.", "error");
-      document.getElementById("expenseTableBody").innerHTML =
-        `<tr><td colspan="9" class="table-empty">${esc(error.message || "Unable to load expenses.")}</td></tr>`;
+      setRevenueMessage(error.message || "Unable to load Finance.", "error");
     }
   }
 
