@@ -3,566 +3,1069 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Finance | NSC CleanOps</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
-    :root{
-      --navy:#071f35;--navy2:#0b2f4f;--blue:#2f8fca;--blue-light:#eaf6fc;
-      --bg:#f5f8fb;--surface:#fff;--border:#dfe8ef;--text:#17324d;--muted:#6c7e8f;
-      --green:#1f8f64;--green-light:#e9f8f1;--amber:#aa7214;--amber-light:#fff8e7;
-      --red:#c94747;--red-light:#fff0f0;--shadow:0 12px 32px rgba(18,50,77,.09)
+    :root {
+      --navy-950: #071f35;
+      --navy-900: #0b2f4f;
+      --navy-800: #123f65;
+
+      --blue-500: #2f8fca;
+      --blue-100: #eaf6fc;
+
+      --page-bg: #f4f7fa;
+      --surface: #ffffff;
+      --border: #dfe7ee;
+
+      --text: #17324d;
+      --muted: #6f8090;
+
+      --green: #1f8f64;
+      --green-bg: #eaf8f2;
+
+      --amber: #a66d0f;
+      --amber-bg: #fff7e6;
+
+      --red: #c74949;
+      --red-bg: #fff0f0;
+
+      --shadow: 0 12px 32px rgba(18, 50, 77, 0.08);
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:"Poppins",sans-serif}
-    button,input,select,textarea{font:inherit}
-    .shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
-    .sidebar{position:fixed;inset:0 auto 0 0;width:250px;padding:26px 20px;background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;display:flex;flex-direction:column}
-    .brand{padding:0 8px 24px;border-bottom:1px solid rgba(255,255,255,.12)}
-    .brand h1{margin:0;font-family:"Montserrat";font-size:22px}.brand p{margin:6px 0 0;color:#afc3d2;font-size:11px}
-    .nav{display:grid;gap:7px;margin-top:24px}.nav a{padding:11px 13px;border-radius:9px;color:#d5e2eb;text-decoration:none;font-size:13px}.nav a:hover,.nav a.active{background:rgba(47,143,202,.2);color:#fff}
-    .logout{margin-top:auto;padding:11px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer}
-    .main{grid-column:2;min-width:0}.topbar{min-height:72px;padding:17px 30px;background:#fff;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-    .topbar h2{margin:0;font-family:"Montserrat";font-size:20px}.topbar span{color:var(--muted);font-size:12px}
-    .clock{text-align:right;display:grid;gap:2px}.clock strong{font-family:"Montserrat";font-size:17px}.clock span{font-size:9px}
-    .content{padding:28px}.hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:22px}.hero h3{margin:0;font-family:"Montserrat";font-size:29px}.hero p{margin:7px 0 0;color:var(--muted);font-size:12px}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid var(--border);background:#fff;color:var(--text);padding:10px 14px;border-radius:9px;cursor:pointer;font-size:11px;font-weight:600}.tab.active{background:var(--navy2);border-color:var(--navy2);color:#fff}
-    .tab-panel{display:none}.tab-panel.active{display:block}
-    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
-    .card,.panel{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
-    .card{padding:17px}.card-label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}.card-value{margin-top:7px;font-family:"Montserrat";font-size:25px;font-weight:700}.card-note{margin-top:5px;color:var(--muted);font-size:9px}
-    .panel{padding:19px;margin-bottom:18px}.panel-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.panel-title{margin:0;font-family:"Montserrat";font-size:16px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);text-decoration:none;font-size:10px;font-weight:600;cursor:pointer}.btn-primary{background:var(--navy2);border-color:var(--navy2);color:#fff}.btn-danger{color:var(--red);border-color:#efcaca}.btn-small{min-height:30px;padding:6px 9px;font-size:9px}
-    .form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
-    input,select,textarea{width:100%;padding:10px 11px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-size:11px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,143,202,.12)}textarea{min-height:86px;resize:vertical}
-    .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px;flex-wrap:wrap}
-    .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:900px}.table th{text-align:left;padding:10px;border-bottom:1px solid var(--border);font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}.table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:9px;vertical-align:top}.table tr:last-child td{border-bottom:0}
-    .pill{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:700}.pill-green{color:var(--green);background:var(--green-light)}.pill-amber{color:var(--amber);background:var(--amber-light)}.pill-red{color:var(--red);background:var(--red-light)}.pill-blue{color:#2078a9;background:var(--blue-light)}
-    .empty,.loading{padding:30px 10px;text-align:center;color:var(--muted);font-size:10px}.message{display:none;padding:11px 13px;border-radius:9px;margin-bottom:15px;font-size:10px}.message.show{display:block}.message.success{background:var(--green-light);color:var(--green)}.message.error{background:var(--red-light);color:var(--red)}
-    .row-actions{display:flex;gap:6px;flex-wrap:wrap}.summary-line{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:10px}.summary-line:last-child{border-bottom:0}.summary-line strong{font-family:"Montserrat"}
-    .setup-warning{padding:14px;border-radius:10px;background:var(--amber-light);border:1px solid #f0ddb1;color:#7a5713;font-size:10px;line-height:1.6;margin-bottom:16px}
-    @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{display:none}.main{grid-column:1}.content,.topbar{padding-left:17px;padding-right:17px}.stats,.form-grid{grid-template-columns:1fr}.clock{display:none}.hero{align-items:flex-start;flex-direction:column}}
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page-bg);
+      color: var(--text);
+      font-family: "Poppins", sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+    }
+
+    /* =========================================================
+       SIDEBAR
+    ========================================================= */
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 250px;
+      padding: 26px 20px;
+      background: linear-gradient(
+        180deg,
+        var(--navy-950),
+        var(--navy-900)
+      );
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+    }
+
+    .brand {
+      padding: 0 8px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .brand-name {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      margin: 6px 0 0;
+      color: #afc3d2;
+      font-size: 11px;
+    }
+
+    .nav-section-label {
+      margin: 24px 10px 8px;
+      color: #7795aa;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 10px 13px;
+      border-radius: 9px;
+      color: #d8e5ed;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      transition: 0.18s ease;
+    }
+
+    .sidebar-nav a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .sidebar-nav a.active {
+      background: rgba(47, 143, 202, 0.22);
+      color: #ffffff;
+    }
+
+    .nav-icon {
+      width: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 18px;
+    }
+
+    .user-card {
+      margin-bottom: 10px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .user-name {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .user-role {
+      margin: 3px 0 0;
+      color: #adc3d2;
+      font-size: 9px;
+    }
+
+    .sign-out-btn {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .sign-out-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* =========================================================
+       MAIN PAGE
+    ========================================================= */
+
+    .main {
+      grid-column: 2;
+      min-width: 0;
+    }
+
+    .topbar {
+      min-height: 74px;
+      padding: 16px 30px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .topbar-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .live-clock {
+      text-align: right;
+    }
+
+    .live-time {
+      display: block;
+      font-family: "Montserrat", sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .live-date {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .content {
+      padding: 28px 30px 40px;
+    }
+
+    .page-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .page-heading h2 {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 29px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .page-heading p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* =========================================================
+       TABS
+    ========================================================= */
+
+    .finance-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .finance-tab {
+      min-height: 38px;
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .finance-tab:hover {
+      border-color: #b8c8d4;
+    }
+
+    .finance-tab.active {
+      border-color: var(--navy-900);
+      background: var(--navy-900);
+      color: #ffffff;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* =========================================================
+       SHARED CARDS AND PANELS
+    ========================================================= */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card,
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card {
+      min-height: 128px;
+      padding: 17px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.55px;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 9px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .stat-note.positive {
+      color: var(--green);
+    }
+
+    .stat-note.warning {
+      color: var(--amber);
+    }
+
+    .panel {
+      padding: 19px;
+      margin-bottom: 18px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 15px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .panel-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .two-column-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+    }
+
+    .summary-row:last-child {
+      border-bottom: 0;
+    }
+
+    .summary-row strong {
+      font-family: "Montserrat", sans-serif;
+      font-size: 11px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 8px;
+      font-weight: 700;
+    }
+
+    .status-pill.green {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .status-pill.amber {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .status-pill.red {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .status-pill.blue {
+      background: var(--blue-100);
+      color: #2479a8;
+    }
+
+    .placeholder-panel {
+      min-height: 320px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .placeholder-inner {
+      max-width: 420px;
+      padding: 28px;
+    }
+
+    .placeholder-icon {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 15px;
+      border-radius: 14px;
+      background: var(--blue-100);
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+    }
+
+    .placeholder-inner h3 {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 18px;
+    }
+
+    .placeholder-inner p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    .mobile-menu-btn {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #ffffff;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    @media (max-width: 1100px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .two-column-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        grid-column: 1;
+      }
+
+      .mobile-menu-btn {
+        display: inline-grid;
+        place-items: center;
+      }
+
+      .topbar {
+        padding-left: 17px;
+        padding-right: 17px;
+      }
+
+      .content {
+        padding: 22px 17px 34px;
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .live-clock {
+        display: none;
+      }
+
+      .page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
+
 <body>
-<div class="shell">
-  <aside class="sidebar">
-    <div class="brand"><h1>NSC CleanOps</h1><p>Finance Management</p></div>
-    <nav class="nav">
-      <a href="manager-dashboard.html">Dashboard</a>
-      <a href="properties.html">Properties</a>
-      <a href="turnovers.html">Turnovers</a>
-      <a href="assignments.html">Assignments</a>
-      <a href="checklists.html">Checklists</a>
-      <a href="inventory.html">Inventory</a>
-      <a href="photos.html">Photos</a>
-      <a href="issues.html">Issues</a>
-      <a href="reports.html">Reports</a>
-      <a class="active" href="finance.html">Finance</a>
-      <a href="settings.html">Settings</a>
-    </nav>
-    <button class="logout" id="logoutBtn">Sign Out</button>
-  </aside>
+  <div class="app-shell">
 
-  <main class="main">
-    <header class="topbar">
-      <div><h2>Finance</h2><span>Revenue, expenses, HST, payments and payroll</span></div>
-      <div class="clock"><strong id="liveTime">--:--</strong><span id="liveDate">Loading date</span></div>
-    </header>
+    <!-- =======================================================
+         SIDEBAR
+    ======================================================== -->
+    <aside class="sidebar" id="sidebar">
 
-    <div class="content">
-      <div class="hero">
-        <div><h3>Finance Centre</h3><p>Keep income, expenses, HST and payroll organized in one place.</p></div>
+      <div class="brand">
+        <h1 class="brand-name">NSC CleanOps</h1>
+        <p class="brand-subtitle">Operations Management</p>
       </div>
 
-      <div id="pageMessage" class="message"></div>
+      <div class="nav-section-label">Workspace</div>
 
-      <div class="tabs">
-        <button class="tab active" data-tab="overview">Overview</button>
-        <button class="tab" data-tab="expenses">Expenses</button>
-        <button class="tab" data-tab="payments">Revenue & Payments</button>
-        <button class="tab" data-tab="payroll">Payroll</button>
+      <nav class="sidebar-nav">
+        <a href="manager-dashboard.html">
+          <span class="nav-icon">⌂</span>
+          Dashboard
+        </a>
+
+        <a href="properties.html">
+          <span class="nav-icon">▦</span>
+          Properties
+        </a>
+
+        <a href="turnovers.html">
+          <span class="nav-icon">□</span>
+          Turnovers
+        </a>
+
+        <a href="assignments.html">
+          <span class="nav-icon">✓</span>
+          Assignments
+        </a>
+      </nav>
+
+      <div class="nav-section-label">Operations</div>
+
+      <nav class="sidebar-nav">
+        <a href="checklists.html">
+          <span class="nav-icon">≡</span>
+          Checklists
+        </a>
+
+        <a href="inventory.html">
+          <span class="nav-icon">▤</span>
+          Inventory
+        </a>
+
+        <a href="photos.html">
+          <span class="nav-icon">◫</span>
+          Photos
+        </a>
+
+        <a href="issues.html">
+          <span class="nav-icon">!</span>
+          Issues
+        </a>
+
+        <a href="reports.html">
+          <span class="nav-icon">▥</span>
+          Reports
+        </a>
+
+        <a href="finance.html" class="active">
+          <span class="nav-icon">$</span>
+          Finance
+        </a>
+      </nav>
+
+      <div class="nav-section-label">System</div>
+
+      <nav class="sidebar-nav">
+        <a href="settings.html">
+          <span class="nav-icon">⚙</span>
+          Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <p class="user-name" id="sidebarUserName">Uttam Preet</p>
+          <p class="user-role" id="sidebarUserRole">Manager</p>
+        </div>
+
+        <button class="sign-out-btn" id="signOutButton" type="button">
+          Sign Out
+        </button>
       </div>
 
-      <section id="overviewPanel" class="tab-panel active">
-        <div class="stats">
-          <div class="card"><div class="card-label">Revenue Today</div><div class="card-value" id="revenueToday">$0.00</div><div class="card-note">Before HST</div></div>
-          <div class="card"><div class="card-label">Revenue This Week</div><div class="card-value" id="revenueWeek">$0.00</div><div class="card-note">Before HST</div></div>
-          <div class="card"><div class="card-label">Revenue This Month</div><div class="card-value" id="revenueMonth">$0.00</div><div class="card-note">Before HST</div></div>
-          <div class="card"><div class="card-label">Expenses This Month</div><div class="card-value" id="expensesMonth">$0.00</div><div class="card-note">Before HST</div></div>
+    </aside>
+
+    <!-- =======================================================
+         MAIN CONTENT
+    ======================================================== -->
+    <main class="main">
+
+      <header class="topbar">
+        <div class="topbar-left">
+
+          <button
+            class="mobile-menu-btn"
+            id="mobileMenuButton"
+            type="button"
+            aria-label="Open menu"
+          >
+            ☰
+          </button>
+
+          <div>
+            <h1 class="topbar-title">Finance</h1>
+            <p class="topbar-subtitle">
+              Revenue, expenses, HST, payments and payroll
+            </p>
+          </div>
+
         </div>
 
-        <div class="stats">
-          <div class="card"><div class="card-label">HST Collected</div><div class="card-value" id="hstCollected">$0.00</div><div class="card-note">This month</div></div>
-          <div class="card"><div class="card-label">HST Paid</div><div class="card-value" id="hstPaid">$0.00</div><div class="card-note">This month</div></div>
-          <div class="card"><div class="card-label">Net HST</div><div class="card-value" id="netHst">$0.00</div><div class="card-note">Collected minus paid</div></div>
-          <div class="card"><div class="card-label">Outstanding</div><div class="card-value" id="outstandingRevenue">$0.00</div><div class="card-note">Unpaid invoices</div></div>
+        <div class="live-clock">
+          <span class="live-time" id="liveTime">--:--</span>
+          <span class="live-date" id="liveDate">Loading date</span>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <section class="page-heading">
+          <div>
+            <h2>Finance Centre</h2>
+            <p>
+              Keep company income, expenses, HST and payroll organized in one place.
+            </p>
+          </div>
+        </section>
+
+        <!-- ===================================================
+             FINANCE TABS
+        ==================================================== -->
+        <div class="finance-tabs" role="tablist">
+
+          <button
+            class="finance-tab active"
+            type="button"
+            data-tab="overview"
+          >
+            Overview
+          </button>
+
+          <button
+            class="finance-tab"
+            type="button"
+            data-tab="expenses"
+          >
+            Expenses
+          </button>
+
+          <button
+            class="finance-tab"
+            type="button"
+            data-tab="revenue"
+          >
+            Revenue & Payments
+          </button>
+
+          <button
+            class="finance-tab"
+            type="button"
+            data-tab="payroll"
+          >
+            Payroll
+          </button>
+
         </div>
 
-        <div class="stats">
-          <div class="card"><div class="card-label">Hours Scheduled Today</div><div class="card-value" id="hoursScheduled">0.0</div><div class="card-note">From today's turnovers</div></div>
-          <div class="card"><div class="card-label">Hours Completed Today</div><div class="card-value" id="hoursCompleted">0.0</div><div class="card-note">Clock-in to clock-out</div></div>
-          <div class="card"><div class="card-label">Next Payroll Review</div><div class="card-value" id="nextReview">—</div><div class="card-note">Every second Tuesday</div></div>
-          <div class="card"><div class="card-label">Next Payday</div><div class="card-value" id="nextPayday">—</div><div class="card-note">Every second Wednesday</div></div>
-        </div>
+        <!-- ===================================================
+             OVERVIEW TAB
+        ==================================================== -->
+        <section
+          class="tab-panel active"
+          id="overviewPanel"
+        >
 
-        <div class="grid">
-          <section class="panel">
-            <div class="panel-header"><h4 class="panel-title">Property Revenue</h4></div>
-            <div id="propertySummary"><div class="loading">Loading property totals…</div></div>
-          </section>
-          <section class="panel">
-            <div class="panel-header"><h4 class="panel-title">Payment Status</h4></div>
-            <div id="paymentSummary"><div class="loading">Loading payments…</div></div>
-          </section>
-        </div>
-      </section>
+          <div class="stats-grid">
 
-      <section id="expensesPanel" class="tab-panel">
-        <section class="panel">
-          <div class="panel-header"><h4 class="panel-title" id="expenseFormTitle">Add Expense</h4></div>
-          <form id="expenseForm">
-            <input type="hidden" id="expenseId">
-            <div class="form-grid">
-              <div class="field"><label for="expenseDate">Expense Date</label><input id="expenseDate" type="date" required></div>
-              <div class="field"><label for="expenseVendor">Vendor</label><input id="expenseVendor" required placeholder="Costco, Home Depot…"></div>
-              <div class="field"><label for="expenseCategory">Category</label>
-                <select id="expenseCategory" required>
-                  <option value="">Select category</option><option>Cleaning Supplies</option><option>Fuel</option><option>Vehicle</option><option>Equipment</option><option>Insurance</option><option>Advertising</option><option>Software</option><option>Office</option><option>Repairs</option><option>Payroll</option><option>Subcontractor</option><option>Other</option>
-                </select>
+            <article class="stat-card">
+              <div class="stat-label">Revenue Today</div>
+              <div class="stat-value" id="revenueToday">$0.00</div>
+              <div class="stat-note">Before HST</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Revenue This Week</div>
+              <div class="stat-value" id="revenueThisWeek">$0.00</div>
+              <div class="stat-note">Before HST</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Revenue This Month</div>
+              <div class="stat-value" id="revenueThisMonth">$0.00</div>
+              <div class="stat-note">Before HST</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Expenses This Month</div>
+              <div class="stat-value" id="expensesThisMonth">$0.00</div>
+              <div class="stat-note">Before HST</div>
+            </article>
+
+          </div>
+
+          <div class="stats-grid">
+
+            <article class="stat-card">
+              <div class="stat-label">HST Collected</div>
+              <div class="stat-value" id="hstCollected">$0.00</div>
+              <div class="stat-note">Current month</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">HST Paid</div>
+              <div class="stat-value" id="hstPaid">$0.00</div>
+              <div class="stat-note">Current month</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Net HST Owing</div>
+              <div class="stat-value" id="netHstOwing">$0.00</div>
+              <div class="stat-note">Collected minus paid</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Outstanding Payments</div>
+              <div class="stat-value" id="outstandingPayments">$0.00</div>
+              <div class="stat-note warning">Unpaid invoices</div>
+            </article>
+
+          </div>
+
+          <div class="stats-grid">
+
+            <article class="stat-card">
+              <div class="stat-label">Hours Scheduled Today</div>
+              <div class="stat-value" id="scheduledHoursToday">0.0</div>
+              <div class="stat-note">From today's turnovers</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Hours Completed Today</div>
+              <div class="stat-value" id="completedHoursToday">0.0</div>
+              <div class="stat-note">Clock-in to clock-out</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Next Payroll Review</div>
+              <div class="stat-value" id="nextPayrollReview">Jul 21</div>
+              <div class="stat-note">Every second Tuesday</div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-label">Next Payday</div>
+              <div class="stat-value" id="nextPayday">Jul 22</div>
+              <div class="stat-note">Every second Wednesday</div>
+            </article>
+
+          </div>
+
+          <div class="two-column-grid">
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Property Revenue</h3>
+                  <p class="panel-subtitle">
+                    Revenue totals will appear by property.
+                  </p>
+                </div>
+
+                <span class="status-pill blue">This Month</span>
               </div>
-              <div class="field"><label for="expenseProperty">Property</label><select id="expenseProperty"><option value="">Not property specific</option></select></div>
-              <div class="field"><label for="expenseBeforeHst">Expense Before HST</label><input id="expenseBeforeHst" type="number" min="0" step="0.01" required value="0.00"></div>
-              <div class="field"><label for="expenseHst">HST Paid</label><input id="expenseHst" type="number" min="0" step="0.01" required value="0.00"></div>
-              <div class="field"><label for="expenseTotal">Total Receipt Amount</label><input id="expenseTotal" type="number" min="0" step="0.01" required value="0.00"></div>
-              <div class="field"><label for="expensePaymentMethod">Payment Method</label><select id="expensePaymentMethod"><option value="">Select</option><option>Business Credit Card</option><option>Business Debit</option><option>Cash</option><option>Personal Card</option><option>E-Transfer</option><option>Other</option></select></div>
-              <div class="field"><label for="expenseReceipt">Receipt Photo or PDF</label><input id="expenseReceipt" type="file" accept="image/*,.pdf"></div>
-              <div class="field full"><label for="expenseNotes">Notes</label><textarea id="expenseNotes" placeholder="Optional details"></textarea></div>
+
+              <div id="propertyRevenueSummary">
+
+                <div class="summary-row">
+                  <span>Red Maple Retreat</span>
+                  <strong>$0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                  <span>Additional properties</span>
+                  <strong>$0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                  <span>Total revenue before HST</span>
+                  <strong>$0.00</strong>
+                </div>
+
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Payment Status</h3>
+                  <p class="panel-subtitle">
+                    Invoice and payment activity.
+                  </p>
+                </div>
+
+                <span class="status-pill amber">Setup Required</span>
+              </div>
+
+              <div id="paymentStatusSummary">
+
+                <div class="summary-row">
+                  <span>Paid invoices</span>
+                  <strong>0</strong>
+                </div>
+
+                <div class="summary-row">
+                  <span>Unpaid invoices</span>
+                  <strong>0</strong>
+                </div>
+
+                <div class="summary-row">
+                  <span>Overdue invoices</span>
+                  <strong>0</strong>
+                </div>
+
+                <div class="summary-row">
+                  <span>Total received</span>
+                  <strong>$0.00</strong>
+                </div>
+
+              </div>
+            </section>
+
+          </div>
+
+        </section>
+
+        <!-- ===================================================
+             EXPENSES PLACEHOLDER
+        ==================================================== -->
+        <section
+          class="tab-panel"
+          id="expensesPanel"
+        >
+          <section class="panel placeholder-panel">
+            <div class="placeholder-inner">
+              <div class="placeholder-icon">🧾</div>
+              <h3>Expenses</h3>
+              <p>
+                In Part 2, this section will receive the complete expense form,
+                receipt upload, history table, edit controls and delete controls.
+              </p>
             </div>
-            <div class="form-actions"><button type="button" class="btn" id="cancelExpenseBtn" hidden>Cancel Edit</button><button type="submit" class="btn btn-primary" id="saveExpenseBtn">Save Expense</button></div>
-          </form>
+          </section>
         </section>
 
-        <section class="panel">
-          <div class="panel-header"><h4 class="panel-title">Expense History</h4></div>
-          <div class="table-wrap"><table class="table"><thead><tr><th>Date</th><th>Vendor</th><th>Category</th><th>Property</th><th>Before HST</th><th>HST Paid</th><th>Receipt Total</th><th>Receipt</th><th>Actions</th></tr></thead><tbody id="expenseRows"><tr><td colspan="9" class="loading">Loading expenses…</td></tr></tbody></table></div>
-        </section>
-      </section>
-
-      <section id="paymentsPanel" class="tab-panel">
-        <section class="panel">
-          <div class="panel-header"><h4 class="panel-title" id="billingFormTitle">Add Property Invoice</h4></div>
-          <form id="billingForm">
-            <input type="hidden" id="billingId">
-            <div class="form-grid">
-              <div class="field"><label for="billingProperty">Property</label><select id="billingProperty" required><option value="">Select property</option></select></div>
-              <div class="field"><label for="periodStart">Billing Period Start</label><input id="periodStart" type="date" required></div>
-              <div class="field"><label for="periodEnd">Billing Period End</label><input id="periodEnd" type="date" required></div>
-              <div class="field"><label for="invoiceNumber">Invoice Number</label><input id="invoiceNumber" placeholder="Optional"></div>
-              <div class="field"><label for="revenueBeforeHst">Revenue Before HST</label><input id="revenueBeforeHst" type="number" min="0" step="0.01" required value="0.00"></div>
-              <div class="field"><label for="billingHst">HST Collected</label><input id="billingHst" type="number" min="0" step="0.01" required value="0.00"></div>
-              <div class="field"><label for="invoiceTotal">Invoice Total</label><input id="invoiceTotal" type="number" min="0" step="0.01" required value="0.00"></div>
-              <div class="field"><label for="invoiceDate">Invoice Date</label><input id="invoiceDate" type="date"></div>
-              <div class="field"><label for="dueDate">Due Date</label><input id="dueDate" type="date"></div>
-              <div class="field"><label for="paymentStatus">Status</label><select id="paymentStatus"><option value="draft">Draft</option><option value="sent">Sent</option><option value="unpaid" selected>Unpaid</option><option value="overdue">Overdue</option><option value="paid">Paid</option></select></div>
-              <div class="field full"><label for="billingNotes">Notes</label><textarea id="billingNotes"></textarea></div>
+        <!-- ===================================================
+             REVENUE PLACEHOLDER
+        ==================================================== -->
+        <section
+          class="tab-panel"
+          id="revenuePanel"
+        >
+          <section class="panel placeholder-panel">
+            <div class="placeholder-inner">
+              <div class="placeholder-icon">💵</div>
+              <h3>Revenue & Payments</h3>
+              <p>
+                This section will include property invoices, revenue before HST,
+                HST collected, outstanding balances and Confirm Paid controls.
+              </p>
             </div>
-            <div class="form-actions"><button type="button" class="btn" id="cancelBillingBtn" hidden>Cancel Edit</button><button type="submit" class="btn btn-primary">Save Invoice</button></div>
-          </form>
+          </section>
         </section>
 
-        <section class="panel">
-          <div class="panel-header"><h4 class="panel-title">Property Payments</h4></div>
-          <div class="table-wrap"><table class="table"><thead><tr><th>Property</th><th>Period</th><th>Before HST</th><th>HST</th><th>Total</th><th>Paid</th><th>Outstanding</th><th>Status</th><th>Actions</th></tr></thead><tbody id="billingRows"><tr><td colspan="9" class="loading">Loading invoices…</td></tr></tbody></table></div>
+        <!-- ===================================================
+             PAYROLL PLACEHOLDER
+        ==================================================== -->
+        <section
+          class="tab-panel"
+          id="payrollPanel"
+        >
+          <section class="panel placeholder-panel">
+            <div class="placeholder-inner">
+              <div class="placeholder-icon">👥</div>
+              <h3>Payroll</h3>
+              <p>
+                This section will include biweekly payroll periods, review dates,
+                paydays, worked hours and payroll completion tracking.
+              </p>
+            </div>
+          </section>
         </section>
-      </section>
 
-      <section id="payrollPanel" class="tab-panel">
-        <section class="panel">
-          <div class="panel-header"><h4 class="panel-title">Payroll Schedule</h4><button class="btn btn-primary" id="addNextPayrollBtn">Add Next Two-Week Period</button></div>
-          <div class="setup-warning">Payroll review is every second Tuesday and payday is every second Wednesday. The starting payday is Wednesday, July 22, 2026.</div>
-          <div class="table-wrap"><table class="table"><thead><tr><th>Pay Period</th><th>Review Date</th><th>Payday</th><th>Scheduled Hours</th><th>Completed Hours</th><th>Gross Payroll</th><th>Status</th><th>Actions</th></tr></thead><tbody id="payrollRows"><tr><td colspan="8" class="loading">Loading payroll periods…</td></tr></tbody></table></div>
-        </section>
-      </section>
-    </div>
-  </main>
-</div>
-
-<div id="paymentModal" style="display:none;position:fixed;inset:0;background:rgba(5,25,42,.55);z-index:20;padding:20px;align-items:center;justify-content:center">
-  <div class="panel" style="width:min(520px,100%);margin:0">
-    <div class="panel-header"><h4 class="panel-title">Confirm Payment Received</h4><button class="btn btn-small" id="closePaymentModal">Close</button></div>
-    <form id="paymentForm">
-      <input type="hidden" id="paymentBillingId">
-      <div class="form-grid" style="grid-template-columns:1fr 1fr">
-        <div class="field"><label for="amountReceived">Amount Received</label><input id="amountReceived" type="number" min="0" step="0.01" required></div>
-        <div class="field"><label for="paymentReceivedDate">Payment Date</label><input id="paymentReceivedDate" type="date" required></div>
-        <div class="field"><label for="receivedMethod">Payment Method</label><select id="receivedMethod"><option>E-Transfer</option><option>Cheque</option><option>Direct Deposit</option><option>Credit Card</option><option>Cash</option><option>Other</option></select></div>
       </div>
-      <div class="form-actions"><button type="submit" class="btn btn-primary">Confirm Paid</button></div>
-    </form>
+    </main>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js"></script>
-<script>
-const db = window.nscSupabase || window.supabaseClient;
-let currentProfile = null;
-let properties = [];
-let expenses = [];
-let billings = [];
-let payrollPeriods = [];
-let turnovers = [];
+  <script>
+    // =========================================================
+    // LIVE CLOCK
+    // =========================================================
 
-const money = value => new Intl.NumberFormat("en-CA",{style:"currency",currency:"CAD"}).format(Number(value || 0));
-const dateText = value => value ? new Intl.DateTimeFormat("en-CA",{month:"short",day:"numeric",year:"numeric"}).format(new Date(value + (String(value).length === 10 ? "T12:00:00" : ""))) : "—";
-const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
-const number = value => Number(value || 0);
-const todayKey = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-};
+    function updateLiveClock() {
+      const now = new Date();
 
-function showMessage(text,type="success"){
-  const el=document.getElementById("pageMessage");
-  el.textContent=text;el.className=`message show ${type}`;
-  window.scrollTo({top:0,behavior:"smooth"});
-  setTimeout(()=>el.className="message",5000);
-}
+      document.getElementById("liveTime").textContent =
+        new Intl.DateTimeFormat("en-CA", {
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit"
+        }).format(now);
 
-function updateClock(){
-  const now=new Date();
-  liveTime.textContent=new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit",second:"2-digit"}).format(now);
-  liveDate.textContent=new Intl.DateTimeFormat("en-CA",{weekday:"long",month:"long",day:"numeric",year:"numeric"}).format(now);
-}
-
-async function authenticate(){
-  if(!db) throw new Error("Supabase client was not found.");
-  const {data:{session}}=await db.auth.getSession();
-  if(!session){location.href="index.html";return false}
-  const {data,error}=await db.from("users").select("*").eq("auth_user_id",session.user.id).single();
-  if(error) throw error;
-  if(!data || !["admin","manager"].includes(data.role)){location.href="index.html";return false}
-  currentProfile=data;
-  return true;
-}
-
-function setDefaultDates(){
-  const today=todayKey();
-  expenseDate.value=today;
-  invoiceDate.value=today;
-  paymentReceivedDate.value=today;
-  const d=new Date();
-  const first=new Date(d.getFullYear(),d.getMonth(),1);
-  periodStart.value=`${first.getFullYear()}-${String(first.getMonth()+1).padStart(2,"0")}-01`;
-  periodEnd.value=today;
-}
-
-async function loadAll(){
-  const [p,e,b,pr,t]=await Promise.all([
-    db.from("properties").select("id,property_name,active").eq("active",true).order("property_name"),
-    db.from("finance_expenses").select("*,properties(property_name)").order("expense_date",{ascending:false}).order("created_at",{ascending:false}),
-    db.from("property_billing").select("*,properties(property_name)").order("billing_period_end",{ascending:false}),
-    db.from("payroll_periods").select("*").order("payday",{ascending:true}),
-    db.from("turnovers").select("id,property_id,turnover_date,scheduled_start,scheduled_end,check_in_time,check_out_time,status,properties(property_name)").order("turnover_date",{ascending:false}).limit(500)
-  ]);
-  for(const result of [p,e,b,pr,t]) if(result.error) throw result.error;
-  properties=p.data||[];expenses=e.data||[];billings=b.data||[];payrollPeriods=pr.data||[];turnovers=t.data||[];
-  fillPropertySelects();
-  renderAll();
-}
-
-function fillPropertySelects(){
-  const options=properties.map(p=>`<option value="${esc(p.id)}">${esc(p.property_name)}</option>`).join("");
-  expenseProperty.innerHTML=`<option value="">Not property specific</option>${options}`;
-  billingProperty.innerHTML=`<option value="">Select property</option>${options}`;
-}
-
-function monthRange(){
-  const now=new Date();
-  const start=new Date(now.getFullYear(),now.getMonth(),1);
-  const end=new Date(now.getFullYear(),now.getMonth()+1,0);
-  const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  return [key(start),key(end)];
-}
-
-function weekRange(){
-  const now=new Date();const day=now.getDay();const diff=(day+6)%7;
-  const start=new Date(now);start.setDate(now.getDate()-diff);start.setHours(0,0,0,0);
-  const end=new Date(start);end.setDate(start.getDate()+6);
-  const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  return [key(start),key(end)];
-}
-
-function inRange(date,start,end){return date && date>=start && date<=end}
-
-function scheduledHours(turnover){
-  if(!turnover.scheduled_start || !turnover.scheduled_end) return 0;
-  const start=new Date(turnover.scheduled_start),end=new Date(turnover.scheduled_end);
-  return Math.max(0,(end-start)/3600000);
-}
-function completedHours(turnover){
-  if(!turnover.check_in_time || !turnover.check_out_time) return 0;
-  return Math.max(0,(new Date(turnover.check_out_time)-new Date(turnover.check_in_time))/3600000);
-}
-
-function renderOverview(){
-  const today=todayKey(),[weekStart,weekEnd]=weekRange(),[monthStart,monthEnd]=monthRange();
-
-  const paidOrEarned=billings.filter(b=>b.payment_status!=="draft");
-  const revenueTodayValue=paidOrEarned.filter(b=>b.invoice_date===today).reduce((s,b)=>s+number(b.revenue_before_hst),0);
-  const revenueWeekValue=paidOrEarned.filter(b=>inRange(b.invoice_date,weekStart,weekEnd)).reduce((s,b)=>s+number(b.revenue_before_hst),0);
-  const revenueMonthValue=paidOrEarned.filter(b=>inRange(b.invoice_date,monthStart,monthEnd)).reduce((s,b)=>s+number(b.revenue_before_hst),0);
-  const expensesMonthValue=expenses.filter(e=>inRange(e.expense_date,monthStart,monthEnd)).reduce((s,e)=>s+number(e.amount_before_hst),0);
-  const collected=paidOrEarned.filter(b=>inRange(b.invoice_date,monthStart,monthEnd)).reduce((s,b)=>s+number(b.hst_collected),0);
-  const paid=expenses.filter(e=>inRange(e.expense_date,monthStart,monthEnd)).reduce((s,e)=>s+number(e.hst_paid),0);
-  const outstanding=billings.filter(b=>b.payment_status!=="paid").reduce((s,b)=>s+Math.max(0,number(b.invoice_total)-number(b.amount_received)),0);
-
-  revenueToday.textContent=money(revenueTodayValue);
-  revenueWeek.textContent=money(revenueWeekValue);
-  revenueMonth.textContent=money(revenueMonthValue);
-  expensesMonth.textContent=money(expensesMonthValue);
-  hstCollected.textContent=money(collected);
-  hstPaid.textContent=money(paid);
-  netHst.textContent=money(collected-paid);
-  outstandingRevenue.textContent=money(outstanding);
-
-  const todayTurns=turnovers.filter(t=>t.turnover_date===today);
-  hoursScheduled.textContent=todayTurns.reduce((s,t)=>s+scheduledHours(t),0).toFixed(1);
-  hoursCompleted.textContent=todayTurns.reduce((s,t)=>s+completedHours(t),0).toFixed(1);
-
-  const upcoming=payrollPeriods.find(p=>p.status!=="completed" && p.payday>=today) || payrollPeriods.find(p=>p.status!=="completed");
-  nextReview.textContent=upcoming?dateText(upcoming.review_date):"—";
-  nextPayday.textContent=upcoming?dateText(upcoming.payday):"—";
-
-  const grouped={};
-  billings.forEach(b=>{
-    const name=b.properties?.property_name||"Unknown Property";
-    if(!grouped[name]) grouped[name]={before:0,hst:0,total:0,paid:0};
-    grouped[name].before+=number(b.revenue_before_hst);
-    grouped[name].hst+=number(b.hst_collected);
-    grouped[name].total+=number(b.invoice_total);
-    grouped[name].paid+=number(b.amount_received);
-  });
-  propertySummary.innerHTML=Object.entries(grouped).sort((a,b)=>b[1].before-a[1].before).map(([name,v])=>`
-    <div class="summary-line"><span><strong>${esc(name)}</strong><br><small>${money(v.hst)} HST collected</small></span><span style="text-align:right"><strong>${money(v.before)}</strong><br><small>${money(v.paid)} paid</small></span></div>
-  `).join("")||`<div class="empty">No property revenue entered yet.</div>`;
-
-  const paidCount=billings.filter(b=>b.payment_status==="paid").length;
-  const unpaidCount=billings.filter(b=>b.payment_status==="unpaid"||b.payment_status==="sent").length;
-  const overdueCount=billings.filter(b=>b.payment_status==="overdue").length;
-  paymentSummary.innerHTML=`
-    <div class="summary-line"><span>Paid invoices</span><strong>${paidCount}</strong></div>
-    <div class="summary-line"><span>Unpaid invoices</span><strong>${unpaidCount}</strong></div>
-    <div class="summary-line"><span>Overdue invoices</span><strong>${overdueCount}</strong></div>
-    <div class="summary-line"><span>Total received</span><strong>${money(billings.reduce((s,b)=>s+number(b.amount_received),0))}</strong></div>`;
-}
-
-function renderExpenses(){
-  expenseRows.innerHTML=expenses.map(e=>`
-    <tr>
-      <td>${dateText(e.expense_date)}</td><td><strong>${esc(e.vendor)}</strong></td><td>${esc(e.category)}</td><td>${esc(e.properties?.property_name||"—")}</td>
-      <td>${money(e.amount_before_hst)}</td><td>${money(e.hst_paid)}</td><td><strong>${money(e.receipt_total)}</strong></td>
-      <td>${e.receipt_path?`<button class="btn btn-small" onclick="viewReceipt('${esc(e.receipt_path)}')">View</button>`:"—"}</td>
-      <td><div class="row-actions"><button class="btn btn-small" onclick="editExpense('${e.id}')">Edit</button><button class="btn btn-small btn-danger" onclick="deleteExpense('${e.id}')">Delete</button></div></td>
-    </tr>`).join("")||`<tr><td colspan="9" class="empty">No expenses entered yet.</td></tr>`;
-}
-
-function billingPill(status){
-  const cls=status==="paid"?"pill-green":status==="overdue"?"pill-red":status==="unpaid"||status==="sent"?"pill-amber":"pill-blue";
-  return `<span class="pill ${cls}">${esc(status)}</span>`;
-}
-function renderBillings(){
-  billingRows.innerHTML=billings.map(b=>{
-    const outstanding=Math.max(0,number(b.invoice_total)-number(b.amount_received));
-    return `<tr>
-      <td><strong>${esc(b.properties?.property_name||"Property")}</strong><br>${esc(b.invoice_number||"")}</td>
-      <td>${dateText(b.billing_period_start)} – ${dateText(b.billing_period_end)}</td>
-      <td>${money(b.revenue_before_hst)}</td><td>${money(b.hst_collected)}</td><td><strong>${money(b.invoice_total)}</strong></td>
-      <td>${money(b.amount_received)}</td><td>${money(outstanding)}</td><td>${billingPill(b.payment_status)}</td>
-      <td><div class="row-actions">
-        ${b.payment_status!=="paid"?`<button class="btn btn-small btn-primary" onclick="openPayment('${b.id}')">Confirm Paid</button>`:""}
-        <button class="btn btn-small" onclick="editBilling('${b.id}')">Edit</button>
-        <button class="btn btn-small btn-danger" onclick="deleteBilling('${b.id}')">Delete</button>
-      </div></td></tr>`;
-  }).join("")||`<tr><td colspan="9" class="empty">No invoices entered yet.</td></tr>`;
-}
-
-function renderPayroll(){
-  payrollRows.innerHTML=payrollPeriods.map(p=>`
-    <tr><td>${dateText(p.period_start)} – ${dateText(p.period_end)}</td><td>${dateText(p.review_date)}</td><td><strong>${dateText(p.payday)}</strong></td>
-    <td>${number(p.scheduled_hours).toFixed(1)}</td><td>${number(p.completed_hours).toFixed(1)}</td><td>${money(p.gross_payroll)}</td><td>${billingPill(p.status)}</td>
-    <td><div class="row-actions">${p.status!=="completed"?`<button class="btn btn-small" onclick="setPayrollStatus('${p.id}','preparing')">Preparing</button><button class="btn btn-small btn-primary" onclick="setPayrollStatus('${p.id}','completed')">Complete</button>`:""}</div></td></tr>
-  `).join("")||`<tr><td colspan="8" class="empty">No payroll periods found.</td></tr>`;
-}
-function renderAll(){renderOverview();renderExpenses();renderBillings();renderPayroll()}
-
-expenseBeforeHst.addEventListener("input",()=>{expenseTotal.value=(number(expenseBeforeHst.value)+number(expenseHst.value)).toFixed(2)});
-expenseHst.addEventListener("input",()=>{expenseTotal.value=(number(expenseBeforeHst.value)+number(expenseHst.value)).toFixed(2)});
-revenueBeforeHst.addEventListener("input",()=>{invoiceTotal.value=(number(revenueBeforeHst.value)+number(billingHst.value)).toFixed(2)});
-billingHst.addEventListener("input",()=>{invoiceTotal.value=(number(revenueBeforeHst.value)+number(billingHst.value)).toFixed(2)});
-
-expenseForm.addEventListener("submit",async event=>{
-  event.preventDefault();
-  saveExpenseBtn.disabled=true;
-  try{
-    const id=expenseId.value||null;
-    let receiptPath=null,receiptName=null;
-    const existing=id?expenses.find(e=>e.id===id):null;
-    if(existing){receiptPath=existing.receipt_path;receiptName=existing.receipt_name}
-    const file=expenseReceipt.files[0];
-    if(file){
-      const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-      receiptPath=`${currentProfile.id}/${Date.now()}-${safe}`;
-      const {error}=await db.storage.from("finance-receipts").upload(receiptPath,file,{upsert:false});
-      if(error) throw error;
-      receiptName=file.name;
+      document.getElementById("liveDate").textContent =
+        new Intl.DateTimeFormat("en-CA", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        }).format(now);
     }
-    const payload={
-      expense_date:expenseDate.value,vendor:expenseVendor.value.trim(),category:expenseCategory.value,
-      property_id:expenseProperty.value||null,amount_before_hst:number(expenseBeforeHst.value),
-      hst_paid:number(expenseHst.value),receipt_total:number(expenseTotal.value),
-      payment_method:expensePaymentMethod.value||null,notes:expenseNotes.value.trim()||null,
-      receipt_path:receiptPath,receipt_name:receiptName,created_by:currentProfile.id
-    };
-    const result=id?await db.from("finance_expenses").update(payload).eq("id",id):await db.from("finance_expenses").insert(payload);
-    if(result.error) throw result.error;
-    resetExpenseForm();await loadAll();showMessage(id?"Expense updated.":"Expense saved.");
-  }catch(error){showMessage(error.message||"Could not save expense.","error")}
-  finally{saveExpenseBtn.disabled=false}
-});
 
-function resetExpenseForm(){
-  expenseForm.reset();expenseId.value="";expenseFormTitle.textContent="Add Expense";cancelExpenseBtn.hidden=true;setDefaultDates();
-  expenseBeforeHst.value="0.00";expenseHst.value="0.00";expenseTotal.value="0.00";
-}
-cancelExpenseBtn.addEventListener("click",resetExpenseForm);
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
 
-window.editExpense=id=>{
-  const e=expenses.find(x=>x.id===id);if(!e)return;
-  document.querySelector('[data-tab="expenses"]').click();
-  expenseId.value=e.id;expenseDate.value=e.expense_date;expenseVendor.value=e.vendor;expenseCategory.value=e.category;expenseProperty.value=e.property_id||"";
-  expenseBeforeHst.value=number(e.amount_before_hst).toFixed(2);expenseHst.value=number(e.hst_paid).toFixed(2);expenseTotal.value=number(e.receipt_total).toFixed(2);
-  expensePaymentMethod.value=e.payment_method||"";expenseNotes.value=e.notes||"";expenseFormTitle.textContent="Edit Expense";cancelExpenseBtn.hidden=false;expenseForm.scrollIntoView({behavior:"smooth"});
-};
-window.deleteExpense=async id=>{
-  if(!confirm("Delete this expense?"))return;
-  const e=expenses.find(x=>x.id===id);
-  try{
-    if(e?.receipt_path)await db.storage.from("finance-receipts").remove([e.receipt_path]);
-    const {error}=await db.from("finance_expenses").delete().eq("id",id);if(error)throw error;
-    await loadAll();showMessage("Expense deleted.");
-  }catch(error){showMessage(error.message,"error")}
-};
-window.viewReceipt=async path=>{
-  const {data,error}=await db.storage.from("finance-receipts").createSignedUrl(path,120);
-  if(error){showMessage(error.message,"error");return}
-  window.open(data.signedUrl,"_blank","noopener");
-};
+    // =========================================================
+    // FINANCE TABS
+    // =========================================================
 
-billingForm.addEventListener("submit",async event=>{
-  event.preventDefault();
-  try{
-    const id=billingId.value||null;
-    const payload={
-      property_id:billingProperty.value,billing_period_start:periodStart.value,billing_period_end:periodEnd.value,
-      invoice_number:invoiceNumber.value.trim()||null,revenue_before_hst:number(revenueBeforeHst.value),
-      hst_collected:number(billingHst.value),invoice_total:number(invoiceTotal.value),
-      invoice_date:invoiceDate.value||null,due_date:dueDate.value||null,payment_status:paymentStatus.value,
-      notes:billingNotes.value.trim()||null,created_by:currentProfile.id
-    };
-    const result=id?await db.from("property_billing").update(payload).eq("id",id):await db.from("property_billing").insert(payload);
-    if(result.error)throw result.error;
-    resetBillingForm();await loadAll();showMessage(id?"Invoice updated.":"Invoice saved.");
-  }catch(error){showMessage(error.message||"Could not save invoice.","error")}
-});
-function resetBillingForm(){billingForm.reset();billingId.value="";billingFormTitle.textContent="Add Property Invoice";cancelBillingBtn.hidden=true;setDefaultDates();revenueBeforeHst.value="0.00";billingHst.value="0.00";invoiceTotal.value="0.00";paymentStatus.value="unpaid"}
-cancelBillingBtn.addEventListener("click",resetBillingForm);
-window.editBilling=id=>{
-  const b=billings.find(x=>x.id===id);if(!b)return;
-  document.querySelector('[data-tab="payments"]').click();
-  billingId.value=b.id;billingProperty.value=b.property_id;periodStart.value=b.billing_period_start;periodEnd.value=b.billing_period_end;
-  invoiceNumber.value=b.invoice_number||"";revenueBeforeHst.value=number(b.revenue_before_hst).toFixed(2);billingHst.value=number(b.hst_collected).toFixed(2);invoiceTotal.value=number(b.invoice_total).toFixed(2);
-  invoiceDate.value=b.invoice_date||"";dueDate.value=b.due_date||"";paymentStatus.value=b.payment_status;billingNotes.value=b.notes||"";
-  billingFormTitle.textContent="Edit Property Invoice";cancelBillingBtn.hidden=false;billingForm.scrollIntoView({behavior:"smooth"});
-};
-window.deleteBilling=async id=>{
-  if(!confirm("Delete this invoice?"))return;
-  const {error}=await db.from("property_billing").delete().eq("id",id);
-  if(error)showMessage(error.message,"error");else{await loadAll();showMessage("Invoice deleted.")}
-};
+    const financeTabs = document.querySelectorAll(".finance-tab");
+    const tabPanels = document.querySelectorAll(".tab-panel");
 
-window.openPayment=id=>{
-  const b=billings.find(x=>x.id===id);if(!b)return;
-  paymentBillingId.value=id;amountReceived.value=number(b.invoice_total).toFixed(2);paymentReceivedDate.value=todayKey();
-  paymentModal.style.display="flex";
-};
-closePaymentModal.addEventListener("click",()=>paymentModal.style.display="none");
-paymentModal.addEventListener("click",e=>{if(e.target===paymentModal)paymentModal.style.display="none"});
-paymentForm.addEventListener("submit",async event=>{
-  event.preventDefault();
-  try{
-    const {error}=await db.from("property_billing").update({
-      payment_status:"paid",amount_received:number(amountReceived.value),
-      payment_received_date:paymentReceivedDate.value,payment_method:receivedMethod.value,
-      confirmed_by:currentProfile.id,confirmed_at:new Date().toISOString()
-    }).eq("id",paymentBillingId.value);
-    if(error)throw error;
-    paymentModal.style.display="none";await loadAll();showMessage("Payment confirmed as received.");
-  }catch(error){showMessage(error.message,"error")}
-});
+    financeTabs.forEach((tabButton) => {
+      tabButton.addEventListener("click", () => {
+        const selectedTab = tabButton.dataset.tab;
 
-addNextPayrollBtn.addEventListener("click",async()=>{
-  try{
-    const last=[...payrollPeriods].sort((a,b)=>a.payday.localeCompare(b.payday)).pop();
-    const anchor=last?new Date(last.payday+"T12:00:00"):new Date("2026-07-22T12:00:00");
-    const payday=new Date(anchor);payday.setDate(anchor.getDate()+14);
-    const review=new Date(payday);review.setDate(payday.getDate()-1);
-    const periodEnd=new Date(payday);periodEnd.setDate(payday.getDate()-3);
-    const periodStart=new Date(periodEnd);periodStart.setDate(periodEnd.getDate()-13);
-    const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-    const {error}=await db.from("payroll_periods").insert({
-      period_start:key(periodStart),period_end:key(periodEnd),review_date:key(review),payday:key(payday),
-      status:"upcoming",created_by:currentProfile.id
+        financeTabs.forEach((button) => {
+          button.classList.remove("active");
+        });
+
+        tabPanels.forEach((panel) => {
+          panel.classList.remove("active");
+        });
+
+        tabButton.classList.add("active");
+
+        const selectedPanel = document.getElementById(
+          `${selectedTab}Panel`
+        );
+
+        if (selectedPanel) {
+          selectedPanel.classList.add("active");
+        }
+      });
     });
-    if(error)throw error;
-    await loadAll();showMessage("Next payroll period added.");
-  }catch(error){showMessage(error.message,"error")}
-});
-window.setPayrollStatus=async(id,status)=>{
-  const update={status};if(status==="completed")update.completed_at=new Date().toISOString();
-  const {error}=await db.from("payroll_periods").update(update).eq("id",id);
-  if(error)showMessage(error.message,"error");else{await loadAll();showMessage(`Payroll marked ${status}.`)}
-};
 
-document.querySelectorAll(".tab").forEach(button=>button.addEventListener("click",()=>{
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  document.querySelectorAll(".tab-panel").forEach(x=>x.classList.remove("active"));
-  button.classList.add("active");
-  document.getElementById(`${button.dataset.tab}Panel`).classList.add("active");
-}));
+    // =========================================================
+    // MOBILE SIDEBAR
+    // =========================================================
 
-logoutBtn.addEventListener("click",async()=>{await db.auth.signOut();location.href="index.html"});
+    const sidebar = document.getElementById("sidebar");
+    const mobileMenuButton =
+      document.getElementById("mobileMenuButton");
 
-async function start(){
-  try{
-    updateClock();setInterval(updateClock,1000);setDefaultDates();
-    if(!await authenticate())return;
-    await loadAll();
-    db.channel("finance-live")
-      .on("postgres_changes",{event:"*",schema:"public",table:"finance_expenses"},loadAll)
-      .on("postgres_changes",{event:"*",schema:"public",table:"property_billing"},loadAll)
-      .on("postgres_changes",{event:"*",schema:"public",table:"payroll_periods"},loadAll)
-      .subscribe();
-  }catch(error){
-    document.getElementById("overviewPanel").innerHTML=`<div class="setup-warning"><strong>Finance setup is not complete.</strong><br>${esc(error.message)}<br><br>Run the supplied Finance SQL file in Supabase first, then refresh this page.</div>`;
-    showMessage(error.message||"Finance page could not load.","error");
-  }
-}
-start();
-</script>
+    mobileMenuButton.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+
+    document.addEventListener("click", (event) => {
+      const isMobile =
+        window.matchMedia("(max-width: 780px)").matches;
+
+      if (
+        isMobile &&
+        sidebar.classList.contains("open") &&
+        !sidebar.contains(event.target) &&
+        !mobileMenuButton.contains(event.target)
+      ) {
+        sidebar.classList.remove("open");
+      }
+    });
+
+    // =========================================================
+    // TEMPORARY SIGN OUT BUTTON
+    // Supabase sign-out will be connected in a later part.
+    // =========================================================
+
+    document
+      .getElementById("signOutButton")
+      .addEventListener("click", () => {
+        alert(
+          "The Supabase sign-out connection will be added when we connect the Finance page to the database."
+        );
+      });
+  </script>
 </body>
 </html>
