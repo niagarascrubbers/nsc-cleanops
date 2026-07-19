@@ -48,6 +48,23 @@
     .overdue-title{font-size:11px;font-weight:700;color:var(--red)}
     .overdue-copy{margin-top:4px;font-size:9px;line-height:1.5;color:#755}
     .status-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .dashboard-clock{text-align:right;display:grid;gap:2px}
+    .dashboard-clock strong{font-family:"Montserrat";font-size:18px;color:var(--navy2)}
+    .dashboard-clock span{font-size:9px;color:var(--muted)}
+    .cleaner-row,.review-row,.timeline-row{display:grid;gap:8px;padding:11px 0;border-bottom:1px solid var(--border)}
+    .cleaner-row:last-child,.review-row:last-child,.timeline-row:last-child{border-bottom:0}
+    .cleaner-row{grid-template-columns:minmax(0,1fr) auto;align-items:center}
+    .cleaner-name,.review-title,.timeline-title{font-size:10px;font-weight:700}
+    .cleaner-meta,.review-meta,.timeline-meta{margin-top:3px;color:var(--muted);font-size:8px;line-height:1.45}
+    .progress-track{height:6px;border-radius:999px;background:#e7eef3;overflow:hidden;margin-top:7px}
+    .progress-fill{height:100%;background:var(--blue);border-radius:999px}
+    .timeline-row{grid-template-columns:58px 10px minmax(0,1fr);align-items:start}
+    .timeline-time{font-size:8px;color:var(--muted);white-space:nowrap}
+    .timeline-dot{width:8px;height:8px;border-radius:50%;margin-top:3px;background:var(--blue)}
+    .timeline-dot.red{background:var(--red)}.timeline-dot.amber{background:var(--amber)}.timeline-dot.green{background:var(--green)}
+    .section-stack{display:grid;gap:18px}
+    .compact-panel{margin-bottom:0}
+    @media(max-width:760px){.dashboard-clock{display:none}}
     @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
     @media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{display:none}.main{grid-column:1}.content,.topbar{padding-left:18px;padding-right:18px}.stats{grid-template-columns:1fr}}
   </style>
@@ -66,7 +83,16 @@
     <button class="logout" id="logoutButton">Sign Out</button>
   </aside>
   <main class="main">
-    <header class="topbar"><h2>Manager Dashboard</h2><span>Niagara Scrubbers Cleaning Inc.</span></header>
+    <header class="topbar">
+      <div>
+        <h2>Manager Dashboard</h2>
+        <span>Niagara Scrubbers Cleaning Inc.</span>
+      </div>
+      <div class="dashboard-clock" aria-live="polite">
+        <strong id="liveTime">--:--</strong>
+        <span id="liveDate">Loading date</span>
+      </div>
+    </header>
     <section class="content">
       <div class="hero"><h3 id="welcome">Operations Center</h3><p>Live visibility into attendance, issues, inventory, and turnover progress.</p></div>
       <section class="stats">
@@ -92,6 +118,7 @@ let currentProfile = null;
 let turnovers = [];
 let issues = [];
 let inventoryCounts = [];
+let cleaners = [];
 let realtimeChannel = null;
 let refreshTimer = null;
 
@@ -225,7 +252,7 @@ async function requireManager() {
 }
 
 async function loadData() {
-  const [turnoverResult, issueResult, inventoryResult] = await Promise.all([
+  const [turnoverResult, issueResult, inventoryResult, cleanerResult] = await Promise.all([
     db
       .from("turnovers")
       .select(`
@@ -259,16 +286,192 @@ async function loadData() {
       `)
       .in("stock_status", ["amber", "red"])
       .order("counted_at", { ascending: false })
-      .limit(100)
+      .limit(100),
+
+    db
+      .from("users")
+      .select("id,full_name,role,active")
+      .eq("role", "cleaner")
+      .eq("active", true)
+      .order("full_name", { ascending: true })
   ]);
 
   if (turnoverResult.error) throw turnoverResult.error;
   if (issueResult.error) throw issueResult.error;
   if (inventoryResult.error) throw inventoryResult.error;
+  if (cleanerResult.error) throw cleanerResult.error;
 
   turnovers = turnoverResult.data || [];
   issues = issueResult.data || [];
   inventoryCounts = inventoryResult.data || [];
+  cleaners = cleanerResult.data || [];
+}
+
+
+function updateClock() {
+  const now = new Date();
+
+  document.getElementById("liveTime").textContent =
+    new Intl.DateTimeFormat("en-CA", {
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit"
+    }).format(now);
+
+  document.getElementById("liveDate").textContent =
+    new Intl.DateTimeFormat("en-CA", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    }).format(now);
+}
+
+function getTodayKey() {
+  const now = new Date();
+  return [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0")
+  ].join("-");
+}
+
+function getCleanerStatus(cleaner, todayTurnovers) {
+  const assigned = todayTurnovers.filter(
+    turnover => turnover.assigned_user_id === cleaner.id
+  );
+
+  const working = assigned.find(
+    turnover => turnover.check_in_time && !turnover.check_out_time
+  );
+
+  if (working) {
+    return {
+      label: "Working",
+      className: "pill-green",
+      detail: `${working.properties?.property_name || "Property"} · Checked in ${fmtTime(working.check_in_time)}`
+    };
+  }
+
+  const awaiting = assigned.find(
+    turnover => !["accepted", "declined"].includes(turnover.attendance_status)
+  );
+
+  if (awaiting) {
+    return {
+      label: "Awaiting Response",
+      className: "pill-amber",
+      detail: awaiting.properties?.property_name || "Assigned today"
+    };
+  }
+
+  const accepted = assigned.find(
+    turnover => turnover.attendance_status === "accepted" && !isCompleted(turnover)
+  );
+
+  if (accepted) {
+    return {
+      label: "Accepted",
+      className: "pill-blue",
+      detail: accepted.properties?.property_name || "Scheduled today"
+    };
+  }
+
+  const completed = assigned.find(isCompleted);
+
+  if (completed) {
+    return {
+      label: "Completed",
+      className: "pill-green",
+      detail: completed.properties?.property_name || "Today's work complete"
+    };
+  }
+
+  return {
+    label: "Off Today",
+    className: "pill-blue",
+    detail: "No turnover assigned today"
+  };
+}
+
+function buildDailyTimeline(todayTurnovers) {
+  const events = [];
+
+  todayTurnovers.forEach(turnover => {
+    const propertyName = turnover.properties?.property_name || "Turnover";
+    const cleanerName = turnover.users?.full_name || "Cleaner";
+
+    if (turnover.attendance_response_at) {
+      events.push({
+        time: turnover.attendance_response_at,
+        type: turnover.attendance_status === "declined" ? "red" : "green",
+        title: `${cleanerName} ${turnover.attendance_status || "responded"}`,
+        meta: propertyName,
+        href: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
+      });
+    }
+
+    if (turnover.check_in_time) {
+      events.push({
+        time: turnover.check_in_time,
+        type: "green",
+        title: `${cleanerName} checked in`,
+        meta: propertyName,
+        href: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
+      });
+    }
+
+    if (turnover.check_out_time) {
+      events.push({
+        time: turnover.check_out_time,
+        type: "green",
+        title: `${cleanerName} checked out`,
+        meta: propertyName,
+        href: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
+      });
+    }
+
+    if (isCompleted(turnover)) {
+      events.push({
+        time: turnover.check_out_time || turnover.updated_at,
+        type: "green",
+        title: `${propertyName} submitted for review`,
+        meta: cleanerName,
+        href: `turnover-review.html?id=${encodeURIComponent(turnover.id)}`
+      });
+    }
+  });
+
+  issues.forEach(issue => {
+    const turnover = todayTurnovers.find(item => item.id === issue.turnover_id);
+    if (!turnover) return;
+
+    events.push({
+      time: issue.created_at,
+      type: issue.prevents_guest_ready ? "red" : "amber",
+      title: issue.title || "Issue reported",
+      meta: `${turnover.properties?.property_name || "Property"} · ${issue.users?.full_name || "Cleaner"}`,
+      href: `turnover-review.html?id=${encodeURIComponent(issue.turnover_id)}`
+    });
+  });
+
+  inventoryCounts.forEach(count => {
+    const turnover = todayTurnovers.find(item => item.id === count.turnover_id);
+    if (!turnover) return;
+
+    events.push({
+      time: count.counted_at,
+      type: count.stock_status === "red" ? "red" : "amber",
+      title: `${count.inventory_items?.item_name || "Inventory item"} ${count.stock_status === "red" ? "critical" : "low"}`,
+      meta: turnover.properties?.property_name || "Property",
+      href: `turnover-review.html?id=${encodeURIComponent(count.turnover_id)}`
+    });
+  });
+
+  return events
+    .filter(event => event.time)
+    .sort((a, b) => new Date(b.time) - new Date(a.time))
+    .slice(0, 20);
 }
 
 function buildNotifications() {
@@ -360,12 +563,7 @@ function buildNotifications() {
 }
 
 function render() {
-  const now = new Date();
-  const localDateKey = [
-    now.getFullYear(),
-    String(now.getMonth() + 1).padStart(2, "0"),
-    String(now.getDate()).padStart(2, "0")
-  ].join("-");
+  const localDateKey = getTodayKey();
 
   const todayTurnovers = turnovers.filter(
     turnover => turnover.turnover_date === localDateKey
@@ -521,6 +719,60 @@ function render() {
     </a>
   `).join("") || `<div class="empty">No recent notifications.</div>`;
 
+
+  const reviewTurnovers = turnovers
+    .filter(turnover =>
+      ["completed", "submitted", "submitted_for_review"].includes(
+        String(turnover.status || "").toLowerCase()
+      )
+    )
+    .sort((a, b) =>
+      new Date(b.check_out_time || b.updated_at || 0) -
+      new Date(a.check_out_time || a.updated_at || 0)
+    );
+
+  const reviewsHtml = reviewTurnovers.slice(0, 8).map(turnover => `
+    <div class="review-row">
+      <div>
+        <div class="review-title">${esc(turnover.properties?.property_name || "Turnover")}</div>
+        <div class="review-meta">
+          ${esc(turnover.users?.full_name || "Cleaner")} ·
+          Submitted ${esc(relativeTime(turnover.check_out_time || turnover.updated_at))}
+        </div>
+      </div>
+      <div class="row-actions">
+        <a class="btn btn-primary" href="turnover-review.html?id=${encodeURIComponent(turnover.id)}">
+          Review
+        </a>
+      </div>
+    </div>
+  `).join("") || `<div class="empty">No turnovers waiting for review.</div>`;
+
+  const cleanerStatusHtml = cleaners.map(cleaner => {
+    const status = getCleanerStatus(cleaner, todayTurnovers);
+
+    return `
+      <div class="cleaner-row">
+        <div>
+          <div class="cleaner-name">${esc(cleaner.full_name || "Cleaner")}</div>
+          <div class="cleaner-meta">${esc(status.detail)}</div>
+        </div>
+        <span class="pill ${status.className}">${esc(status.label)}</span>
+      </div>
+    `;
+  }).join("") || `<div class="empty">No active cleaners found.</div>`;
+
+  const timelineHtml = buildDailyTimeline(todayTurnovers).map(event => `
+    <a class="timeline-row" href="${esc(event.href)}" style="color:inherit;text-decoration:none">
+      <span class="timeline-time">${esc(fmtTime(event.time))}</span>
+      <span class="timeline-dot ${esc(event.type)}"></span>
+      <span>
+        <span class="timeline-title">${esc(event.title)}</span>
+        <span class="timeline-meta">${esc(event.meta)}</span>
+      </span>
+    </a>
+  `).join("") || `<div class="empty">No activity recorded today.</div>`;
+
   document.getElementById("dashboardContent").className = "";
   document.getElementById("dashboardContent").innerHTML = `
     <section class="panel attention-panel">
@@ -532,47 +784,64 @@ function render() {
     </section>
 
     <div class="grid">
-      <div>
-        <section class="panel">
+      <div class="section-stack">
+        <section class="panel compact-panel">
           <div class="panel-header">
-            <h4 class="panel-title">Manager Notifications</h4>
-            <span class="panel-link">Live updates enabled</span>
+            <h4 class="panel-title">Today's Turnovers</h4>
+            <a class="panel-link" href="turnovers.html">View all</a>
           </div>
-          <div class="notification-list">${notificationsHtml}</div>
+          ${liveHtml}
         </section>
 
-        <section class="panel">
+        <section class="panel compact-panel">
           <div class="panel-header">
-            <h4 class="panel-title">Needs Reassignment</h4>
-            <a class="panel-link" href="turnovers.html?filter=reassignment">View turnovers</a>
+            <h4 class="panel-title">Reviews Waiting</h4>
+            <a class="panel-link" href="turnovers.html?filter=review">Review queue</a>
           </div>
-          ${reassignHtml}
+          ${reviewsHtml}
         </section>
 
-        <section class="panel">
+        <section class="panel compact-panel">
           <div class="panel-header">
-            <h4 class="panel-title">Open Issue Queue</h4>
+            <h4 class="panel-title">Issue Queue</h4>
           </div>
           ${issueHtml}
         </section>
       </div>
 
-      <div>
-        <section class="panel">
+      <div class="section-stack">
+        <section class="panel compact-panel">
           <div class="panel-header">
-            <h4 class="panel-title">Today's Live Operations</h4>
+            <h4 class="panel-title">Cleaner Status</h4>
+            <span class="panel-link">Today</span>
           </div>
-          ${liveHtml}
+          ${cleanerStatusHtml}
         </section>
 
-        <section class="panel">
+        <section class="panel compact-panel">
           <div class="panel-header">
             <h4 class="panel-title">Inventory Alerts</h4>
           </div>
           ${inventoryHtml}
         </section>
+
+        <section class="panel compact-panel">
+          <div class="panel-header">
+            <h4 class="panel-title">Daily Operations Timeline</h4>
+            <span class="panel-link">Live</span>
+          </div>
+          ${timelineHtml}
+        </section>
       </div>
     </div>
+
+    <section class="panel" style="margin-top:18px">
+      <div class="panel-header">
+        <h4 class="panel-title">Notifications</h4>
+        <span class="panel-link">Live updates enabled</span>
+      </div>
+      <div class="notification-list">${notificationsHtml}</div>
+    </section>
   `;
 }
 
@@ -609,6 +878,11 @@ function startRealtime() {
       { event: "*", schema: "public", table: "inventory_counts" },
       refreshDashboard
     )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "users" },
+      refreshDashboard
+    )
     .subscribe();
 }
 
@@ -621,6 +895,9 @@ document.getElementById("logoutButton").addEventListener("click", async () => {
 (async () => {
   try {
     if (!await requireManager()) return;
+
+    updateClock();
+    setInterval(updateClock, 1000);
 
     await loadData();
     render();
