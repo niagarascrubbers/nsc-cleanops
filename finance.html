@@ -865,6 +865,244 @@
       }
     }
 
+
+    /* =========================================================
+       REPORTS & ANALYTICS
+    ========================================================= */
+
+    .report-toolbar {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1.2fr auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .report-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .report-kpi-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .report-kpi-label {
+      color: var(--muted);
+      font-size: 9px;
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+
+    .report-kpi-value {
+      font-family: "Montserrat", sans-serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--navy);
+      overflow-wrap: anywhere;
+    }
+
+    .report-kpi-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    .report-kpi-value.positive {
+      color: var(--green);
+    }
+
+    .report-kpi-value.negative {
+      color: var(--red);
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 1fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .report-chart-shell {
+      position: relative;
+      min-height: 320px;
+    }
+
+    .report-chart-shell canvas {
+      width: 100%;
+      height: 320px;
+      display: block;
+    }
+
+    .report-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 12px;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .report-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .report-legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background: var(--navy);
+    }
+
+    .report-legend-swatch.expense {
+      background: #d16a6a;
+    }
+
+    .report-legend-swatch.payroll {
+      background: #d6a83d;
+    }
+
+    .report-legend-swatch.profit {
+      background: #3a9d78;
+    }
+
+    .report-breakdown {
+      display: grid;
+      gap: 10px;
+    }
+
+    .breakdown-row {
+      display: grid;
+      grid-template-columns: minmax(110px, 1fr) 2fr auto;
+      align-items: center;
+      gap: 10px;
+      font-size: 9px;
+    }
+
+    .breakdown-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .breakdown-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #edf1f4;
+      overflow: hidden;
+    }
+
+    .breakdown-fill {
+      height: 100%;
+      min-width: 2px;
+      border-radius: inherit;
+      background: var(--blue);
+    }
+
+    .breakdown-amount {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .report-summary-table td:first-child {
+      color: var(--muted);
+    }
+
+    .report-summary-table tr.total-row td {
+      border-top: 2px solid var(--border);
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .report-summary-table tr.profit-row td {
+      background: #f0faf6;
+      color: var(--green);
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+    }
+
+    .report-summary-table tr.loss-row td {
+      background: var(--red-bg);
+      color: var(--red);
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+    }
+
+    .report-empty {
+      color: var(--muted);
+      padding: 30px 10px;
+      text-align: center;
+      font-size: 10px;
+    }
+
+    @media (max-width: 1180px) {
+      .report-toolbar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .report-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .report-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .report-toolbar,
+      .report-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      .sidebar,
+      .topbar,
+      .finance-tabs,
+      .report-toolbar .primary-btn,
+      .report-toolbar .secondary-btn,
+      .sign-out-btn {
+        display: none !important;
+      }
+
+      .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tab-panel {
+        display: none !important;
+      }
+
+      #reportsPanel {
+        display: block !important;
+      }
+
+      .panel,
+      .report-kpi-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+      }
+    }
+
     /* =========================================================
        MOBILE
     ========================================================= */
@@ -1115,6 +1353,14 @@
             data-tab="payroll"
           >
             Payroll
+          </button>
+
+          <button
+            class="finance-tab"
+            type="button"
+            data-tab="reports"
+          >
+            Reports & Analytics
           </button>
 
         </div>
@@ -2113,6 +2359,258 @@
             </div>
           </section>
         </section>
+
+        <!-- ===================================================
+             REPORTS & ANALYTICS TAB
+        ==================================================== -->
+        <section class="tab-panel" id="reportsPanel">
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">Financial Report Controls</h3>
+                <p class="panel-subtitle">
+                  Filter your results by period and property, then export or print the report.
+                </p>
+              </div>
+            </div>
+
+            <div class="report-toolbar">
+              <div class="field">
+                <label for="reportPreset">Report Period</label>
+                <select id="reportPreset">
+                  <option value="this_month">This Month</option>
+                  <option value="last_month">Last Month</option>
+                  <option value="this_quarter">This Quarter</option>
+                  <option value="this_year">This Year</option>
+                  <option value="last_year">Last Year</option>
+                  <option value="all_time">All Time</option>
+                  <option value="custom">Custom Range</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="reportStartDate">Start Date</label>
+                <input type="date" id="reportStartDate">
+              </div>
+
+              <div class="field">
+                <label for="reportEndDate">End Date</label>
+                <input type="date" id="reportEndDate">
+              </div>
+
+              <div class="field">
+                <label for="reportProperty">Property</label>
+                <select id="reportProperty">
+                  <option value="">All properties and general business</option>
+                </select>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="secondary-btn" id="exportReportCsv">Export CSV</button>
+                <button type="button" class="primary-btn" id="printFinanceReport">Print / PDF</button>
+              </div>
+            </div>
+
+            <div class="form-message" id="reportMessage"></div>
+          </section>
+
+          <div class="report-kpi-grid">
+            <article class="report-kpi-card">
+              <div class="report-kpi-label">Revenue Before HST</div>
+              <div class="report-kpi-value" id="reportRevenue">$0.00</div>
+              <div class="report-kpi-note">Non-cancelled invoices issued in the selected period</div>
+            </article>
+
+            <article class="report-kpi-card">
+              <div class="report-kpi-label">Operating Expenses</div>
+              <div class="report-kpi-value" id="reportExpenses">$0.00</div>
+              <div class="report-kpi-note">Expenses before recoverable HST</div>
+            </article>
+
+            <article class="report-kpi-card">
+              <div class="report-kpi-label">Payroll Cost</div>
+              <div class="report-kpi-value" id="reportPayroll">$0.00</div>
+              <div class="report-kpi-note">Gross payroll plus employer costs</div>
+            </article>
+
+            <article class="report-kpi-card">
+              <div class="report-kpi-label">Operating Profit</div>
+              <div class="report-kpi-value" id="reportProfit">$0.00</div>
+              <div class="report-kpi-note">Revenue less expenses and payroll</div>
+            </article>
+
+            <article class="report-kpi-card">
+              <div class="report-kpi-label">Profit Margin</div>
+              <div class="report-kpi-value" id="reportMargin">0.0%</div>
+              <div class="report-kpi-note">Operating profit as a percentage of revenue</div>
+            </article>
+
+            <article class="report-kpi-card">
+              <div class="report-kpi-label">Outstanding Receivables</div>
+              <div class="report-kpi-value" id="reportOutstanding">$0.00</div>
+              <div class="report-kpi-note">Unpaid balance on selected invoices</div>
+            </article>
+
+            <article class="report-kpi-card">
+              <div class="report-kpi-label">Net HST Position</div>
+              <div class="report-kpi-value" id="reportNetHst">$0.00</div>
+              <div class="report-kpi-note">HST collected minus HST paid</div>
+            </article>
+
+            <article class="report-kpi-card">
+              <div class="report-kpi-label">Average Invoice</div>
+              <div class="report-kpi-value" id="reportAverageInvoice">$0.00</div>
+              <div class="report-kpi-note">Average invoice total before HST</div>
+            </article>
+          </div>
+
+          <div class="report-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Monthly Financial Trend</h3>
+                  <p class="panel-subtitle">Revenue, expenses, payroll and operating profit.</p>
+                </div>
+              </div>
+
+              <div class="report-chart-shell">
+                <canvas id="financialTrendCanvas" aria-label="Monthly financial trend chart"></canvas>
+              </div>
+
+              <div class="report-legend">
+                <span class="report-legend-item">
+                  <span class="report-legend-swatch"></span> Revenue
+                </span>
+                <span class="report-legend-item">
+                  <span class="report-legend-swatch expense"></span> Expenses
+                </span>
+                <span class="report-legend-item">
+                  <span class="report-legend-swatch payroll"></span> Payroll
+                </span>
+                <span class="report-legend-item">
+                  <span class="report-legend-swatch profit"></span> Profit
+                </span>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Profit & Loss</h3>
+                  <p class="panel-subtitle" id="reportPeriodLabel">Selected period</p>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="data-table report-summary-table">
+                  <tbody>
+                    <tr>
+                      <td>Revenue before HST</td>
+                      <td class="number-cell" id="pnlRevenue">$0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Operating expenses</td>
+                      <td class="number-cell" id="pnlExpenses">$0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Payroll cost</td>
+                      <td class="number-cell" id="pnlPayroll">$0.00</td>
+                    </tr>
+                    <tr class="total-row">
+                      <td>Total operating costs</td>
+                      <td class="number-cell" id="pnlTotalCosts">$0.00</td>
+                    </tr>
+                    <tr id="pnlProfitRow" class="profit-row">
+                      <td>Operating profit / loss</td>
+                      <td class="number-cell" id="pnlProfit">$0.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <div class="report-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Revenue by Property</h3>
+                  <p class="panel-subtitle">Before HST, based on invoices in the selected period.</p>
+                </div>
+              </div>
+              <div class="report-breakdown" id="revenueByProperty"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Expenses by Category</h3>
+                  <p class="panel-subtitle">Before HST, based on expenses in the selected period.</p>
+                </div>
+              </div>
+              <div class="report-breakdown" id="expensesByCategory"></div>
+            </section>
+          </div>
+
+          <div class="report-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">HST Summary</h3>
+                  <p class="panel-subtitle">Estimated reporting position from recorded transactions.</p>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="data-table report-summary-table">
+                  <tbody>
+                    <tr>
+                      <td>HST collected on revenue</td>
+                      <td class="number-cell" id="hstCollectedReport">$0.00</td>
+                    </tr>
+                    <tr>
+                      <td>HST paid on expenses</td>
+                      <td class="number-cell" id="hstPaidReport">$0.00</td>
+                    </tr>
+                    <tr class="total-row">
+                      <td>Estimated net HST</td>
+                      <td class="number-cell" id="hstNetReport">$0.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 class="panel-title">Receivables Summary</h3>
+                  <p class="panel-subtitle">Invoice balances based on the selected period.</p>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="data-table report-summary-table">
+                  <tbody>
+                    <tr>
+                      <td>Total invoiced including HST</td>
+                      <td class="number-cell" id="receivableInvoiced">$0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Total payments received</td>
+                      <td class="number-cell" id="receivablePaid">$0.00</td>
+                    </tr>
+                    <tr class="total-row">
+                      <td>Outstanding balance</td>
+                      <td class="number-cell" id="receivableOutstanding">$0.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
         </section>
 
       </div>
@@ -2239,6 +2737,10 @@
 
       tab.classList.add("active");
       document.getElementById(`${tab.dataset.tab}Panel`)?.classList.add("active");
+
+      if (tab.dataset.tab === "reports") {
+        requestAnimationFrame(renderFinancialReports);
+      }
     });
   });
 
@@ -4015,6 +4517,644 @@
   });
 
 
+
+  // ============================================================
+  // FINANCIAL REPORTS & ANALYTICS
+  // ============================================================
+
+  function setReportMessage(message = "", type = "") {
+    const element = document.getElementById("reportMessage");
+    if (!element) return;
+    element.textContent = message;
+    element.className = `form-message ${type}`.trim();
+  }
+
+  function parseLocalDate(value) {
+    if (!value) return null;
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day, 12, 0, 0);
+  }
+
+  function reportDateRangeForPreset(preset) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    if (preset === "this_month") {
+      return {
+        start: new Date(year, month, 1),
+        end: new Date(year, month + 1, 0)
+      };
+    }
+
+    if (preset === "last_month") {
+      return {
+        start: new Date(year, month - 1, 1),
+        end: new Date(year, month, 0)
+      };
+    }
+
+    if (preset === "this_quarter") {
+      const quarterStart = Math.floor(month / 3) * 3;
+      return {
+        start: new Date(year, quarterStart, 1),
+        end: new Date(year, quarterStart + 3, 0)
+      };
+    }
+
+    if (preset === "this_year") {
+      return {
+        start: new Date(year, 0, 1),
+        end: new Date(year, 11, 31)
+      };
+    }
+
+    if (preset === "last_year") {
+      return {
+        start: new Date(year - 1, 0, 1),
+        end: new Date(year - 1, 11, 31)
+      };
+    }
+
+    if (preset === "all_time") {
+      const dates = [
+        ...expenses.map(item => item.expense_date),
+        ...revenues.map(item => item.invoice_date),
+        ...payrollRecords.map(item => item.pay_date)
+      ].filter(Boolean).sort();
+
+      return {
+        start: dates.length ? parseLocalDate(dates[0]) : new Date(year, 0, 1),
+        end: dates.length ? parseLocalDate(dates[dates.length - 1]) : now
+      };
+    }
+
+    return {
+      start: parseLocalDate(document.getElementById("reportStartDate").value),
+      end: parseLocalDate(document.getElementById("reportEndDate").value)
+    };
+  }
+
+  function applyReportPreset(preset = document.getElementById("reportPreset").value) {
+    if (preset === "custom") {
+      document.getElementById("reportStartDate").disabled = false;
+      document.getElementById("reportEndDate").disabled = false;
+      renderFinancialReports();
+      return;
+    }
+
+    const range = reportDateRangeForPreset(preset);
+    document.getElementById("reportStartDate").value = localDateKey(range.start);
+    document.getElementById("reportEndDate").value = localDateKey(range.end);
+    document.getElementById("reportStartDate").disabled = true;
+    document.getElementById("reportEndDate").disabled = true;
+    renderFinancialReports();
+  }
+
+  function reportDateMatches(value, start, end) {
+    const date = parseLocalDate(value);
+    return date && (!start || date >= start) && (!end || date <= end);
+  }
+
+  function getReportData() {
+    const start = parseLocalDate(document.getElementById("reportStartDate").value);
+    const end = parseLocalDate(document.getElementById("reportEndDate").value);
+    const propertyId = document.getElementById("reportProperty").value;
+
+    const reportRevenues = revenues.filter(item =>
+      item.invoice_status !== "cancelled"
+      && reportDateMatches(item.invoice_date, start, end)
+      && (!propertyId || item.property_id === propertyId)
+    );
+
+    const reportExpenses = expenses.filter(item =>
+      reportDateMatches(item.expense_date, start, end)
+      && (!propertyId || item.property_id === propertyId)
+    );
+
+    const reportPayroll = propertyId
+      ? []
+      : payrollRecords.filter(item =>
+          item.payroll_status !== "cancelled"
+          && reportDateMatches(item.pay_date, start, end)
+        );
+
+    return {
+      start,
+      end,
+      propertyId,
+      revenues: reportRevenues,
+      expenses: reportExpenses,
+      payroll: reportPayroll
+    };
+  }
+
+  function calculateReportTotals(data) {
+    const revenueBeforeHst = data.revenues.reduce(
+      (sum, item) => sum + Number(item.amount_before_hst || 0),
+      0
+    );
+
+    const revenueHst = data.revenues.reduce(
+      (sum, item) => sum + Number(item.hst_amount || 0),
+      0
+    );
+
+    const invoicedTotal = data.revenues.reduce(
+      (sum, item) => sum + Number(item.invoice_total || 0),
+      0
+    );
+
+    const paymentsReceived = data.revenues.reduce(
+      (sum, item) => sum + Number(item.amount_paid || 0),
+      0
+    );
+
+    const outstanding = data.revenues.reduce(
+      (sum, item) => sum + Number(item.balance_due || 0),
+      0
+    );
+
+    const expenseBeforeHst = data.expenses.reduce(
+      (sum, item) => sum + Number(item.amount_before_hst || 0),
+      0
+    );
+
+    const expenseHst = data.expenses.reduce(
+      (sum, item) => sum + Number(item.hst_paid || 0),
+      0
+    );
+
+    const payrollCost = data.payroll.reduce(
+      (sum, item) => sum + Number(item.total_payroll_cost || 0),
+      0
+    );
+
+    const operatingCosts = expenseBeforeHst + payrollCost;
+    const profit = revenueBeforeHst - operatingCosts;
+    const margin = revenueBeforeHst
+      ? (profit / revenueBeforeHst) * 100
+      : 0;
+
+    const averageInvoice = data.revenues.length
+      ? revenueBeforeHst / data.revenues.length
+      : 0;
+
+    return {
+      revenueBeforeHst,
+      revenueHst,
+      invoicedTotal,
+      paymentsReceived,
+      outstanding,
+      expenseBeforeHst,
+      expenseHst,
+      payrollCost,
+      operatingCosts,
+      profit,
+      margin,
+      averageInvoice,
+      netHst: revenueHst - expenseHst
+    };
+  }
+
+  function reportMonthKey(value) {
+    return String(value || "").slice(0, 7);
+  }
+
+  function reportMonthLabel(key) {
+    const [year, month] = key.split("-").map(Number);
+    return new Intl.DateTimeFormat("en-CA", {
+      month: "short",
+      year: "2-digit"
+    }).format(new Date(year, month - 1, 1));
+  }
+
+  function buildMonthlyReportSeries(data) {
+    const map = new Map();
+
+    function ensure(key) {
+      if (!key) return null;
+      if (!map.has(key)) {
+        map.set(key, {
+          key,
+          revenue: 0,
+          expenses: 0,
+          payroll: 0,
+          profit: 0
+        });
+      }
+      return map.get(key);
+    }
+
+    data.revenues.forEach(item => {
+      const row = ensure(reportMonthKey(item.invoice_date));
+      if (row) row.revenue += Number(item.amount_before_hst || 0);
+    });
+
+    data.expenses.forEach(item => {
+      const row = ensure(reportMonthKey(item.expense_date));
+      if (row) row.expenses += Number(item.amount_before_hst || 0);
+    });
+
+    data.payroll.forEach(item => {
+      const row = ensure(reportMonthKey(item.pay_date));
+      if (row) row.payroll += Number(item.total_payroll_cost || 0);
+    });
+
+    return [...map.values()]
+      .sort((a, b) => a.key.localeCompare(b.key))
+      .map(row => ({
+        ...row,
+        profit: row.revenue - row.expenses - row.payroll
+      }));
+  }
+
+  function drawFinancialTrend(series) {
+    const canvas = document.getElementById("financialTrendCanvas");
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.max(640, Math.round(rect.width * ratio));
+    canvas.height = Math.round(320 * ratio);
+
+    const ctx = canvas.getContext("2d");
+    ctx.scale(ratio, ratio);
+
+    const width = canvas.width / ratio;
+    const height = canvas.height / ratio;
+    const padding = { top: 20, right: 18, bottom: 52, left: 64 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+
+    ctx.clearRect(0, 0, width, height);
+
+    if (!series.length) {
+      ctx.fillStyle = "#7a8793";
+      ctx.font = "12px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("No financial activity in this period.", width / 2, height / 2);
+      return;
+    }
+
+    const values = series.flatMap(item => [
+      item.revenue,
+      item.expenses,
+      item.payroll,
+      Math.max(item.profit, 0)
+    ]);
+
+    const maxValue = Math.max(...values, 1);
+    const roundedMax = Math.ceil(maxValue / 100) * 100 || 100;
+
+    ctx.strokeStyle = "#dfe5e9";
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "#7a8793";
+    ctx.font = "10px Arial";
+    ctx.textAlign = "right";
+
+    for (let step = 0; step <= 4; step++) {
+      const value = roundedMax * (step / 4);
+      const y = padding.top + chartHeight - chartHeight * (step / 4);
+
+      ctx.beginPath();
+      ctx.moveTo(padding.left, y);
+      ctx.lineTo(width - padding.right, y);
+      ctx.stroke();
+
+      ctx.fillText(
+        value >= 1000 ? `$${(value / 1000).toFixed(1)}k` : `$${value.toFixed(0)}`,
+        padding.left - 8,
+        y + 3
+      );
+    }
+
+    const groupWidth = chartWidth / series.length;
+    const barGap = 3;
+    const barWidth = Math.max(4, Math.min(18, (groupWidth - 16) / 4));
+    const colors = ["#17324d", "#d16a6a", "#d6a83d", "#3a9d78"];
+
+    series.forEach((item, index) => {
+      const valuesForMonth = [
+        item.revenue,
+        item.expenses,
+        item.payroll,
+        Math.max(item.profit, 0)
+      ];
+
+      const totalBarsWidth = barWidth * 4 + barGap * 3;
+      const groupStart =
+        padding.left
+        + index * groupWidth
+        + (groupWidth - totalBarsWidth) / 2;
+
+      valuesForMonth.forEach((value, barIndex) => {
+        const barHeight = (value / roundedMax) * chartHeight;
+        const x = groupStart + barIndex * (barWidth + barGap);
+        const y = padding.top + chartHeight - barHeight;
+
+        ctx.fillStyle = colors[barIndex];
+        ctx.fillRect(x, y, barWidth, barHeight);
+      });
+
+      ctx.fillStyle = "#60707d";
+      ctx.font = "9px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        reportMonthLabel(item.key),
+        padding.left + index * groupWidth + groupWidth / 2,
+        height - 24
+      );
+    });
+  }
+
+  function propertyNameForReport(propertyId) {
+    if (!propertyId) return "General / Unassigned";
+    return properties.find(item => item.id === propertyId)?.property_name
+      || properties.find(item => item.id === propertyId)?.name
+      || "Unknown Property";
+  }
+
+  function renderBreakdown(containerId, rows, emptyText) {
+    const container = document.getElementById(containerId);
+    const sorted = rows
+      .filter(item => item.amount > 0)
+      .sort((a, b) => b.amount - a.amount);
+
+    if (!sorted.length) {
+      container.innerHTML = `<div class="report-empty">${esc(emptyText)}</div>`;
+      return;
+    }
+
+    const maximum = Math.max(...sorted.map(item => item.amount), 1);
+
+    container.innerHTML = sorted.slice(0, 12).map(item => `
+      <div class="breakdown-row">
+        <div class="breakdown-label" title="${esc(item.label)}">${esc(item.label)}</div>
+        <div class="breakdown-track">
+          <div class="breakdown-fill" style="width:${Math.max(2, item.amount / maximum * 100)}%"></div>
+        </div>
+        <div class="breakdown-amount">${esc(money(item.amount))}</div>
+      </div>
+    `).join("");
+  }
+
+  function groupReportAmounts(items, labelFn, amountField) {
+    const map = new Map();
+
+    items.forEach(item => {
+      const label = labelFn(item);
+      map.set(label, (map.get(label) || 0) + Number(item[amountField] || 0));
+    });
+
+    return [...map.entries()].map(([label, amount]) => ({ label, amount }));
+  }
+
+  function renderFinancialReports() {
+    if (!document.getElementById("reportsPanel")) return;
+
+    const data = getReportData();
+
+    if (!data.start || !data.end) {
+      setReportMessage("Select a valid start and end date.", "error");
+      return;
+    }
+
+    if (data.end < data.start) {
+      setReportMessage("The report end date cannot be before the start date.", "error");
+      return;
+    }
+
+    setReportMessage();
+
+    const totals = calculateReportTotals(data);
+    const payrollExcluded = Boolean(data.propertyId);
+
+    document.getElementById("reportRevenue").textContent = money(totals.revenueBeforeHst);
+    document.getElementById("reportExpenses").textContent = money(totals.expenseBeforeHst);
+    document.getElementById("reportPayroll").textContent =
+      payrollExcluded ? "Not allocated" : money(totals.payrollCost);
+    document.getElementById("reportProfit").textContent = money(totals.profit);
+    document.getElementById("reportMargin").textContent = `${totals.margin.toFixed(1)}%`;
+    document.getElementById("reportOutstanding").textContent = money(totals.outstanding);
+    document.getElementById("reportNetHst").textContent = money(totals.netHst);
+    document.getElementById("reportAverageInvoice").textContent = money(totals.averageInvoice);
+
+    const profitElements = [
+      document.getElementById("reportProfit"),
+      document.getElementById("reportMargin"),
+      document.getElementById("reportNetHst")
+    ];
+
+    profitElements.forEach(element => {
+      element.classList.remove("positive", "negative");
+    });
+
+    document.getElementById("reportProfit").classList.add(
+      totals.profit >= 0 ? "positive" : "negative"
+    );
+
+    document.getElementById("reportMargin").classList.add(
+      totals.margin >= 0 ? "positive" : "negative"
+    );
+
+    document.getElementById("reportNetHst").classList.add(
+      totals.netHst <= 0 ? "positive" : "negative"
+    );
+
+    document.getElementById("pnlRevenue").textContent = money(totals.revenueBeforeHst);
+    document.getElementById("pnlExpenses").textContent = money(totals.expenseBeforeHst);
+    document.getElementById("pnlPayroll").textContent =
+      payrollExcluded ? "Not allocated by property" : money(totals.payrollCost);
+    document.getElementById("pnlTotalCosts").textContent = money(totals.operatingCosts);
+    document.getElementById("pnlProfit").textContent = money(totals.profit);
+
+    const pnlProfitRow = document.getElementById("pnlProfitRow");
+    pnlProfitRow.className = totals.profit >= 0 ? "profit-row" : "loss-row";
+
+    document.getElementById("hstCollectedReport").textContent = money(totals.revenueHst);
+    document.getElementById("hstPaidReport").textContent = money(totals.expenseHst);
+    document.getElementById("hstNetReport").textContent = money(totals.netHst);
+
+    document.getElementById("receivableInvoiced").textContent = money(totals.invoicedTotal);
+    document.getElementById("receivablePaid").textContent = money(totals.paymentsReceived);
+    document.getElementById("receivableOutstanding").textContent = money(totals.outstanding);
+
+    const dateFormatter = new Intl.DateTimeFormat("en-CA", {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    });
+
+    document.getElementById("reportPeriodLabel").textContent =
+      `${dateFormatter.format(data.start)} to ${dateFormatter.format(data.end)}`;
+
+    const propertyRevenue = groupReportAmounts(
+      data.revenues,
+      item => propertyNameForReport(item.property_id),
+      "amount_before_hst"
+    );
+
+    const categoryExpenses = groupReportAmounts(
+      data.expenses,
+      item => item.category || "Uncategorized",
+      "amount_before_hst"
+    );
+
+    renderBreakdown(
+      "revenueByProperty",
+      propertyRevenue,
+      "No revenue was recorded for this period."
+    );
+
+    renderBreakdown(
+      "expensesByCategory",
+      categoryExpenses,
+      "No expenses were recorded for this period."
+    );
+
+    drawFinancialTrend(buildMonthlyReportSeries(data));
+
+    if (payrollExcluded) {
+      setReportMessage(
+        "Payroll is not currently linked to individual properties, so property reports exclude payroll costs.",
+        "warning"
+      );
+    }
+  }
+
+  function populateReportProperties() {
+    const select = document.getElementById("reportProperty");
+    if (!select) return;
+
+    select.innerHTML = `
+      <option value="">All properties and general business</option>
+      ${properties.map(property => `
+        <option value="${esc(property.id)}">
+          ${esc(property.property_name || property.name || "Unnamed property")}
+        </option>
+      `).join("")}
+    `;
+  }
+
+  function csvCell(value) {
+    const text = String(value ?? "");
+    return `"${text.replaceAll('"', '""')}"`;
+  }
+
+  function exportFinancialReportCsv() {
+    const data = getReportData();
+    const totals = calculateReportTotals(data);
+
+    const lines = [
+      ["NSC CleanOps Financial Report"],
+      ["Start Date", document.getElementById("reportStartDate").value],
+      ["End Date", document.getElementById("reportEndDate").value],
+      ["Property", document.getElementById("reportProperty").selectedOptions[0]?.textContent.trim() || "All"],
+      [],
+      ["SUMMARY"],
+      ["Revenue Before HST", totals.revenueBeforeHst.toFixed(2)],
+      ["Operating Expenses", totals.expenseBeforeHst.toFixed(2)],
+      ["Payroll Cost", totals.payrollCost.toFixed(2)],
+      ["Total Operating Costs", totals.operatingCosts.toFixed(2)],
+      ["Operating Profit", totals.profit.toFixed(2)],
+      ["Profit Margin", `${totals.margin.toFixed(2)}%`],
+      ["HST Collected", totals.revenueHst.toFixed(2)],
+      ["HST Paid", totals.expenseHst.toFixed(2)],
+      ["Net HST", totals.netHst.toFixed(2)],
+      ["Outstanding Receivables", totals.outstanding.toFixed(2)],
+      [],
+      ["REVENUE"],
+      ["Invoice Number", "Invoice Date", "Client", "Property", "Before HST", "HST", "Invoice Total", "Paid", "Balance", "Status"],
+      ...data.revenues.map(item => [
+        item.invoice_number,
+        item.invoice_date,
+        item.client_name,
+        propertyNameForReport(item.property_id),
+        Number(item.amount_before_hst || 0).toFixed(2),
+        Number(item.hst_amount || 0).toFixed(2),
+        Number(item.invoice_total || 0).toFixed(2),
+        Number(item.amount_paid || 0).toFixed(2),
+        Number(item.balance_due || 0).toFixed(2),
+        item.invoice_status
+      ]),
+      [],
+      ["EXPENSES"],
+      ["Date", "Vendor", "Category", "Property", "Before HST", "HST Paid", "Receipt Total"],
+      ...data.expenses.map(item => [
+        item.expense_date,
+        item.vendor,
+        item.category,
+        propertyNameForReport(item.property_id),
+        Number(item.amount_before_hst || 0).toFixed(2),
+        Number(item.hst_paid || 0).toFixed(2),
+        Number(item.receipt_total || 0).toFixed(2)
+      ]),
+      [],
+      ["PAYROLL"],
+      ["Employee", "Pay Date", "Gross Pay", "Deductions", "Net Pay", "Employer Cost", "Total Payroll Cost", "Status"],
+      ...data.payroll.map(item => [
+        item.employee_name,
+        item.pay_date,
+        Number(item.gross_pay || 0).toFixed(2),
+        Number(item.total_deductions || 0).toFixed(2),
+        Number(item.net_pay || 0).toFixed(2),
+        Number(item.total_employer_cost || 0).toFixed(2),
+        Number(item.total_payroll_cost || 0).toFixed(2),
+        item.payroll_status
+      ])
+    ];
+
+    const csv = lines
+      .map(row => row.map(csvCell).join(","))
+      .join("\r\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const start = document.getElementById("reportStartDate").value;
+    const end = document.getElementById("reportEndDate").value;
+
+    link.href = url;
+    link.download = `NSC-Financial-Report-${start}-to-${end}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById("reportPreset").addEventListener("change", event => {
+    applyReportPreset(event.target.value);
+  });
+
+  ["reportStartDate", "reportEndDate", "reportProperty"].forEach(id => {
+    document.getElementById(id).addEventListener("change", () => {
+      if (id === "reportStartDate" || id === "reportEndDate") {
+        document.getElementById("reportPreset").value = "custom";
+        document.getElementById("reportStartDate").disabled = false;
+        document.getElementById("reportEndDate").disabled = false;
+      }
+      renderFinancialReports();
+    });
+  });
+
+  document.getElementById("exportReportCsv").addEventListener(
+    "click",
+    exportFinancialReportCsv
+  );
+
+  document.getElementById("printFinanceReport").addEventListener(
+    "click",
+    () => window.print()
+  );
+
+  window.addEventListener("resize", () => {
+    if (document.getElementById("reportsPanel")?.classList.contains("active")) {
+      drawFinancialTrend(buildMonthlyReportSeries(getReportData()));
+    }
+  });
+
+
   document.getElementById("signOutButton").addEventListener("click", async () => {
     if (db) await db.auth.signOut();
     location.href = "login.html";
@@ -4079,11 +5219,14 @@
 
       updateRevenueTotals();
       updatePayrollTotals();
+      populateReportProperties();
+      applyReportPreset("this_month");
     } catch (error) {
       console.error(error);
       setMessage(error.message || "Unable to load Finance.", "error");
       setRevenueMessage(error.message || "Unable to load Finance.", "error");
       setPayrollMessage(error.message || "Unable to load Finance.", "error");
+      setReportMessage(error.message || "Unable to load Finance.", "error");
     }
   }
 
