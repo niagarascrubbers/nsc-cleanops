@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manager Operations | NSC CleanOps</title>
+  <title>Dashboard | NSC CleanOps</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@
     .row-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);text-decoration:none;font-size:9px;font-weight:600;cursor:pointer}.btn-primary{background:var(--navy2);color:#fff;border-color:var(--navy2)}
     .empty{padding:24px 8px;text-align:center;color:var(--muted);font-size:10px}.loading{padding:42px;text-align:center}.spinner{width:30px;height:30px;margin:0 auto 10px;border:3px solid #dcecf4;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
     .inventory-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:10px}.inventory-line:last-child{border-bottom:0}
-    .attention-panel{border-color:#f0c8c8;background:linear-gradient(180deg,#fff,#fffafa)}
+    .attention-panel{border-color:#d9e3ea;background:#fff}.attention-panel .attention-scroll{max-height:310px;overflow:auto;padding-right:5px}
     .notification-list{display:grid}
     .notification{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--border)}
     .notification:last-child{border-bottom:0}
@@ -72,27 +72,19 @@
 <body>
 <div class="shell">
   <aside class="sidebar">
-    <div class="brand"><h1>NSC CleanOps</h1><p>Manager Operations · V2</p></div>
-  <nav class="nav">
-  <a class="active" href="manager-dashboard.html">Dashboard</a>
-
-  <a href="properties.html">Properties</a>
-
-  <a href="turnovers.html">Turnovers</a>
-
-  <a href="turnovers.html?filter=reassignment">
-    Reassignment
-  </a>
-
-  <a href="turnovers.html?filter=review">
-    Reviews
-  </a>
-
-  <a href="finance.html">
-    Finance
-  </a>
-</nav>
-    <button class="logout" id="logoutButton">Sign Out</button>
+    <div class="brand"><h1>NSC CleanOps</h1><p>Operations Management</p></div>
+    <nav class="nav" aria-label="Manager navigation">
+      <a class="active" href="manager-dashboard.html">Dashboard</a>
+      <a href="properties.html">Properties</a>
+      <a href="finance.html">Finance</a>
+    </nav>
+    <div style="margin-top:auto;border-top:1px solid rgba(255,255,255,.12);padding-top:16px">
+      <div style="padding:0 4px 14px">
+        <div style="font-size:12px;font-weight:600">Uttam Preet</div>
+        <div style="margin-top:2px;color:#9fb6c7;font-size:10px">Administrator</div>
+      </div>
+      <button class="logout" id="logoutButton" type="button">Sign Out</button>
+    </div>
   </aside>
   <main class="main">
     <header class="topbar">
@@ -106,7 +98,7 @@
       </div>
     </header>
     <section class="content">
-      <div class="hero"><h3 id="welcome">Operations Center</h3><p>Live visibility into attendance, issues, inventory, and turnover progress.</p></div>
+      <div class="hero"><h3 id="welcome">Operations Center</h3><p>Today’s cleaning operations, upcoming work, alerts, activity, and business performance in one place.</p></div>
       <section class="stats">
         <article class="card"><div class="card-label">Today's Turnovers</div><div class="card-value" id="todayCount">0</div><div class="card-note">Scheduled today</div></article>
         <article class="card"><div class="card-label">Overdue Cleans</div><div class="card-value" id="overdueCount">0</div><div class="card-note">Past due and incomplete</div></article>
@@ -849,8 +841,8 @@ function render() {
 
     <section class="panel" style="margin-top:18px">
       <div class="panel-header">
-        <h4 class="panel-title">Notifications</h4>
-        <span class="panel-link">Live updates enabled</span>
+        <h4 class="panel-title">Recent Activity</h4>
+        <span class="panel-link">Newest first · Live updates</span>
       </div>
       <div class="notification-list">${notificationsHtml}</div>
     </section>
