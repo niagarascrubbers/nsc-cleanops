@@ -1177,6 +1177,7 @@ html, body {
       <nav class="manager-nav" aria-label="Manager navigation">
         <a href="manager-dashboard.html">Dashboard</a>
         <a class="active" href="properties.html">Properties</a>
+        <a href="planner-leads.html">Planner &amp; Leads</a>
         <a href="finance.html">Finance</a>
       </nav>
 
@@ -1305,7 +1306,7 @@ html, body {
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="assignedCleanerInput">Assigned Cleaner</label>
+            <label class="form-label" for="assignedCleanerInput">Assigned Team Member</label>
             <select class="form-control" id="assignedCleanerInput">
               <option value="">Unassigned</option>
             </select>
@@ -1559,7 +1560,7 @@ html, body {
         .from("users")
         .select("id, full_name, role, active, company_id")
         .eq("company_id", currentProfile.company_id)
-        .eq("role", "cleaner")
+        .in("role", ["cleaner", "manager", "admin"])
         .eq("active", true)
         .order("full_name", { ascending: true });
 
@@ -1571,7 +1572,7 @@ html, body {
         <option value="">Unassigned</option>
         ${cleaners.map(cleaner => `
           <option value="${escapeHtml(cleaner.id)}">
-            ${escapeHtml(cleaner.full_name || "Unnamed Cleaner")}
+            ${escapeHtml(cleaner.full_name || "Unnamed Team Member")}${["manager", "admin"].includes(cleaner.role) ? " (Manager)" : ""}
           </option>
         `).join("")}
       `;
@@ -1579,7 +1580,7 @@ html, body {
 
     function getCleanerName(cleanerId) {
       if (!cleanerId) return "Unassigned";
-      return cleaners.find(cleaner => cleaner.id === cleanerId)?.full_name || "Assigned Cleaner";
+      return cleaners.find(cleaner => cleaner.id === cleanerId)?.full_name || "Assigned Team Member";
     }
 
     async function loadTurnovers() {
