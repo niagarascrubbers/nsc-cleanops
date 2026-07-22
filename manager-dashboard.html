@@ -26,7 +26,7 @@
     .main{grid-column:2;min-width:0}.topbar{min-height:72px;padding:17px 30px;background:#fff;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
     .topbar h2{margin:0;font-family:"Montserrat";font-size:20px}.topbar span{color:var(--muted);font-size:12px}
     .content{padding:28px}.hero h3{margin:0;font-family:"Montserrat";font-size:29px}.hero p{margin:8px 0 24px;color:var(--muted);font-size:13px}
-    .stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:20px}
+    .stats{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:14px;margin-bottom:20px}
     .card,.panel{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
     .card{padding:17px}.card-label{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px}.card-value{margin-top:7px;font-family:"Montserrat";font-size:27px;font-weight:700}.card-note{margin-top:5px;color:var(--muted);font-size:9px}
     .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}.panel{padding:19px;margin-bottom:18px}.panel-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.panel-title{margin:0;font-family:"Montserrat";font-size:16px}.panel-link{color:var(--blue);text-decoration:none;font-size:10px;font-weight:600}
@@ -37,6 +37,11 @@
     .inventory-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:10px}.inventory-line:last-child{border-bottom:0}
     .attention-panel{border-color:#d9e3ea;background:#fff}.attention-panel .attention-scroll{max-height:310px;overflow:auto;padding-right:5px}
     .notification-list{display:grid}
+    .activity-panel .notification-list{max-height:360px;overflow:auto;padding-right:5px}
+    .activity-panel.is-collapsed .notification-list{display:none}
+    .activity-toggle{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:7px 11px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--blue);font-size:10px;font-weight:600;cursor:pointer}
+    .activity-toggle:hover{background:var(--blue-light)}
+    .activity-summary{color:var(--muted);font-size:9px}
     .notification{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--border)}
     .notification:last-child{border-bottom:0}
     .notification-dot{width:9px;height:9px;border-radius:50%;margin-top:4px;background:var(--blue)}
@@ -65,6 +70,7 @@
     .section-stack{display:grid;gap:18px}
     .compact-panel{margin-bottom:0}
     @media(max-width:760px){.dashboard-clock{display:none}}
+    @media(max-width:1250px){.stats{grid-template-columns:repeat(4,1fr)}}
     @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
     @media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{display:none}.main{grid-column:1}.content,.topbar{padding-left:18px;padding-right:18px}.stats{grid-template-columns:1fr}}
   </style>
@@ -101,6 +107,7 @@
     <section class="content">
       <div class="hero"><h3 id="welcome">Operations Center</h3><p>Today’s cleaning operations, upcoming work, alerts, activity, and business performance in one place.</p></div>
       <section class="stats">
+        <article class="card"><div class="card-label">Review Needed</div><div class="card-value" id="reviewCount">0</div><div class="card-note">Waiting for approval</div></article>
         <article class="card"><div class="card-label">Today's Turnovers</div><div class="card-value" id="todayCount">0</div><div class="card-note">Scheduled today</div></article>
         <article class="card"><div class="card-label">Overdue Cleans</div><div class="card-value" id="overdueCount">0</div><div class="card-note">Past due and incomplete</div></article>
         <article class="card"><div class="card-label">Needs Reassignment</div><div class="card-value" id="reassignCount">0</div><div class="card-note">Cleaner declined</div></article>
@@ -133,6 +140,11 @@ const COMPLETED_STATUSES = new Set([
   "submitted_for_review",
   "approved",
   "closed"
+]);
+
+const CANCELLED_STATUSES = new Set([
+  "cancelled",
+  "canceled"
 ]);
 
 const esc = value => String(value ?? "")
@@ -182,9 +194,18 @@ function isCompleted(turnover) {
   return COMPLETED_STATUSES.has(String(turnover.status || "").toLowerCase());
 }
 
+function isCancelled(turnover) {
+  return CANCELLED_STATUSES.has(String(turnover.status || "").toLowerCase());
+}
+
 function isOverdue(turnover) {
   const deadline = getTurnoverDeadline(turnover);
-  return Boolean(deadline && deadline < new Date() && !isCompleted(turnover));
+  return Boolean(
+    deadline &&
+    deadline < new Date() &&
+    !isCompleted(turnover) &&
+    !isCancelled(turnover)
+  );
 }
 
 function overdueText(turnover) {
@@ -483,6 +504,8 @@ function buildNotifications() {
   const notifications = [];
 
   turnovers.forEach(turnover => {
+    if (isCancelled(turnover)) return;
+
     const propertyName = turnover.properties?.property_name || "Turnover";
     const cleanerName = turnover.users?.full_name || "Cleaner";
 
@@ -571,7 +594,9 @@ function render() {
   const localDateKey = getTodayKey();
 
   const todayTurnovers = turnovers.filter(
-    turnover => turnover.turnover_date === localDateKey
+    turnover =>
+      turnover.turnover_date === localDateKey &&
+      !isCancelled(turnover)
   );
 
   const overdue = turnovers
@@ -580,12 +605,28 @@ function render() {
 
   const reassign = turnovers.filter(
     turnover =>
-      turnover.needs_reassignment ||
-      turnover.attendance_status === "declined"
+      !isCancelled(turnover) &&
+      (
+        turnover.needs_reassignment ||
+        turnover.attendance_status === "declined"
+      )
   );
 
   const blockers = issues.filter(issue => issue.prevents_guest_ready);
 
+  const reviewTurnovers = turnovers
+    .filter(turnover =>
+      !isCancelled(turnover) &&
+      ["completed", "submitted", "submitted_for_review"].includes(
+        String(turnover.status || "").toLowerCase()
+      )
+    )
+    .sort((a, b) =>
+      new Date(b.check_out_time || b.updated_at || 0) -
+      new Date(a.check_out_time || a.updated_at || 0)
+    );
+
+  document.getElementById("reviewCount").textContent = reviewTurnovers.length;
   document.getElementById("todayCount").textContent = todayTurnovers.length;
   document.getElementById("overdueCount").textContent = overdue.length;
   document.getElementById("reassignCount").textContent = reassign.length;
@@ -713,7 +754,9 @@ function render() {
     </div>
   `).join("") || `<div class="empty">No turnovers scheduled today.</div>`;
 
-  const notificationsHtml = buildNotifications().map(notification => `
+  const dashboardNotifications = buildNotifications();
+
+  const notificationsHtml = dashboardNotifications.map(notification => `
     <a class="notification" href="${esc(notification.href)}" style="color:inherit;text-decoration:none">
       <span class="notification-dot ${esc(notification.type)}"></span>
       <span>
@@ -724,17 +767,6 @@ function render() {
     </a>
   `).join("") || `<div class="empty">No recent notifications.</div>`;
 
-
-  const reviewTurnovers = turnovers
-    .filter(turnover =>
-      ["completed", "submitted", "submitted_for_review"].includes(
-        String(turnover.status || "").toLowerCase()
-      )
-    )
-    .sort((a, b) =>
-      new Date(b.check_out_time || b.updated_at || 0) -
-      new Date(a.check_out_time || a.updated_at || 0)
-    );
 
   const reviewsHtml = reviewTurnovers.slice(0, 8).map(turnover => `
     <div class="review-row">
@@ -840,14 +872,42 @@ function render() {
       </div>
     </div>
 
-    <section class="panel" style="margin-top:18px">
+    <section class="panel activity-panel is-collapsed" id="recentActivityPanel" style="margin-top:18px">
       <div class="panel-header">
-        <h4 class="panel-title">Recent Activity</h4>
-        <span class="panel-link">Newest first · Live updates</span>
+        <div>
+          <h4 class="panel-title">Recent Activity</h4>
+          <div class="activity-summary" id="activitySummary">
+            Unread (${dashboardNotifications.length})
+          </div>
+        </div>
+        <button
+          class="activity-toggle"
+          id="activityToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="recentActivityList"
+        >
+          See more
+        </button>
       </div>
-      <div class="notification-list">${notificationsHtml}</div>
+      <div class="notification-list" id="recentActivityList">${notificationsHtml}</div>
     </section>
   `;
+
+  const activityPanel = document.getElementById("recentActivityPanel");
+  const activityToggle = document.getElementById("activityToggle");
+  const activitySummary = document.getElementById("activitySummary");
+
+  activityToggle?.addEventListener("click", () => {
+    const isOpening = activityPanel.classList.contains("is-collapsed");
+    activityPanel.classList.toggle("is-collapsed", !isOpening);
+    activityToggle.textContent = isOpening ? "Show less" : "See more";
+    activityToggle.setAttribute("aria-expanded", String(isOpening));
+
+    if (isOpening && activitySummary) {
+      activitySummary.textContent = `${dashboardNotifications.length} recent update${dashboardNotifications.length === 1 ? "" : "s"}`;
+    }
+  });
 }
 
 async function refreshDashboard() {
