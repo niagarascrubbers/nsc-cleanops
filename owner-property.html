@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Overview | NSC CleanOps</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0b2f4f;
+      --navy-light: #164f7a;
+      --blue: #2e8bc0;
+      --blue-soft: #eaf6fc;
+      --background: #f4f8fb;
+      --surface: #ffffff;
+      --border: #dce7ef;
+      --text: #17324d;
+      --muted: #6c7f8f;
+      --green: #16784b;
+      --green-soft: #e8f7ef;
+      --amber: #a56500;
+      --amber-soft: #fff4dd;
+      --red: #b83a3a;
+      --red-soft: #fdeaea;
+      --shadow: 0 14px 35px rgba(11, 47, 79, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: "Poppins", sans-serif;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 26px 20px;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: rgba(255,255,255,.65);
+      font-size: 12px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav a {
+      padding: 13px 14px;
+      border-radius: 11px;
+      color: rgba(255,255,255,.76);
+      font-weight: 500;
+      transition: .2s ease;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.14);
+    }
+
+    .owner-name {
+      font-weight: 600;
+    }
+
+    .owner-role {
+      color: rgba(255,255,255,.6);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .logout-button {
+      width: 100%;
+      margin-top: 15px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: transparent;
+      color: #fff;
+      padding: 11px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .topbar {
+      min-height: 78px;
+      padding: 16px 30px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .page-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 22px;
+    }
+
+    .breadcrumb {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .property-select-wrap {
+      min-width: 245px;
+    }
+
+    .property-select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #fff;
+      color: var(--text);
+      padding: 11px 38px 11px 13px;
+      outline: none;
+    }
+
+    .property-select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(46,139,192,.12);
+    }
+
+    .page {
+      padding: 30px;
+    }
+
+    .hero {
+      padding: 26px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      color: #fff;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 28px;
+    }
+
+    .hero-address {
+      margin-top: 8px;
+      color: rgba(255,255,255,.76);
+    }
+
+    .hero-meta {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-pill {
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .button-light {
+      background: #fff;
+      color: var(--navy);
+    }
+
+    .button-ghost {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.22);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .stat-card,
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card {
+      padding: 20px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-value {
+      margin-top: 7px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .stat-note {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(310px, .85fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .panel {
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 19px 21px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+    }
+
+    .panel-link {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .panel-body {
+      padding: 18px 21px;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .list-item {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #fff;
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .item-title {
+      font-weight: 600;
+    }
+
+    .item-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-blue {
+      background: var(--blue-soft);
+      color: var(--navy-light);
+    }
+
+    .badge-green {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .badge-amber {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .badge-red {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .progress-track {
+      height: 8px;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #edf2f6;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: inherit;
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .quick-link {
+      display: block;
+      min-height: 105px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #fff;
+      transition: .2s ease;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-2px);
+      border-color: #bdd8e8;
+      box-shadow: 0 10px 20px rgba(11,47,79,.07);
+    }
+
+    .quick-link strong {
+      display: block;
+      font-family: "Montserrat", sans-serif;
+      font-size: 14px;
+    }
+
+    .quick-link span {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .empty,
+    .loading-state,
+    .error-state {
+      padding: 34px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .error-state {
+      color: var(--red);
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 13px;
+      border: 3px solid #dfeaf1;
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .mobile-header {
+      display: none;
+    }
+
+    @media (max-width: 1050px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app-shell {
+        display: block;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        position: static;
+        padding: 14px 18px;
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .property-select-wrap {
+        min-width: 0;
+      }
+
+      .mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .mobile-logout {
+        border: 0;
+        background: transparent;
+        color: var(--navy);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .page {
+        padding: 18px;
+      }
+
+      .hero {
+        padding: 22px;
+        flex-direction: column;
+      }
+
+      .hero h2 {
+        font-size: 23px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid,
+      .quick-links {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>NSC CleanOps</h1>
+        <p>Owner Portal</p>
+      </div>
+
+      <nav class="nav">
+        <a href="owner-dashboard.html">Dashboard</a>
+        <a class="active" href="owner-property.html">Property</a>
+        <a href="owner-messages.html">Messages</a>
+        <a href="owner-documents.html">Documents</a>
+        <a href="owner-reports.html">Reports</a>
+        <a href="owner-settings.html">Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="owner-name" id="sidebarOwnerName">Owner</div>
+        <div class="owner-role">Property Owner</div>
+        <button class="logout-button" id="logoutButton" type="button">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="mobile-header">
+            <strong>NSC CleanOps</strong>
+            <button class="mobile-logout" id="mobileLogoutButton" type="button">Sign Out</button>
+          </div>
+          <h1 class="page-title">Property Overview</h1>
+          <div class="breadcrumb">Owner Portal / Property</div>
+        </div>
+
+        <div class="property-select-wrap" id="propertySelectWrap">
+          <select class="property-select" id="propertySelect" aria-label="Select property">
+            <option value="">Loading properties...</option>
+          </select>
+        </div>
+      </header>
+
+      <section class="page" id="pageContent">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          Loading your property information...
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    "use strict";
+
+    const db = window.nscSupabase || window.supabaseClient;
+    const pageContent = document.getElementById("pageContent");
+    const propertySelect = document.getElementById("propertySelect");
+    const propertySelectWrap = document.getElementById("propertySelectWrap");
+
+    let currentProfile = null;
+    let ownerProperties = [];
+    let selectedPropertyId = null;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "Not scheduled";
+
+      const date = /^\d{4}-\d{2}-\d{2}$/.test(String(value))
+        ? new Date(`${value}T12:00:00`)
+        : new Date(value);
+
+      if (Number.isNaN(date.getTime())) return "Not scheduled";
+
+      return new Intl.DateTimeFormat("en-CA", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      }).format(date);
+    }
+
+    function formatTime(value) {
+      if (!value) return "";
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+
+      return new Intl.DateTimeFormat("en-CA", {
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function formatStatus(value) {
+      const labels = {
+        unassigned: "Unassigned",
+        assigned: "Assigned",
+        accepted: "Accepted",
+        in_progress: "In Progress",
+        review_required: "Awaiting Review",
+        correction_required: "Correction Required",
+        completed: "Completed",
+        cancelled: "Cancelled"
+      };
+
+      return labels[value] || String(value || "Unknown").replaceAll("_", " ");
+    }
+
+    function statusBadgeClass(value) {
+      if (value === "completed") return "badge-green";
+      if (value === "in_progress") return "badge-blue";
+      if (value === "review_required" || value === "correction_required") return "badge-amber";
+      return "badge-blue";
+    }
+
+    function propertyAddress(property) {
+      return [
+        property.address,
+        property.city,
+        property.province,
+        property.postal_code
+      ].filter(Boolean).join(", ") || "Address not entered";
+    }
+
+    function getRequestedPropertyId() {
+      return new URLSearchParams(window.location.search).get("property_id");
+    }
+
+    async function requireOwnerSession() {
+      if (!db) throw new Error("Supabase client is unavailable.");
+
+      const {
+        data: { session },
+        error: sessionError
+      } = await db.auth.getSession();
+
+      if (sessionError) throw sessionError;
+
+      if (!session) {
+        window.location.href = "login.html";
+        return false;
+      }
+
+      const { data: profile, error: profileError } = await db
+        .from("users")
+        .select("id, full_name, role, company_id, active")
+        .eq("auth_user_id", session.user.id)
+        .single();
+
+      if (profileError) throw profileError;
+      if (!profile?.active) throw new Error("This account is inactive.");
+      if (String(profile.role || "").toLowerCase() !== "owner") {
+        throw new Error("This page is only available to owner accounts.");
+      }
+
+      currentProfile = profile;
+      document.getElementById("sidebarOwnerName").textContent =
+        profile.full_name || "Owner";
+
+      return true;
+    }
+
+    async function loadOwnerProperties() {
+      const membershipQueries = [
+        () => db
+          .from("property_members")
+          .select(`
+            property_id,
+            member_role,
+            active,
+            properties (
+              id,
+              property_name,
+              property_code,
+              address,
+              city,
+              province,
+              postal_code,
+              property_type,
+              bedrooms,
+              bathrooms,
+              active
+            )
+          `)
+          .eq("user_id", currentProfile.id),
+
+        () => db
+          .from("property_members")
+          .select(`
+            property_id,
+            role,
+            properties (
+              id,
+              property_name,
+              property_code,
+              address,
+              city,
+              province,
+              postal_code,
+              property_type,
+              bedrooms,
+              bathrooms,
+              active
+            )
+          `)
+          .eq("user_id", currentProfile.id)
+      ];
+
+      let lastError = null;
+      let rows = null;
+
+      for (const runQuery of membershipQueries) {
+        const { data, error } = await runQuery();
+
+        if (!error) {
+          rows = data || [];
+          break;
+        }
+
+        lastError = error;
+      }
+
+      if (!rows) throw lastError || new Error("Unable to load assigned properties.");
+
+      ownerProperties = rows
+        .filter(row => row.properties)
+        .filter(row => row.active !== false)
+        .filter(row => {
+          const role = String(row.member_role || row.role || "owner").toLowerCase();
+          return role === "owner";
+        })
+        .map(row => row.properties)
+        .filter((property, index, array) =>
+          property &&
+          array.findIndex(item => item.id === property.id) === index
+        );
+
+      if (!ownerProperties.length) {
+        throw new Error("No properties are assigned to this owner account.");
+      }
+
+      const requestedPropertyId = getRequestedPropertyId();
+      const storedPropertyId = localStorage.getItem("nsc_owner_property_id");
+
+      selectedPropertyId =
+        ownerProperties.find(item => item.id === requestedPropertyId)?.id ||
+        ownerProperties.find(item => item.id === storedPropertyId)?.id ||
+        ownerProperties[0].id;
+
+      propertySelect.innerHTML = ownerProperties.map(property => `
+        <option value="${escapeHtml(property.id)}">
+          ${escapeHtml(property.property_name || property.property_code || "Property")}
+        </option>
+      `).join("");
+
+      propertySelect.value = selectedPropertyId;
+      propertySelectWrap.style.display = ownerProperties.length > 1 ? "block" : "none";
+    }
+
+    async function safeQuery(queryBuilder) {
+      const { data, error } = await queryBuilder;
+      if (error) {
+        console.warn(error);
+        return [];
+      }
+      return data || [];
+    }
+
+    async function loadPropertyData(propertyId) {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const [turnovers, issues, inventoryItems, inventoryCounts, reports] =
+        await Promise.all([
+          safeQuery(
+            db.from("turnovers")
+              .select(`
+                id,
+                turnover_date,
+                scheduled_start,
+                scheduled_end,
+                guest_checkin_time,
+                status,
+                final_notes,
+                created_at
+              `)
+              .eq("property_id", propertyId)
+              .neq("status", "cancelled")
+              .order("turnover_date", { ascending: false })
+              .limit(60)
+          ),
+
+          safeQuery(
+            db.from("issues")
+              .select(`
+                id,
+                title,
+                description,
+                urgency,
+                issue_status,
+                prevents_guest_ready,
+                created_at
+              `)
+              .eq("property_id", propertyId)
+              .not("issue_status", "in", '("resolved","closed")')
+              .order("created_at", { ascending: false })
+              .limit(10)
+          ),
+
+          safeQuery(
+            db.from("inventory_items")
+              .select("id, item_name, target_quantity, amber_quantity, minimum_quantity, active")
+              .eq("property_id", propertyId)
+              .eq("active", true)
+              .order("item_name")
+          ),
+
+          safeQuery(
+            db.from("inventory_counts")
+              .select("id, inventory_item_id, quantity, counted_at, created_at")
+              .eq("property_id", propertyId)
+              .order("counted_at", { ascending: false })
+              .order("created_at", { ascending: false })
+          ),
+
+          safeQuery(
+            db.from("reports")
+              .select("id, turnover_id, created_at")
+              .eq("property_id", propertyId)
+              .order("created_at", { ascending: false })
+              .limit(20)
+          )
+        ]);
+
+      const upcoming = turnovers
+        .filter(item => item.turnover_date >= today)
+        .sort((a, b) => String(a.turnover_date).localeCompare(String(b.turnover_date)));
+
+      const history = turnovers
+        .filter(item => item.turnover_date < today || item.status === "completed")
+        .sort((a, b) => String(b.turnover_date).localeCompare(String(a.turnover_date)))
+        .slice(0, 6);
+
+      const latestCountByItem = new Map();
+
+      inventoryCounts.forEach(count => {
+        if (!latestCountByItem.has(count.inventory_item_id)) {
+          latestCountByItem.set(count.inventory_item_id, Number(count.quantity ?? 0));
+        }
+      });
+
+      const inventoryAlerts = inventoryItems
+        .map(item => ({
+          ...item,
+          current_quantity: latestCountByItem.has(item.id)
+            ? latestCountByItem.get(item.id)
+            : null
+        }))
+        .filter(item => {
+          if (item.current_quantity === null) return false;
+          const amber = Number(item.amber_quantity ?? item.minimum_quantity ?? 0);
+          return item.current_quantity <= amber;
+        });
+
+      return {
+        upcoming,
+        history,
+        issues,
+        inventoryAlerts,
+        reports
+      };
+    }
+
+    function renderTurnovers(turnovers) {
+      if (!turnovers.length) {
+        return '<div class="empty">No upcoming cleanings are currently scheduled.</div>';
+      }
+
+      return `
+        <div class="list">
+          ${turnovers.slice(0, 6).map(turnover => `
+            <a class="list-item" href="owner-turnover.html?id=${encodeURIComponent(turnover.id)}">
+              <div class="item-top">
+                <div>
+                  <div class="item-title">${escapeHtml(formatDate(turnover.turnover_date))}</div>
+                  <div class="item-subtitle">
+                    ${escapeHtml(
+                      [formatTime(turnover.scheduled_start), formatTime(turnover.scheduled_end)]
+                        .filter(Boolean)
+                        .join(" – ") || "Time not entered"
+                    )}
+                  </div>
+                </div>
+                <span class="badge ${statusBadgeClass(turnover.status)}">
+                  ${escapeHtml(formatStatus(turnover.status))}
+                </span>
+              </div>
+            </a>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderHistory(turnovers) {
+      if (!turnovers.length) {
+        return '<div class="empty">No completed cleaning history is available yet.</div>';
+      }
+
+      return `
+        <div class="list">
+          ${turnovers.map(turnover => `
+            <a class="list-item" href="owner-turnover.html?id=${encodeURIComponent(turnover.id)}">
+              <div class="item-top">
+                <div>
+                  <div class="item-title">${escapeHtml(formatDate(turnover.turnover_date))}</div>
+                  <div class="item-subtitle">
+                    ${escapeHtml(turnover.final_notes || "Cleaning record")}
+                  </div>
+                </div>
+                <span class="badge ${statusBadgeClass(turnover.status)}">
+                  ${escapeHtml(formatStatus(turnover.status))}
+                </span>
+              </div>
+            </a>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderIssues(issues) {
+      if (!issues.length) {
+        return '<div class="empty">There are no open issues for this property.</div>';
+      }
+
+      return `
+        <div class="list">
+          ${issues.slice(0, 5).map(issue => `
+            <div class="list-item">
+              <div class="item-top">
+                <div>
+                  <div class="item-title">${escapeHtml(issue.title || "Property issue")}</div>
+                  <div class="item-subtitle">
+                    ${escapeHtml(issue.description || "No additional details entered.")}
+                  </div>
+                </div>
+                <span class="badge ${
+                  issue.urgency === "emergency" || issue.urgency === "urgent"
+                    ? "badge-red"
+                    : issue.urgency === "important"
+                      ? "badge-amber"
+                      : "badge-blue"
+                }">
+                  ${escapeHtml(String(issue.urgency || "normal").replaceAll("_", " "))}
+                </span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderInventory(alerts) {
+      if (!alerts.length) {
+        return '<div class="empty">No low inventory alerts for this property.</div>';
+      }
+
+      return `
+        <div class="list">
+          ${alerts.slice(0, 6).map(item => {
+            const minimum = Number(item.minimum_quantity ?? 0);
+            const isCritical = Number(item.current_quantity) <= minimum;
+
+            return `
+              <div class="list-item">
+                <div class="item-top">
+                  <div>
+                    <div class="item-title">${escapeHtml(item.item_name || "Inventory item")}</div>
+                    <div class="item-subtitle">
+                      Current quantity: ${escapeHtml(item.current_quantity)}
+                    </div>
+                  </div>
+                  <span class="badge ${isCritical ? "badge-red" : "badge-amber"}">
+                    ${isCritical ? "Critical" : "Low"}
+                  </span>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderPage(property, data) {
+      const activeTurnover = data.upcoming.find(item =>
+        ["in_progress", "review_required", "correction_required"].includes(item.status)
+      );
+
+      const completedCount = data.history.filter(item => item.status === "completed").length;
+
+      pageContent.innerHTML = `
+        <section class="hero">
+          <div>
+            <h2>${escapeHtml(property.property_name || "Property")}</h2>
+            <div class="hero-address">${escapeHtml(propertyAddress(property))}</div>
+
+            <div class="hero-meta">
+              ${property.property_code ? `<span class="hero-pill">${escapeHtml(property.property_code)}</span>` : ""}
+              ${property.property_type ? `<span class="hero-pill">${escapeHtml(property.property_type)}</span>` : ""}
+              ${property.bedrooms != null ? `<span class="hero-pill">${escapeHtml(property.bedrooms)} bedrooms</span>` : ""}
+              ${property.bathrooms != null ? `<span class="hero-pill">${escapeHtml(property.bathrooms)} bathrooms</span>` : ""}
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a class="button button-light" href="owner-messages.html?property_id=${encodeURIComponent(property.id)}">
+              Message Manager
+            </a>
+            <a class="button button-ghost" href="owner-documents.html?property_id=${encodeURIComponent(property.id)}">
+              Documents
+            </a>
+          </div>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-label">Upcoming Cleanings</div>
+            <div class="stat-value">${data.upcoming.length}</div>
+            <div class="stat-note">Cancelled cleanings excluded</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-label">Current Status</div>
+            <div class="stat-value" style="font-size:19px;">
+              ${escapeHtml(activeTurnover ? formatStatus(activeTurnover.status) : "No Active Clean")}
+            </div>
+            <div class="stat-note">
+              ${activeTurnover ? escapeHtml(formatDate(activeTurnover.turnover_date)) : "Property is currently clear"}
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-label">Open Issues</div>
+            <div class="stat-value">${data.issues.length}</div>
+            <div class="stat-note">Resolved and closed issues excluded</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-label">Inventory Alerts</div>
+            <div class="stat-value">${data.inventoryAlerts.length}</div>
+            <div class="stat-note">Amber and critical stock items</div>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <div>
+            <article class="panel">
+              <div class="panel-header">
+                <h3 class="panel-title">Upcoming Cleanings</h3>
+              </div>
+              <div class="panel-body">
+                ${renderTurnovers(data.upcoming)}
+              </div>
+            </article>
+
+            <article class="panel" style="margin-top:20px;">
+              <div class="panel-header">
+                <h3 class="panel-title">Cleaning History</h3>
+                <a class="panel-link" href="owner-reports.html?property_id=${encodeURIComponent(property.id)}">
+                  View reports
+                </a>
+              </div>
+              <div class="panel-body">
+                ${renderHistory(data.history)}
+              </div>
+            </article>
+          </div>
+
+          <div>
+            <article class="panel">
+              <div class="panel-header">
+                <h3 class="panel-title">Open Issues</h3>
+              </div>
+              <div class="panel-body">
+                ${renderIssues(data.issues)}
+              </div>
+            </article>
+
+            <article class="panel" style="margin-top:20px;">
+              <div class="panel-header">
+                <h3 class="panel-title">Inventory Alerts</h3>
+              </div>
+              <div class="panel-body">
+                ${renderInventory(data.inventoryAlerts)}
+              </div>
+            </article>
+
+            <article class="panel" style="margin-top:20px;">
+              <div class="panel-header">
+                <h3 class="panel-title">Property Tools</h3>
+              </div>
+              <div class="panel-body">
+                <div class="quick-links">
+                  <a class="quick-link" href="owner-messages.html?property_id=${encodeURIComponent(property.id)}">
+                    <strong>Messages</strong>
+                    <span>Contact management and review property conversations.</span>
+                  </a>
+
+                  <a class="quick-link" href="owner-documents.html?property_id=${encodeURIComponent(property.id)}">
+                    <strong>Documents</strong>
+                    <span>Open agreements, manuals, invoices and property files.</span>
+                  </a>
+
+                  <a class="quick-link" href="owner-reports.html?property_id=${encodeURIComponent(property.id)}">
+                    <strong>Reports</strong>
+                    <span>Review completed cleaning and issue history.</span>
+                  </a>
+
+                  <a class="quick-link" href="owner-settings.html">
+                    <strong>Settings</strong>
+                    <span>Manage your profile and notification preferences.</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderError(message) {
+      pageContent.innerHTML = `
+        <div class="panel">
+          <div class="error-state">
+            <strong>Property information could not be loaded.</strong>
+            <div style="margin-top:8px;">${escapeHtml(message)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function openSelectedProperty(propertyId, updateUrl = true) {
+      selectedPropertyId = propertyId;
+      localStorage.setItem("nsc_owner_property_id", propertyId);
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("property_id", propertyId);
+        window.history.replaceState({}, "", url);
+      }
+
+      pageContent.innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          Loading property information...
+        </div>
+      `;
+
+      const property = ownerProperties.find(item => item.id === propertyId);
+
+      if (!property) {
+        throw new Error("You do not have access to the selected property.");
+      }
+
+      const data = await loadPropertyData(propertyId);
+      renderPage(property, data);
+    }
+
+    async function signOut() {
+      await db.auth.signOut();
+      window.location.href = "login.html";
+    }
+
+    async function initializePage() {
+      await requireOwnerSession();
+      await loadOwnerProperties();
+      await openSelectedProperty(selectedPropertyId, true);
+    }
+
+    propertySelect.addEventListener("change", async event => {
+      try {
+        await openSelectedProperty(event.target.value, true);
+      } catch (error) {
+        console.error(error);
+        renderError(error.message);
+      }
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", signOut);
+    document.getElementById("mobileLogoutButton").addEventListener("click", signOut);
+
+    initializePage().catch(error => {
+      console.error(error);
+      renderError(error.message);
+    });
+  </script>
+</body>
+</html>
