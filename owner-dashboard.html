@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Portal | NSC CleanOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#071f35;--navy2:#0b2f4f;--blue:#2f8fca;--blue-light:#eaf6fc;
+      --bg:#f5f8fb;--surface:#fff;--border:#dfe8ef;--text:#17324d;--muted:#6c7e8f;
+      --green:#1f8f64;--green-light:#e9f8f1;--amber:#aa7214;--amber-light:#fff8e7;
+      --red:#c94747;--red-light:#fff0f0;--shadow:0 12px 32px rgba(18,50,77,.09)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:"Poppins",sans-serif}
+    button,a{font:inherit}
+    .shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}
+    .sidebar{position:fixed;inset:0 auto 0 0;width:250px;padding:26px 20px;background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;display:flex;flex-direction:column;z-index:30}
+    .brand{padding:0 8px 24px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .brand h1{margin:0;font-family:"Montserrat";font-size:22px}.brand p{margin:6px 0 0;color:#afc3d2;font-size:11px}
+    .nav{display:grid;gap:7px;margin-top:24px}.nav a{padding:11px 13px;border-radius:9px;color:#d5e2eb;text-decoration:none;font-size:13px}
+    .nav a:hover,.nav a.active{background:rgba(47,143,202,.2);color:#fff}
+    .owner-card{margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.12)}
+    .owner-name{font-size:12px;font-weight:600}.owner-role{margin-top:2px;color:#9fb6c7;font-size:10px}
+    .logout{width:100%;margin-top:14px;padding:11px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer}
+    .main{grid-column:2;min-width:0}
+    .topbar{min-height:72px;padding:17px 30px;background:#fff;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .topbar h2{margin:0;font-family:"Montserrat";font-size:20px}.topbar span{color:var(--muted);font-size:12px}
+    .menu-button{display:none;width:42px;height:42px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--navy2);font-size:21px;cursor:pointer}
+    .content{padding:28px}
+    .hero{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:24px}
+    .hero h3{margin:0;font-family:"Montserrat";font-size:29px}.hero p{margin:8px 0 0;color:var(--muted);font-size:13px}
+    .property-select{min-width:250px;padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--text)}
+    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:20px}
+    .card,.panel{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+    .card{padding:17px}.card-label{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px}.card-value{margin-top:7px;font-family:"Montserrat";font-size:27px;font-weight:700}.card-note{margin-top:5px;color:var(--muted);font-size:9px}
+    .grid{display:grid;grid-template-columns:1.2fr 1fr;gap:18px}
+    .panel{padding:19px;margin-bottom:18px}.panel-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.panel-title{margin:0;font-family:"Montserrat";font-size:16px}.panel-link{color:var(--blue);text-decoration:none;font-size:10px;font-weight:600}
+    .item{padding:12px 0;border-bottom:1px solid var(--border)}.item:last-child{border-bottom:0}
+    .item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.item-title{font-size:11px;font-weight:700}.item-meta,.item-body{margin-top:4px;color:var(--muted);font-size:9px;line-height:1.5}
+    .pill{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:700;white-space:nowrap}.pill-green{color:var(--green);background:var(--green-light)}.pill-amber{color:var(--amber);background:var(--amber-light)}.pill-red{color:var(--red);background:var(--red-light)}.pill-blue{color:#2078a9;background:var(--blue-light)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);text-decoration:none;font-size:9px;font-weight:600;cursor:pointer}.btn-primary{background:var(--navy2);color:#fff;border-color:var(--navy2)}
+    .row-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+    .empty{padding:26px 8px;text-align:center;color:var(--muted);font-size:10px}
+    .loading{padding:50px;text-align:center}.spinner{width:30px;height:30px;margin:0 auto 10px;border:3px solid #dcecf4;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .progress{height:7px;border-radius:999px;background:#e8eef3;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%;background:var(--blue);border-radius:999px}
+    .inventory-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:10px}.inventory-row:last-child{border-bottom:0}
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20}
+    @media(max-width:1150px){.stats{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}}
+    @media(max-width:760px){
+      .shell{grid-template-columns:1fr}.main{grid-column:1}.sidebar{transform:translateX(-100%);transition:transform .2s ease}.sidebar.open{transform:translateX(0)}
+      .overlay.show{display:block}.menu-button{display:inline-flex;align-items:center;justify-content:center}
+      .topbar{padding:14px 16px}.topbar-copy{display:flex;align-items:center;gap:10px}.content{padding:18px 14px}
+      .hero{display:grid}.hero h3{font-size:24px}.property-select{width:100%;min-width:0}
+      .stats{grid-template-columns:repeat(2,1fr)}.card-value{font-size:23px}.panel{padding:15px}
+    }
+    @media(max-width:430px){.stats{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="overlay" id="overlay"></div>
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><h1>NSC CleanOps</h1><p>Owner Portal</p></div>
+    <nav class="nav">
+      <a class="active" href="owner-dashboard.html">Overview</a>
+      <a href="#upcoming">Upcoming Turnovers</a>
+      <a href="#progress">Cleaning Progress</a>
+      <a href="#issues">Issues</a>
+      <a href="#inventory">Inventory</a>
+    </nav>
+    <div class="owner-card">
+      <div class="owner-name" id="ownerName">Property Owner</div>
+      <div class="owner-role">Owner Account</div>
+      <button class="logout" id="logoutButton" type="button">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-copy">
+        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation">☰</button>
+        <div><h2>Owner Dashboard</h2><span>Niagara Scrubbers Cleaning Inc.</span></div>
+      </div>
+      <span id="todayDate"></span>
+    </header>
+
+    <section class="content">
+      <div class="hero">
+        <div><h3 id="welcome">Welcome</h3><p>View cleaning activity, completed work, property issues and inventory updates.</p></div>
+        <select class="property-select" id="propertySelect" aria-label="Select property"></select>
+      </div>
+
+      <section class="stats">
+        <article class="card"><div class="card-label">Upcoming Turnovers</div><div class="card-value" id="upcomingCount">0</div><div class="card-note">Scheduled and active</div></article>
+        <article class="card"><div class="card-label">In Progress</div><div class="card-value" id="progressCount">0</div><div class="card-note">Cleaning underway</div></article>
+        <article class="card"><div class="card-label">Awaiting Review</div><div class="card-value" id="reviewCount">0</div><div class="card-note">Recently submitted</div></article>
+        <article class="card"><div class="card-label">Open Issues</div><div class="card-value" id="issueCount">0</div><div class="card-note">Still unresolved</div></article>
+        <article class="card"><div class="card-label">Low Inventory</div><div class="card-value" id="inventoryCount">0</div><div class="card-note">Needs attention</div></article>
+      </section>
+
+      <div id="ownerContent" class="loading"><div class="spinner"></div>Loading owner portal</div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script>
+"use strict";
+const db = window.nscSupabase || window.supabaseClient;
+const ACTIVE_ISSUES = new Set(["open","acknowledged","in_progress"]);
+const REVIEW_STATUSES = new Set(["completed","submitted","submitted_for_review"]);
+const CANCELLED_STATUSES = new Set(["cancelled","canceled"]);
+let profile = null;
+let properties = [];
+let selectedPropertyId = null;
+let turnovers = [];
+let issues = [];
+let inventory = [];
+
+const esc = value => String(value ?? "")
+  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+const fmtDate = value => value ? new Intl.DateTimeFormat("en-CA",{month:"short",day:"numeric",year:"numeric"}).format(new Date(value)) : "Not scheduled";
+const fmtTime = value => value ? new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit"}).format(new Date(value)) : "";
+
+function statusClass(status){
+  status = String(status || "").toLowerCase();
+  if(["approved","completed","closed"].includes(status)) return "pill-green";
+  if(["in_progress","submitted","submitted_for_review"].includes(status)) return "pill-amber";
+  if(CANCELLED_STATUSES.has(status)) return "pill-red";
+  return "pill-blue";
+}
+
+async function requireOwner(){
+  if(!db) throw new Error("Supabase client unavailable.");
+  const {data:{session},error} = await db.auth.getSession();
+  if(error) throw error;
+  if(!session){ location.href="login.html"; return false; }
+
+  const {data,error:profileError} = await db.from("users")
+    .select("id,full_name,role,active,company_id")
+    .eq("auth_user_id",session.user.id).single();
+
+  if(profileError) throw profileError;
+  if(!data?.active || String(data.role).toLowerCase() !== "owner"){
+    throw new Error("Owner access required.");
+  }
+
+  profile=data;
+  document.getElementById("ownerName").textContent=data.full_name || "Property Owner";
+  document.getElementById("welcome").textContent=`Welcome, ${(data.full_name || "Owner").split(" ")[0]}`;
+  return true;
+}
+
+async function loadProperties(){
+  const {data,error}=await db.from("property_members")
+    .select(`property_id,properties(id,property_name,property_code,address,city,province,active)`)
+    .eq("user_id",profile.id).eq("member_role","owner").eq("active",true);
+
+  if(error) throw error;
+  properties=(data||[]).map(row=>row.properties).filter(Boolean).filter(p=>p.active!==false);
+
+  const select=document.getElementById("propertySelect");
+  if(!properties.length){
+    select.innerHTML='<option value="">No property assigned</option>';
+    selectedPropertyId=null;
+    return;
+  }
+
+  select.innerHTML=properties.map(p=>`<option value="${esc(p.id)}">${esc(p.property_name || "Property")}</option>`).join("");
+  selectedPropertyId=properties[0].id;
+  select.value=selectedPropertyId;
+}
+
+async function loadPropertyData(){
+  if(!selectedPropertyId){ turnovers=[];issues=[];inventory=[];render();return; }
+
+  const [turnoverResult,issueResult,inventoryResult]=await Promise.all([
+    db.from("turnovers")
+      .select(`id,property_id,turnover_date,scheduled_start,scheduled_end,status,check_in_time,check_out_time,updated_at,users:assigned_user_id(full_name)`)
+      .eq("property_id",selectedPropertyId)
+      .order("turnover_date",{ascending:false}).limit(80),
+
+    db.from("issues")
+      .select(`id,turnover_id,title,description,urgency,issue_status,prevents_guest_ready,created_at,rooms(room_name),users:reported_by(full_name)`)
+      .eq("property_id",selectedPropertyId)
+      .order("created_at",{ascending:false}).limit(50),
+
+    db.from("inventory_counts")
+      .select(`id,turnover_id,quantity_remaining,stock_status,emergency_stock_used,counted_at,inventory_items(item_name,target_quantity,property_id)`)
+      .eq("inventory_items.property_id",selectedPropertyId)
+      .in("stock_status",["amber","red"])
+      .order("counted_at",{ascending:false}).limit(50)
+  ]);
+
+  if(turnoverResult.error) throw turnoverResult.error;
+  if(issueResult.error) throw issueResult.error;
+  if(inventoryResult.error) throw inventoryResult.error;
+
+  turnovers=(turnoverResult.data||[]).filter(t=>!CANCELLED_STATUSES.has(String(t.status||"").toLowerCase()));
+  issues=(issueResult.data||[]).filter(i=>ACTIVE_ISSUES.has(String(i.issue_status||"").toLowerCase()));
+  inventory=(inventoryResult.data||[]).filter(i=>i.inventory_items);
+  render();
+}
+
+function render(){
+  const now=new Date();
+  const upcoming=turnovers.filter(t=>{
+    const date=t.scheduled_start||t.turnover_date;
+    return date && new Date(date)>=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  }).sort((a,b)=>new Date(a.scheduled_start||a.turnover_date)-new Date(b.scheduled_start||b.turnover_date));
+
+  const inProgress=turnovers.filter(t=>String(t.status||"").toLowerCase()==="in_progress");
+  const review=turnovers.filter(t=>REVIEW_STATUSES.has(String(t.status||"").toLowerCase()));
+
+  document.getElementById("upcomingCount").textContent=upcoming.length;
+  document.getElementById("progressCount").textContent=inProgress.length;
+  document.getElementById("reviewCount").textContent=review.length;
+  document.getElementById("issueCount").textContent=issues.length;
+  document.getElementById("inventoryCount").textContent=inventory.length;
+
+  if(!selectedPropertyId){
+    document.getElementById("ownerContent").className="";
+    document.getElementById("ownerContent").innerHTML=`
+      <section class="panel"><div class="empty">
+        No property is connected to this owner account yet. Ask the manager to add this owner under the property members.
+      </div></section>`;
+    return;
+  }
+
+  const upcomingHtml=upcoming.slice(0,8).map(t=>`
+    <div class="item">
+      <div class="item-head">
+        <div class="item-title">${esc(fmtDate(t.scheduled_start||t.turnover_date))}${t.scheduled_start?` · ${esc(fmtTime(t.scheduled_start))}`:""}</div>
+        <span class="pill ${statusClass(t.status)}">${esc(String(t.status||"scheduled").replaceAll("_"," "))}</span>
+      </div>
+      <div class="item-meta">Assigned cleaner: ${esc(t.users?.full_name||"To be assigned")}</div>
+    </div>`).join("") || '<div class="empty">No upcoming turnovers.</div>';
+
+  const progressHtml=inProgress.map(t=>`
+    <div class="item">
+      <div class="item-head"><div class="item-title">Cleaning in progress</div><span class="pill pill-amber">Live</span></div>
+      <div class="item-meta">${esc(t.users?.full_name||"Cleaner")} · Started ${esc(fmtTime(t.check_in_time))}</div>
+      <div class="progress"><span style="width:${t.check_out_time?"100":"55"}%"></span></div>
+    </div>`).join("") || '<div class="empty">No cleaning is currently in progress.</div>';
+
+  const reviewHtml=review.slice(0,8).map(t=>`
+    <div class="item">
+      <div class="item-head"><div class="item-title">${esc(fmtDate(t.turnover_date))}</div><span class="pill pill-green">Submitted</span></div>
+      <div class="item-meta">${esc(t.users?.full_name||"Cleaner")} · Ready for manager review</div>
+    </div>`).join("") || '<div class="empty">No recent cleanings are waiting for review.</div>';
+
+  const issueHtml=issues.slice(0,8).map(i=>`
+    <div class="item">
+      <div class="item-head">
+        <div class="item-title">${esc(i.title||"Reported issue")}</div>
+        <span class="pill ${i.prevents_guest_ready||["urgent","emergency"].includes(i.urgency)?"pill-red":"pill-amber"}">${esc(i.issue_status||"open")}</span>
+      </div>
+      <div class="item-meta">${esc(i.rooms?.room_name||"General")} · ${esc(fmtDate(i.created_at))}</div>
+      <div class="item-body">${esc(i.description||"")}</div>
+    </div>`).join("") || '<div class="empty">No open issues.</div>';
+
+  const inventoryHtml=inventory.slice(0,10).map(i=>{
+    const item=i.inventory_items||{};
+    return `<div class="inventory-row">
+      <div><strong>${esc(item.item_name||"Inventory item")}</strong><div class="item-meta">${Number(i.quantity_remaining)||0}/${Number(item.target_quantity)||0} remaining</div></div>
+      <span class="pill ${i.stock_status==="red"?"pill-red":"pill-amber"}">${esc(i.stock_status||"low")}</span>
+    </div>`;
+  }).join("") || '<div class="empty">No low inventory alerts.</div>';
+
+  document.getElementById("ownerContent").className="";
+  document.getElementById("ownerContent").innerHTML=`
+    <div class="grid">
+      <div>
+        <section class="panel" id="upcoming"><div class="panel-header"><h4 class="panel-title">Upcoming Turnovers</h4></div>${upcomingHtml}</section>
+        <section class="panel" id="progress"><div class="panel-header"><h4 class="panel-title">Live Cleaning Progress</h4></div>${progressHtml}</section>
+        <section class="panel"><div class="panel-header"><h4 class="panel-title">Recent Cleanings</h4></div>${reviewHtml}</section>
+      </div>
+      <div>
+        <section class="panel" id="issues"><div class="panel-header"><h4 class="panel-title">Open Issues</h4></div>${issueHtml}</section>
+        <section class="panel" id="inventory"><div class="panel-header"><h4 class="panel-title">Inventory Alerts</h4></div>${inventoryHtml}</section>
+      </div>
+    </div>`;
+}
+
+document.getElementById("propertySelect").addEventListener("change",async event=>{
+  selectedPropertyId=event.target.value||null;
+  document.getElementById("ownerContent").className="loading";
+  document.getElementById("ownerContent").innerHTML='<div class="spinner"></div>Loading property';
+  try{await loadPropertyData()}catch(error){showError(error)}
+});
+
+function showError(error){
+  console.error(error);
+  document.getElementById("ownerContent").className="";
+  document.getElementById("ownerContent").innerHTML=`<section class="panel"><div class="empty">${esc(error.message||"Unable to load owner portal.")}</div></section>`;
+}
+
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("overlay");
+document.getElementById("menuButton").addEventListener("click",()=>{sidebar.classList.add("open");overlay.classList.add("show")});
+overlay.addEventListener("click",()=>{sidebar.classList.remove("open");overlay.classList.remove("show")});
+document.querySelectorAll(".nav a").forEach(link=>link.addEventListener("click",()=>{sidebar.classList.remove("open");overlay.classList.remove("show")}));
+
+document.getElementById("logoutButton").addEventListener("click",async()=>{await db.auth.signOut();location.href="login.html"});
+
+(async()=>{
+  try{
+    document.getElementById("todayDate").textContent=new Intl.DateTimeFormat("en-CA",{weekday:"long",month:"long",day:"numeric",year:"numeric"}).format(new Date());
+    if(!await requireOwner()) return;
+    await loadProperties();
+    await loadPropertyData();
+  }catch(error){showError(error)}
+})();
+</script>
+</body>
+</html>
