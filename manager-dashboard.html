@@ -37,6 +37,19 @@
     .inventory-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:10px}.inventory-line:last-child{border-bottom:0}
     .attention-panel{border-color:#d9e3ea;background:#fff}.attention-panel .attention-scroll{max-height:310px;overflow:auto;padding-right:5px}
     .notification-list{display:grid}
+
+    .activity-panel{padding:0;overflow:hidden}
+    .activity-summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 19px;cursor:pointer;user-select:none}
+    .activity-summary::-webkit-details-marker{display:none}
+    .activity-summary>span:first-child{display:flex;align-items:center;gap:10px;min-width:0}
+    .activity-count{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:var(--blue-light);color:#2479a8;font-size:8px;font-weight:700;white-space:nowrap}
+    .activity-count.is-read{background:#eef2f5;color:var(--muted)}
+    .notification.is-read{opacity:.72}
+    .notification.is-unread .notification-title::after{content:"";display:inline-block;width:6px;height:6px;margin-left:7px;border-radius:50%;background:var(--blue);vertical-align:middle}
+    .activity-toggle-text{color:var(--blue);font-size:10px;font-weight:600;white-space:nowrap}
+    .activity-panel[open] .activity-toggle-text{font-size:0}
+    .activity-panel[open] .activity-toggle-text::after{content:"Hide activity";font-size:10px}
+    .activity-scroll{max-height:320px;overflow-y:auto;border-top:1px solid var(--border);padding:0 19px}
     .notification{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--border)}
     .notification:last-child{border-bottom:0}
     .notification-dot{width:9px;height:9px;border-radius:50%;margin-top:4px;background:var(--blue)}
@@ -64,7 +77,7 @@
     .timeline-dot.red{background:var(--red)}.timeline-dot.amber{background:var(--amber)}.timeline-dot.green{background:var(--green)}
     .section-stack{display:grid;gap:18px}
     .compact-panel{margin-bottom:0}
-    @media(max-width:760px){.dashboard-clock{display:none}}
+    @media(max-width:760px){.dashboard-clock{display:none}.activity-summary{padding:16px}.activity-scroll{max-height:260px;padding:0 16px}.activity-summary>span:first-child{align-items:flex-start;flex-direction:column;gap:5px}}
     @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
     @media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{display:none}.main{grid-column:1}.content,.topbar{padding-left:18px;padding-right:18px}.stats{grid-template-columns:1fr}}
   </style>
@@ -451,6 +464,7 @@ html, body {
     <section class="content">
       <div class="hero"><h3 id="welcome">Operations Center</h3><p>Today’s cleaning operations, upcoming work, alerts, activity, and business performance in one place.</p></div>
       <section class="stats" aria-label="Dashboard shortcuts">
+        <a class="card stat-link" href="#reviews-waiting" aria-label="View turnovers needing review"><div class="card-label">Review Needed</div><div class="card-value" id="reviewCount">0</div><div class="card-note">Waiting for manager approval · View</div></a>
         <a class="card stat-link" href="#today-turnovers" aria-label="View today's turnovers"><div class="card-label">Today's Turnovers</div><div class="card-value" id="todayCount">0</div><div class="card-note">Scheduled today · View</div></a>
         <a class="card stat-link" href="#attention-required" aria-label="View overdue cleans"><div class="card-label">Overdue Cleans</div><div class="card-value" id="overdueCount">0</div><div class="card-note">Past due and incomplete · View</div></a>
         <a class="card stat-link" href="#reassignment-queue" aria-label="View turnovers needing reassignment"><div class="card-label">Needs Reassignment</div><div class="card-value" id="reassignCount">0</div><div class="card-note">Cleaner declined · View</div></a>
@@ -528,13 +542,26 @@ function getTurnoverDeadline(turnover) {
   return Number.isNaN(deadline.getTime()) ? null : deadline;
 }
 
+function getTurnoverStatus(turnover) {
+  return String(turnover?.status || "").toLowerCase();
+}
+
+function isCancelled(turnover) {
+  return getTurnoverStatus(turnover) === "cancelled";
+}
+
 function isCompleted(turnover) {
-  return COMPLETED_STATUSES.has(String(turnover.status || "").toLowerCase());
+  return COMPLETED_STATUSES.has(getTurnoverStatus(turnover));
 }
 
 function isOverdue(turnover) {
   const deadline = getTurnoverDeadline(turnover);
-  return Boolean(deadline && deadline < new Date() && !isCompleted(turnover));
+  return Boolean(
+    deadline &&
+    deadline < new Date() &&
+    !isCompleted(turnover) &&
+    !isCancelled(turnover)
+  );
 }
 
 function overdueText(turnover) {
@@ -833,6 +860,8 @@ function buildNotifications() {
   const notifications = [];
 
   turnovers.forEach(turnover => {
+    if (isCancelled(turnover)) return;
+
     const propertyName = turnover.properties?.property_name || "Turnover";
     const cleanerName = turnover.users?.full_name || "Cleaner";
 
@@ -921,7 +950,7 @@ function render() {
   const localDateKey = getTodayKey();
 
   const todayTurnovers = turnovers.filter(
-    turnover => turnover.turnover_date === localDateKey
+    turnover => turnover.turnover_date === localDateKey && !isCancelled(turnover)
   );
 
   const overdue = turnovers
@@ -930,12 +959,20 @@ function render() {
 
   const reassign = turnovers.filter(
     turnover =>
-      turnover.needs_reassignment ||
-      turnover.attendance_status === "declined"
+      !isCancelled(turnover) &&
+      (turnover.needs_reassignment ||
+       turnover.attendance_status === "declined")
   );
 
   const blockers = issues.filter(issue => issue.prevents_guest_ready);
 
+  const reviewCount = turnovers.filter(turnover =>
+    ["completed", "submitted", "submitted_for_review"].includes(
+      String(turnover.status || "").toLowerCase()
+    )
+  ).length;
+
+  document.getElementById("reviewCount").textContent = reviewCount;
   document.getElementById("todayCount").textContent = todayTurnovers.length;
   document.getElementById("overdueCount").textContent = overdue.length;
   document.getElementById("reassignCount").textContent = reassign.length;
@@ -1063,16 +1100,33 @@ function render() {
     </div>
   `).join("") || `<div class="empty">No turnovers scheduled today.</div>`;
 
-  const notificationsHtml = buildNotifications().map(notification => `
-    <a class="notification" href="${esc(notification.href)}" style="color:inherit;text-decoration:none">
-      <span class="notification-dot ${esc(notification.type)}"></span>
-      <span>
-        <span class="notification-title">${esc(notification.title)}</span>
-        <span class="notification-text">${esc(notification.text)}</span>
-      </span>
-      <span class="notification-time">${esc(relativeTime(notification.time))}</span>
-    </a>
-  `).join("") || `<div class="empty">No recent notifications.</div>`;
+  const notifications = buildNotifications();
+  const readCutoff = Number(localStorage.getItem("nscManagerActivityReadAt") || 0);
+  const unreadCount = notifications.filter(notification => {
+    const timestamp = new Date(notification.time).getTime();
+    return Number.isFinite(timestamp) && timestamp > readCutoff;
+  }).length;
+
+  const notificationsHtml = notifications.map(notification => {
+    const timestamp = new Date(notification.time).getTime();
+    const unread = Number.isFinite(timestamp) && timestamp > readCutoff;
+
+    return `
+      <a
+        class="notification ${unread ? "is-unread" : "is-read"}"
+        href="${esc(notification.href)}"
+        data-activity-link
+        style="color:inherit;text-decoration:none"
+      >
+        <span class="notification-dot ${esc(notification.type)}"></span>
+        <span>
+          <span class="notification-title">${esc(notification.title)}</span>
+          <span class="notification-text">${esc(notification.text)}</span>
+        </span>
+        <span class="notification-time">${esc(relativeTime(notification.time))}</span>
+      </a>
+    `;
+  }).join("") || `<div class="empty">No recent notifications.</div>`;
 
 
   const reviewTurnovers = turnovers
@@ -1148,7 +1202,7 @@ function render() {
           ${liveHtml}
         </section>
 
-        <section class="panel compact-panel">
+        <section class="panel compact-panel dashboard-anchor" id="reviews-waiting">
           <div class="panel-header">
             <h4 class="panel-title">Reviews Waiting</h4>
             <a class="panel-link" href="turnovers.html?filter=review">Review queue</a>
@@ -1199,14 +1253,46 @@ function render() {
       </div>
     </div>
 
-    <section class="panel" style="margin-top:18px">
-      <div class="panel-header">
-        <h4 class="panel-title">Recent Activity</h4>
-        <span class="panel-link">Newest first · Live updates</span>
+    <details class="panel activity-panel" id="recentActivityPanel" style="margin-top:18px">
+      <summary class="activity-summary">
+        <span>
+          <span class="panel-title">Notifications</span>
+          <span class="activity-count ${unreadCount ? "" : "is-read"}" id="activityUnreadCount">
+            Unread (${unreadCount})
+          </span>
+        </span>
+        <span class="activity-toggle-text">See more</span>
+      </summary>
+      <div class="activity-scroll">
+        <div class="notification-list">${notificationsHtml}</div>
       </div>
-      <div class="notification-list">${notificationsHtml}</div>
-    </section>
+    </details>
   `;
+
+  const activityPanel = document.getElementById("recentActivityPanel");
+  const unreadBadge = document.getElementById("activityUnreadCount");
+
+  activityPanel?.addEventListener("toggle", () => {
+    if (!activityPanel.open) return;
+
+    localStorage.setItem("nscManagerActivityReadAt", String(Date.now()));
+    if (unreadBadge) {
+      unreadBadge.textContent = "Unread (0)";
+      unreadBadge.classList.add("is-read");
+    }
+
+    activityPanel.querySelectorAll(".notification").forEach(item => {
+      item.classList.remove("is-unread");
+      item.classList.add("is-read");
+    });
+  });
+
+  activityPanel?.querySelectorAll("[data-activity-link]").forEach(link => {
+    link.addEventListener("click", () => {
+      localStorage.setItem("nscManagerActivityReadAt", String(Date.now()));
+      activityPanel.open = false;
+    });
+  });
 }
 
 async function refreshDashboard() {

@@ -1783,6 +1783,17 @@ html, body {
                             Cancel
                           </button>
                         ` : ""}
+
+                        ${turnover.status === "cancelled" ? `
+                          <button
+                            class="button button-danger button-small"
+                            type="button"
+                            data-action="delete-turnover"
+                            data-turnover-id="${escapeHtml(turnover.id)}"
+                          >
+                            Delete
+                          </button>
+                        ` : ""}
                       </div>
                     </td>
                   </tr>
@@ -1814,6 +1825,10 @@ html, body {
 
       turnoversContent.querySelectorAll('[data-action="cancel-turnover"]').forEach(button => {
         button.addEventListener("click", () => cancelTurnover(button.dataset.turnoverId, button));
+      });
+
+      turnoversContent.querySelectorAll('[data-action="delete-turnover"]').forEach(button => {
+        button.addEventListener("click", () => deleteTurnover(button.dataset.turnoverId, button));
       });
     }
 
@@ -2232,7 +2247,13 @@ html, body {
       try {
         const { error } = await db
           .from("turnovers")
-          .update({ status: "cancelled" })
+          .update({
+            status: "cancelled",
+            needs_reassignment: false,
+            attendance_status: null,
+            attendance_note: null,
+            attendance_response_at: null
+          })
           .eq("id", turnoverId);
 
         if (error) throw error;
@@ -2242,6 +2263,45 @@ html, body {
         button.disabled = false;
         button.textContent = "Cancel";
         showToast(error.message || "The turnover could not be cancelled.", "error");
+      }
+    }
+
+    async function deleteTurnover(turnoverId, button) {
+      const turnover = turnovers.find(item => item.id === turnoverId);
+      if (!turnover) return;
+
+      if (turnover.status !== "cancelled") {
+        showToast("Only cancelled turnovers can be deleted.", "error");
+        return;
+      }
+
+      const propertyName = turnover.properties?.property_name || "this property";
+      const confirmed = window.confirm(
+        `Permanently delete the cancelled turnover for ${propertyName}? This cannot be undone.`
+      );
+      if (!confirmed) return;
+
+      button.disabled = true;
+      button.textContent = "Deleting";
+
+      try {
+        const { error } = await db
+          .from("turnovers")
+          .delete()
+          .eq("id", turnoverId)
+          .eq("status", "cancelled");
+
+        if (error) throw error;
+
+        showToast("The cancelled turnover has been permanently deleted.");
+        await loadTurnovers();
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Delete";
+        showToast(
+          error.message || "The turnover could not be deleted. Related records may need to be removed first.",
+          "error"
+        );
       }
     }
 
