@@ -33,6 +33,14 @@
     .alert{padding:12px 0;border-bottom:1px solid var(--border)}.alert:last-child{border-bottom:0}.alert-head{display:flex;justify-content:space-between;gap:10px}.alert-title{font-size:11px;font-weight:700}.alert-meta,.alert-body{margin-top:4px;color:var(--muted);font-size:9px;line-height:1.5}
     .pill{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:700;white-space:nowrap}.pill-red{color:var(--red);background:var(--red-light)}.pill-amber{color:var(--amber);background:var(--amber-light)}.pill-green{color:var(--green);background:var(--green-light)}.pill-blue{color:#2078a9;background:var(--blue-light)}
     .row-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);text-decoration:none;font-size:9px;font-weight:600;cursor:pointer}.btn-primary{background:var(--navy2);color:#fff;border-color:var(--navy2)}
+    .issue-status-control{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+    .issue-status-control label{font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.45px}
+    .issue-status-select{min-height:34px;padding:7px 30px 7px 10px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-size:9px;font-weight:600;cursor:pointer;outline:none}
+    .issue-status-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,143,202,.12)}
+    .issue-status-select:disabled{opacity:.65;cursor:wait}
+    .issue-update-note{font-size:8px;color:var(--muted)}
+    .issue-update-note.success{color:var(--green)}
+    .issue-update-note.error{color:var(--red)}
     .empty{padding:24px 8px;text-align:center;color:var(--muted);font-size:10px}.loading{padding:42px;text-align:center}.spinner{width:30px;height:30px;margin:0 auto 10px;border:3px solid #dcecf4;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
     .inventory-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:10px}.inventory-line:last-child{border-bottom:0}
     .attention-panel{border-color:#d9e3ea;background:#fff}.attention-panel .attention-scroll{max-height:310px;overflow:auto;padding-right:5px}
@@ -1023,6 +1031,27 @@ function render() {
         <a class="btn btn-primary" href="turnover-review.html?id=${encodeURIComponent(issue.turnover_id)}">
           View Issue & Photos
         </a>
+        <div class="issue-status-control">
+          <label for="issue-status-${esc(issue.id)}">Status</label>
+          <select
+            class="issue-status-select"
+            id="issue-status-${esc(issue.id)}"
+            data-issue-status
+            data-issue-id="${esc(issue.id)}"
+            aria-label="Change issue status"
+          >
+            ${[
+              ["open", "Open"],
+              ["acknowledged", "Acknowledged"],
+              ["in_progress", "In Progress"],
+              ["resolved", "Resolved"],
+              ["closed", "Closed"]
+            ].map(([value, label]) => `
+              <option value="${value}" ${issue.issue_status === value ? "selected" : ""}>${label}</option>
+            `).join("")}
+          </select>
+          <span class="issue-update-note" data-issue-note="${esc(issue.id)}"></span>
+        </div>
       </div>
     </div>
   `).join("") || `<div class="empty">No open issues.</div>`;
@@ -1294,6 +1323,58 @@ function render() {
     });
   });
 }
+
+async function updateIssueStatus(issueId, nextStatus, selectElement) {
+  const allowedStatuses = ["open", "acknowledged", "in_progress", "resolved", "closed"];
+  if (!issueId || !allowedStatuses.includes(nextStatus)) return;
+
+  const note = document.querySelector(`[data-issue-note="${CSS.escape(issueId)}"]`);
+  const currentIssue = issues.find(issue => issue.id === issueId);
+  const previousStatus = currentIssue?.issue_status || "open";
+
+  if (selectElement) selectElement.disabled = true;
+  if (note) {
+    note.textContent = "Saving…";
+    note.className = "issue-update-note";
+  }
+
+  try {
+    const { error } = await db
+      .from("issues")
+      .update({ issue_status: nextStatus })
+      .eq("id", issueId);
+
+    if (error) throw error;
+
+    if (["resolved", "closed"].includes(nextStatus)) {
+      issues = issues.filter(issue => issue.id !== issueId);
+    } else if (currentIssue) {
+      currentIssue.issue_status = nextStatus;
+    }
+
+    if (note) {
+      note.textContent = "Saved";
+      note.className = "issue-update-note success";
+    }
+
+    window.setTimeout(() => render(), 250);
+  } catch (error) {
+    console.error("Issue status update failed:", error);
+    if (selectElement) selectElement.value = previousStatus;
+    if (note) {
+      note.textContent = error.message || "Unable to save";
+      note.className = "issue-update-note error";
+    }
+  } finally {
+    if (selectElement) selectElement.disabled = false;
+  }
+}
+
+document.addEventListener("change", event => {
+  const select = event.target.closest("[data-issue-status]");
+  if (!select) return;
+  updateIssueStatus(select.dataset.issueId, select.value, select);
+});
 
 async function refreshDashboard() {
   clearTimeout(refreshTimer);
