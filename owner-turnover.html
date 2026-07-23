@@ -1534,7 +1534,9 @@
       messages: {
         owner_cleaner: [],
         owner_manager: []
-      }
+      },
+      realtimeChannel: null,
+      realtimeRefreshTimer: null
     };
 
     document.addEventListener("DOMContentLoaded", initializePage);
@@ -1761,6 +1763,7 @@
 
       renderDetails();
       renderTimeline();
+      subscribeToTurnoverRealtime();
     }
 
     async function loadTurnoverRecord() {
@@ -2729,6 +2732,103 @@
 
       await loadTurnoverMessages(channel);
     }
+
+
+    function subscribeToTurnoverRealtime() {
+      if (!state.turnoverId || !db) return;
+
+      if (state.realtimeChannel) {
+        db.removeChannel(state.realtimeChannel);
+      }
+
+      state.realtimeChannel = db
+        .channel(`owner-turnover-${state.turnoverId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "turnover_tasks",
+            filter: `turnover_id=eq.${state.turnoverId}`
+          },
+          () => scheduleOwnerRealtimeRefresh("tasks")
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "photos",
+            filter: `turnover_id=eq.${state.turnoverId}`
+          },
+          () => scheduleOwnerRealtimeRefresh("photos")
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "inventory_counts",
+            filter: `turnover_id=eq.${state.turnoverId}`
+          },
+          () => scheduleOwnerRealtimeRefresh("inventory")
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "turnover_messages",
+            filter: `turnover_id=eq.${state.turnoverId}`
+          },
+          (payload) => {
+            const channel = payload.new?.channel || payload.old?.channel;
+            if (channel === "owner_cleaner" || channel === "owner_manager") {
+              loadTurnoverMessages(channel);
+            }
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "turnovers",
+            filter: `id=eq.${state.turnoverId}`
+          },
+          () => scheduleOwnerRealtimeRefresh("turnover")
+        )
+        .subscribe();
+    }
+
+    function scheduleOwnerRealtimeRefresh(source) {
+      window.clearTimeout(state.realtimeRefreshTimer);
+
+      state.realtimeRefreshTimer = window.setTimeout(async () => {
+        try {
+          if (source === "tasks") {
+            await loadTaskRecords();
+          } else if (source === "photos") {
+            await loadPhotoRecords();
+          } else if (source === "inventory") {
+            await loadInventoryRecords();
+          } else {
+            await loadTurnoverRecord();
+            renderPageHeader();
+            renderDetails();
+            renderTimeline();
+          }
+        } catch (error) {
+          console.error("Owner realtime refresh failed:", error);
+        }
+      }, 180);
+    }
+
+    window.addEventListener("beforeunload", () => {
+      if (state.realtimeChannel) {
+        db.removeChannel(state.realtimeChannel);
+      }
+    });
 
     function renderPageHeader() {
       const propertyName =

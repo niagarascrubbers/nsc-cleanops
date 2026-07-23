@@ -10,90 +10,79 @@
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Poppins",sans-serif}button,textarea{font:inherit}
 header{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff}.header{width:min(1180px,calc(100% - 30px));min-height:70px;margin:auto;display:flex;justify-content:space-between;align-items:center}.brand{font-family:"Montserrat";font-weight:700}.sub{font-size:9px;color:#afc3d2;margin-top:3px}.head-actions{display:flex;gap:8px}.head-btn{padding:8px 12px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer}
 main{width:min(1180px,calc(100% - 30px));margin:auto;padding:24px 0 45px}.panel{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}.panel-body{padding:18px}.title{margin:0;font-family:"Montserrat";font-size:20px}.muted{color:var(--muted);font-size:10px;line-height:1.5}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}.metric{padding:11px;border:1px solid #edf2f6;border-radius:9px;background:#f8fafc}.metric label{display:block;color:var(--muted);font-size:7px;text-transform:uppercase}.metric strong{display:block;margin-top:4px;font-size:10px}
-.section-head{display:flex;justify-content:space-between;align-items:center;padding:14px 17px;border-bottom:1px solid var(--border)}.section-head h2{margin:0;font-family:"Montserrat";font-size:15px}
-.badge{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:700}.green{background:var(--green-light);color:var(--green)}.amber{background:var(--amber-light);color:var(--amber)}.red{background:var(--red-light);color:var(--red)}.blue{background:var(--blue-light);color:#2078a9}
-.issue{padding:15px 17px;border-bottom:1px solid var(--border)}.issue:last-child{border-bottom:0}.issue-top{display:flex;justify-content:space-between;gap:12px}.issue-title{font-size:11px;font-weight:700}.issue-meta,.issue-desc{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin-top:11px}.photo{overflow:hidden;border:1px solid var(--border);border-radius:9px;background:#f8fafc}.photo img{display:block;width:100%;aspect-ratio:1;object-fit:cover}.photo-cap{padding:6px;font-size:7px;color:var(--muted)}
-.task{padding:14px 17px;border-bottom:1px solid var(--border)}.task:last-child{border-bottom:0}.task-title{font-size:10px;font-weight:700}.task-meta{margin-top:4px;color:var(--muted);font-size:8px}.empty{padding:24px;text-align:center;color:var(--muted);font-size:10px}.loading{padding:60px;text-align:center}.btn{display:inline-flex;min-height:36px;align-items:center;justify-content:center;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);text-decoration:none;font-size:9px;font-weight:600;cursor:pointer}.btn-primary{background:var(--navy2);color:#fff;border-color:var(--navy2)}
-.review-box textarea{width:100%;min-height:100px;padding:10px;border:1px solid var(--border);border-radius:9px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
-@media(max-width:800px){.grid4{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.grid4{grid-template-columns:1fr}.issue-top{flex-direction:column}}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:14px 17px;border-bottom:1px solid var(--border)}.section-head h2{margin:0;font-family:"Montserrat";font-size:15px}.badge{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:8px;font-weight:700}.green{background:var(--green-light);color:var(--green)}.amber{background:var(--amber-light);color:var(--amber)}.red{background:var(--red-light);color:var(--red)}.blue{background:var(--blue-light);color:#2078a9}
+.issue,.task{padding:15px 17px;border-bottom:1px solid var(--border)}.issue:last-child,.task:last-child{border-bottom:0}.issue-top{display:flex;justify-content:space-between;gap:12px}.issue-title,.task-title{font-size:11px;font-weight:700}.issue-meta,.issue-desc,.task-meta{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.5}.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;margin-top:11px}.photo{overflow:hidden;border:1px solid var(--border);border-radius:9px;background:#f8fafc}.photo img{display:block;width:100%;aspect-ratio:1;object-fit:cover}.photo-cap{padding:6px;font-size:7px;color:var(--muted)}
+.empty{padding:24px;text-align:center;color:var(--muted);font-size:10px}.loading{padding:60px;text-align:center}.btn{display:inline-flex;min-height:36px;align-items:center;justify-content:center;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);text-decoration:none;font-size:9px;font-weight:600;cursor:pointer}.btn-primary{background:var(--navy2);color:#fff;border-color:var(--navy2)}.review-box textarea{width:100%;min-height:100px;padding:10px;border:1px solid var(--border);border-radius:9px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.message-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.message-list{display:grid;gap:8px;max-height:340px;padding:14px;overflow:auto;background:#f8fbfd}.message{max-width:84%;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:#fff}.message.mine{margin-left:auto;background:var(--blue-light);border-color:#cfe2ee}.message-author{font-size:8px;font-weight:700}.message-text{margin-top:3px;font-size:9px;line-height:1.5;white-space:pre-wrap}.message-time{margin-top:4px;color:var(--muted);font-size:7px}.message-form{display:grid;grid-template-columns:1fr auto;gap:8px;padding:13px;border-top:1px solid var(--border)}.message-form textarea{min-height:64px;padding:9px;border:1px solid var(--border);border-radius:8px;resize:vertical}.message-status{padding:0 13px 10px;color:var(--muted);font-size:8px}
+@media(max-width:800px){.grid4{grid-template-columns:repeat(2,1fr)}.message-grid{grid-template-columns:1fr}}@media(max-width:520px){.grid4{grid-template-columns:1fr}.issue-top{flex-direction:column}.message-form{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header><div class="header"><div><div class="brand">NSC CleanOps</div><div class="sub">Manager Turnover Review · Operations V2</div></div><div class="head-actions"><button class="head-btn" id="backBtn">Turnovers</button><button class="head-btn" id="logoutBtn">Sign Out</button></div></div></header>
+<header><div class="header"><div><div class="brand">NSC CleanOps</div><div class="sub">Manager Turnover Review · Live Operations</div></div><div class="head-actions"><button class="head-btn" id="backBtn">Turnovers</button><button class="head-btn" id="logoutBtn">Sign Out</button></div></div></header>
 <main id="page"><div class="loading">Loading turnover review…</div></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client.js"></script>
 <script>
 "use strict";
-const db=window.nscSupabase||window.supabaseClient; const page=document.getElementById("page");
-let profile,turnover,tasks=[],photos=[],issues=[],inventory=[];
+const db=window.nscSupabase||window.supabaseClient,page=document.getElementById("page");
+let profile,turnover,tasks=[],photos=[],issues=[],inventory=[],messages={owner_cleaner:[],owner_manager:[]},realtimeChannel=null,refreshTimer=null;
 const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 const fmtDate=v=>v?new Intl.DateTimeFormat("en-CA",{weekday:"short",month:"short",day:"numeric",year:"numeric"}).format(new Date(v)):"Not scheduled";
 const fmtTime=v=>v?new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit"}).format(new Date(v)):"Not recorded";
+const fmtMessage=v=>v?new Intl.DateTimeFormat("en-CA",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date(v)):"";
 const id=()=>new URLSearchParams(location.search).get("id");
-async function signed(path){if(!path)return null;const {data,error}=await db.storage.from("turnover-photos").createSignedUrl(path,3600);return error?null:data?.signedUrl}
-async function auth(){const {data:{session}}=await db.auth.getSession();if(!session){location.href="login.html";return false}const {data,error}=await db.from("users").select("id,full_name,role,active").eq("auth_user_id",session.user.id).single();if(error)throw error;if(!data?.active||!["admin","manager"].includes(data.role))throw new Error("Manager access required.");profile=data;return true}
+async function signed(path){if(!path)return null;const{data,error}=await db.storage.from("turnover-photos").createSignedUrl(path,3600);return error?null:data?.signedUrl}
+async function auth(){const{data:{session}}=await db.auth.getSession();if(!session){location.href="login.html";return false}const{data,error}=await db.from("users").select("id,full_name,role,active").eq("auth_user_id",session.user.id).single();if(error)throw error;if(!data?.active||!["admin","manager"].includes(data.role))throw new Error("Manager access required.");profile=data;return true}
 async function load(){
  const tid=id();if(!tid)throw new Error("No turnover selected.");
- const [t,ta,p,i,inv]=await Promise.all([
-  db.from("turnovers").select(`
-   id,property_id,turnover_date,scheduled_start,scheduled_end,guest_checkin_time,status,review_notes,
-   attendance_status,attendance_note,attendance_response_at,needs_reassignment,
-   check_in_time,check_out_time,check_in_accuracy,check_out_accuracy,check_in_distance,check_out_distance,
-   properties(property_name,address,city,province),users:assigned_user_id(full_name)
-  `).eq("id",tid).single(),
-  db.from("turnover_tasks").select(`id,room_id,section_name,task_text,task_status,cleaner_note,is_required,required_photo_count,manager_status,rooms(room_name)`).eq("turnover_id",tid).order("sort_order"),
+ const[t,ta,p,i,inv,m]=await Promise.all([
+  db.from("turnovers").select(`id,property_id,turnover_date,scheduled_start,scheduled_end,guest_checkin_time,status,review_notes,attendance_status,attendance_note,attendance_response_at,needs_reassignment,check_in_time,check_out_time,check_in_accuracy,check_out_accuracy,check_in_distance,check_out_distance,properties(property_name,address,city,province),users:assigned_user_id(full_name)`).eq("id",tid).single(),
+  db.from("turnover_tasks").select(`id,room_id,section_name,task_text,task_status,cleaner_note,is_required,required_photo_count,manager_status,sort_order,rooms(room_name)`).eq("turnover_id",tid).order("sort_order"),
   db.from("photos").select(`id,turnover_task_id,issue_id,room_id,photo_type,storage_path,caption,created_at`).eq("turnover_id",tid).order("created_at"),
   db.from("issues").select(`id,room_id,issue_type,title,description,urgency,issue_status,prevents_guest_ready,reported_by,created_at,rooms(room_name),users:reported_by(full_name)`).eq("turnover_id",tid).order("created_at",{ascending:false}),
-  db.from("inventory_counts").select(`id,quantity_remaining,stock_status,level_status,emergency_stock_used,cleaner_note,counted_at,inventory_items(item_name,target_quantity,unit_name)`).eq("turnover_id",tid).order("counted_at")
+  db.from("inventory_counts").select(`id,quantity_remaining,stock_status,level_status,emergency_stock_used,cleaner_note,counted_at,inventory_items(item_name,target_quantity,unit_name)`).eq("turnover_id",tid).order("counted_at"),
+  db.from("turnover_messages").select(`id,channel,sender_user_id,sender_role,message,created_at,users:sender_user_id(full_name)`).eq("turnover_id",tid).order("created_at")
  ]);
- if(t.error)throw t.error;if(ta.error)throw ta.error;if(p.error)throw p.error;if(i.error)throw i.error;if(inv.error)throw inv.error;
+ if(t.error)throw t.error;if(ta.error)throw ta.error;if(p.error)throw p.error;if(i.error)throw i.error;if(inv.error)throw inv.error;if(m.error)throw m.error;
  turnover=t.data;tasks=ta.data||[];issues=i.data||[];inventory=inv.data||[];
+ messages.owner_cleaner=(m.data||[]).filter(x=>x.channel==="owner_cleaner");messages.owner_manager=(m.data||[]).filter(x=>x.channel==="owner_manager");
  photos=await Promise.all((p.data||[]).map(async x=>({...x,url:await signed(x.storage_path)})));
 }
-function issuePhotos(issueId){return photos.filter(p=>p.issue_id===issueId)}
-function taskPhotos(taskId){return photos.filter(p=>p.turnover_task_id===taskId)}
+const issuePhotos=x=>photos.filter(p=>p.issue_id===x),taskPhotos=x=>photos.filter(p=>p.turnover_task_id===x);
+function messageHtml(channel){
+ const rows=messages[channel]||[];
+ if(!rows.length)return'<div class="empty">No messages yet.</div>';
+ return rows.map(x=>`<div class="message ${x.sender_user_id===profile.id?"mine":""}"><div class="message-author">${esc(x.users?.full_name||x.sender_role||"User")}</div><div class="message-text">${esc(x.message)}</div><div class="message-time">${esc(fmtMessage(x.created_at))}</div></div>`).join("");
+}
+function conversation(channel,title,subtitle){
+ return `<section class="panel"><div class="section-head"><div><h2>${esc(title)}</h2><div class="muted">${esc(subtitle)}</div></div></div><div class="message-list" id="${channel}List">${messageHtml(channel)}</div><form class="message-form" data-channel="${channel}"><textarea maxlength="3000" placeholder="Write a message…"></textarea><button class="btn btn-primary" type="submit">Send</button></form><div class="message-status" id="${channel}Status"></div></section>`;
+}
 function render(){
  const loc=[turnover.properties?.address,turnover.properties?.city,turnover.properties?.province].filter(Boolean).join(", ");
- const issueHtml=issues.map(i=>{const ps=issuePhotos(i.id);return `
-  <div class="issue">
-   <div class="issue-top"><div><div class="issue-title">${esc(i.title||"Reported issue")}</div><div class="issue-meta">${esc(i.issue_type?.replaceAll("_"," ")||"Issue")} · ${esc(i.rooms?.room_name||"General")} · ${esc(i.users?.full_name||"Cleaner")} · ${esc(fmtDate(i.created_at))}</div></div><div><span class="badge ${i.urgency==="emergency"||i.urgency==="urgent"?"red":"amber"}">${esc(i.urgency||"normal")}</span> ${i.prevents_guest_ready?'<span class="badge red">Guest Blocker</span>':""}</div></div>
-   <div class="issue-desc">${esc(i.description||"")}</div>
-   <div class="photos">${ps.length?ps.map(p=>`<div class="photo">${p.url?`<a href="${esc(p.url)}" target="_blank"><img src="${esc(p.url)}" alt="Issue photo"></a>`:""}<div class="photo-cap">${esc(p.caption||"Issue photo")}</div></div>`).join(""):'<div class="empty">No issue photos found.</div>'}</div>
-  </div>`}).join("")||'<div class="empty">No issues reported for this turnover.</div>';
-
- const taskHtml=tasks.map(t=>{const ps=taskPhotos(t.id);return `<div class="task"><div class="task-title">${esc(t.task_text)}</div><div class="task-meta">${esc(t.rooms?.room_name||t.section_name||"General")} · ${esc((t.task_status||"pending").replaceAll("_"," "))}${t.cleaner_note?` · Note: ${esc(t.cleaner_note)}`:""}</div>${ps.length?`<div class="photos">${ps.map(p=>`<div class="photo">${p.url?`<a href="${esc(p.url)}" target="_blank"><img src="${esc(p.url)}" alt="Task photo"></a>`:""}<div class="photo-cap">${esc(p.caption||"Task photo")}</div></div>`).join("")}</div>`:""}</div>`}).join("")||'<div class="empty">No checklist tasks found.</div>';
-
- const invHtml=inventory.map(c=>{const item=c.inventory_items||{};return `<div class="issue"><div class="issue-top"><div class="issue-title">${esc(item.item_name||"Inventory item")}</div><span class="badge ${c.stock_status==="red"?"red":c.stock_status==="amber"?"amber":"green"}">${esc(c.emergency_stock_used?"Emergency stock used":c.stock_status||"unknown")}</span></div><div class="issue-meta">Count: ${esc(c.quantity_remaining)} / Target: ${esc(item.target_quantity)} ${esc(item.unit_name||"")}${c.cleaner_note?` · ${esc(c.cleaner_note)}`:""}</div></div>`}).join("")||'<div class="empty">No inventory count submitted.</div>';
-
- page.innerHTML=`
-  <section class="panel"><div class="panel-body"><h1 class="title">${esc(turnover.properties?.property_name||"Turnover Review")}</h1><div class="muted">${esc(loc||"Address not entered")}</div>
-   <div class="grid4">
-    <div class="metric"><label>Cleaner</label><strong>${esc(turnover.users?.full_name||"Unassigned")}</strong></div>
-    <div class="metric"><label>Attendance</label><strong>${esc(turnover.attendance_status||"pending")}</strong></div>
-    <div class="metric"><label>Clock In</label><strong>${esc(fmtTime(turnover.check_in_time))}</strong></div>
-    <div class="metric"><label>Clock Out</label><strong>${esc(fmtTime(turnover.check_out_time))}</strong></div>
-    <div class="metric"><label>Turnover Date</label><strong>${esc(fmtDate(turnover.turnover_date))}</strong></div>
-    <div class="metric"><label>Check-in Distance</label><strong>${turnover.check_in_distance==null?"Not recorded":Math.round(turnover.check_in_distance)+" m"}</strong></div>
-    <div class="metric"><label>Check-out Distance</label><strong>${turnover.check_out_distance==null?"Not recorded":Math.round(turnover.check_out_distance)+" m"}</strong></div>
-    <div class="metric"><label>Status</label><strong>${esc((turnover.status||"").replaceAll("_"," "))}</strong></div>
-   </div>
-   ${turnover.attendance_note?`<div class="issue-desc" style="margin-top:12px"><strong>Attendance note:</strong> ${esc(turnover.attendance_note)}</div>`:""}
-  </div></section>
-  <section class="panel"><div class="section-head"><h2>Reported Issues & Photos</h2><span class="badge ${issues.some(i=>i.prevents_guest_ready)?"red":"blue"}">${issues.length} issue${issues.length===1?"":"s"}</span></div>${issueHtml}</section>
-  <section class="panel"><div class="section-head"><h2>Inventory Summary</h2></div>${invHtml}</section>
-  <section class="panel"><div class="section-head"><h2>Completed Checklist & Photos</h2></div>${taskHtml}</section>
-  <section class="panel review-box"><div class="panel-body"><h2 class="title" style="font-size:16px">Manager Review</h2><p class="muted">Approve the turnover or return it for correction.</p><textarea id="reviewNotes" placeholder="Manager review notes">${esc(turnover.review_notes||"")}</textarea><div class="actions"><button class="btn" id="correctionBtn">Request Correction</button><button class="btn btn-primary" id="approveBtn">Approve Turnover</button></div></div></section>`;
- document.getElementById("approveBtn").addEventListener("click",()=>saveReview("completed"));
- document.getElementById("correctionBtn").addEventListener("click",()=>saveReview("correction_required"));
+ const issueHtml=issues.length?issues.map(i=>{const ps=issuePhotos(i.id);return`<div class="issue"><div class="issue-top"><div><div class="issue-title">${esc(i.title||"Reported issue")}</div><div class="issue-meta">${esc((i.issue_type||"issue").replaceAll("_"," "))} · ${esc(i.rooms?.room_name||"General")} · ${esc(i.users?.full_name||"Cleaner")}</div></div><span class="badge ${i.prevents_guest_ready?"red":"amber"}">${esc(i.urgency||"normal")}</span></div><div class="issue-desc">${esc(i.description||"No description")}</div>${ps.length?`<div class="photos">${ps.map(p=>`<div class="photo">${p.url?`<a href="${esc(p.url)}" target="_blank"><img src="${esc(p.url)}" alt=""></a>`:""}<div class="photo-cap">${esc(p.caption||"Issue photo")}</div></div>`).join("")}</div>`:""}</div>`}).join(""):'<div class="empty">No issues reported.</div>';
+ const invHtml=inventory.length?inventory.map(x=>`<div class="task"><div class="task-title">${esc(x.inventory_items?.item_name||"Inventory item")}</div><div class="task-meta">Remaining: ${esc(x.quantity_remaining)} ${esc(x.inventory_items?.unit_name||"")} · Status: ${esc(x.level_status||x.stock_status||"recorded")}${x.cleaner_note?` · ${esc(x.cleaner_note)}`:""}</div></div>`).join(""):'<div class="empty">No inventory count recorded.</div>';
+ const taskHtml=tasks.length?tasks.map(t=>{const ps=taskPhotos(t.id);return`<div class="task"><div class="task-title">${esc(t.task_text||"Checklist task")}</div><div class="task-meta">${esc(t.rooms?.room_name||t.section_name||"General")} · ${esc((t.task_status||"pending").replaceAll("_"," "))}${t.cleaner_note?` · Note: ${esc(t.cleaner_note)}`:""}</div>${ps.length?`<div class="photos">${ps.map(p=>`<div class="photo">${p.url?`<a href="${esc(p.url)}" target="_blank"><img src="${esc(p.url)}" alt=""></a>`:""}<div class="photo-cap">${esc(p.caption||"Task photo")}</div></div>`).join("")}</div>`:""}</div>`}).join(""):'<div class="empty">No checklist tasks found.</div>';
+ page.innerHTML=`<section class="panel"><div class="panel-body"><h1 class="title">${esc(turnover.properties?.property_name||"Turnover Review")}</h1><div class="muted">${esc(loc||"Address not entered")}</div><div class="grid4"><div class="metric"><label>Cleaner</label><strong>${esc(turnover.users?.full_name||"Unassigned")}</strong></div><div class="metric"><label>Attendance</label><strong>${esc(turnover.attendance_status||"pending")}</strong></div><div class="metric"><label>Clock In</label><strong>${esc(fmtTime(turnover.check_in_time))}</strong></div><div class="metric"><label>Clock Out</label><strong>${esc(fmtTime(turnover.check_out_time))}</strong></div><div class="metric"><label>Turnover Date</label><strong>${esc(fmtDate(turnover.turnover_date))}</strong></div><div class="metric"><label>Check-in Distance</label><strong>${turnover.check_in_distance==null?"Not recorded":Math.round(turnover.check_in_distance)+" m"}</strong></div><div class="metric"><label>Check-out Distance</label><strong>${turnover.check_out_distance==null?"Not recorded":Math.round(turnover.check_out_distance)+" m"}</strong></div><div class="metric"><label>Status</label><strong>${esc((turnover.status||"").replaceAll("_"," "))}</strong></div></div></div></section>
+ <section class="panel"><div class="section-head"><h2>Reported Issues & Photos</h2><span class="badge ${issues.some(i=>i.prevents_guest_ready)?"red":"blue"}">${issues.length} issue${issues.length===1?"":"s"}</span></div>${issueHtml}</section>
+ <section class="panel"><div class="section-head"><h2>Inventory Summary</h2></div>${invHtml}</section>
+ <section class="panel"><div class="section-head"><h2>Checklist & Photos</h2><span class="badge blue">${tasks.filter(t=>t.task_status==="completed").length}/${tasks.length} complete</span></div>${taskHtml}</section>
+ <div class="message-grid">${conversation("owner_cleaner","Owner ↔ Cleaning Team","Manager can read and reply in this shared conversation.")}${conversation("owner_manager","Owner ↔ Manager","Private conversation. Cleaners cannot see it.")}</div>
+ <section class="panel review-box"><div class="panel-body"><h2 class="title" style="font-size:16px">Manager Review</h2><p class="muted">Approve the turnover or return it for correction.</p><textarea id="reviewNotes" placeholder="Manager review notes">${esc(turnover.review_notes||"")}</textarea><div class="actions"><button class="btn" id="correctionBtn">Request Correction</button><button class="btn btn-primary" id="approveBtn">Approve Turnover</button></div></div></section>`;
+ document.getElementById("approveBtn").onclick=()=>saveReview("completed");document.getElementById("correctionBtn").onclick=()=>saveReview("correction_required");
+ document.querySelectorAll(".message-form").forEach(form=>form.addEventListener("submit",sendMessage));
+ document.querySelectorAll(".message-list").forEach(x=>x.scrollTop=x.scrollHeight);
 }
-async function saveReview(status){
- const notes=document.getElementById("reviewNotes").value.trim();
- const {error}=await db.from("turnovers").update({status,review_notes:notes||null}).eq("id",turnover.id);
- if(error){alert(error.message);return} location.reload();
-}
-document.getElementById("backBtn").onclick=()=>location.href="turnovers.html";
-document.getElementById("logoutBtn").onclick=async()=>{await db.auth.signOut();location.href="login.html"};
-(async()=>{try{if(!await auth())return;await load();render()}catch(e){page.innerHTML=`<div class="panel"><div class="empty">${esc(e.message||"Unable to load turnover review.")}</div></div>`}})();
+async function sendMessage(e){e.preventDefault();const form=e.currentTarget,channel=form.dataset.channel,input=form.querySelector("textarea"),button=form.querySelector("button"),status=document.getElementById(channel+"Status"),message=input.value.trim();if(!message)return;button.disabled=true;button.textContent="Sending…";const{error}=await db.from("turnover_messages").insert({turnover_id:turnover.id,property_id:turnover.property_id,channel,sender_user_id:profile.id,sender_role:profile.role,message});button.disabled=false;button.textContent="Send";if(error){status.textContent="Message was not sent: "+error.message;return}input.value="";status.textContent="Message sent.";await load();render()}
+async function saveReview(status){const notes=document.getElementById("reviewNotes").value.trim();const{error}=await db.from("turnovers").update({status,review_notes:notes||null}).eq("id",turnover.id);if(error){alert(error.message);return}}
+function subscribeRealtime(){if(realtimeChannel)db.removeChannel(realtimeChannel);const tid=turnover.id;realtimeChannel=db.channel(`manager-turnover-${tid}`)
+ .on("postgres_changes",{event:"*",schema:"public",table:"turnover_tasks",filter:`turnover_id=eq.${tid}`},scheduleRefresh)
+ .on("postgres_changes",{event:"*",schema:"public",table:"photos",filter:`turnover_id=eq.${tid}`},scheduleRefresh)
+ .on("postgres_changes",{event:"*",schema:"public",table:"inventory_counts",filter:`turnover_id=eq.${tid}`},scheduleRefresh)
+ .on("postgres_changes",{event:"*",schema:"public",table:"issues",filter:`turnover_id=eq.${tid}`},scheduleRefresh)
+ .on("postgres_changes",{event:"*",schema:"public",table:"turnover_messages",filter:`turnover_id=eq.${tid}`},scheduleRefresh)
+ .on("postgres_changes",{event:"UPDATE",schema:"public",table:"turnovers",filter:`id=eq.${tid}`},scheduleRefresh).subscribe()}
+function scheduleRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(async()=>{try{await load();render()}catch(e){console.error(e)}},180)}
+document.getElementById("backBtn").onclick=()=>location.href="turnovers.html";document.getElementById("logoutBtn").onclick=async()=>{await db.auth.signOut();location.href="login.html"};window.addEventListener("beforeunload",()=>{if(realtimeChannel)db.removeChannel(realtimeChannel)});
+(async()=>{try{if(!await auth())return;await load();render();subscribeRealtime()}catch(e){page.innerHTML=`<div class="panel"><div class="empty">${esc(e.message||"Unable to load turnover review.")}</div></div>`}})();
 </script>
 </body>
 </html>
