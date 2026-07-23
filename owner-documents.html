@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turnovers & Documents | NSC CleanOps</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-950: #071a2b;
+      --navy-900: #0b2239;
+      --navy-800: #123a5a;
+      --navy-700: #1c4f73;
+      --water-600: #188cac;
+      --water-500: #2aa7c9;
+      --water-100: #e8f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fbfd;
+      --background: #f3f7fa;
+      --border: #dce7ef;
+      --border-strong: #c9d8e3;
+      --text-primary: #18324a;
+      --text-secondary: #6b7f90;
+      --success: #2f8f68;
+      --success-soft: #e8f6ef;
+      --warning: #c88921;
+      --warning-soft: #fff6e4;
+      --danger: #c65555;
+      --danger-soft: #fdeeee;
+      --info: #387da8;
+      --info-soft: #eaf4fb;
+      --shadow: 0 10px 28px rgba(11, 34, 57, 0.07);
+      --radius-xl: 16px;
+      --radius-lg: 12px;
+      --radius-md: 10px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text-primary);
+      font-family: "Poppins", sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 218px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 218px;
+      height: 100vh;
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+      background: linear-gradient(180deg, var(--navy-950), var(--navy-800));
+      z-index: 40;
+    }
+
+    .brand {
+      padding: 2px 10px 20px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 20px;
+      letter-spacing: -0.35px;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: rgba(255,255,255,0.62);
+      font-size: 11px;
+    }
+
+    .nav-label {
+      margin: 0 10px 8px;
+      color: rgba(255,255,255,0.44);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 10px 12px;
+      color: rgba(255,255,255,0.74);
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: 0.18s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: #fff;
+      background: rgba(42, 167, 201, 0.17);
+    }
+
+    .nav-icon {
+      display: inline-grid;
+      width: 20px;
+      height: 20px;
+      place-items: center;
+      font-size: 15px;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .user-card {
+      padding: 0 8px 14px;
+    }
+
+    .user-name {
+      margin: 0;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .user-role {
+      margin: 3px 0 0;
+      color: rgba(255,255,255,0.54);
+      font-size: 11px;
+    }
+
+    .signout-button {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .signout-button:hover { background: rgba(255,255,255,0.12); }
+
+    .main-area {
+      grid-column: 2;
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      min-height: 72px;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 20px;
+      letter-spacing: -0.35px;
+    }
+
+    .topbar-subtitle {
+      margin: 3px 0 0;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      min-width: min(520px, 55vw);
+    }
+
+    .property-select {
+      min-width: 245px;
+      max-width: 360px;
+      height: 42px;
+      padding: 0 38px 0 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .property-select:focus,
+    .search-input:focus {
+      border-color: var(--water-500);
+      box-shadow: 0 0 0 3px rgba(42,167,201,0.12);
+    }
+
+    .button {
+      min-height: 40px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 12px;
+      transition: 0.18s ease;
+    }
+
+    .button-primary {
+      color: #fff;
+      background: var(--navy-800);
+    }
+
+    .button-primary:hover { background: var(--navy-700); }
+
+    .button-secondary {
+      color: var(--navy-800);
+      background: var(--water-100);
+    }
+
+    .button-secondary:hover { background: #d9f1f8; }
+
+    .button-ghost {
+      color: var(--navy-700);
+      background: transparent;
+      border: 1px solid var(--border);
+    }
+
+    .button-ghost:hover { background: var(--surface-soft); }
+
+    .button-small {
+      min-height: 33px;
+      padding: 0 10px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    .mobile-menu-button {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--navy-900);
+      font-size: 18px;
+    }
+
+    .content {
+      padding: 20px 22px 28px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 13px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .tab-button {
+      min-height: 38px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tab-button:hover,
+    .tab-button.active {
+      color: #fff;
+      background: var(--navy-800);
+      border-color: var(--navy-800);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .card-header {
+      min-height: 58px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 16px;
+      letter-spacing: -0.2px;
+    }
+
+    .card-subtitle {
+      margin: 3px 0 0;
+      color: var(--text-secondary);
+      font-size: 11px;
+    }
+
+    .card-body {
+      padding: 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      padding: 10px 12px;
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      text-align: left;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.45px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 11px 12px;
+      font-size: 11px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    tbody tr:hover { background: #fbfdfe; }
+
+    .primary-cell {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .secondary-cell {
+      color: var(--text-secondary);
+      font-size: 10.5px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 9.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-completed,
+    .status-paid,
+    .status-approved { color: var(--success); background: var(--success-soft); }
+
+    .status-scheduled,
+    .status-issued,
+    .status-active { color: var(--info); background: var(--info-soft); }
+
+    .status-in_progress,
+    .status-pending,
+    .status-outstanding { color: var(--warning); background: var(--warning-soft); }
+
+    .status-cancelled,
+    .status-declined,
+    .status-overdue { color: var(--danger); background: var(--danger-soft); }
+
+    .status-other { color: #667a8a; background: #eef3f6; }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .empty-state,
+    .loading-state,
+    .error-state {
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 5px;
+      padding: 24px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .empty-state strong,
+    .error-state strong {
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .empty-state span,
+    .error-state span {
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #dcebf1;
+      border-top-color: var(--water-500);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .photo-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #fff;
+    }
+
+    .photo-preview {
+      aspect-ratio: 4 / 3;
+      background: var(--surface-soft);
+      overflow: hidden;
+    }
+
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .photo-info {
+      padding: 9px 10px 10px;
+    }
+
+    .photo-title {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .photo-meta {
+      margin: 4px 0 0;
+      color: var(--text-secondary);
+      font-size: 9.5px;
+      line-height: 1.45;
+    }
+
+    .document-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .document-card {
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #fff;
+    }
+
+    .document-card-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .document-title {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .document-meta {
+      margin: 5px 0 0;
+      color: var(--text-secondary);
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .document-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(5, 20, 33, 0.58);
+    }
+
+    .modal-backdrop.open { display: grid; }
+
+    .modal {
+      width: min(860px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(5,20,33,0.25);
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 17px;
+    }
+
+    .modal-body { padding: 16px; }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--navy-800);
+      font-size: 19px;
+      line-height: 1;
+    }
+
+    .checklist-room {
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .checklist-room-header {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-soft);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .checklist-task {
+      padding: 9px 12px;
+      display: grid;
+      grid-template-columns: 18px minmax(0,1fr) auto;
+      gap: 8px;
+      align-items: start;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .task-check {
+      width: 15px;
+      height: 15px;
+      margin-top: 1px;
+      border-radius: 4px;
+      border: 1px solid var(--border-strong);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--success);
+      border-color: var(--success);
+      font-size: 10px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 200;
+      max-width: 360px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--navy-900);
+      box-shadow: 0 12px 32px rgba(5,20,33,0.24);
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: 0.2s ease;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: var(--danger); }
+
+    @media (max-width: 920px) {
+      .app-shell { grid-template-columns: 1fr; }
+
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.22s ease;
+      }
+
+      .sidebar.open { transform: translateX(0); }
+
+      .main-area { grid-column: 1; }
+
+      .mobile-menu-button {
+        display: inline-grid;
+        place-items: center;
+      }
+
+      .topbar {
+        padding: 12px 16px;
+      }
+
+      .topbar-actions { min-width: 0; }
+      .property-select { min-width: 190px; }
+      .content { padding: 16px; }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .property-select {
+        flex: 1;
+        min-width: 0;
+        max-width: none;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        width: 100%;
+      }
+
+      .photo-grid,
+      .document-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <h1>NSC CleanOps</h1>
+        <p>Owner Portal</p>
+      </div>
+
+      <p class="nav-label">Workspace</p>
+      <nav class="nav">
+        <a class="nav-link" href="owner-dashboard.html">
+          <span class="nav-icon">⌂</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a class="nav-link active" href="owner-documents.html">
+          <span class="nav-icon">▤</span>
+          <span>Turnovers &amp; Documents</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <p class="user-name" id="sidebarUserName"></p>
+          <p class="user-role">Property Owner</p>
+        </div>
+        <button class="signout-button" id="signOutButton" type="button">Sign Out</button>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open navigation">☰</button>
+          <div>
+            <h1 class="topbar-title">Turnovers &amp; Documents</h1>
+            <p class="topbar-subtitle" id="selectedPropertyAddress"></p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <select class="property-select" id="propertySelect" aria-label="Select property"></select>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="toolbar">
+          <input class="search-input" id="searchInput" type="search" aria-label="Search records">
+          <div class="tabs" id="tabs">
+            <button class="tab-button active" type="button" data-tab="turnovers">Previous Turnovers</button>
+            <button class="tab-button" type="button" data-tab="checklists">Completed Checklists</button>
+            <button class="tab-button" type="button" data-tab="photos">Photos</button>
+            <button class="tab-button" type="button" data-tab="reports">Reports</button>
+            <button class="tab-button" type="button" data-tab="documents">Documents</button>
+            <button class="tab-button" type="button" data-tab="agreements">Agreements</button>
+            <button class="tab-button" type="button" data-tab="invoices">Invoices</button>
+          </div>
+        </div>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title" id="sectionTitle">Previous Turnovers</h2>
+              <p class="card-subtitle" id="sectionSubtitle">Completed and historical cleaning visits</p>
+            </div>
+          </div>
+
+          <div class="card-body" id="sectionContent">
+            <div class="loading-state"><div class="spinner"></div></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="checklistModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="checklistModalTitle">
+      <div class="modal-header">
+        <h2 class="modal-title" id="checklistModalTitle">Completed Checklist</h2>
+        <button class="icon-button" type="button" data-close-modal="checklistModal">×</button>
+      </div>
+      <div class="modal-body" id="checklistModalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    "use strict";
+
+    const db = window.nscSupabase || window.supabaseClient;
+
+    const state = {
+      session: null,
+      profile: null,
+      properties: [],
+      selectedProperty: null,
+      activeTab: "turnovers",
+      search: "",
+      turnovers: [],
+      users: new Map(),
+      checklists: [],
+      photos: [],
+      reports: [],
+      documents: [],
+      agreements: [],
+      invoices: []
+    };
+
+    const els = {
+      sidebar: document.getElementById("sidebar"),
+      mobileMenuButton: document.getElementById("mobileMenuButton"),
+      sidebarUserName: document.getElementById("sidebarUserName"),
+      selectedPropertyAddress: document.getElementById("selectedPropertyAddress"),
+      propertySelect: document.getElementById("propertySelect"),
+      signOutButton: document.getElementById("signOutButton"),
+      searchInput: document.getElementById("searchInput"),
+      tabs: document.getElementById("tabs"),
+      sectionTitle: document.getElementById("sectionTitle"),
+      sectionSubtitle: document.getElementById("sectionSubtitle"),
+      sectionContent: document.getElementById("sectionContent"),
+      checklistModalBody: document.getElementById("checklistModalBody"),
+      toast: document.getElementById("toast")
+    };
+
+    const tabMeta = {
+      turnovers: {
+        title: "Previous Turnovers",
+        subtitle: "Completed and historical cleaning visits"
+      },
+      checklists: {
+        title: "Completed Checklists",
+        subtitle: "Read-only completed cleaning records"
+      },
+      photos: {
+        title: "Photos",
+        subtitle: "Cleaning and issue photos"
+      },
+      reports: {
+        title: "Reports",
+        subtitle: "Property and turnover reports"
+      },
+      documents: {
+        title: "Documents",
+        subtitle: "Property documents and attachments"
+      },
+      agreements: {
+        title: "Agreements",
+        subtitle: "Cleaning agreements and contract documents"
+      },
+      invoices: {
+        title: "Invoices",
+        subtitle: "Invoices and payment records"
+      }
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function firstDefined(object, keys, fallback = null) {
+      for (const key of keys) {
+        if (object && object[key] !== undefined && object[key] !== null) return object[key];
+      }
+      return fallback;
+    }
+
+    function normalizeStatus(value) {
+      return String(value || "other").trim().toLowerCase().replaceAll(" ", "_");
+    }
+
+    function statusClass(value) {
+      const status = normalizeStatus(value);
+
+      if (["completed", "paid", "approved"].includes(status)) return status;
+      if (["scheduled", "issued", "active"].includes(status)) return status;
+      if (["in_progress", "pending", "outstanding"].includes(status)) return status;
+      if (["cancelled", "declined", "overdue"].includes(status)) return status;
+
+      return "other";
+    }
+
+    function formatStatus(value) {
+      return normalizeStatus(value)
+        .replaceAll("_", " ")
+        .replace(/\b\w/g, letter => letter.toUpperCase());
+    }
+
+    function formatDate(value, options = {}) {
+      if (!value) return "";
+      const source = String(value);
+      const date = value instanceof Date
+        ? value
+        : new Date(source.length === 10 ? `${source}T12:00:00` : source);
+
+      if (Number.isNaN(date.getTime())) return "";
+
+      return new Intl.DateTimeFormat("en-CA", options).format(date);
+    }
+
+    function formatCurrency(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "";
+      return new Intl.NumberFormat("en-CA", {
+        style: "currency",
+        currency: "CAD"
+      }).format(number);
+    }
+
+    function formatTime(value) {
+      if (!value) return "";
+
+      if (/^\d{2}:\d{2}/.test(String(value))) {
+        const [hours, minutes] = String(value).split(":");
+        const date = new Date();
+        date.setHours(Number(hours), Number(minutes), 0, 0);
+        return formatDate(date, { hour: "numeric", minute: "2-digit" });
+      }
+
+      return formatDate(value, { hour: "numeric", minute: "2-digit" });
+    }
+
+    function showToast(message, type = "") {
+      els.toast.textContent = message;
+      els.toast.className = `toast show ${type}`.trim();
+
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => {
+        els.toast.className = "toast";
+      }, 3200);
+    }
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    async function executeQueryVariants(variants, options = {}) {
+      const errors = [];
+
+      for (const variant of variants) {
+        try {
+          const result = await variant();
+
+          if (!result?.error) return result;
+
+          errors.push(result.error.message || String(result.error));
+        } catch (error) {
+          errors.push(error.message || String(error));
+        }
+      }
+
+      if (options.optional) {
+        console.warn(options.label || "Optional query unavailable", errors);
+        return {
+          data: options.fallback ?? [],
+          error: null,
+          unavailable: true
+        };
+      }
+
+      throw new Error(`${options.label || "Database query failed"}: ${errors.join(" | ")}`);
+    }
+
+    async function requireOwnerSession() {
+      if (!db) throw new Error("Supabase client is unavailable.");
+
+      const { data: sessionData, error: sessionError } = await db.auth.getSession();
+
+      if (sessionError) throw sessionError;
+
+      if (!sessionData.session) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      state.session = sessionData.session;
+
+      const { data: profile, error: profileError } = await db
+        .from("users")
+        .select("*")
+        .eq("auth_user_id", state.session.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        throw new Error("Owner profile could not be loaded.");
+      }
+
+      if (profile.active !== true) {
+        throw new Error("This account is inactive.");
+      }
+
+      if (String(profile.role || "").toLowerCase() !== "owner") {
+        window.location.href = String(profile.role || "").toLowerCase() === "cleaner"
+          ? "cleaner-dashboard.html"
+          : "manager-dashboard.html";
+        return;
+      }
+
+      state.profile = profile;
+      els.sidebarUserName.textContent = profile.full_name || profile.email || state.session.user.email || "";
+    }
+
+    async function loadAssignedProperties() {
+      const result = await executeQueryVariants([
+        () => db
+          .from("property_members")
+          .select("property_id, properties(*)")
+          .eq("user_id", state.profile.id),
+
+        () => db
+          .from("property_members")
+          .select("property_id, properties(*)")
+          .eq("member_id", state.profile.id),
+
+        () => db
+          .from("property_members")
+          .select("property_id, properties(*)")
+          .eq("user_id", state.session.user.id)
+      ], {
+        label: "Assigned properties could not be loaded"
+      });
+
+      state.properties = (result.data || [])
+        .map(row => row.properties || row.property || null)
+        .filter(Boolean)
+        .filter(property => property.active !== false);
+
+      if (!state.properties.length) {
+        throw new Error("No properties are assigned to this owner account.");
+      }
+
+      els.propertySelect.innerHTML = state.properties.map(property => `
+        <option value="${escapeHtml(property.id)}">
+          ${escapeHtml(property.property_name || property.name || property.property_code || property.id)}
+        </option>
+      `).join("");
+
+      const savedPropertyId = localStorage.getItem("nsc_owner_property_id");
+
+      state.selectedProperty =
+        state.properties.find(property => property.id === savedPropertyId) ||
+        state.properties[0];
+
+      els.propertySelect.value = state.selectedProperty.id;
+
+      renderSelectedProperty();
+    }
+
+    function renderSelectedProperty() {
+      const property = state.selectedProperty;
+
+      const address = [
+        firstDefined(property, ["address", "street_address", "address_line_1"]),
+        property.city,
+        property.province
+      ].filter(Boolean).join(", ");
+
+      els.selectedPropertyAddress.textContent = address;
+    }
+
+    function getTurnoverDate(turnover) {
+      return firstDefined(turnover, [
+        "turnover_date",
+        "scheduled_date",
+        "cleaning_date",
+        "date"
+      ]);
+    }
+
+    function getTurnoverTime(turnover) {
+      return firstDefined(turnover, [
+        "scheduled_start",
+        "start_time",
+        "cleaning_time",
+        "check_in_time"
+      ]);
+    }
+
+    function getCleanerId(turnover) {
+      const direct = firstDefined(turnover, [
+        "assigned_cleaner_id",
+        "cleaner_id",
+        "assigned_to"
+      ]);
+
+      if (direct) return direct;
+
+      const assignments = Array.isArray(turnover.turnover_assignments)
+        ? turnover.turnover_assignments
+        : [];
+
+      const assignment =
+        assignments.find(item => item.active !== false && normalizeStatus(item.status) !== "declined") ||
+        assignments[0];
+
+      return firstDefined(assignment, [
+        "user_id",
+        "cleaner_id",
+        "assigned_user_id"
+      ]);
+    }
+
+    function getCleanerName(turnover) {
+      const cleanerId = getCleanerId(turnover);
+
+      return cleanerId
+        ? state.users.get(cleanerId)?.full_name || ""
+        : "";
+    }
+
+    async function loadUsers(ids) {
+      const missing = ids.filter(id => id && !state.users.has(id));
+
+      if (!missing.length) return;
+
+      const { data, error } = await db
+        .from("users")
+        .select("id, full_name, email, role")
+        .in("id", missing);
+
+      if (error) {
+        console.warn("Cleaner names unavailable:", error.message);
+        return;
+      }
+
+      (data || []).forEach(user => state.users.set(user.id, user));
+    }
+
+    async function loadTurnovers() {
+      const result = await executeQueryVariants([
+        () => db
+          .from("turnovers")
+          .select("*, turnover_assignments(*)")
+          .eq("property_id", state.selectedProperty.id)
+          .order("turnover_date", { ascending: false }),
+
+        () => db
+          .from("turnovers")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("turnover_date", { ascending: false })
+      ], {
+        label: "Turnovers could not be loaded"
+      });
+
+      state.turnovers = result.data || [];
+
+      const cleanerIds = new Set();
+
+      state.turnovers.forEach(turnover => {
+        const cleanerId = getCleanerId(turnover);
+        if (cleanerId) cleanerIds.add(cleanerId);
+      });
+
+      await loadUsers([...cleanerIds]);
+    }
+
+    async function loadCompletedChecklists() {
+      const completedTurnoverIds = state.turnovers
+        .filter(turnover => normalizeStatus(turnover.status) === "completed")
+        .map(turnover => turnover.id);
+
+      if (!completedTurnoverIds.length) {
+        state.checklists = [];
+        return;
+      }
+
+      const result = await executeQueryVariants([
+        () => db
+          .from("turnover_tasks")
+          .select("*, rooms(id, room_name, sort_order)")
+          .in("turnover_id", completedTurnoverIds)
+          .order("turnover_id", { ascending: true })
+          .order("sort_order", { ascending: true }),
+
+        () => db
+          .from("turnover_tasks")
+          .select("*")
+          .in("turnover_id", completedTurnoverIds)
+          .order("created_at", { ascending: true })
+      ], {
+        label: "Completed checklist records unavailable",
+        optional: true,
+        fallback: []
+      });
+
+      state.checklists = result.data || [];
+    }
+
+    async function loadPhotos() {
+      const result = await executeQueryVariants([
+        () => db
+          .from("photos")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false }),
+
+        () => db
+          .from("turnover_photos")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false })
+      ], {
+        label: "Photos unavailable",
+        optional: true,
+        fallback: []
+      });
+
+      state.photos = result.data || [];
+    }
+
+    async function loadReports() {
+      const result = await executeQueryVariants([
+        () => db
+          .from("reports")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false }),
+
+        () => db
+          .from("turnover_reports")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false }),
+
+        () => db
+          .from("property_reports")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false })
+      ], {
+        label: "Reports unavailable",
+        optional: true,
+        fallback: []
+      });
+
+      state.reports = result.data || [];
+    }
+
+    async function loadDocuments() {
+      const result = await executeQueryVariants([
+        () => db
+          .from("documents")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false }),
+
+        () => db
+          .from("property_documents")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false })
+      ], {
+        label: "Documents unavailable",
+        optional: true,
+        fallback: []
+      });
+
+      state.documents = result.data || [];
+    }
+
+    async function loadAgreements() {
+      const result = await executeQueryVariants([
+        () => db
+          .from("agreements")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false }),
+
+        () => db
+          .from("client_agreements")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false }),
+
+        () => db
+          .from("documents")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .eq("document_type", "agreement")
+          .order("created_at", { ascending: false })
+      ], {
+        label: "Agreements unavailable",
+        optional: true,
+        fallback: []
+      });
+
+      state.agreements = result.data || [];
+    }
+
+    async function loadInvoices() {
+      const result = await executeQueryVariants([
+        () => db
+          .from("finance_revenue")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("invoice_date", { ascending: false }),
+
+        () => db
+          .from("invoices")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("invoice_date", { ascending: false }),
+
+        () => db
+          .from("revenue")
+          .select("*")
+          .eq("property_id", state.selectedProperty.id)
+          .order("created_at", { ascending: false })
+      ], {
+        label: "Invoices unavailable",
+        optional: true,
+        fallback: []
+      });
+
+      state.invoices = result.data || [];
+    }
+
+    async function resolveFileUrl(record, bucketCandidates) {
+      const direct = firstDefined(record, [
+        "public_url",
+        "url",
+        "file_url",
+        "photo_url",
+        "document_url",
+        "signed_url"
+      ]);
+
+      if (direct) return direct;
+
+      const path = firstDefined(record, [
+        "storage_path",
+        "file_path",
+        "path",
+        "photo_path",
+        "document_path"
+      ]);
+
+      if (!path) return "";
+
+      for (const bucket of bucketCandidates) {
+        try {
+          const { data } = await db.storage
+            .from(bucket)
+            .createSignedUrl(path, 3600);
+
+          if (data?.signedUrl) return data.signedUrl;
+        } catch (_) {}
+      }
+
+      return "";
+    }
+
+    function filtered(items, fields) {
+      const query = state.search.trim().toLowerCase();
+
+      if (!query) return items;
+
+      return items.filter(item => {
+        return fields.some(field => {
+          const value = typeof field === "function"
+            ? field(item)
+            : item[field];
+
+          return String(value || "").toLowerCase().includes(query);
+        });
+      });
+    }
+
+    function renderTurnovers() {
+      const rows = filtered(
+        state.turnovers.filter(turnover => {
+          const status = normalizeStatus(turnover.status);
+          return status === "completed" || status === "cancelled" || new Date(getTurnoverDate(turnover)) < new Date();
+        }),
+        [
+          turnover => getTurnoverDate(turnover),
+          turnover => getCleanerName(turnover),
+          "status",
+          "notes"
+        ]
+      );
+
+      if (!rows.length) {
+        renderEmpty("No previous turnovers");
+        return;
+      }
+
+      els.sectionContent.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Cleaner</th>
+                <th>Status</th>
+                <th>Completed</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(turnover => {
+                const status = normalizeStatus(turnover.status);
+
+                return `
+                  <tr>
+                    <td class="primary-cell">${escapeHtml(formatDate(getTurnoverDate(turnover), { month: "short", day: "numeric", year: "numeric" }))}</td>
+                    <td class="secondary-cell">${escapeHtml(formatTime(getTurnoverTime(turnover)))}</td>
+                    <td>${escapeHtml(getCleanerName(turnover))}</td>
+                    <td>
+                      <span class="status-pill status-${escapeHtml(statusClass(status))}">
+                        ${escapeHtml(formatStatus(status))}
+                      </span>
+                    </td>
+                    <td class="secondary-cell">${escapeHtml(formatDate(firstDefined(turnover, ["completed_at", "actual_end", "checked_out_at"]), { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }))}</td>
+                    <td>
+                      <div class="actions">
+                        <button class="button button-secondary button-small" type="button" data-open-turnover="${escapeHtml(turnover.id)}">Open</button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      els.sectionContent.querySelectorAll("[data-open-turnover]").forEach(button => {
+        button.addEventListener("click", () => {
+          window.location.href = `owner-turnover.html?id=${encodeURIComponent(button.dataset.openTurnover)}`;
+        });
+      });
+    }
+
+    function renderChecklists() {
+      const completedTurnovers = state.turnovers.filter(
+        turnover => normalizeStatus(turnover.status) === "completed"
+      );
+
+      const rows = filtered(completedTurnovers, [
+        turnover => getTurnoverDate(turnover),
+        turnover => getCleanerName(turnover),
+        "status"
+      ]);
+
+      if (!rows.length) {
+        renderEmpty("No completed checklists");
+        return;
+      }
+
+      els.sectionContent.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Turnover Date</th>
+                <th>Cleaner</th>
+                <th>Tasks Completed</th>
+                <th>Completion</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(turnover => {
+                const tasks = state.checklists.filter(task => task.turnover_id === turnover.id);
+                const completed = tasks.filter(task => {
+                  const status = normalizeStatus(firstDefined(task, ["task_status", "status"]));
+                  return ["completed", "not_applicable"].includes(status) || task.completed === true;
+                }).length;
+                const total = tasks.length;
+                const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+                return `
+                  <tr>
+                    <td class="primary-cell">${escapeHtml(formatDate(getTurnoverDate(turnover), { month: "short", day: "numeric", year: "numeric" }))}</td>
+                    <td>${escapeHtml(getCleanerName(turnover))}</td>
+                    <td>${completed} of ${total}</td>
+                    <td>
+                      <span class="status-pill status-${percentage === 100 ? "completed" : "pending"}">
+                        ${percentage}%
+                      </span>
+                    </td>
+                    <td>
+                      <div class="actions">
+                        <button class="button button-secondary button-small" type="button" data-view-checklist="${escapeHtml(turnover.id)}">View Checklist</button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      els.sectionContent.querySelectorAll("[data-view-checklist]").forEach(button => {
+        button.addEventListener("click", () => openChecklist(button.dataset.viewChecklist));
+      });
+    }
+
+    async function openChecklist(turnoverId) {
+      const turnover = state.turnovers.find(item => item.id === turnoverId);
+      const tasks = state.checklists.filter(task => task.turnover_id === turnoverId);
+      const rooms = new Map();
+
+      tasks.forEach(task => {
+        const roomName = task.rooms?.room_name || firstDefined(task, ["room_name", "area_name"], "General");
+
+        if (!rooms.has(roomName)) rooms.set(roomName, []);
+
+        rooms.get(roomName).push(task);
+      });
+
+      document.getElementById("checklistModalTitle").textContent =
+        `Completed Checklist · ${formatDate(getTurnoverDate(turnover), { month: "long", day: "numeric", year: "numeric" })}`;
+
+      els.checklistModalBody.innerHTML = [...rooms.entries()].map(([roomName, roomTasks]) => `
+        <section class="checklist-room">
+          <div class="checklist-room-header">
+            <span>${escapeHtml(roomName)}</span>
+            <span>${roomTasks.length}</span>
+          </div>
+
+          ${roomTasks.map(task => {
+            const name = firstDefined(task, [
+              "task_name",
+              "title",
+              "description",
+              "label"
+            ], "");
+
+            const status = normalizeStatus(firstDefined(task, [
+              "task_status",
+              "status"
+            ], "completed"));
+
+            return `
+              <div class="checklist-task">
+                <span class="task-check">✓</span>
+                <span>${escapeHtml(name)}</span>
+                <span class="status-pill status-${escapeHtml(statusClass(status))}">
+                  ${escapeHtml(formatStatus(status))}
+                </span>
+              </div>
+            `;
+          }).join("")}
+        </section>
+      `).join("");
+
+      openModal("checklistModal");
+    }
+
+    async function renderPhotos() {
+      const rows = filtered(state.photos, [
+        "caption",
+        "description",
+        "room_name",
+        "photo_type",
+        "created_at"
+      ]);
+
+      if (!rows.length) {
+        renderEmpty("No photos available");
+        return;
+      }
+
+      const cards = [];
+
+      for (const photo of rows) {
+        const url = await resolveFileUrl(photo, [
+          "turnover-photos",
+          "photos"
+        ]);
+
+        if (!url) continue;
+
+        const turnover = state.turnovers.find(item => item.id === photo.turnover_id);
+
+        cards.push(`
+          <article class="photo-card">
+            <a class="photo-preview" href="${escapeHtml(url)}" target="_blank" rel="noopener">
+              <img src="${escapeHtml(url)}" alt="Cleaning photo">
+            </a>
+
+            <div class="photo-info">
+              <p class="photo-title">${escapeHtml(firstDefined(photo, ["caption", "title", "room_name", "photo_type"], "Cleaning Photo"))}</p>
+              <p class="photo-meta">
+                ${escapeHtml(formatDate(firstDefined(photo, ["created_at", "uploaded_at"]), { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }))}
+                ${turnover ? ` · ${escapeHtml(formatDate(getTurnoverDate(turnover), { month: "short", day: "numeric" }))}` : ""}
+              </p>
+            </div>
+          </article>
+        `);
+      }
+
+      if (!cards.length) {
+        renderEmpty("No photos available");
+        return;
+      }
+
+      els.sectionContent.innerHTML = `<div class="photo-grid">${cards.join("")}</div>`;
+    }
+
+    async function renderDocumentCollection(items, emptyLabel, bucketCandidates) {
+      const rows = filtered(items, [
+        "title",
+        "name",
+        "file_name",
+        "document_type",
+        "status",
+        "created_at"
+      ]);
+
+      if (!rows.length) {
+        renderEmpty(emptyLabel);
+        return;
+      }
+
+      const cards = [];
+
+      for (const item of rows) {
+        const url = await resolveFileUrl(item, bucketCandidates);
+
+        const title = firstDefined(item, [
+          "title",
+          "name",
+          "file_name",
+          "document_name"
+        ], "Document");
+
+        const type = firstDefined(item, [
+          "document_type",
+          "report_type",
+          "type",
+          "category"
+        ], "");
+
+        const status = firstDefined(item, ["status", "document_status"], "");
+
+        cards.push(`
+          <article class="document-card">
+            <div class="document-card-top">
+              <div>
+                <p class="document-title">${escapeHtml(title)}</p>
+                <p class="document-meta">
+                  ${escapeHtml(type ? formatStatus(type) : "")}
+                  ${type && item.created_at ? " · " : ""}
+                  ${escapeHtml(formatDate(firstDefined(item, ["created_at", "uploaded_at", "issued_at", "report_date"]), { month: "short", day: "numeric", year: "numeric" }))}
+                </p>
+              </div>
+
+              ${status ? `
+                <span class="status-pill status-${escapeHtml(statusClass(status))}">
+                  ${escapeHtml(formatStatus(status))}
+                </span>
+              ` : ""}
+            </div>
+
+            <div class="document-actions">
+              ${url ? `
+                <a class="button button-secondary button-small" href="${escapeHtml(url)}" target="_blank" rel="noopener">Open</a>
+              ` : ""}
+            </div>
+          </article>
+        `);
+      }
+
+      els.sectionContent.innerHTML = `<div class="document-grid">${cards.join("")}</div>`;
+    }
+
+    function renderInvoices() {
+      const rows = filtered(state.invoices, [
+        "invoice_number",
+        "invoice_date",
+        "status",
+        "client_name",
+        "description"
+      ]);
+
+      if (!rows.length) {
+        renderEmpty("No invoices available");
+        return;
+      }
+
+      els.sectionContent.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Invoice</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${rows.map(invoice => {
+                const total = firstDefined(invoice, [
+                  "invoice_total",
+                  "total_amount",
+                  "amount_with_hst",
+                  "total",
+                  "amount"
+                ]);
+
+                const paid = Number(firstDefined(invoice, [
+                  "amount_paid",
+                  "paid_amount"
+                ], 0)) || 0;
+
+                const balance = firstDefined(invoice, [
+                  "balance_due",
+                  "outstanding_balance"
+                ], Number(total || 0) - paid);
+
+                const status = normalizeStatus(
+                  firstDefined(invoice, ["payment_status", "status"], Number(balance) <= 0 ? "paid" : "outstanding")
+                );
+
+                const url = firstDefined(invoice, [
+                  "invoice_url",
+                  "pdf_url",
+                  "document_url",
+                  "file_url"
+                ]);
+
+                return `
+                  <tr>
+                    <td class="primary-cell">${escapeHtml(firstDefined(invoice, ["invoice_number", "reference_number"], ""))}</td>
+                    <td>${escapeHtml(formatDate(firstDefined(invoice, ["invoice_date", "created_at"]), { month: "short", day: "numeric", year: "numeric" }))}</td>
+                    <td>${escapeHtml(formatCurrency(total))}</td>
+                    <td>${escapeHtml(formatCurrency(balance))}</td>
+                    <td>
+                      <span class="status-pill status-${escapeHtml(statusClass(status))}">
+                        ${escapeHtml(formatStatus(status))}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="actions">
+                        ${url ? `
+                          <a class="button button-secondary button-small" href="${escapeHtml(url)}" target="_blank" rel="noopener">Open</a>
+                        ` : ""}
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderEmpty(label) {
+      els.sectionContent.innerHTML = `
+        <div class="empty-state">
+          <strong>${escapeHtml(label)}</strong>
+        </div>
+      `;
+    }
+
+    async function renderActiveTab() {
+      const meta = tabMeta[state.activeTab];
+
+      els.sectionTitle.textContent = meta.title;
+      els.sectionSubtitle.textContent = meta.subtitle;
+      els.sectionContent.innerHTML = `<div class="loading-state"><div class="spinner"></div></div>`;
+
+      if (state.activeTab === "turnovers") renderTurnovers();
+      if (state.activeTab === "checklists") renderChecklists();
+      if (state.activeTab === "photos") await renderPhotos();
+
+      if (state.activeTab === "reports") {
+        await renderDocumentCollection(
+          state.reports,
+          "No reports available",
+          ["reports", "property-documents", "documents"]
+        );
+      }
+
+      if (state.activeTab === "documents") {
+        await renderDocumentCollection(
+          state.documents,
+          "No documents available",
+          ["property-documents", "documents"]
+        );
+      }
+
+      if (state.activeTab === "agreements") {
+        await renderDocumentCollection(
+          state.agreements,
+          "No agreements available",
+          ["agreements", "property-documents", "documents"]
+        );
+      }
+
+      if (state.activeTab === "invoices") renderInvoices();
+    }
+
+    async function loadPropertyData() {
+      els.sectionContent.innerHTML = `<div class="loading-state"><div class="spinner"></div></div>`;
+
+      await loadTurnovers();
+
+      await Promise.all([
+        loadCompletedChecklists(),
+        loadPhotos(),
+        loadReports(),
+        loadDocuments(),
+        loadAgreements(),
+        loadInvoices()
+      ]);
+
+      await renderActiveTab();
+    }
+
+    function bindEvents() {
+      els.mobileMenuButton.addEventListener("click", () => {
+        els.sidebar.classList.toggle("open");
+      });
+
+      els.propertySelect.addEventListener("change", async () => {
+        state.selectedProperty = state.properties.find(
+          property => property.id === els.propertySelect.value
+        );
+
+        localStorage.setItem("nsc_owner_property_id", state.selectedProperty.id);
+
+        renderSelectedProperty();
+        await loadPropertyData();
+      });
+
+      els.searchInput.addEventListener("input", async () => {
+        state.search = els.searchInput.value;
+        await renderActiveTab();
+      });
+
+      els.tabs.addEventListener("click", async event => {
+        const button = event.target.closest("[data-tab]");
+
+        if (!button) return;
+
+        state.activeTab = button.dataset.tab;
+
+        els.tabs.querySelectorAll("[data-tab]").forEach(tab => {
+          tab.classList.toggle("active", tab.dataset.tab === state.activeTab);
+        });
+
+        await renderActiveTab();
+      });
+
+      document.querySelectorAll("[data-close-modal]").forEach(button => {
+        button.addEventListener("click", () => {
+          closeModal(button.dataset.closeModal);
+        });
+      });
+
+      document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
+        backdrop.addEventListener("click", event => {
+          if (event.target === backdrop) closeModal(backdrop.id);
+        });
+      });
+
+      els.signOutButton.addEventListener("click", async () => {
+        await db.auth.signOut();
+        window.location.href = "login.html";
+      });
+    }
+
+    async function init() {
+      try {
+        bindEvents();
+        await requireOwnerSession();
+        await loadAssignedProperties();
+        await loadPropertyData();
+      } catch (error) {
+        console.error(error);
+
+        document.querySelector(".content").innerHTML = `
+          <div class="card">
+            <div class="error-state">
+              <strong>Turnovers and documents could not load</strong>
+              <span>${escapeHtml(error.message || String(error))}</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
