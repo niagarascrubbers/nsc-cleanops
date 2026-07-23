@@ -1,74 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>owner-data.js Code</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #172033;
-    }
-    header {
-      position: sticky;
-      top: 0;
-      background: white;
-      border-bottom: 1px solid #d9e1ec;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      z-index: 10;
-    }
-    h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 16px;
-      background: #17324d;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    main {
-      padding: 20px;
-    }
-    pre {
-      margin: 0;
-      background: #0f172a;
-      color: #e5e7eb;
-      padding: 20px;
-      border-radius: 12px;
-      overflow: auto;
-      white-space: pre;
-      line-height: 1.5;
-      font-family: Menlo, Monaco, Consolas, monospace;
-      font-size: 13px;
-    }
-    .note {
-      margin: 0 0 14px;
-      color: #536174;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>owner-data.js</h1>
-    <button id="copyButton" type="button">Copy All Code</button>
-  </header>
-
-  <main>
-    <p class="note">Click “Copy All Code,” then paste it into your project file named owner-data.js.</p>
-    <pre id="code">&quot;use strict&quot;;
+"use strict";
 
 const db = window.nscSupabase || window.supabaseClient;
-const $ = id =&gt; document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 const state = {
   session: null,
@@ -83,25 +16,25 @@ const state = {
   reports: [],
   notifications: [],
   calendarDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-  activeTab: &quot;turnovers&quot;,
-  search: &quot;&quot;
+  activeTab: "turnovers",
+  search: ""
 };
 
 function esc(value) {
-  return String(value ?? &quot;&quot;)
-    .replaceAll(&quot;&amp;&quot;, &quot;&amp;amp;&quot;)
-    .replaceAll(&quot;&lt;&quot;, &quot;&amp;lt;&quot;)
-    .replaceAll(&quot;&gt;&quot;, &quot;&amp;gt;&quot;)
-    .replaceAll(&#x27;&quot;&#x27;, &quot;&amp;quot;&quot;)
-    .replaceAll(&quot;&#x27;&quot;, &quot;&amp;#039;&quot;);
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function key(value) {
-  return String(value || &quot;other&quot;).trim().toLowerCase().replaceAll(&quot; &quot;, &quot;_&quot;);
+  return String(value || "other").trim().toLowerCase().replaceAll(" ", "_");
 }
 
 function label(value) {
-  return key(value).replaceAll(&quot;_&quot;, &quot; &quot;).replace(/\b\w/g, c =&gt; c.toUpperCase());
+  return key(value).replaceAll("_", " ").replace(/\b\w/g, c => c.toUpperCase());
 }
 
 function parseDate(value) {
@@ -113,85 +46,85 @@ function parseDate(value) {
 
 function dateKey(value) {
   const date = value instanceof Date ? value : parseDate(value);
-  if (!date) return &quot;&quot;;
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, &quot;0&quot;)}-${String(date.getDate()).padStart(2, &quot;0&quot;)}`;
+  if (!date) return "";
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
 function formatDate(value, options = {}) {
   const date = parseDate(value);
-  return date ? new Intl.DateTimeFormat(&quot;en-CA&quot;, options).format(date) : &quot;&quot;;
+  return date ? new Intl.DateTimeFormat("en-CA", options).format(date) : "";
 }
 
 function formatTime(value) {
-  return formatDate(value, { hour: &quot;numeric&quot;, minute: &quot;2-digit&quot; });
+  return formatDate(value, { hour: "numeric", minute: "2-digit" });
 }
 
 function formatMoney(value) {
   const number = Number(value || 0);
-  return new Intl.NumberFormat(&quot;en-CA&quot;, {
-    style: &quot;currency&quot;,
-    currency: &quot;CAD&quot;
+  return new Intl.NumberFormat("en-CA", {
+    style: "currency",
+    currency: "CAD"
   }).format(Number.isFinite(number) ? number : 0);
 }
 
-function toast(message, type = &quot;&quot;) {
-  const el = $(&quot;toast&quot;);
+function toast(message, type = "") {
+  const el = $("toast");
   if (!el) return;
   el.textContent = message;
   el.className = `toast show ${type}`.trim();
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(() =&gt; el.className = &quot;toast&quot;, 3200);
+  toast.timer = setTimeout(() => el.className = "toast", 3200);
 }
 
 function openModal(id) {
   const el = $(id);
   if (!el) return;
-  el.classList.add(&quot;open&quot;);
-  el.setAttribute(&quot;aria-hidden&quot;, &quot;false&quot;);
+  el.classList.add("open");
+  el.setAttribute("aria-hidden", "false");
 }
 
 function closeModal(id) {
   const el = $(id);
   if (!el) return;
-  el.classList.remove(&quot;open&quot;);
-  el.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+  el.classList.remove("open");
+  el.setAttribute("aria-hidden", "true");
 }
 
 async function requireOwner() {
-  if (!db) throw new Error(&quot;Supabase client is unavailable.&quot;);
+  if (!db) throw new Error("Supabase client is unavailable.");
 
   const { data: sessionData, error: sessionError } = await db.auth.getSession();
   if (sessionError) throw sessionError;
   if (!sessionData.session) {
-    location.href = &quot;login.html&quot;;
+    location.href = "login.html";
     return;
   }
 
   state.session = sessionData.session;
 
   const { data: profile, error } = await db
-    .from(&quot;users&quot;)
-    .select(&quot;id,auth_user_id,full_name,email,role,active,company_id&quot;)
-    .eq(&quot;auth_user_id&quot;, state.session.user.id)
+    .from("users")
+    .select("id,auth_user_id,full_name,email,role,active,company_id")
+    .eq("auth_user_id", state.session.user.id)
     .single();
 
-  if (error || !profile) throw new Error(&quot;Owner profile could not be loaded.&quot;);
-  if (profile.active !== true) throw new Error(&quot;This owner account is inactive.&quot;);
-  if (String(profile.role).toLowerCase() !== &quot;owner&quot;) {
-    location.href = String(profile.role).toLowerCase() === &quot;cleaner&quot;
-      ? &quot;cleaner-dashboard.html&quot;
-      : &quot;manager-dashboard.html&quot;;
+  if (error || !profile) throw new Error("Owner profile could not be loaded.");
+  if (profile.active !== true) throw new Error("This owner account is inactive.");
+  if (String(profile.role).toLowerCase() !== "owner") {
+    location.href = String(profile.role).toLowerCase() === "cleaner"
+      ? "cleaner-dashboard.html"
+      : "manager-dashboard.html";
     return;
   }
 
   state.profile = profile;
-  if ($(&quot;sidebarUserName&quot;)) $(&quot;sidebarUserName&quot;).textContent =
+  if ($("sidebarUserName")) $("sidebarUserName").textContent =
     profile.full_name || profile.email || state.session.user.email;
 }
 
 async function loadProperties() {
   const { data, error } = await db
-    .from(&quot;property_members&quot;)
+    .from("property_members")
     .select(`
       property_id,
       member_role,
@@ -208,48 +141,48 @@ async function loadProperties() {
         active
       )
     `)
-    .eq(&quot;user_id&quot;, state.profile.id)
-    .eq(&quot;active&quot;, true);
+    .eq("user_id", state.profile.id)
+    .eq("active", true);
 
   if (error) throw error;
 
   state.properties = (data || [])
-    .map(row =&gt; row.properties)
+    .map(row => row.properties)
     .filter(Boolean)
-    .filter(property =&gt; property.active !== false);
+    .filter(property => property.active !== false);
 
   if (!state.properties.length) {
-    throw new Error(&quot;No properties are assigned to this owner account.&quot;);
+    throw new Error("No properties are assigned to this owner account.");
   }
 
-  const select = $(&quot;propertySelect&quot;);
+  const select = $("propertySelect");
   if (select) {
-    select.innerHTML = state.properties.map(property =&gt;
-      `&lt;option value=&quot;${esc(property.id)}&quot;&gt;${esc(property.property_name)}&lt;/option&gt;`
-    ).join(&quot;&quot;);
+    select.innerHTML = state.properties.map(property =>
+      `<option value="${esc(property.id)}">${esc(property.property_name)}</option>`
+    ).join("");
   }
 
-  const requested = new URLSearchParams(location.search).get(&quot;property_id&quot;);
-  const saved = localStorage.getItem(&quot;nsc_owner_property_id&quot;);
+  const requested = new URLSearchParams(location.search).get("property_id");
+  const saved = localStorage.getItem("nsc_owner_property_id");
   state.selectedProperty =
-    state.properties.find(p =&gt; p.id === requested) ||
-    state.properties.find(p =&gt; p.id === saved) ||
+    state.properties.find(p => p.id === requested) ||
+    state.properties.find(p => p.id === saved) ||
     state.properties[0];
 
   if (select) select.value = state.selectedProperty.id;
-  localStorage.setItem(&quot;nsc_owner_property_id&quot;, state.selectedProperty.id);
+  localStorage.setItem("nsc_owner_property_id", state.selectedProperty.id);
   renderPropertyHeader();
 }
 
 function renderPropertyHeader() {
   const p = state.selectedProperty;
-  const address = [p.address, p.city, p.province, p.postal_code].filter(Boolean).join(&quot;, &quot;);
-  if ($(&quot;selectedPropertyAddress&quot;)) $(&quot;selectedPropertyAddress&quot;).textContent = address;
+  const address = [p.address, p.city, p.province, p.postal_code].filter(Boolean).join(", ");
+  if ($("selectedPropertyAddress")) $("selectedPropertyAddress").textContent = address;
 }
 
 async function loadTurnovers() {
   const { data, error } = await db
-    .from(&quot;turnovers&quot;)
+    .from("turnovers")
     .select(`
       id,
       company_id,
@@ -307,9 +240,9 @@ async function loadTurnovers() {
         )
       )
     `)
-    .eq(&quot;property_id&quot;, state.selectedProperty.id)
-    .order(&quot;turnover_date&quot;, { ascending: false })
-    .order(&quot;scheduled_start&quot;, { ascending: false });
+    .eq("property_id", state.selectedProperty.id)
+    .order("turnover_date", { ascending: false })
+    .order("scheduled_start", { ascending: false });
 
   if (error) throw error;
   state.turnovers = data || [];
@@ -317,7 +250,7 @@ async function loadTurnovers() {
 
 async function loadIssues() {
   const { data, error } = await db
-    .from(&quot;issues&quot;)
+    .from("issues")
     .select(`
       id,
       turnover_id,
@@ -340,8 +273,8 @@ async function loadIssues() {
         room_name
       )
     `)
-    .eq(&quot;property_id&quot;, state.selectedProperty.id)
-    .order(&quot;created_at&quot;, { ascending: false });
+    .eq("property_id", state.selectedProperty.id)
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   state.issues = data || [];
@@ -349,7 +282,7 @@ async function loadIssues() {
 
 async function loadInventory() {
   const { data: items, error: itemError } = await db
-    .from(&quot;inventory_items&quot;)
+    .from("inventory_items")
     .select(`
       id,
       property_id,
@@ -366,21 +299,21 @@ async function loadInventory() {
       active,
       sort_order
     `)
-    .eq(&quot;property_id&quot;, state.selectedProperty.id)
-    .eq(&quot;active&quot;, true)
-    .order(&quot;sort_order&quot;, { ascending: true });
+    .eq("property_id", state.selectedProperty.id)
+    .eq("active", true)
+    .order("sort_order", { ascending: true });
 
   if (itemError) throw itemError;
   state.inventoryItems = items || [];
 
-  const ids = state.turnovers.map(t =&gt; t.id);
+  const ids = state.turnovers.map(t => t.id);
   if (!ids.length) {
     state.inventoryCounts = [];
     return;
   }
 
   const { data: counts, error: countError } = await db
-    .from(&quot;inventory_counts&quot;)
+    .from("inventory_counts")
     .select(`
       id,
       turnover_id,
@@ -393,22 +326,22 @@ async function loadInventory() {
       cleaner_note,
       counted_at
     `)
-    .in(&quot;turnover_id&quot;, ids)
-    .order(&quot;counted_at&quot;, { ascending: false });
+    .in("turnover_id", ids)
+    .order("counted_at", { ascending: false });
 
   if (countError) throw countError;
   state.inventoryCounts = counts || [];
 }
 
 async function loadPhotos() {
-  const ids = state.turnovers.map(t =&gt; t.id);
+  const ids = state.turnovers.map(t => t.id);
   if (!ids.length) {
     state.photos = [];
     return;
   }
 
   const { data, error } = await db
-    .from(&quot;photos&quot;)
+    .from("photos")
     .select(`
       id,
       turnover_id,
@@ -423,30 +356,30 @@ async function loadPhotos() {
       taken_at,
       created_at
     `)
-    .in(&quot;turnover_id&quot;, ids)
-    .order(&quot;created_at&quot;, { ascending: false });
+    .in("turnover_id", ids)
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   state.photos = data || [];
 
-  await Promise.all(state.photos.map(async photo =&gt; {
+  await Promise.all(state.photos.map(async photo => {
     if (!photo.storage_path) return;
     const { data: signed } = await db.storage
-      .from(&quot;turnover-photos&quot;)
+      .from("turnover-photos")
       .createSignedUrl(photo.storage_path, 3600);
     photo.preview_url = signed?.signedUrl || null;
   }));
 }
 
 async function loadReports() {
-  const ids = state.turnovers.map(t =&gt; t.id);
+  const ids = state.turnovers.map(t => t.id);
   if (!ids.length) {
     state.reports = [];
     return;
   }
 
   const { data, error } = await db
-    .from(&quot;reports&quot;)
+    .from("reports")
     .select(`
       id,
       turnover_id,
@@ -458,16 +391,16 @@ async function loadReports() {
       sent_to_owner_at,
       created_at
     `)
-    .in(&quot;turnover_id&quot;, ids)
-    .order(&quot;created_at&quot;, { ascending: false });
+    .in("turnover_id", ids)
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   state.reports = data || [];
 
-  await Promise.all(state.reports.map(async report =&gt; {
+  await Promise.all(state.reports.map(async report => {
     if (!report.storage_path) return;
     const { data: signed } = await db.storage
-      .from(&quot;turnover-reports&quot;)
+      .from("turnover-reports")
       .createSignedUrl(report.storage_path, 3600);
     report.preview_url = signed?.signedUrl || null;
   }));
@@ -475,7 +408,7 @@ async function loadReports() {
 
 async function loadNotifications() {
   const { data, error } = await db
-    .from(&quot;notifications&quot;)
+    .from("notifications")
     .select(`
       id,
       company_id,
@@ -490,9 +423,9 @@ async function loadNotifications() {
       read_at,
       created_at
     `)
-    .eq(&quot;recipient_user_id&quot;, state.profile.id)
+    .eq("recipient_user_id", state.profile.id)
     .or(`property_id.eq.${state.selectedProperty.id},property_id.is.null`)
-    .order(&quot;created_at&quot;, { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(100);
 
   if (error) throw error;
@@ -501,7 +434,7 @@ async function loadNotifications() {
 
 async function loadFinance() {
   const { data, error } = await db
-    .from(&quot;finance_revenue&quot;)
+    .from("finance_revenue")
     .select(`
       id,
       property_id,
@@ -521,8 +454,8 @@ async function loadFinance() {
       notes,
       created_at
     `)
-    .eq(&quot;property_id&quot;, state.selectedProperty.id)
-    .order(&quot;invoice_date&quot;, { ascending: false });
+    .eq("property_id", state.selectedProperty.id)
+    .order("invoice_date", { ascending: false });
 
   if (error) throw error;
   state.invoices = data || [];
@@ -530,14 +463,14 @@ async function loadFinance() {
 
 function latestCounts() {
   const result = new Map();
-  state.inventoryCounts.forEach(count =&gt; {
+  state.inventoryCounts.forEach(count => {
     if (!result.has(count.inventory_item_id)) result.set(count.inventory_item_id, count);
   });
   return result;
 }
 
 function taskComplete(task) {
-  return [&quot;completed&quot;, &quot;done&quot;, &quot;approved&quot;].includes(key(task.task_status));
+  return ["completed", "done", "approved"].includes(key(task.task_status));
 }
 
 function progress(turnover) {
@@ -547,17 +480,17 @@ function progress(turnover) {
 }
 
 function renderCalendar() {
-  if (!$(&quot;calendarGrid&quot;)) return;
+  if (!$("calendarGrid")) return;
 
   const month = state.calendarDate;
   const first = new Date(month.getFullYear(), month.getMonth(), 1);
   const start = new Date(first);
   start.setDate(1 - first.getDay());
 
-  $(&quot;calendarMonth&quot;).textContent = formatDate(first, { month: &quot;long&quot;, year: &quot;numeric&quot; });
+  $("calendarMonth").textContent = formatDate(first, { month: "long", year: "numeric" });
 
   const grouped = new Map();
-  state.turnovers.forEach(turnover =&gt; {
+  state.turnovers.forEach(turnover => {
     const d = dateKey(turnover.turnover_date || turnover.scheduled_start);
     if (!grouped.has(d)) grouped.set(d, []);
     grouped.get(d).push(turnover);
@@ -566,239 +499,239 @@ function renderCalendar() {
   const today = dateKey(new Date());
   const html = [];
 
-  for (let i = 0; i &lt; 42; i++) {
+  for (let i = 0; i < 42; i++) {
     const day = new Date(start);
     day.setDate(start.getDate() + i);
     const d = dateKey(day);
     const events = grouped.get(d) || [];
 
     html.push(`
-      &lt;div class=&quot;calendar-day ${day.getMonth() !== first.getMonth() ? &quot;outside&quot; : &quot;&quot;} ${d === today ? &quot;today&quot; : &quot;&quot;}&quot;&gt;
-        &lt;div class=&quot;day-number&quot;&gt;${day.getDate()}&lt;/div&gt;
-        &lt;div class=&quot;day-events&quot;&gt;
-          ${events.slice(0, 3).map(turnover =&gt; `
-            &lt;button class=&quot;calendar-event status-${esc(key(turnover.status))}&quot;
-              data-turnover-id=&quot;${esc(turnover.id)}&quot; type=&quot;button&quot;&gt;
+      <div class="calendar-day ${day.getMonth() !== first.getMonth() ? "outside" : ""} ${d === today ? "today" : ""}">
+        <div class="day-number">${day.getDate()}</div>
+        <div class="day-events">
+          ${events.slice(0, 3).map(turnover => `
+            <button class="calendar-event status-${esc(key(turnover.status))}"
+              data-turnover-id="${esc(turnover.id)}" type="button">
               ${esc(formatTime(turnover.scheduled_start) || label(turnover.status))}
-            &lt;/button&gt;
-          `).join(&quot;&quot;)}
-          ${events.length &gt; 3 ? `&lt;div class=&quot;calendar-more&quot;&gt;+${events.length - 3} more&lt;/div&gt;` : &quot;&quot;}
-        &lt;/div&gt;
-      &lt;/div&gt;
+            </button>
+          `).join("")}
+          ${events.length > 3 ? `<div class="calendar-more">+${events.length - 3} more</div>` : ""}
+        </div>
+      </div>
     `);
   }
 
-  $(&quot;calendarGrid&quot;).innerHTML = html.join(&quot;&quot;);
-  $(&quot;calendarGrid&quot;).querySelectorAll(&quot;[data-turnover-id]&quot;).forEach(button =&gt; {
-    button.onclick = () =&gt; location.href =
+  $("calendarGrid").innerHTML = html.join("");
+  $("calendarGrid").querySelectorAll("[data-turnover-id]").forEach(button => {
+    button.onclick = () => location.href =
       `owner-turnover.html?id=${encodeURIComponent(button.dataset.turnoverId)}`;
   });
 }
 
 function renderUpcoming() {
-  if (!$(&quot;upcomingCleans&quot;)) return;
+  if (!$("upcomingCleans")) return;
   const today = dateKey(new Date());
 
   const rows = state.turnovers
-    .filter(t =&gt; dateKey(t.turnover_date || t.scheduled_start) &gt;= today)
-    .filter(t =&gt; key(t.status) !== &quot;cancelled&quot;)
-    .sort((a, b) =&gt; new Date(a.scheduled_start || a.turnover_date) - new Date(b.scheduled_start || b.turnover_date))
+    .filter(t => dateKey(t.turnover_date || t.scheduled_start) >= today)
+    .filter(t => key(t.status) !== "cancelled")
+    .sort((a, b) => new Date(a.scheduled_start || a.turnover_date) - new Date(b.scheduled_start || b.turnover_date))
     .slice(0, 8);
 
-  $(&quot;upcomingCleans&quot;).innerHTML = rows.length ? rows.map(t =&gt; `
-    &lt;button class=&quot;list-row row-button&quot; type=&quot;button&quot; data-turnover-id=&quot;${esc(t.id)}&quot;&gt;
-      &lt;p class=&quot;row-title&quot;&gt;${esc(formatDate(t.turnover_date, { weekday: &quot;short&quot;, month: &quot;short&quot;, day: &quot;numeric&quot; }))}&lt;/p&gt;
-      &lt;p class=&quot;row-meta&quot;&gt;${esc(formatTime(t.scheduled_start) || &quot;Time not set&quot;)} · ${esc(t.users?.full_name || &quot;Cleaner not assigned&quot;)}&lt;/p&gt;
-      &lt;span class=&quot;status-pill status-${esc(key(t.status))}&quot;&gt;${esc(label(t.status))}&lt;/span&gt;
-    &lt;/button&gt;
-  `).join(&quot;&quot;) : `&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No upcoming cleans&lt;/strong&gt;&lt;/div&gt;`;
+  $("upcomingCleans").innerHTML = rows.length ? rows.map(t => `
+    <button class="list-row row-button" type="button" data-turnover-id="${esc(t.id)}">
+      <p class="row-title">${esc(formatDate(t.turnover_date, { weekday: "short", month: "short", day: "numeric" }))}</p>
+      <p class="row-meta">${esc(formatTime(t.scheduled_start) || "Time not set")} · ${esc(t.users?.full_name || "Cleaner not assigned")}</p>
+      <span class="status-pill status-${esc(key(t.status))}">${esc(label(t.status))}</span>
+    </button>
+  `).join("") : `<div class="empty-state"><strong>No upcoming cleans</strong></div>`;
 
-  $(&quot;upcomingCleans&quot;).querySelectorAll(&quot;[data-turnover-id]&quot;).forEach(button =&gt; {
-    button.onclick = () =&gt; location.href =
+  $("upcomingCleans").querySelectorAll("[data-turnover-id]").forEach(button => {
+    button.onclick = () => location.href =
       `owner-turnover.html?id=${encodeURIComponent(button.dataset.turnoverId)}`;
   });
 }
 
 function currentTurnover() {
-  const active = state.turnovers.find(t =&gt; key(t.status) === &quot;in_progress&quot;);
+  const active = state.turnovers.find(t => key(t.status) === "in_progress");
   if (active) return active;
 
   return state.turnovers
-    .filter(t =&gt; ![&quot;cancelled&quot;, &quot;completed&quot;].includes(key(t.status)))
-    .sort((a, b) =&gt; new Date(a.scheduled_start || a.turnover_date) - new Date(b.scheduled_start || b.turnover_date))[0] || null;
+    .filter(t => !["cancelled", "completed"].includes(key(t.status)))
+    .sort((a, b) => new Date(a.scheduled_start || a.turnover_date) - new Date(b.scheduled_start || b.turnover_date))[0] || null;
 }
 
 function showChecklist(turnover) {
   const tasks = turnover.turnover_tasks || [];
   const grouped = new Map();
 
-  tasks.forEach(task =&gt; {
-    const room = task.rooms?.room_name || task.section_name || &quot;General&quot;;
+  tasks.forEach(task => {
+    const room = task.rooms?.room_name || task.section_name || "General";
     if (!grouped.has(room)) grouped.set(room, []);
     grouped.get(room).push(task);
   });
 
-  const photos = state.photos.filter(p =&gt; p.turnover_id === turnover.id &amp;&amp; p.preview_url);
+  const photos = state.photos.filter(p => p.turnover_id === turnover.id && p.preview_url);
 
-  $(&quot;checklistModalBody&quot;).innerHTML = `
-    ${[...grouped.entries()].map(([room, roomTasks]) =&gt; `
-      &lt;section class=&quot;checklist-room&quot;&gt;
-        &lt;div class=&quot;checklist-room-header&quot;&gt;
-          &lt;span&gt;${esc(room)}&lt;/span&gt;
-          &lt;span&gt;${roomTasks.filter(taskComplete).length}/${roomTasks.length}&lt;/span&gt;
-        &lt;/div&gt;
-        ${roomTasks.map(task =&gt; `
-          &lt;div class=&quot;checklist-task&quot;&gt;
-            &lt;span class=&quot;task-check&quot;&gt;${taskComplete(task) ? &quot;✓&quot; : &quot;&quot;}&lt;/span&gt;
-            &lt;span&gt;${esc(task.task_text)}&lt;/span&gt;
-            &lt;span class=&quot;status-pill status-${esc(key(task.task_status))}&quot;&gt;${esc(label(task.task_status))}&lt;/span&gt;
-          &lt;/div&gt;
-        `).join(&quot;&quot;)}
-      &lt;/section&gt;
-    `).join(&quot;&quot;)}
+  $("checklistModalBody").innerHTML = `
+    ${[...grouped.entries()].map(([room, roomTasks]) => `
+      <section class="checklist-room">
+        <div class="checklist-room-header">
+          <span>${esc(room)}</span>
+          <span>${roomTasks.filter(taskComplete).length}/${roomTasks.length}</span>
+        </div>
+        ${roomTasks.map(task => `
+          <div class="checklist-task">
+            <span class="task-check">${taskComplete(task) ? "✓" : ""}</span>
+            <span>${esc(task.task_text)}</span>
+            <span class="status-pill status-${esc(key(task.task_status))}">${esc(label(task.task_status))}</span>
+          </div>
+        `).join("")}
+      </section>
+    `).join("")}
     ${photos.length ? `
-      &lt;div class=&quot;photo-grid&quot;&gt;
-        ${photos.map(photo =&gt; `
-          &lt;a class=&quot;photo-card&quot; href=&quot;${esc(photo.preview_url)}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;
-            &lt;div class=&quot;photo-preview&quot;&gt;&lt;img src=&quot;${esc(photo.preview_url)}&quot; alt=&quot;${esc(photo.caption || &quot;Cleaning photo&quot;)}&quot;&gt;&lt;/div&gt;
-          &lt;/a&gt;
-        `).join(&quot;&quot;)}
-      &lt;/div&gt;
-    ` : &quot;&quot;}
+      <div class="photo-grid">
+        ${photos.map(photo => `
+          <a class="photo-card" href="${esc(photo.preview_url)}" target="_blank" rel="noopener">
+            <div class="photo-preview"><img src="${esc(photo.preview_url)}" alt="${esc(photo.caption || "Cleaning photo")}"></div>
+          </a>
+        `).join("")}
+      </div>
+    ` : ""}
   `;
-  openModal(&quot;checklistModal&quot;);
+  openModal("checklistModal");
 }
 
 function renderLiveProgress() {
-  if (!$(&quot;liveProgressContent&quot;)) return;
+  if (!$("liveProgressContent")) return;
   const turnover = currentTurnover();
 
   if (!turnover) {
-    $(&quot;liveTurnoverTitle&quot;).textContent = &quot;&quot;;
-    $(&quot;liveProgressContent&quot;).innerHTML = `&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No active cleaning&lt;/strong&gt;&lt;/div&gt;`;
+    $("liveTurnoverTitle").textContent = "";
+    $("liveProgressContent").innerHTML = `<div class="empty-state"><strong>No active cleaning</strong></div>`;
     return;
   }
 
   const percent = progress(turnover);
-  $(&quot;liveTurnoverTitle&quot;).textContent =
-    formatDate(turnover.turnover_date, { weekday: &quot;long&quot;, month: &quot;long&quot;, day: &quot;numeric&quot; });
+  $("liveTurnoverTitle").textContent =
+    formatDate(turnover.turnover_date, { weekday: "long", month: "long", day: "numeric" });
 
-  $(&quot;liveProgressContent&quot;).innerHTML = `
-    &lt;div class=&quot;live-progress-grid&quot;&gt;
-      &lt;div&gt;
-        &lt;p class=&quot;row-title&quot;&gt;${esc(turnover.users?.full_name || &quot;Cleaner not assigned&quot;)}&lt;/p&gt;
-        &lt;p class=&quot;row-meta&quot;&gt;Status: ${esc(label(turnover.status))}&lt;/p&gt;
-        &lt;p class=&quot;row-meta&quot;&gt;Check-in: ${esc(formatTime(turnover.check_in_time) || &quot;Not checked in&quot;)}&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div&gt;
-        &lt;p class=&quot;progress-value&quot;&gt;${percent}%&lt;/p&gt;
-        &lt;div class=&quot;progress-track&quot;&gt;&lt;span style=&quot;width:${percent}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;button class=&quot;button button-secondary&quot; id=&quot;viewChecklistButton&quot; type=&quot;button&quot;&gt;View Live Checklist&lt;/button&gt;
-    &lt;/div&gt;
+  $("liveProgressContent").innerHTML = `
+    <div class="live-progress-grid">
+      <div>
+        <p class="row-title">${esc(turnover.users?.full_name || "Cleaner not assigned")}</p>
+        <p class="row-meta">Status: ${esc(label(turnover.status))}</p>
+        <p class="row-meta">Check-in: ${esc(formatTime(turnover.check_in_time) || "Not checked in")}</p>
+      </div>
+      <div>
+        <p class="progress-value">${percent}%</p>
+        <div class="progress-track"><span style="width:${percent}%"></span></div>
+      </div>
+      <button class="button button-secondary" id="viewChecklistButton" type="button">View Live Checklist</button>
+    </div>
   `;
 
-  $(&quot;viewChecklistButton&quot;).onclick = () =&gt; showChecklist(turnover);
+  $("viewChecklistButton").onclick = () => showChecklist(turnover);
 }
 
 function renderIssues() {
-  if (!$(&quot;issuesList&quot;)) return;
-  const rows = state.issues.filter(i =&gt; ![&quot;resolved&quot;, &quot;closed&quot;].includes(key(i.issue_status)));
+  if (!$("issuesList")) return;
+  const rows = state.issues.filter(i => !["resolved", "closed"].includes(key(i.issue_status)));
 
-  $(&quot;issuesList&quot;).innerHTML = rows.length ? rows.map(issue =&gt; `
-    &lt;div class=&quot;list-row&quot;&gt;
-      &lt;p class=&quot;row-title&quot;&gt;${esc(issue.title || issue.issue_type || &quot;Reported issue&quot;)}&lt;/p&gt;
-      &lt;p class=&quot;row-meta&quot;&gt;${esc(issue.rooms?.room_name || &quot;General&quot;)} · ${esc(label(issue.urgency))}&lt;/p&gt;
-      &lt;p class=&quot;row-meta&quot;&gt;${esc(issue.description || &quot;&quot;)}&lt;/p&gt;
-      &lt;span class=&quot;status-pill status-${esc(key(issue.issue_status))}&quot;&gt;${esc(label(issue.issue_status))}&lt;/span&gt;
-    &lt;/div&gt;
-  `).join(&quot;&quot;) : `&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No open issues&lt;/strong&gt;&lt;/div&gt;`;
+  $("issuesList").innerHTML = rows.length ? rows.map(issue => `
+    <div class="list-row">
+      <p class="row-title">${esc(issue.title || issue.issue_type || "Reported issue")}</p>
+      <p class="row-meta">${esc(issue.rooms?.room_name || "General")} · ${esc(label(issue.urgency))}</p>
+      <p class="row-meta">${esc(issue.description || "")}</p>
+      <span class="status-pill status-${esc(key(issue.issue_status))}">${esc(label(issue.issue_status))}</span>
+    </div>
+  `).join("") : `<div class="empty-state"><strong>No open issues</strong></div>`;
 }
 
 function renderInventory() {
-  if (!$(&quot;inventoryList&quot;)) return;
+  if (!$("inventoryList")) return;
   const latest = latestCounts();
 
-  $(&quot;inventoryList&quot;).innerHTML = state.inventoryItems.length ? state.inventoryItems.map(item =&gt; {
+  $("inventoryList").innerHTML = state.inventoryItems.length ? state.inventoryItems.map(item => {
     const count = latest.get(item.id);
     const quantity = count?.quantity_remaining;
-    const status = count?.stock_status || count?.level_status || &quot;not_counted&quot;;
+    const status = count?.stock_status || count?.level_status || "not_counted";
 
     return `
-      &lt;div class=&quot;inventory-row&quot;&gt;
-        &lt;div&gt;
-          &lt;p class=&quot;row-title&quot;&gt;${esc(item.item_name)}&lt;/p&gt;
-          &lt;p class=&quot;row-meta&quot;&gt;${quantity == null ? &quot;Not counted&quot; : `${esc(quantity)} ${esc(item.unit_name)}`}&lt;/p&gt;
-          &lt;p class=&quot;row-meta&quot;&gt;Target ${esc(item.target_quantity ?? &quot;—&quot;)} · Amber ${esc(item.amber_quantity ?? &quot;—&quot;)} · Minimum ${esc(item.minimum_quantity)}&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;span class=&quot;status-pill status-${esc(key(status))}&quot;&gt;${esc(label(status))}&lt;/span&gt;
-      &lt;/div&gt;
+      <div class="inventory-row">
+        <div>
+          <p class="row-title">${esc(item.item_name)}</p>
+          <p class="row-meta">${quantity == null ? "Not counted" : `${esc(quantity)} ${esc(item.unit_name)}`}</p>
+          <p class="row-meta">Target ${esc(item.target_quantity ?? "—")} · Amber ${esc(item.amber_quantity ?? "—")} · Minimum ${esc(item.minimum_quantity)}</p>
+        </div>
+        <span class="status-pill status-${esc(key(status))}">${esc(label(status))}</span>
+      </div>
     `;
-  }).join(&quot;&quot;) : `&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No inventory items&lt;/strong&gt;&lt;/div&gt;`;
+  }).join("") : `<div class="empty-state"><strong>No inventory items</strong></div>`;
 }
 
 function renderMessagesUnavailable() {
-  if (!$(&quot;messageThread&quot;)) return;
-  $(&quot;messageThread&quot;).innerHTML = `
-    &lt;div class=&quot;empty-state&quot;&gt;
-      &lt;strong&gt;Messaging is not configured yet&lt;/strong&gt;
-      &lt;span&gt;A proper property-messages table must be added before messages can be sent.&lt;/span&gt;
-    &lt;/div&gt;
+  if (!$("messageThread")) return;
+  $("messageThread").innerHTML = `
+    <div class="empty-state">
+      <strong>Messaging is not configured yet</strong>
+      <span>A proper property-messages table must be added before messages can be sent.</span>
+    </div>
   `;
-  if ($(&quot;messageInput&quot;)) {
-    $(&quot;messageInput&quot;).disabled = true;
-    $(&quot;messageInput&quot;).placeholder = &quot;Messaging will be enabled after the messages table is created.&quot;;
+  if ($("messageInput")) {
+    $("messageInput").disabled = true;
+    $("messageInput").placeholder = "Messaging will be enabled after the messages table is created.";
   }
-  const button = $(&quot;messageForm&quot;)?.querySelector(&quot;button[type=&#x27;submit&#x27;]&quot;);
+  const button = $("messageForm")?.querySelector("button[type='submit']");
   if (button) button.disabled = true;
 }
 
 function renderNotifications() {
-  if (!$(&quot;notificationsList&quot;)) return;
+  if (!$("notificationsList")) return;
 
-  $(&quot;notificationsList&quot;).innerHTML = state.notifications.length ? state.notifications.map(n =&gt; `
-    &lt;div class=&quot;notification-item&quot;&gt;
-      &lt;span class=&quot;notification-dot&quot;&gt;&lt;/span&gt;
-      &lt;div&gt;
-        &lt;p class=&quot;row-title&quot;&gt;${esc(n.title)}&lt;/p&gt;
-        &lt;p class=&quot;row-meta&quot;&gt;${esc(n.message)}&lt;/p&gt;
-        &lt;p class=&quot;row-meta&quot;&gt;${esc(formatDate(n.created_at, { month: &quot;short&quot;, day: &quot;numeric&quot;, hour: &quot;numeric&quot;, minute: &quot;2-digit&quot; }))}&lt;/p&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  `).join(&quot;&quot;) : `&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No owner notifications&lt;/strong&gt;&lt;/div&gt;`;
+  $("notificationsList").innerHTML = state.notifications.length ? state.notifications.map(n => `
+    <div class="notification-item">
+      <span class="notification-dot"></span>
+      <div>
+        <p class="row-title">${esc(n.title)}</p>
+        <p class="row-meta">${esc(n.message)}</p>
+        <p class="row-meta">${esc(formatDate(n.created_at, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }))}</p>
+      </div>
+    </div>
+  `).join("") : `<div class="empty-state"><strong>No owner notifications</strong></div>`;
 }
 
 async function submitCleaningRequest() {
-  const date = $(&quot;requestDate&quot;)?.value;
-  const time = $(&quot;requestTime&quot;)?.value;
-  const notes = $(&quot;requestNotes&quot;)?.value.trim();
+  const date = $("requestDate")?.value;
+  const time = $("requestTime")?.value;
+  const notes = $("requestNotes")?.value.trim();
 
   if (!date || !notes) return;
 
   const scheduledStart = time ? new Date(`${date}T${time}:00`).toISOString() : null;
 
-  const { error } = await db.from(&quot;turnovers&quot;).insert({
+  const { error } = await db.from("turnovers").insert({
     company_id: state.selectedProperty.company_id,
     property_id: state.selectedProperty.id,
     turnover_date: date,
     scheduled_start: scheduledStart,
-    status: &quot;requested&quot;,
-    priority: &quot;normal&quot;,
+    status: "requested",
+    priority: "normal",
     final_notes: notes,
-    owner_approval_status: &quot;pending&quot;,
+    owner_approval_status: "pending",
     created_by: state.profile.id,
-    attendance_status: &quot;pending&quot;,
+    attendance_status: "pending",
     needs_reassignment: false
   });
 
   if (error) {
-    toast(error.message, &quot;error&quot;);
+    toast(error.message, "error");
     return;
   }
 
-  closeModal(&quot;requestCleaningModal&quot;);
-  $(&quot;requestCleaningForm&quot;).reset();
-  toast(&quot;Cleaning request submitted.&quot;, &quot;success&quot;);
+  closeModal("requestCleaningModal");
+  $("requestCleaningForm").reset();
+  toast("Cleaning request submitted.", "success");
   await loadDashboardData();
 }
 
@@ -821,127 +754,127 @@ async function loadDashboardData() {
 }
 
 function renderTurnoversTab() {
-  const rows = state.turnovers.filter(t =&gt; key(t.status) === &quot;completed&quot;);
-  $(&quot;sectionContent&quot;).innerHTML = rows.length ? `
-    &lt;div class=&quot;card&quot;&gt;
-      &lt;div class=&quot;table-wrap&quot;&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Date&lt;/th&gt;&lt;th&gt;Cleaner&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;th&gt;Progress&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            ${rows.map(t =&gt; `
-              &lt;tr&gt;
-                &lt;td&gt;${esc(formatDate(t.turnover_date, { month: &quot;short&quot;, day: &quot;numeric&quot;, year: &quot;numeric&quot; }))}&lt;/td&gt;
-                &lt;td&gt;${esc(t.users?.full_name || &quot;—&quot;)}&lt;/td&gt;
-                &lt;td&gt;&lt;span class=&quot;status-pill status-${esc(key(t.status))}&quot;&gt;${esc(label(t.status))}&lt;/span&gt;&lt;/td&gt;
-                &lt;td&gt;${progress(t)}%&lt;/td&gt;
-                &lt;td&gt;&lt;button class=&quot;button button-secondary button-small&quot; data-turnover-id=&quot;${esc(t.id)}&quot;&gt;Open&lt;/button&gt;&lt;/td&gt;
-              &lt;/tr&gt;
-            `).join(&quot;&quot;)}
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  ` : `&lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No completed turnovers&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;`;
+  const rows = state.turnovers.filter(t => key(t.status) === "completed");
+  $("sectionContent").innerHTML = rows.length ? `
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Cleaner</th><th>Status</th><th>Progress</th><th></th></tr></thead>
+          <tbody>
+            ${rows.map(t => `
+              <tr>
+                <td>${esc(formatDate(t.turnover_date, { month: "short", day: "numeric", year: "numeric" }))}</td>
+                <td>${esc(t.users?.full_name || "—")}</td>
+                <td><span class="status-pill status-${esc(key(t.status))}">${esc(label(t.status))}</span></td>
+                <td>${progress(t)}%</td>
+                <td><button class="button button-secondary button-small" data-turnover-id="${esc(t.id)}">Open</button></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  ` : `<div class="card"><div class="empty-state"><strong>No completed turnovers</strong></div></div>`;
 
-  $(&quot;sectionContent&quot;).querySelectorAll(&quot;[data-turnover-id]&quot;).forEach(button =&gt; {
-    button.onclick = () =&gt; location.href = `owner-turnover.html?id=${encodeURIComponent(button.dataset.turnoverId)}`;
+  $("sectionContent").querySelectorAll("[data-turnover-id]").forEach(button => {
+    button.onclick = () => location.href = `owner-turnover.html?id=${encodeURIComponent(button.dataset.turnoverId)}`;
   });
 }
 
 function renderReportsTab() {
   const search = state.search.toLowerCase();
-  const rows = state.reports.filter(report =&gt;
+  const rows = state.reports.filter(report =>
     !search || `${report.report_type} ${report.report_number}`.toLowerCase().includes(search)
   );
 
-  $(&quot;sectionContent&quot;).innerHTML = rows.length ? `
-    &lt;div class=&quot;document-grid&quot;&gt;
-      ${rows.map(report =&gt; `
-        &lt;article class=&quot;document-card&quot;&gt;
-          &lt;div class=&quot;document-card-top&quot;&gt;
-            &lt;div&gt;
-              &lt;p class=&quot;document-title&quot;&gt;${esc(report.report_number || label(report.report_type))}&lt;/p&gt;
-              &lt;p class=&quot;document-meta&quot;&gt;${esc(formatDate(report.generated_at || report.created_at, { month: &quot;short&quot;, day: &quot;numeric&quot;, year: &quot;numeric&quot; }))}&lt;/p&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-          &lt;div class=&quot;document-actions&quot;&gt;
-            ${report.preview_url ? `&lt;a class=&quot;button button-secondary button-small&quot; href=&quot;${esc(report.preview_url)}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Open&lt;/a&gt;` : &quot;&quot;}
-          &lt;/div&gt;
-        &lt;/article&gt;
-      `).join(&quot;&quot;)}
-    &lt;/div&gt;
-  ` : `&lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No reports found&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;`;
+  $("sectionContent").innerHTML = rows.length ? `
+    <div class="document-grid">
+      ${rows.map(report => `
+        <article class="document-card">
+          <div class="document-card-top">
+            <div>
+              <p class="document-title">${esc(report.report_number || label(report.report_type))}</p>
+              <p class="document-meta">${esc(formatDate(report.generated_at || report.created_at, { month: "short", day: "numeric", year: "numeric" }))}</p>
+            </div>
+          </div>
+          <div class="document-actions">
+            ${report.preview_url ? `<a class="button button-secondary button-small" href="${esc(report.preview_url)}" target="_blank" rel="noopener">Open</a>` : ""}
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  ` : `<div class="card"><div class="empty-state"><strong>No reports found</strong></div></div>`;
 }
 
 function renderPhotosTab() {
-  const rows = state.photos.filter(photo =&gt; photo.preview_url);
-  $(&quot;sectionContent&quot;).innerHTML = rows.length ? `
-    &lt;div class=&quot;photo-grid&quot;&gt;
-      ${rows.map(photo =&gt; `
-        &lt;a class=&quot;photo-card&quot; href=&quot;${esc(photo.preview_url)}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;
-          &lt;div class=&quot;photo-preview&quot;&gt;&lt;img src=&quot;${esc(photo.preview_url)}&quot; alt=&quot;${esc(photo.caption || &quot;Cleaning photo&quot;)}&quot;&gt;&lt;/div&gt;
-          &lt;div class=&quot;photo-info&quot;&gt;
-            &lt;p class=&quot;photo-title&quot;&gt;${esc(photo.caption || photo.file_name || label(photo.photo_type))}&lt;/p&gt;
-            &lt;p class=&quot;photo-meta&quot;&gt;${esc(formatDate(photo.taken_at || photo.created_at, { month: &quot;short&quot;, day: &quot;numeric&quot;, year: &quot;numeric&quot; }))}&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/a&gt;
-      `).join(&quot;&quot;)}
-    &lt;/div&gt;
-  ` : `&lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No photos found&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;`;
+  const rows = state.photos.filter(photo => photo.preview_url);
+  $("sectionContent").innerHTML = rows.length ? `
+    <div class="photo-grid">
+      ${rows.map(photo => `
+        <a class="photo-card" href="${esc(photo.preview_url)}" target="_blank" rel="noopener">
+          <div class="photo-preview"><img src="${esc(photo.preview_url)}" alt="${esc(photo.caption || "Cleaning photo")}"></div>
+          <div class="photo-info">
+            <p class="photo-title">${esc(photo.caption || photo.file_name || label(photo.photo_type))}</p>
+            <p class="photo-meta">${esc(formatDate(photo.taken_at || photo.created_at, { month: "short", day: "numeric", year: "numeric" }))}</p>
+          </div>
+        </a>
+      `).join("")}
+    </div>
+  ` : `<div class="card"><div class="empty-state"><strong>No photos found</strong></div></div>`;
 }
 
 function renderInvoicesTab() {
   const rows = state.invoices || [];
-  $(&quot;sectionContent&quot;).innerHTML = rows.length ? `
-    &lt;div class=&quot;card&quot;&gt;
-      &lt;div class=&quot;table-wrap&quot;&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Invoice&lt;/th&gt;&lt;th&gt;Date&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;th&gt;Paid&lt;/th&gt;&lt;th&gt;Balance&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            ${rows.map(invoice =&gt; `
-              &lt;tr&gt;
-                &lt;td class=&quot;primary-cell&quot;&gt;${esc(invoice.invoice_number)}&lt;/td&gt;
-                &lt;td&gt;${esc(formatDate(invoice.invoice_date, { month: &quot;short&quot;, day: &quot;numeric&quot;, year: &quot;numeric&quot; }))}&lt;/td&gt;
-                &lt;td&gt;${esc(formatMoney(invoice.invoice_total))}&lt;/td&gt;
-                &lt;td&gt;${esc(formatMoney(invoice.amount_paid))}&lt;/td&gt;
-                &lt;td&gt;${esc(formatMoney(invoice.outstanding_balance))}&lt;/td&gt;
-                &lt;td&gt;&lt;span class=&quot;status-pill status-${esc(key(invoice.invoice_status))}&quot;&gt;${esc(label(invoice.invoice_status))}&lt;/span&gt;&lt;/td&gt;
-              &lt;/tr&gt;
-            `).join(&quot;&quot;)}
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  ` : `&lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;empty-state&quot;&gt;&lt;strong&gt;No invoices found&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;`;
+  $("sectionContent").innerHTML = rows.length ? `
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Invoice</th><th>Date</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+          <tbody>
+            ${rows.map(invoice => `
+              <tr>
+                <td class="primary-cell">${esc(invoice.invoice_number)}</td>
+                <td>${esc(formatDate(invoice.invoice_date, { month: "short", day: "numeric", year: "numeric" }))}</td>
+                <td>${esc(formatMoney(invoice.invoice_total))}</td>
+                <td>${esc(formatMoney(invoice.amount_paid))}</td>
+                <td>${esc(formatMoney(invoice.outstanding_balance))}</td>
+                <td><span class="status-pill status-${esc(key(invoice.invoice_status))}">${esc(label(invoice.invoice_status))}</span></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  ` : `<div class="card"><div class="empty-state"><strong>No invoices found</strong></div></div>`;
 }
 
 async function renderDocumentsTab() {
-  if (!$(&quot;sectionContent&quot;)) return;
-  if (state.activeTab === &quot;turnovers&quot; || state.activeTab === &quot;checklists&quot;) renderTurnoversTab();
-  else if (state.activeTab === &quot;photos&quot;) renderPhotosTab();
-  else if ([&quot;reports&quot;, &quot;documents&quot;, &quot;agreements&quot;].includes(state.activeTab)) renderReportsTab();
-  else if (state.activeTab === &quot;invoices&quot;) renderInvoicesTab();
+  if (!$("sectionContent")) return;
+  if (state.activeTab === "turnovers" || state.activeTab === "checklists") renderTurnoversTab();
+  else if (state.activeTab === "photos") renderPhotosTab();
+  else if (["reports", "documents", "agreements"].includes(state.activeTab)) renderReportsTab();
+  else if (state.activeTab === "invoices") renderInvoicesTab();
 }
 
 function bindCommon() {
-  $(&quot;signOutButton&quot;)?.addEventListener(&quot;click&quot;, async () =&gt; {
+  $("signOutButton")?.addEventListener("click", async () => {
     await db.auth.signOut();
-    location.href = &quot;login.html&quot;;
+    location.href = "login.html";
   });
 
-  $(&quot;mobileMenuButton&quot;)?.addEventListener(&quot;click&quot;, () =&gt; $(&quot;sidebar&quot;)?.classList.toggle(&quot;open&quot;));
+  $("mobileMenuButton")?.addEventListener("click", () => $("sidebar")?.classList.toggle("open"));
 
-  document.querySelectorAll(&quot;[data-close-modal]&quot;).forEach(button =&gt; {
-    button.addEventListener(&quot;click&quot;, () =&gt; closeModal(button.dataset.closeModal));
+  document.querySelectorAll("[data-close-modal]").forEach(button => {
+    button.addEventListener("click", () => closeModal(button.dataset.closeModal));
   });
 
-  $(&quot;propertySelect&quot;)?.addEventListener(&quot;change&quot;, async event =&gt; {
-    state.selectedProperty = state.properties.find(p =&gt; p.id === event.target.value);
-    localStorage.setItem(&quot;nsc_owner_property_id&quot;, state.selectedProperty.id);
+  $("propertySelect")?.addEventListener("change", async event => {
+    state.selectedProperty = state.properties.find(p => p.id === event.target.value);
+    localStorage.setItem("nsc_owner_property_id", state.selectedProperty.id);
     renderPropertyHeader();
 
-    if ($(&quot;calendarGrid&quot;)) await loadDashboardData();
-    if ($(&quot;sectionContent&quot;)) {
+    if ($("calendarGrid")) await loadDashboardData();
+    if ($("sectionContent")) {
       await loadDocumentsData();
       await renderDocumentsTab();
     }
@@ -953,23 +886,23 @@ async function initDashboard() {
   await requireOwner();
   await loadProperties();
 
-  $(&quot;previousMonthButton&quot;)?.addEventListener(&quot;click&quot;, () =&gt; {
+  $("previousMonthButton")?.addEventListener("click", () => {
     state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() - 1, 1);
     renderCalendar();
   });
 
-  $(&quot;nextMonthButton&quot;)?.addEventListener(&quot;click&quot;, () =&gt; {
+  $("nextMonthButton")?.addEventListener("click", () => {
     state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() + 1, 1);
     renderCalendar();
   });
 
-  $(&quot;requestCleaningButton&quot;)?.addEventListener(&quot;click&quot;, () =&gt; openModal(&quot;requestCleaningModal&quot;));
-  $(&quot;requestCleaningForm&quot;)?.addEventListener(&quot;submit&quot;, async event =&gt; {
+  $("requestCleaningButton")?.addEventListener("click", () => openModal("requestCleaningModal"));
+  $("requestCleaningForm")?.addEventListener("submit", async event => {
     event.preventDefault();
     await submitCleaningRequest();
   });
 
-  $(&quot;addInventoryButton&quot;)?.remove();
+  $("addInventoryButton")?.remove();
   await loadDashboardData();
 }
 
@@ -984,17 +917,17 @@ async function initDocuments() {
   await loadProperties();
   await loadDocumentsData();
 
-  $(&quot;searchInput&quot;)?.addEventListener(&quot;input&quot;, event =&gt; {
+  $("searchInput")?.addEventListener("input", event => {
     state.search = event.target.value;
     renderDocumentsTab();
   });
 
-  $(&quot;tabs&quot;)?.addEventListener(&quot;click&quot;, event =&gt; {
-    const button = event.target.closest(&quot;[data-tab]&quot;);
+  $("tabs")?.addEventListener("click", event => {
+    const button = event.target.closest("[data-tab]");
     if (!button) return;
     state.activeTab = button.dataset.tab;
-    $(&quot;tabs&quot;).querySelectorAll(&quot;[data-tab]&quot;).forEach(tab =&gt;
-      tab.classList.toggle(&quot;active&quot;, tab === button)
+    $("tabs").querySelectorAll("[data-tab]").forEach(tab =>
+      tab.classList.toggle("active", tab === button)
     );
     renderDocumentsTab();
   });
@@ -1002,36 +935,22 @@ async function initDocuments() {
   await renderDocumentsTab();
 }
 
-(async () =&gt; {
+(async () => {
   try {
-    if ($(&quot;calendarGrid&quot;)) await initDashboard();
-    else if ($(&quot;sectionContent&quot;)) await initDocuments();
+    if ($("calendarGrid")) await initDashboard();
+    else if ($("sectionContent")) await initDocuments();
   } catch (error) {
     console.error(error);
-    const content = document.querySelector(&quot;.content&quot;);
+    const content = document.querySelector(".content");
     if (content) {
       content.innerHTML = `
-        &lt;div class=&quot;card&quot;&gt;
-          &lt;div class=&quot;error-state&quot;&gt;
-            &lt;strong&gt;Owner portal could not load&lt;/strong&gt;
-            &lt;span&gt;${esc(error.message || error)}&lt;/span&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
+        <div class="card">
+          <div class="error-state">
+            <strong>Owner portal could not load</strong>
+            <span>${esc(error.message || error)}</span>
+          </div>
+        </div>
       `;
     }
   }
 })();
-</pre>
-  </main>
-
-  <script>
-    document.getElementById("copyButton").addEventListener("click", async () => {
-      const code = document.getElementById("code").textContent;
-      await navigator.clipboard.writeText(code);
-      const button = document.getElementById("copyButton");
-      button.textContent = "Copied";
-      setTimeout(() => button.textContent = "Copy All Code", 1800);
-    });
-  </script>
-</body>
-</html>
