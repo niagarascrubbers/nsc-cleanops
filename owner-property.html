@@ -1010,7 +1010,7 @@
           safeQuery(
             db.from("inventory_counts")
               .select("id, inventory_item_id, quantity, counted_at, created_at")
-              .eq("property_id", propertyId)
+              .in("inventory_item_id", inventoryItems.map(item => item.id))
               .order("counted_at", { ascending: false })
               .order("created_at", { ascending: false })
           ),
@@ -1639,7 +1639,6 @@
       button.textContent = "Saving...";
 
       const payload = {
-        property_id: propertyId,
         inventory_item_id: itemId,
         quantity,
         counted_at: new Date().toISOString()
@@ -1713,8 +1712,7 @@
           {
             event: "*",
             schema: "public",
-            table: "inventory_counts",
-            filter: `property_id=eq.${propertyId}`
+            table: "inventory_counts"
           },
           scheduleRealtimeRefresh
         )
