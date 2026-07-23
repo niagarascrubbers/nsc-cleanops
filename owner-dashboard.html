@@ -275,6 +275,56 @@
       border: 1px solid #cbe3f1;
     }
 
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .45px;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      margin-top: 7px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .summary-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 8px;
+    }
+
+    .collapse-button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--navy);
+      padding: 7px 10px;
+      font-size: 9px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .collapsible-body.is-collapsed { display: none; }
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.55fr) minmax(310px, 0.65fr);
@@ -614,6 +664,7 @@
     }
 
     @media (max-width: 1050px) {
+      .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .dashboard-grid {
         grid-template-columns: 1fr;
       }
@@ -702,6 +753,7 @@
     }
 
     @media (max-width: 620px) {
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .topbar-actions,
       .split-row {
         grid-template-columns: 1fr;
@@ -755,21 +807,9 @@
       </div>
 
       <nav class="navigation">
-        <a class="nav-link active" href="owner-dashboard.html">
-          <span class="nav-icon">⌂</span>
-          <span>Dashboard</span>
-        </a>
-
-        <a class="nav-link" href="owner-properties.html">
-          <span class="nav-icon">▦</span>
-          <span>Properties</span>
-        </a>
-
-        <a class="nav-link" href="#notificationsSection">
-          <span class="nav-icon">●</span>
-          <span>Notifications</span>
-          <span class="nav-badge" id="notificationBadge">0</span>
-        </a>
+        <a class="nav-link active" href="owner-dashboard.html"><span>Dashboard</span></a>
+        <a class="nav-link" href="owner-properties.html"><span>Properties</span></a>
+        <a class="nav-link" href="owner-profile.html"><span>Profile</span></a>
       </nav>
 
       <div class="sidebar-footer">
@@ -777,7 +817,6 @@
         <div class="sidebar-user-role">Property Owner</div>
 
         <button class="signout-button" id="signOutButton" type="button">
-          <span class="nav-icon">↪</span>
           <span>Sign Out</span>
         </button>
       </div>
@@ -810,6 +849,14 @@
       </header>
 
       <div class="notice" id="pageNotice"></div>
+
+      <section class="summary-grid">
+        <article class="summary-card"><div class="summary-label">Today's Cleans</div><div class="summary-value" id="metricToday">0</div><div class="summary-note">Scheduled today</div></article>
+        <article class="summary-card"><div class="summary-label">Upcoming</div><div class="summary-value" id="metricUpcoming">0</div><div class="summary-note">Future cleans</div></article>
+        <article class="summary-card"><div class="summary-label">In Progress</div><div class="summary-value" id="metricProgress">0</div><div class="summary-note">Currently being cleaned</div></article>
+        <article class="summary-card"><div class="summary-label">Open Alerts</div><div class="summary-value" id="metricAlerts">0</div><div class="summary-note">Needs attention</div></article>
+        <article class="summary-card"><div class="summary-label">Low Inventory</div><div class="summary-value" id="metricInventory">0</div><div class="summary-note">Items to restock</div></article>
+      </section>
 
       <section class="dashboard-grid">
         <div class="column-stack">
@@ -877,13 +924,12 @@
             <div class="card-header">
               <div>
                 <h3 class="card-title">Critical Alerts</h3>
-                <div class="card-note">
-                  Low inventory and cleaning issues requiring attention.
-                </div>
+                <div class="card-note">Low inventory and cleaning issues requiring attention.</div>
               </div>
+              <button class="collapse-button" type="button" data-collapse="criticalAlertsBody">Collapse</button>
             </div>
 
-            <div class="card-body">
+            <div class="card-body collapsible-body" id="criticalAlertsBody">
               <div class="list" id="criticalAlertsList">
                 <div class="loading-state">Loading alerts…</div>
               </div>
@@ -897,13 +943,12 @@
           <div class="card-header">
             <div>
               <h3 class="card-title">Notifications</h3>
-              <div class="card-note">
-                Recent cleaning activity for the selected property.
-              </div>
+              <div class="card-note">Recent cleaning activity for the selected property.</div>
             </div>
+            <button class="collapse-button" type="button" data-collapse="notificationsBody">Collapse</button>
           </div>
 
-          <div class="card-body">
+          <div class="card-body collapsible-body" id="notificationsBody">
             <div class="list" id="notificationsList">
               <div class="loading-state">Loading notifications…</div>
             </div>
@@ -999,6 +1044,14 @@
 
     function bindEvents() {
       byId("signOutButton").addEventListener("click", signOut);
+
+      document.querySelectorAll("[data-collapse]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = byId(button.dataset.collapse);
+          const collapsed = target.classList.toggle("is-collapsed");
+          button.textContent = collapsed ? "Expand" : "Collapse";
+        });
+      });
       byId("mobileMenuButton").addEventListener("click", openMenu);
       byId("pageOverlay").addEventListener("click", closeMenu);
 
@@ -1285,11 +1338,27 @@
 
     function renderDashboard() {
       renderPropertyOptions();
+      renderSummaryMetrics();
       renderCalendar();
       renderUpcoming();
       renderCriticalAlerts();
       renderNotifications();
       renderRecentActivity();
+    }
+
+    function renderSummaryMetrics() {
+      const today = dateKey(new Date());
+      const now = startOfDay(new Date());
+      const todayCount = state.turnovers.filter(t => turnoverDateKey(t) === today && normalizeStatus(t.status) !== "cancelled").length;
+      const upcomingCount = state.turnovers.filter(t => { const d = getTurnoverDate(t); const st = normalizeStatus(t.status); return d && d >= now && !["cancelled","completed","approved"].includes(st); }).length;
+      const progressCount = state.turnovers.filter(t => normalizeStatus(t.status) === "in_progress").length;
+      const lowInventory = state.inventoryItems.filter(item => { const l = getInventoryLevels(item); return l.current <= l.amber || ["low","critical","red"].includes(l.status); }).length;
+      const openAlerts = lowInventory + state.issues.filter(issue => !["resolved","closed"].includes(String(issue.issue_status || "").toLowerCase())).length;
+      byId("metricToday").textContent = todayCount;
+      byId("metricUpcoming").textContent = upcomingCount;
+      byId("metricProgress").textContent = progressCount;
+      byId("metricAlerts").textContent = openAlerts;
+      byId("metricInventory").textContent = lowInventory;
     }
 
     function renderCalendar() {
