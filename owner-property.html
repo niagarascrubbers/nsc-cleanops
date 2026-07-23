@@ -866,8 +866,6 @@
               province,
               postal_code,
               property_type,
-              bedrooms,
-              bathrooms,
               active
             )
           `)
@@ -887,8 +885,6 @@
               province,
               postal_code,
               property_type,
-              bedrooms,
-              bathrooms,
               active
             )
           `)
@@ -1451,8 +1447,6 @@
             <div class="hero-meta">
               ${property.property_code ? `<span class="hero-pill">${escapeHtml(property.property_code)}</span>` : ""}
               ${property.property_type ? `<span class="hero-pill">${escapeHtml(property.property_type)}</span>` : ""}
-              ${property.bedrooms != null ? `<span class="hero-pill">${escapeHtml(property.bedrooms)} bedrooms</span>` : ""}
-              ${property.bathrooms != null ? `<span class="hero-pill">${escapeHtml(property.bathrooms)} bathrooms</span>` : ""}
             </div>
           </div>
 
