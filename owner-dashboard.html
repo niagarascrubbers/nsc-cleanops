@@ -11,318 +11,212 @@
 
   <style>
     :root {
-      --navy-950: #071a2b;
-      --navy-900: #0b2239;
-      --navy-800: #123a5a;
-      --navy-700: #1c4f73;
-      --water-600: #188cac;
-      --water-500: #2aa7c9;
-      --water-100: #e8f7fb;
+      --navy: #0b2f4f;
+      --navy-2: #123f63;
+      --blue: #2d8ec7;
+      --blue-soft: #eaf5fb;
+      --green: #17845d;
+      --amber: #b56a09;
+      --red: #b63a3a;
+      --ink: #17324d;
+      --muted: #6c7e8d;
+      --line: #dce6ed;
       --surface: #ffffff;
-      --surface-soft: #f8fbfd;
-      --background: #f3f7fa;
-      --border: #dce7ef;
-      --border-strong: #c9d8e3;
-      --text-primary: #18324a;
-      --text-secondary: #6b7f90;
-      --text-muted: #8da0af;
-      --success: #2f8f68;
-      --success-soft: #e8f6ef;
-      --warning: #c88921;
-      --warning-soft: #fff6e4;
-      --danger: #c65555;
-      --danger-soft: #fdeeee;
-      --info: #387da8;
-      --info-soft: #eaf4fb;
-      --shadow: 0 10px 28px rgba(11, 34, 57, 0.07);
-      --radius-xl: 16px;
-      --radius-lg: 12px;
-      --radius-md: 10px;
+      --background: #f4f8fb;
+      --shadow: 0 10px 30px rgba(11, 47, 79, 0.08);
+      --radius: 16px;
     }
 
     * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
       min-height: 100vh;
       background: var(--background);
-      color: var(--text-primary);
-      font-family: "Poppins", sans-serif;
+      color: var(--ink);
+      font-family: "Poppins", Arial, sans-serif;
     }
 
-    button, input, select, textarea { font: inherit; }
+    button, select, input, textarea { font: inherit; }
 
-    button { cursor: pointer; }
-
-    .app-shell {
-      display: grid;
-      grid-template-columns: 218px minmax(0, 1fr);
+    .app {
       min-height: 100vh;
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
     }
 
     .sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      width: 218px;
+      position: sticky;
+      top: 0;
       height: 100vh;
-      padding: 22px 16px;
+      padding: 24px 18px;
+      background: var(--navy);
+      color: #fff;
       display: flex;
       flex-direction: column;
-      color: #fff;
-      background: linear-gradient(180deg, var(--navy-950), var(--navy-800));
-      z-index: 40;
-    }
-
-    .brand {
-      padding: 2px 10px 20px;
-      margin-bottom: 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
+      z-index: 20;
     }
 
     .brand h1 {
       margin: 0;
       font-family: "Montserrat", sans-serif;
-      font-size: 20px;
-      letter-spacing: -0.35px;
+      font-size: 22px;
     }
 
     .brand p {
-      margin: 5px 0 0;
-      color: rgba(255,255,255,0.62);
-      font-size: 11px;
-      line-height: 1.45;
+      margin: 5px 0 28px;
+      color: #b9d4e5;
+      font-size: 12px;
     }
 
-    .nav-label {
-      margin: 0 10px 8px;
-      color: rgba(255,255,255,0.44);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 1.1px;
-      text-transform: uppercase;
-    }
-
-    .nav {
-      display: grid;
-      gap: 6px;
-    }
-
-    .nav-link {
+    .nav-link, .signout {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 13px;
+      margin-bottom: 7px;
       display: flex;
       align-items: center;
       gap: 10px;
-      min-height: 42px;
-      padding: 10px 12px;
-      color: rgba(255,255,255,0.74);
+      color: #d9eaf4;
+      background: transparent;
       text-decoration: none;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 500;
-      transition: 0.18s ease;
+      cursor: pointer;
+      text-align: left;
     }
 
-    .nav-link:hover,
-    .nav-link.active {
+    .nav-link:hover, .nav-link.active, .signout:hover {
+      background: rgba(255,255,255,0.11);
       color: #fff;
-      background: rgba(42, 167, 201, 0.17);
     }
 
-    .nav-icon {
-      display: inline-grid;
-      width: 20px;
-      height: 20px;
-      place-items: center;
-      font-size: 15px;
-    }
-
-    .sidebar-footer {
+    .sidebar-bottom {
       margin-top: auto;
       padding-top: 18px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .user-card {
-      padding: 0 8px 14px;
+      border-top: 1px solid rgba(255,255,255,0.14);
     }
 
     .user-name {
-      margin: 0;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .user-role {
-      margin: 3px 0 0;
-      color: rgba(255,255,255,0.54);
-      font-size: 11px;
+      margin: 3px 0 12px;
+      color: #b9d4e5;
+      font-size: 12px;
     }
 
-    .signout-button {
-      width: 100%;
-      min-height: 40px;
-      border: 1px solid rgba(255,255,255,0.16);
-      border-radius: 10px;
-      background: rgba(255,255,255,0.06);
-      color: #fff;
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    .signout-button:hover { background: rgba(255,255,255,0.12); }
-
-    .main-area {
-      grid-column: 2;
+    .main {
       min-width: 0;
+      padding: 26px;
     }
 
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      min-height: 72px;
-      padding: 14px 24px;
       display: flex;
-      align-items: center;
+      align-items: end;
       justify-content: space-between;
-      gap: 16px;
-      background: rgba(255,255,255,0.96);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(10px);
+      gap: 18px;
+      margin-bottom: 20px;
     }
 
-    .topbar-left {
-      min-width: 0;
-    }
-
-    .topbar-title {
+    .page-title {
       margin: 0;
-      font-family: "Montserrat", sans-serif;
-      font-size: 20px;
-      letter-spacing: -0.35px;
+      font: 700 28px/1.2 "Montserrat", sans-serif;
     }
 
-    .topbar-subtitle {
-      margin: 3px 0 0;
-      color: var(--text-secondary);
-      font-size: 12px;
+    .page-subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
     }
 
-    .topbar-actions {
+    .top-actions {
       display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      min-width: min(560px, 55vw);
+      align-items: end;
+      gap: 12px;
     }
 
-    .property-select {
-      min-width: 245px;
-      max-width: 360px;
-      height: 42px;
-      padding: 0 38px 0 12px;
-      border: 1px solid var(--border-strong);
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
       border-radius: 10px;
       background: #fff;
-      color: var(--text-primary);
+      color: var(--ink);
+      padding: 10px 12px;
       outline: none;
     }
 
-    .property-select:focus {
-      border-color: var(--water-500);
-      box-shadow: 0 0 0 3px rgba(42,167,201,0.12);
+    select:focus, input:focus, textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(45,142,199,0.12);
     }
 
-    .button {
-      min-height: 42px;
-      padding: 0 15px;
+    .property-select { min-width: 250px; }
+
+    .btn {
       border: 0;
       border-radius: 10px;
+      padding: 11px 15px;
       font-weight: 600;
-      font-size: 13px;
-      transition: 0.18s ease;
+      cursor: pointer;
     }
 
-    .button-primary {
-      color: #fff;
-      background: var(--navy-800);
-    }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-secondary { background: var(--blue-soft); color: var(--navy); }
+    .btn-ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-    .button-primary:hover { background: var(--navy-700); }
-
-    .button-secondary {
-      color: var(--navy-800);
-      background: var(--water-100);
-    }
-
-    .button-secondary:hover { background: #d9f1f8; }
-
-    .button-ghost {
-      color: var(--navy-700);
-      background: transparent;
-      border: 1px solid var(--border);
-    }
-
-    .button-ghost:hover { background: var(--surface-soft); }
-
-    .button-small {
-      min-height: 34px;
-      padding: 0 11px;
-      font-size: 12px;
-      border-radius: 8px;
-    }
-
-    .content {
-      padding: 20px 22px 28px;
-    }
-
-    .calendar-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 2.25fr) minmax(280px, 0.75fr);
-      gap: 16px;
-      align-items: stretch;
+    .notice {
+      display: none;
       margin-bottom: 16px;
+      border-radius: 11px;
+      padding: 11px 13px;
+      font-size: 13px;
+    }
+
+    .notice.show { display: block; }
+    .notice.error { background: #fff0f0; color: #8d2525; border: 1px solid #f1c8c8; }
+    .notice.info { background: var(--blue-soft); color: var(--navy); border: 1px solid #cde7f5; }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.75fr);
+      gap: 18px;
+      align-items: start;
     }
 
     .card {
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      min-width: 0;
     }
 
     .card-header {
-      min-height: 58px;
-      padding: 14px 16px;
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      border-bottom: 1px solid var(--border);
     }
 
     .card-title {
       margin: 0;
-      font-family: "Montserrat", sans-serif;
-      font-size: 16px;
-      letter-spacing: -0.2px;
+      font: 700 17px/1.2 "Montserrat", sans-serif;
     }
 
-    .card-subtitle {
-      margin: 3px 0 0;
-      color: var(--text-secondary);
-      font-size: 11px;
-    }
-
-    .card-body {
-      padding: 14px 16px 16px;
-    }
-
-    .calendar-card {
-      min-height: 670px;
-    }
+    .card-note { color: var(--muted); font-size: 12px; }
+    .card-body { padding: 18px; }
 
     .calendar-toolbar {
       display: flex;
@@ -330,440 +224,165 @@
       gap: 8px;
     }
 
-    .icon-button {
+    .calendar-toolbar button {
       width: 34px;
       height: 34px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--line);
       border-radius: 9px;
       background: #fff;
-      color: var(--navy-800);
-      font-size: 19px;
-      line-height: 1;
+      cursor: pointer;
     }
 
-    .icon-button:hover { background: var(--surface-soft); }
-
-    .calendar-month {
-      min-width: 148px;
-      text-align: center;
-      font-family: "Montserrat", sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    .calendar-weekdays,
-    .calendar-grid {
+    .calendar-weekdays, .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
     }
 
-    .calendar-weekdays {
-      border-left: 1px solid var(--border);
-      border-top: 1px solid var(--border);
-    }
-
-    .weekday {
-      padding: 8px 6px;
-      color: var(--text-secondary);
-      background: var(--surface-soft);
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    .calendar-weekdays div {
+      padding: 8px 4px;
+      color: var(--muted);
       text-align: center;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.45px;
-      text-transform: uppercase;
-    }
-
-    .calendar-grid {
-      border-left: 1px solid var(--border);
     }
 
     .calendar-day {
-      position: relative;
-      min-height: 88px;
+      min-height: 102px;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
       padding: 7px;
-      background: #fff;
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
       overflow: hidden;
     }
 
-    .calendar-day.outside { background: #fafcfd; }
-    .calendar-day.today { background: #f3fbfd; }
+    .calendar-day:nth-child(7n) { border-right: 0; }
+    .calendar-day.outside { background: #f8fafc; color: #a6b2ba; }
+    .calendar-day.today { background: #f1f9fd; }
 
     .day-number {
-      width: 24px;
-      height: 24px;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
       display: grid;
       place-items: center;
-      border-radius: 8px;
-      color: var(--text-secondary);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
     }
 
-    .calendar-day.today .day-number {
-      color: #fff;
-      background: var(--water-500);
-    }
-
-    .day-events {
-      display: grid;
-      gap: 3px;
-      margin-top: 5px;
-    }
+    .today .day-number { background: var(--blue); color: #fff; }
 
     .calendar-event {
       width: 100%;
-      min-height: 22px;
-      padding: 3px 6px;
+      margin-top: 5px;
       border: 0;
-      border-left: 3px solid currentColor;
-      border-radius: 5px;
+      border-radius: 6px;
+      padding: 5px 6px;
       text-align: left;
-      font-size: 9.5px;
-      font-weight: 600;
+      font-size: 10px;
       line-height: 1.25;
-      white-space: nowrap;
+      cursor: pointer;
       overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    .status-scheduled,
-    .status-assigned,
-    .status-accepted { color: var(--info); background: var(--info-soft); }
-    .status-in_progress { color: var(--warning); background: var(--warning-soft); }
-    .status-completed { color: var(--success); background: var(--success-soft); }
-    .status-cancelled,
-    .status-declined { color: var(--danger); background: var(--danger-soft); }
-    .status-requested,
-    .status-review_required,
-    .status-correction_required { color: #7c5ca6; background: #f3ecfb; }
-    .status-unassigned { color: #667a8a; background: #eef3f6; }
-
-    .calendar-more {
-      padding-left: 5px;
-      color: var(--text-secondary);
-      font-size: 9px;
-      font-weight: 600;
-    }
-
-    .upcoming-card {
-      min-height: 670px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .upcoming-card .card-body {
-      flex: 1;
-      min-height: 0;
-      padding: 8px 10px 10px;
-    }
-
-    .compact-list {
-      height: 595px;
-      overflow: auto;
-      display: grid;
-      align-content: start;
-      gap: 7px;
-      padding-right: 3px;
-    }
-
-    .compact-item {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #fff;
-      text-align: left;
-      transition: 0.18s ease;
-    }
-
-    .compact-item:hover {
-      transform: translateY(-1px);
-      border-color: var(--border-strong);
-      box-shadow: 0 7px 18px rgba(11,34,57,0.07);
-    }
-
-    .compact-item-top,
-    .compact-item-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .compact-date {
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .compact-time,
-    .compact-cleaner {
-      color: var(--text-secondary);
-      font-size: 10.5px;
-    }
-
-    .compact-item-bottom { margin-top: 6px; }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      min-height: 22px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 9.5px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .dashboard-sections {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .live-progress-card { grid-column: span 12; }
-    .issues-card { grid-column: span 6; }
-    .inventory-card { grid-column: span 6; }
-    .messages-card { grid-column: span 7; }
-    .notifications-card { grid-column: span 5; }
-
-    .live-progress-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 18px;
-      align-items: center;
-    }
-
-    .progress-heading {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .progress-value {
-      font-family: "Montserrat", sans-serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--navy-900);
-    }
-
-    .progress-context {
-      color: var(--text-secondary);
-      font-size: 12px;
-    }
-
-    .progress-track {
-      height: 10px;
-      margin-top: 10px;
-      border-radius: 999px;
-      background: #e9f0f4;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--water-500), var(--success));
-      transition: width 0.35s ease;
-    }
-
-    .progress-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 18px;
-      margin-top: 11px;
-      color: var(--text-secondary);
-      font-size: 11px;
-    }
+    .status-scheduled, .status-confirmed, .status-requested { background: #e8f3fb; color: #17628c; }
+    .status-in_progress, .status-in-progress { background: #fff1d8; color: #885200; }
+    .status-completed, .status-submitted { background: #e3f5ed; color: #116b49; }
+    .status-cancelled, .status-declined { background: #f8e7e7; color: #8b3030; }
 
     .list {
       display: grid;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .scroll-list {
-      max-height: 330px;
-      overflow: auto;
-      padding-right: 3px;
-    }
-
-    .list-row {
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .list-row:first-child { padding-top: 0; }
-    .list-row:last-child { padding-bottom: 0; border-bottom: 0; }
-
-    .row-title {
-      margin: 0;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .row-meta {
-      margin: 4px 0 0;
-      color: var(--text-secondary);
-      font-size: 10.5px;
-      line-height: 1.5;
-    }
-
-    .row-actions {
-      display: flex;
-      gap: 7px;
-      margin-top: 8px;
-    }
-
-    .inventory-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 92px 86px;
-      gap: 8px;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .inventory-row:last-child { border-bottom: 0; }
-
-    .quantity-input {
+    .list-item {
       width: 100%;
-      height: 34px;
-      padding: 0 8px;
-      border: 1px solid var(--border-strong);
-      border-radius: 8px;
-      outline: none;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px;
+      background: #fff;
+      text-align: left;
     }
 
-    .quantity-input:focus {
-      border-color: var(--water-500);
-      box-shadow: 0 0 0 3px rgba(42,167,201,0.1);
+    button.list-item { cursor: pointer; }
+    button.list-item:hover { border-color: #b8d6e8; background: #fbfdff; }
+
+    .list-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    .message-thread {
-      max-height: 270px;
-      overflow: auto;
-      display: grid;
-      gap: 8px;
-      padding-right: 3px;
-    }
+    .list-title { font-weight: 600; font-size: 13px; }
+    .list-meta { margin-top: 4px; color: var(--muted); font-size: 11px; }
 
-    .message-bubble {
-      max-width: 83%;
-      padding: 9px 11px;
-      border-radius: 10px;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-    }
-
-    .message-bubble.mine {
-      margin-left: auto;
-      color: #fff;
-      background: var(--navy-800);
-      border-color: var(--navy-800);
-    }
-
-    .message-author {
-      font-size: 9.5px;
-      font-weight: 600;
-      opacity: 0.78;
-    }
-
-    .message-text {
-      margin-top: 3px;
-      font-size: 11px;
-      line-height: 1.45;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-    }
-
-    .message-time {
-      margin-top: 5px;
-      font-size: 9px;
-      opacity: 0.66;
-    }
-
-    .message-compose {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .message-input {
-      min-height: 40px;
-      max-height: 90px;
-      padding: 9px 10px;
-      resize: vertical;
-      border: 1px solid var(--border-strong);
-      border-radius: 9px;
-      outline: none;
-    }
-
-    .message-input:focus {
-      border-color: var(--water-500);
-      box-shadow: 0 0 0 3px rgba(42,167,201,0.1);
-    }
-
-    .notification-item {
-      display: grid;
-      grid-template-columns: 8px minmax(0, 1fr);
-      gap: 9px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .notification-item:last-child { border-bottom: 0; }
-
-    .notification-dot {
-      width: 8px;
-      height: 8px;
-      margin-top: 4px;
+    .badge {
+      flex: 0 0 auto;
       border-radius: 999px;
-      background: var(--water-500);
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: capitalize;
     }
 
-    .notification-item.read .notification-dot { background: var(--border-strong); }
-
-    .empty-state,
-    .loading-state,
-    .error-state {
-      min-height: 120px;
-      display: grid;
-      place-items: center;
-      align-content: center;
-      gap: 5px;
-      padding: 20px;
+    .empty {
+      padding: 20px 10px;
+      color: var(--muted);
       text-align: center;
-      color: var(--text-secondary);
-    }
-
-    .empty-state strong,
-    .error-state strong {
-      color: var(--text-primary);
       font-size: 13px;
     }
 
-    .empty-state span,
-    .error-state span {
-      font-size: 11px;
-      line-height: 1.5;
+    .lower-grid {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
     }
 
-    .spinner {
-      width: 24px;
-      height: 24px;
-      border: 3px solid #dcebf1;
-      border-top-color: var(--water-500);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .progress-wrap {
+      height: 10px;
+      border-radius: 999px;
+      background: #e9eff3;
+      overflow: hidden;
+      margin: 12px 0 8px;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: var(--blue);
+      transition: width .25s ease;
+    }
+
+    .progress-value {
+      font: 700 30px/1 "Montserrat", sans-serif;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mini {
+      padding: 11px;
+      background: #f7fafc;
+      border-radius: 10px;
+    }
+
+    .mini-label { color: var(--muted); font-size: 10px; }
+    .mini-value { margin-top: 4px; font-size: 12px; font-weight: 600; }
+
+    .loading {
+      min-height: 160px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
     .modal-backdrop {
       position: fixed;
@@ -772,470 +391,774 @@
       display: none;
       place-items: center;
       padding: 18px;
-      background: rgba(5, 20, 33, 0.58);
+      background: rgba(3, 22, 36, 0.54);
     }
 
     .modal-backdrop.open { display: grid; }
 
     .modal {
-      width: min(760px, 100%);
-      max-height: 88vh;
-      overflow: auto;
+      width: min(520px, 100%);
       border-radius: 16px;
       background: #fff;
-      box-shadow: 0 24px 70px rgba(5,20,33,0.25);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.22);
     }
 
-    .modal-header {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      padding: 14px 16px;
+    .modal-header, .modal-footer {
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
+      gap: 10px;
     }
 
-    .modal-title {
-      margin: 0;
-      font-family: "Montserrat", sans-serif;
-      font-size: 17px;
+    .modal-header { border-bottom: 1px solid var(--line); }
+    .modal-footer { border-top: 1px solid var(--line); justify-content: flex-end; }
+    .modal-body { padding: 18px; display: grid; gap: 13px; }
+
+    .mobile-topbar { display: none; }
+
+    @media (max-width: 1050px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .lower-grid { grid-column: auto; }
     }
 
-    .modal-body { padding: 16px; }
-
-    .modal-footer {
-      padding: 12px 16px 16px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 12px;
-    }
-
-    .form-field {
-      display: grid;
-      gap: 6px;
-    }
-
-    .form-field.full { grid-column: 1 / -1; }
-
-    .form-label {
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .form-control {
-      width: 100%;
-      min-height: 40px;
-      padding: 9px 10px;
-      border: 1px solid var(--border-strong);
-      border-radius: 9px;
-      background: #fff;
-      color: var(--text-primary);
-      outline: none;
-    }
-
-    textarea.form-control { min-height: 92px; resize: vertical; }
-
-    .form-control:focus {
-      border-color: var(--water-500);
-      box-shadow: 0 0 0 3px rgba(42,167,201,0.1);
-    }
-
-    .task-room {
-      margin-bottom: 10px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .task-room-header {
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface-soft);
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .task-row {
-      padding: 9px 12px;
-      display: grid;
-      grid-template-columns: 18px minmax(0,1fr) auto;
-      gap: 8px;
-      align-items: start;
-      border-top: 1px solid var(--border);
-      font-size: 11px;
-    }
-
-    .task-check {
-      width: 15px;
-      height: 15px;
-      margin-top: 1px;
-      border-radius: 4px;
-      border: 1px solid var(--border-strong);
-      display: grid;
-      place-items: center;
-      color: #fff;
-      background: #fff;
-      font-size: 10px;
-    }
-
-    .task-row.complete .task-check {
-      border-color: var(--success);
-      background: var(--success);
-    }
-
-    .photo-grid {
-      margin-top: 14px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 8px;
-    }
-
-    .photo-tile {
-      position: relative;
-      min-height: 100px;
-      overflow: hidden;
-      border-radius: 9px;
-      border: 1px solid var(--border);
-      background: var(--surface-soft);
-    }
-
-    .photo-tile img {
-      width: 100%;
-      height: 100%;
-      min-height: 100px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .mobile-menu-button {
-      display: none;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #fff;
-      color: var(--navy-900);
-      font-size: 18px;
-    }
-
-    .toast {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 200;
-      max-width: 360px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      color: #fff;
-      background: var(--navy-900);
-      box-shadow: 0 12px 32px rgba(5,20,33,0.24);
-      font-size: 12px;
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
-      transition: 0.2s ease;
-    }
-
-    .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.error { background: var(--danger); }
-    .toast.success { background: var(--success); }
-
-    @media (max-width: 1180px) {
-      .calendar-layout { grid-template-columns: minmax(0, 1.75fr) minmax(265px, 0.75fr); }
-      .issues-card, .inventory-card, .messages-card, .notifications-card { grid-column: span 12; }
-    }
-
-    @media (max-width: 920px) {
-      .app-shell { grid-template-columns: 1fr; }
+    @media (max-width: 760px) {
+      .app { display: block; }
       .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.22s ease;
+        position: fixed;
+        left: -240px;
+        width: 220px;
+        transition: left .2s ease;
       }
-      .sidebar.open { transform: translateX(0); }
-      .main-area { grid-column: 1; }
-      .mobile-menu-button { display: inline-grid; place-items: center; }
-      .topbar { padding: 12px 16px; }
-      .topbar-left { display: flex; align-items: center; gap: 10px; }
-      .topbar-actions { min-width: 0; }
-      .property-select { min-width: 190px; }
-      .content { padding: 16px; }
-      .calendar-layout { grid-template-columns: 1fr; }
-      .calendar-card, .upcoming-card { min-height: auto; }
-      .compact-list { height: auto; max-height: 390px; }
-    }
-
-    @media (max-width: 680px) {
+      .sidebar.open { left: 0; }
+      .mobile-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 16px;
+        background: var(--navy);
+        color: #fff;
+      }
+      .mobile-topbar button {
+        border: 0;
+        border-radius: 8px;
+        padding: 8px 10px;
+        color: #fff;
+        background: rgba(255,255,255,.12);
+      }
+      .main { padding: 18px 14px; }
       .topbar { align-items: stretch; flex-direction: column; }
-      .topbar-actions { width: 100%; justify-content: stretch; }
-      .property-select { flex: 1; min-width: 0; max-width: none; }
-      .calendar-day { min-height: 72px; padding: 4px; }
-      .calendar-event { font-size: 8px; padding: 2px 4px; }
-      .day-number { width: 21px; height: 21px; font-size: 10px; }
-      .live-progress-grid { grid-template-columns: 1fr; }
-      .live-progress-grid .button { width: 100%; }
-      .form-grid { grid-template-columns: 1fr; }
-      .form-field.full { grid-column: auto; }
-      .message-compose { grid-template-columns: 1fr; }
-      .inventory-row { grid-template-columns: minmax(0,1fr) 76px; }
-      .inventory-row .button { grid-column: 1 / -1; }
+      .top-actions { align-items: stretch; flex-direction: column; }
+      .property-select { min-width: 0; }
+      .lower-grid { grid-template-columns: 1fr; }
+      .calendar-day { min-height: 78px; padding: 4px; }
+      .calendar-event { padding: 4px; font-size: 9px; }
     }
   </style>
 </head>
 
 <body>
-  <div class="app-shell">
+  <div class="mobile-topbar">
+    <strong>NSC CleanOps</strong>
+    <button id="menuButton" type="button">Menu</button>
+  </div>
+
+  <div class="app">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <h1>NSC CleanOps</h1>
         <p>Owner Portal</p>
       </div>
 
-      <p class="nav-label">Workspace</p>
-      <nav class="nav">
-        <a class="nav-link active" href="owner-dashboard.html">
-          <span class="nav-icon">⌂</span>
-          <span>Dashboard</span>
-        </a>
-        <a class="nav-link" href="owner-documents.html">
-          <span class="nav-icon">▤</span>
-          <span>Turnovers &amp; Documents</span>
-        </a>
-      </nav>
+      <a class="nav-link active" href="owner-dashboard.html">Dashboard</a>
+      <a class="nav-link" href="owner-turnovers.html">Turnovers &amp; Documents</a>
 
-      <div class="sidebar-footer">
-        <div class="user-card">
-          <p class="user-name" id="sidebarUserName"></p>
-          <p class="user-role">Property Owner</p>
-        </div>
-        <button class="signout-button" id="signOutButton" type="button">Sign Out</button>
+      <div class="sidebar-bottom">
+        <div class="user-name" id="ownerName">Loading account…</div>
+        <div class="user-role">Property Owner</div>
+        <button class="signout" id="signOutButton" type="button">Sign Out</button>
       </div>
     </aside>
 
-    <div class="main-area">
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open navigation">☰</button>
-          <div>
-            <h1 class="topbar-title">Owner Dashboard</h1>
-            <p class="topbar-subtitle" id="selectedPropertyAddress"></p>
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2 class="page-title">Owner Dashboard</h2>
+          <p class="page-subtitle">Upcoming cleans, live progress and property updates.</p>
+        </div>
+
+        <div class="top-actions">
+          <div class="field property-select">
+            <label for="propertySelect">Property</label>
+            <select id="propertySelect" disabled>
+              <option>Loading assigned properties…</option>
+            </select>
           </div>
+          <button class="btn btn-primary" id="requestCleaningButton" type="button" disabled>
+            Request Cleaning
+          </button>
         </div>
+      </div>
 
-        <div class="topbar-actions">
-          <select class="property-select" id="propertySelect" aria-label="Select property"></select>
-          <button class="button button-primary" id="requestCleaningButton" type="button">Request Cleaning</button>
+      <div class="notice" id="pageNotice"></div>
+
+      <section class="dashboard-grid">
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="calendarTitle">Calendar</h3>
+              <div class="card-note">Select a clean to view its details.</div>
+            </div>
+            <div class="calendar-toolbar">
+              <button id="previousMonth" type="button" aria-label="Previous month">‹</button>
+              <button id="todayMonth" type="button">Today</button>
+              <button id="nextMonth" type="button" aria-label="Next month">›</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="calendar-weekdays">
+              <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+              <div>Thu</div><div>Fri</div><div>Sat</div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Upcoming Cleans</h3>
+              <div class="card-note">Next scheduled visits.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="list" id="upcomingList">
+              <div class="loading">Loading upcoming cleans…</div>
+            </div>
+          </div>
+        </article>
+
+        <div class="lower-grid">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Live Cleaning Progress</h3>
+                <div class="card-note">Current in-progress clean.</div>
+              </div>
+            </div>
+            <div class="card-body" id="liveProgress">
+              <div class="empty">No live cleaning is currently in progress.</div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Recent Notifications</h3>
+                <div class="card-note">Latest five property updates.</div>
+              </div>
+              <a href="owner-notifications.html" class="btn btn-ghost" style="text-decoration:none;padding:8px 10px;font-size:11px;">View All</a>
+            </div>
+            <div class="card-body">
+              <div class="list" id="notificationList">
+                <div class="loading">Loading notifications…</div>
+              </div>
+            </div>
+          </article>
         </div>
-      </header>
-
-      <main class="content">
-        <section class="calendar-layout">
-          <article class="card calendar-card">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title">Cleaning Calendar</h2>
-                <p class="card-subtitle">Scheduled and completed turnover activity</p>
-              </div>
-              <div class="calendar-toolbar">
-                <button class="icon-button" id="previousMonthButton" type="button" aria-label="Previous month">‹</button>
-                <div class="calendar-month" id="calendarMonth"></div>
-                <button class="icon-button" id="nextMonthButton" type="button" aria-label="Next month">›</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="calendar-weekdays">
-                <div class="weekday">Sun</div>
-                <div class="weekday">Mon</div>
-                <div class="weekday">Tue</div>
-                <div class="weekday">Wed</div>
-                <div class="weekday">Thu</div>
-                <div class="weekday">Fri</div>
-                <div class="weekday">Sat</div>
-              </div>
-              <div class="calendar-grid" id="calendarGrid"></div>
-            </div>
-          </article>
-
-          <article class="card upcoming-card">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title">Upcoming Cleans</h2>
-                <p class="card-subtitle">Next scheduled visits</p>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="compact-list" id="upcomingCleans">
-                <div class="loading-state"><div class="spinner"></div></div>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section class="dashboard-sections">
-          <article class="card live-progress-card">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title">Live Cleaning Progress</h2>
-                <p class="card-subtitle" id="liveTurnoverTitle"></p>
-              </div>
-            </div>
-            <div class="card-body" id="liveProgressContent">
-              <div class="loading-state"><div class="spinner"></div></div>
-            </div>
-          </article>
-
-          <article class="card issues-card">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title">Issues</h2>
-                <p class="card-subtitle">Newest property issues first</p>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="list scroll-list" id="issuesList"></div>
-            </div>
-          </article>
-
-          <article class="card inventory-card">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title">Inventory</h2>
-                <p class="card-subtitle">Current quantities and low-stock alerts</p>
-              </div>
-              <button class="button button-secondary button-small" id="addInventoryButton" type="button">Add Item</button>
-            </div>
-            <div class="card-body">
-              <div class="scroll-list" id="inventoryList"></div>
-            </div>
-          </article>
-
-          <article class="card messages-card">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title">Messages</h2>
-                <p class="card-subtitle">Property conversation</p>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="message-thread" id="messageThread"></div>
-              <form class="message-compose" id="messageForm">
-                <textarea class="message-input" id="messageInput" required aria-label="Message"></textarea>
-                <button class="button button-primary" type="submit">Send</button>
-              </form>
-            </div>
-          </article>
-
-          <article class="card notifications-card">
-            <div class="card-header">
-              <div>
-                <h2 class="card-title">Owner Notifications</h2>
-                <p class="card-subtitle">Cleaning and property updates</p>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="scroll-list" id="notificationsList"></div>
-            </div>
-          </article>
-        </section>
-      </main>
-    </div>
+      </section>
+    </main>
   </div>
 
-  <div class="modal-backdrop" id="requestCleaningModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="requestCleaningTitle">
+  <div class="modal-backdrop" id="requestModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="requestTitle">
       <div class="modal-header">
-        <h2 class="modal-title" id="requestCleaningTitle">Request Cleaning</h2>
-        <button class="icon-button" type="button" data-close-modal="requestCleaningModal">×</button>
+        <h3 class="card-title" id="requestTitle">Request Cleaning</h3>
+        <button class="btn btn-ghost" id="closeRequestModal" type="button">Close</button>
       </div>
-      <form id="requestCleaningForm">
+
+      <form id="cleaningRequestForm">
         <div class="modal-body">
-          <div class="form-grid">
-            <div class="form-field">
-              <label class="form-label" for="requestDate">Requested date</label>
-              <input class="form-control" id="requestDate" type="date" required>
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="requestTime">Preferred time</label>
-              <input class="form-control" id="requestTime" type="time">
-            </div>
-            <div class="form-field full">
-              <label class="form-label" for="requestNotes">Cleaning details</label>
-              <textarea class="form-control" id="requestNotes" required></textarea>
-            </div>
+          <div class="field">
+            <label for="requestedDate">Preferred date</label>
+            <input id="requestedDate" type="date" required>
           </div>
+
+          <div class="field">
+            <label for="requestedTime">Preferred time</label>
+            <input id="requestedTime" type="time">
+          </div>
+
+          <div class="field">
+            <label for="requestNotes">Notes</label>
+            <textarea id="requestNotes" rows="4" placeholder="Add access details, priorities or other instructions."></textarea>
+          </div>
+
+          <div class="notice" id="requestNotice"></div>
         </div>
+
         <div class="modal-footer">
-          <button class="button button-ghost" type="button" data-close-modal="requestCleaningModal">Cancel</button>
-          <button class="button button-primary" type="submit">Submit Request</button>
+          <button class="btn btn-ghost" id="cancelRequest" type="button">Cancel</button>
+          <button class="btn btn-primary" id="submitRequest" type="submit">Send Request</button>
         </div>
       </form>
     </div>
   </div>
-
-  <div class="modal-backdrop" id="inventoryModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="inventoryModalTitle">
-      <div class="modal-header">
-        <h2 class="modal-title" id="inventoryModalTitle">Add Inventory Item</h2>
-        <button class="icon-button" type="button" data-close-modal="inventoryModal">×</button>
-      </div>
-      <form id="inventoryForm">
-        <div class="modal-body">
-          <div class="form-grid">
-            <div class="form-field full">
-              <label class="form-label" for="inventoryName">Item name</label>
-              <input class="form-control" id="inventoryName" required>
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="inventoryQuantity">Current quantity</label>
-              <input class="form-control" id="inventoryQuantity" type="number" min="0" step="1" required>
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="inventoryTarget">Target quantity</label>
-              <input class="form-control" id="inventoryTarget" type="number" min="0" step="1">
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="inventoryAmber">Low alert level</label>
-              <input class="form-control" id="inventoryAmber" type="number" min="0" step="1">
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="inventoryMinimum">Critical level</label>
-              <input class="form-control" id="inventoryMinimum" type="number" min="0" step="1">
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="button button-ghost" type="button" data-close-modal="inventoryModal">Cancel</button>
-          <button class="button button-primary" type="submit">Add Item</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="checklistModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="checklistModalTitle">
-      <div class="modal-header">
-        <h2 class="modal-title" id="checklistModalTitle">Live Checklist</h2>
-        <button class="icon-button" type="button" data-close-modal="checklistModal">×</button>
-      </div>
-      <div class="modal-body" id="checklistModalBody"></div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
-  <script src="owner-data.js"></script>
+
+  <script>
+    const db = window.nscSupabase;
+
+    const state = {
+      authUser: null,
+      profile: null,
+      properties: [],
+      propertyId: null,
+      turnovers: [],
+      notifications: [],
+      assignments: new Map(),
+      calendarDate: new Date()
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    document.addEventListener("DOMContentLoaded", initialize);
+
+    async function initialize() {
+      bindEvents();
+
+      if (!db) {
+        showPageError("Supabase client was not found. Check supabase-client.js.");
+        return;
+      }
+
+      const { data: authData, error: authError } = await db.auth.getUser();
+
+      if (authError || !authData?.user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      state.authUser = authData.user;
+
+      const { data: profile, error: profileError } = await db
+        .from("users")
+        .select("*")
+        .eq("auth_user_id", state.authUser.id)
+        .maybeSingle();
+
+      if (profileError || !profile) {
+        showPageError("Your NSC CleanOps profile could not be loaded.");
+        return;
+      }
+
+      if (profile.active !== true || String(profile.role || "").toLowerCase() !== "owner") {
+        await db.auth.signOut();
+        window.location.href = "login.html";
+        return;
+      }
+
+      state.profile = profile;
+      $("ownerName").textContent = profile.full_name || profile.name || state.authUser.email || "Owner";
+
+      await loadAssignedProperties();
+    }
+
+    function bindEvents() {
+      $("signOutButton").addEventListener("click", signOut);
+      $("propertySelect").addEventListener("change", async (event) => {
+        state.propertyId = event.target.value || null;
+        localStorage.setItem("nscOwnerPropertyId", state.propertyId || "");
+        await loadDashboard();
+      });
+
+      $("previousMonth").addEventListener("click", () => {
+        state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() - 1, 1);
+        renderCalendar();
+      });
+
+      $("nextMonth").addEventListener("click", () => {
+        state.calendarDate = new Date(state.calendarDate.getFullYear(), state.calendarDate.getMonth() + 1, 1);
+        renderCalendar();
+      });
+
+      $("todayMonth").addEventListener("click", () => {
+        state.calendarDate = new Date();
+        renderCalendar();
+      });
+
+      $("requestCleaningButton").addEventListener("click", openRequestModal);
+      $("closeRequestModal").addEventListener("click", closeRequestModal);
+      $("cancelRequest").addEventListener("click", closeRequestModal);
+      $("cleaningRequestForm").addEventListener("submit", submitCleaningRequest);
+      $("menuButton").addEventListener("click", () => $("sidebar").classList.toggle("open"));
+
+      $("requestModal").addEventListener("click", (event) => {
+        if (event.target === $("requestModal")) closeRequestModal();
+      });
+    }
+
+    async function loadAssignedProperties() {
+      const { data: memberships, error: membershipError } = await db
+        .from("property_members")
+        .select("*")
+        .eq("user_id", state.profile.id);
+
+      if (membershipError) {
+        showPageError("Assigned properties could not be loaded: " + membershipError.message);
+        return;
+      }
+
+      const propertyIds = [...new Set((memberships || []).map(row => row.property_id).filter(Boolean))];
+
+      if (!propertyIds.length) {
+        $("propertySelect").innerHTML = "<option>No assigned properties</option>";
+        $("upcomingList").innerHTML = '<div class="empty">No property has been assigned to this owner account.</div>';
+        $("notificationList").innerHTML = '<div class="empty">No notifications available.</div>';
+        renderCalendar();
+        return;
+      }
+
+      const { data: properties, error: propertyError } = await db
+        .from("properties")
+        .select("*")
+        .in("id", propertyIds)
+        .order("name", { ascending: true });
+
+      if (propertyError) {
+        showPageError("Property details could not be loaded: " + propertyError.message);
+        return;
+      }
+
+      state.properties = properties || [];
+      renderPropertyOptions();
+
+      const savedPropertyId = localStorage.getItem("nscOwnerPropertyId");
+      const selected = state.properties.find(p => p.id === savedPropertyId) || state.properties[0];
+
+      state.propertyId = selected?.id || null;
+      $("propertySelect").value = state.propertyId || "";
+      $("propertySelect").disabled = state.properties.length === 0;
+      $("requestCleaningButton").disabled = !state.propertyId;
+
+      await loadDashboard();
+    }
+
+    function renderPropertyOptions() {
+      $("propertySelect").innerHTML = state.properties.map(property => {
+        const label = property.name || property.property_name || property.code || "Property";
+        return `<option value="${escapeHtml(property.id)}">${escapeHtml(label)}</option>`;
+      }).join("");
+    }
+
+    async function loadDashboard() {
+      if (!state.propertyId) return;
+
+      clearPageNotice();
+
+      $("upcomingList").innerHTML = '<div class="loading">Loading upcoming cleans…</div>';
+      $("notificationList").innerHTML = '<div class="loading">Loading notifications…</div>';
+      $("liveProgress").innerHTML = '<div class="loading">Loading live progress…</div>';
+
+      const [turnoverResult, notificationResult] = await Promise.all([
+        db.from("turnovers").select("*").eq("property_id", state.propertyId),
+        db.from("notifications").select("*").eq("property_id", state.propertyId).order("created_at", { ascending: false }).limit(5)
+      ]);
+
+      if (turnoverResult.error) {
+        showPageError("Turnovers could not be loaded: " + turnoverResult.error.message);
+        state.turnovers = [];
+      } else {
+        state.turnovers = turnoverResult.data || [];
+      }
+
+      if (notificationResult.error) {
+        state.notifications = buildOperationalNotifications(state.turnovers);
+      } else {
+        state.notifications = notificationResult.data || [];
+      }
+
+      await loadAssignments();
+      renderCalendar();
+      renderUpcoming();
+      await renderLiveProgress();
+      renderNotifications();
+    }
+
+    async function loadAssignments() {
+      state.assignments = new Map();
+
+      const turnoverIds = state.turnovers.map(row => row.id).filter(Boolean);
+      if (!turnoverIds.length) return;
+
+      const { data: assignments, error } = await db
+        .from("turnover_assignments")
+        .select("*")
+        .in("turnover_id", turnoverIds);
+
+      if (error || !assignments?.length) return;
+
+      const userIds = [...new Set(assignments.map(row => row.user_id || row.cleaner_id).filter(Boolean))];
+      let usersById = new Map();
+
+      if (userIds.length) {
+        const { data: users } = await db.from("users").select("*").in("id", userIds);
+        usersById = new Map((users || []).map(user => [user.id, user]));
+      }
+
+      assignments.forEach(assignment => {
+        const userId = assignment.user_id || assignment.cleaner_id;
+        const user = usersById.get(userId);
+        const name = user?.full_name || user?.name || assignment.cleaner_name || "Assigned cleaner";
+        state.assignments.set(assignment.turnover_id, name);
+      });
+    }
+
+    function renderCalendar() {
+      const year = state.calendarDate.getFullYear();
+      const month = state.calendarDate.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const gridStart = new Date(year, month, 1 - firstDay.getDay());
+      const todayKey = dateKey(new Date());
+
+      $("calendarTitle").textContent = state.calendarDate.toLocaleDateString("en-CA", {
+        month: "long",
+        year: "numeric"
+      });
+
+      const cells = [];
+
+      for (let index = 0; index < 42; index++) {
+        const current = new Date(gridStart);
+        current.setDate(gridStart.getDate() + index);
+
+        const key = dateKey(current);
+        const events = state.turnovers
+          .filter(turnover => turnoverDateKey(turnover) === key)
+          .sort((a, b) => turnoverDate(a) - turnoverDate(b));
+
+        const classes = [
+          "calendar-day",
+          current.getMonth() !== month ? "outside" : "",
+          key === todayKey ? "today" : ""
+        ].filter(Boolean).join(" ");
+
+        cells.push(`
+          <div class="${classes}">
+            <div class="day-number">${current.getDate()}</div>
+            ${events.slice(0, 3).map(turnover => {
+              const status = normalizeStatus(turnover.status);
+              const time = formatTime(turnover);
+              return `
+                <button class="calendar-event status-${escapeHtml(status)}"
+                        type="button"
+                        onclick="openTurnover('${escapeHtml(turnover.id)}')"
+                        title="${escapeHtml(statusLabel(status))}">
+                  ${escapeHtml(time || statusLabel(status))}
+                </button>
+              `;
+            }).join("")}
+            ${events.length > 3 ? `<div class="card-note">+${events.length - 3} more</div>` : ""}
+          </div>
+        `);
+      }
+
+      $("calendarGrid").innerHTML = cells.join("");
+    }
+
+    function renderUpcoming() {
+      const now = new Date();
+
+      const upcoming = state.turnovers
+        .filter(turnover => {
+          const status = normalizeStatus(turnover.status);
+          return turnoverDate(turnover) >= startOfToday(now) &&
+            !["cancelled", "declined", "completed"].includes(status);
+        })
+        .sort((a, b) => turnoverDate(a) - turnoverDate(b))
+        .slice(0, 8);
+
+      if (!upcoming.length) {
+        $("upcomingList").innerHTML = '<div class="empty">No upcoming cleans are currently scheduled.</div>';
+        return;
+      }
+
+      $("upcomingList").innerHTML = upcoming.map(turnover => {
+        const status = normalizeStatus(turnover.status);
+        const cleaner = state.assignments.get(turnover.id) || "Cleaner not assigned";
+        return `
+          <button class="list-item" type="button" onclick="openTurnover('${escapeHtml(turnover.id)}')">
+            <div class="list-top">
+              <div>
+                <div class="list-title">${escapeHtml(formatDate(turnoverDate(turnover)))}</div>
+                <div class="list-meta">${escapeHtml(formatTime(turnover) || "Time not set")} · ${escapeHtml(cleaner)}</div>
+              </div>
+              <span class="badge status-${escapeHtml(status)}">${escapeHtml(statusLabel(status))}</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+    }
+
+    async function renderLiveProgress() {
+      const live = state.turnovers
+        .filter(turnover => ["in_progress", "in-progress"].includes(normalizeStatus(turnover.status)))
+        .sort((a, b) => turnoverDate(b) - turnoverDate(a))[0];
+
+      if (!live) {
+        $("liveProgress").innerHTML = '<div class="empty">No live cleaning is currently in progress.</div>';
+        return;
+      }
+
+      const { data: tasks, error } = await db
+        .from("turnover_tasks")
+        .select("*")
+        .eq("turnover_id", live.id);
+
+      const taskRows = error ? [] : (tasks || []);
+      const completed = taskRows.filter(task => {
+        const status = String(task.status || "").toLowerCase();
+        return task.completed === true || task.is_completed === true || ["completed", "done"].includes(status);
+      }).length;
+
+      const total = taskRows.length;
+      const percent = total ? Math.round((completed / total) * 100) : 0;
+      const cleaner = state.assignments.get(live.id) || "Assigned cleaner";
+      const checkIn = live.checked_in_at || live.check_in_at || live.started_at || null;
+
+      $("liveProgress").innerHTML = `
+        <div class="progress-value">${percent}%</div>
+        <div class="progress-wrap"><div class="progress-bar" style="width:${percent}%"></div></div>
+        <div class="card-note">${completed} of ${total} checklist tasks complete</div>
+
+        <div class="mini-grid">
+          <div class="mini">
+            <div class="mini-label">Cleaner</div>
+            <div class="mini-value">${escapeHtml(cleaner)}</div>
+          </div>
+          <div class="mini">
+            <div class="mini-label">Checked in</div>
+            <div class="mini-value">${escapeHtml(checkIn ? formatDateTime(checkIn) : "Not recorded")}</div>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" style="margin-top:14px;"
+                type="button" onclick="openTurnover('${escapeHtml(live.id)}')">
+          View Live Checklist
+        </button>
+      `;
+    }
+
+    function renderNotifications() {
+      const notifications = (state.notifications || []).slice(0, 5);
+
+      if (!notifications.length) {
+        $("notificationList").innerHTML = '<div class="empty">No recent notifications.</div>';
+        return;
+      }
+
+      $("notificationList").innerHTML = notifications.map(notification => {
+        const title = notification.title || notification.notification_type || notification.type || "Property update";
+        const message = notification.message || notification.body || notification.description || "";
+        const created = notification.created_at || notification.created_on || notification.timestamp;
+        return `
+          <div class="list-item">
+            <div class="list-title">${escapeHtml(title)}</div>
+            ${message ? `<div class="list-meta">${escapeHtml(message)}</div>` : ""}
+            ${created ? `<div class="list-meta">${escapeHtml(formatDateTime(created))}</div>` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function buildOperationalNotifications(turnovers) {
+      return [...turnovers]
+        .sort((a, b) => {
+          const aDate = new Date(a.updated_at || a.created_at || turnoverDate(a));
+          const bDate = new Date(b.updated_at || b.created_at || turnoverDate(b));
+          return bDate - aDate;
+        })
+        .slice(0, 5)
+        .map(turnover => ({
+          title: "Cleaning " + statusLabel(normalizeStatus(turnover.status)),
+          message: formatDate(turnoverDate(turnover)),
+          created_at: turnover.updated_at || turnover.created_at
+        }));
+    }
+
+    function openTurnover(turnoverId) {
+      if (!turnoverId) return;
+      window.location.href = "owner-turnover.html?id=" + encodeURIComponent(turnoverId);
+    }
+
+    function openRequestModal() {
+      if (!state.propertyId) return;
+      $("requestedDate").min = dateKey(new Date());
+      $("requestModal").classList.add("open");
+      $("requestModal").setAttribute("aria-hidden", "false");
+      $("requestedDate").focus();
+    }
+
+    function closeRequestModal() {
+      $("requestModal").classList.remove("open");
+      $("requestModal").setAttribute("aria-hidden", "true");
+      $("requestNotice").className = "notice";
+      $("requestNotice").textContent = "";
+    }
+
+    async function submitCleaningRequest(event) {
+      event.preventDefault();
+
+      const requestedDate = $("requestedDate").value;
+      const requestedTime = $("requestedTime").value || null;
+      const notes = $("requestNotes").value.trim() || null;
+
+      if (!state.propertyId || !requestedDate) return;
+
+      $("submitRequest").disabled = true;
+      showRequestNotice("Sending request…", "info");
+
+      const { error } = await db.from("cleaning_requests").insert({
+        property_id: state.propertyId,
+        requested_by: state.profile.id,
+        requested_date: requestedDate,
+        requested_time: requestedTime,
+        notes: notes,
+        status: "requested"
+      });
+
+      $("submitRequest").disabled = false;
+
+      if (error) {
+        showRequestNotice(error.message, "error");
+        return;
+      }
+
+      $("cleaningRequestForm").reset();
+      showRequestNotice("Cleaning request sent to the manager.", "info");
+
+      setTimeout(() => {
+        closeRequestModal();
+        showPageNotice("Cleaning request sent successfully.", "info");
+      }, 700);
+    }
+
+    async function signOut() {
+      await db.auth.signOut();
+      localStorage.removeItem("nscOwnerPropertyId");
+      window.location.href = "login.html";
+    }
+
+    function turnoverDate(turnover) {
+      const dateValue =
+        turnover.scheduled_start ||
+        turnover.start_time ||
+        turnover.scheduled_at ||
+        turnover.turnover_date ||
+        turnover.scheduled_date ||
+        turnover.date;
+
+      if (!dateValue) return new Date(0);
+
+      if (turnover.scheduled_date && turnover.scheduled_time) {
+        return new Date(`${turnover.scheduled_date}T${turnover.scheduled_time}`);
+      }
+
+      return new Date(dateValue);
+    }
+
+    function turnoverDateKey(turnover) {
+      const date = turnoverDate(turnover);
+      return isNaN(date.getTime()) ? "" : dateKey(date);
+    }
+
+    function formatTime(turnover) {
+      const date = turnoverDate(turnover);
+      if (isNaN(date.getTime())) return "";
+
+      const hasTime = Boolean(
+        turnover.scheduled_start ||
+        turnover.start_time ||
+        turnover.scheduled_at ||
+        turnover.scheduled_time
+      );
+
+      return hasTime
+        ? date.toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" })
+        : "";
+    }
+
+    function formatDate(date) {
+      if (!(date instanceof Date) || isNaN(date.getTime())) return "Date not set";
+      return date.toLocaleDateString("en-CA", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function formatDateTime(value) {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return "";
+      return date.toLocaleString("en-CA", {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    function dateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function startOfToday(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    function normalizeStatus(status) {
+      return String(status || "scheduled").trim().toLowerCase().replace(/\s+/g, "_");
+    }
+
+    function statusLabel(status) {
+      return String(status || "scheduled")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, letter => letter.toUpperCase());
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function showPageError(message) {
+      showPageNotice(message, "error");
+    }
+
+    function showPageNotice(message, type = "info") {
+      $("pageNotice").className = `notice show ${type}`;
+      $("pageNotice").textContent = message;
+    }
+
+    function clearPageNotice() {
+      $("pageNotice").className = "notice";
+      $("pageNotice").textContent = "";
+    }
+
+    function showRequestNotice(message, type = "info") {
+      $("requestNotice").className = `notice show ${type}`;
+      $("requestNotice").textContent = message;
+    }
+  </script>
 </body>
 </html>
