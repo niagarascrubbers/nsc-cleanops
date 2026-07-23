@@ -133,6 +133,7 @@ let inventoryCounts = [];
 let cleaners = [];
 let realtimeChannel = null;
 let refreshTimer = null;
+let ownerRequests = [];
 
 const COMPLETED_STATUSES = new Set([
   "completed",
@@ -328,6 +329,9 @@ async function loadData() {
   if (cleanerResult.error) throw cleanerResult.error;
 
   turnovers = turnoverResult.data || [];
+    ownerRequests = turnovers.filter(turnover =>
+      String(turnover.status || "").toLowerCase() === "requested"
+    );
   issues = issueResult.data || [];
   inventoryCounts = inventoryResult.data || [];
   cleaners = cleanerResult.data || [];
@@ -502,6 +506,16 @@ function buildDailyTimeline(todayTurnovers) {
 
 function buildNotifications() {
   const notifications = [];
+
+    ownerRequests.forEach(turnover => {
+      notifications.push({
+        type: "blue",
+        title: "Owner requested a future cleaning",
+        text: `${turnover.properties?.property_name || "Property"} · ${formatDate(turnover.turnover_date || turnover.scheduled_start)} · Review and assign a cleaner.`,
+        time: turnover.created_at || turnover.turnover_date,
+        href: `turnovers.html?property_id=${encodeURIComponent(turnover.property_id || "")}`
+      });
+    });
 
   turnovers.forEach(turnover => {
     if (isCancelled(turnover)) return;

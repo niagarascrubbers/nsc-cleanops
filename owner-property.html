@@ -1,193 +1,2143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Property | NSC CleanOps</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Owner Dashboard | NSC CleanOps</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
-    :root{
-      --navy:#0b2f4f;--navy2:#082945;--blue:#2d8ec7;--ink:#17324d;--muted:#738696;
-      --line:#dde7ee;--bg:#f4f8fb;--white:#fff;--green:#16845d;--greenbg:#e9f7f1;
-      --amber:#a76408;--amberbg:#fff3dd;--red:#b83f3f;--redbg:#fdecec;--shadow:0 10px 28px rgba(11,47,79,.07);
+    :root {
+      --navy: #0b2f4f;
+      --navy-dark: #082945;
+      --navy-soft: #173f61;
+      --blue: #2d8ec7;
+      --blue-soft: #eaf5fb;
+      --green: #18845d;
+      --green-soft: #e8f7f0;
+      --amber: #b56a09;
+      --amber-soft: #fff4df;
+      --red: #b83f3f;
+      --red-soft: #fcecec;
+      --purple: #7359b6;
+      --purple-soft: #f1edfb;
+      --ink: #17324d;
+      --muted: #708393;
+      --line: #dfe8ee;
+      --background: #f5f8fb;
+      --surface: #ffffff;
+      --surface-soft: #f9fbfd;
+      --shadow: 0 9px 26px rgba(11, 47, 79, 0.07);
+      --radius: 16px;
+      --sidebar-width: 224px;
     }
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:Poppins,Arial,sans-serif}
-    a{color:inherit} button,input,select,textarea{font:inherit}
-    .shell{min-height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr)}
-    .sidebar{position:sticky;top:0;height:100vh;padding:22px 15px;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff}
-    .brand{padding:0 6px 20px;border-bottom:1px solid rgba(255,255,255,.12)} .brand h1{margin:0;font:700 20px Montserrat}
-    .brand p{margin:5px 0 0;color:#bdd3e1;font-size:10px}
-    .nav{display:grid;gap:6px;margin-top:18px}.nav a,.signout{border:0;border-radius:9px;padding:11px 12px;background:transparent;color:#dbe8f0;text-decoration:none;text-align:left;cursor:pointer}
-    .nav a.active,.nav a:hover,.signout:hover{background:rgba(255,255,255,.11);color:#fff}
-    .sidefoot{margin-top:auto;padding:16px 6px 0;border-top:1px solid rgba(255,255,255,.12)}
-    .user{font-size:12px;font-weight:600}.role{margin:3px 0 10px;color:#bdd3e1;font-size:10px}
-    .main{min-width:0;padding:24px 28px 40px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}
-    .crumb{font-size:10px;color:var(--muted);margin-bottom:8px}.title{margin:0;font:700 clamp(24px,3vw,30px) Montserrat;letter-spacing:-.5px}
-    .sub{margin:6px 0 0;color:var(--muted);font-size:11px}.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--blue);color:#fff;font-size:10px;font-weight:600;cursor:pointer;text-decoration:none}
-    .btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)} .btn.danger{background:var(--red)}
-    .notice{display:none;margin-bottom:14px;border-radius:10px;padding:11px 13px;font-size:10px}.notice.show{display:block}.notice.error{background:var(--redbg);color:#8f2c2c}.notice.info{background:#eaf5fb;color:#17628c}
-    .grid{display:grid;gap:16px}.card{border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
-    .cardhead{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .cardtitle{margin:0;font:700 14px Montserrat}.cardnote{margin-top:3px;color:var(--muted);font-size:9px}.cardbody{padding:15px}
-    .empty{padding:28px 10px;text-align:center;color:var(--muted);font-size:10px}
-    .badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;background:#eaf5fb;color:#17628c;font-size:8px;font-weight:700;text-transform:capitalize}
-    .badge.active,.badge.completed,.badge.approved{background:var(--greenbg);color:#146d4c}.badge.cancelled,.badge.declined{background:var(--redbg);color:#8e2d2d}.badge.requested,.badge.in_progress{background:var(--amberbg);color:#875000}
-    .mobile{display:none}
-    @media(max-width:800px){
-      .shell{display:block}.sidebar{position:fixed;left:-240px;z-index:20;width:224px;transition:.2s}.sidebar.open{left:0}.mobile{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:var(--navy);color:#fff}.mobile button{border:0;border-radius:8px;padding:7px 10px;background:rgba(255,255,255,.12);color:#fff}.main{padding:18px 14px 30px}.top{align-items:flex-start;flex-direction:column}
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--ink);
+      font-family: "Poppins", Arial, sans-serif;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .mobile-header,
+    .page-overlay {
+      display: none;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, var(--navy), var(--navy-dark));
+      color: #ffffff;
+      z-index: 30;
+    }
+
+    .brand {
+      padding: 0 5px 20px;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 21px;
+      letter-spacing: -0.4px;
+    }
+
+    .brand-subtitle {
+      margin: 5px 0 0;
+      color: #b9d4e5;
+      font-size: 11px;
+    }
+
+    .navigation {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav-link,
+    .signout-button {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: #dbeaf3;
+      text-decoration: none;
+      cursor: pointer;
+      text-align: left;
+      transition: 0.16s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active,
+    .signout-button:hover {
+      background: rgba(255, 255, 255, 0.11);
+      color: #ffffff;
+    }
+
+    .nav-icon {
+      width: 21px;
+      flex: 0 0 21px;
+      text-align: center;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 17px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .sidebar-user-name {
+      font-size: 13px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .sidebar-user-role {
+      margin: 3px 0 11px;
+      color: #b9d4e5;
+      font-size: 11px;
+    }
+
+    .main-content {
+      min-width: 0;
+      padding: 24px 28px 40px;
+    }
+
+    .topbar {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .page-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(24px, 3vw, 30px);
+      line-height: 1.15;
+      letter-spacing: -0.6px;
+    }
+
+    .page-subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .property-select-wrap {
+      min-width: 230px;
+    }
+
+    .property-select-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+    }
+
+    .property-select {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0 34px 0 12px;
+      background: #ffffff;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: var(--blue);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background: #247eaf;
+    }
+
+    .notice {
+      display: none;
+      margin-bottom: 15px;
+      border-radius: 11px;
+      padding: 11px 13px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .notice.show {
+      display: block;
+    }
+
+    .notice.error {
+      background: var(--red-soft);
+      color: #8e2929;
+      border: 1px solid #efc9c9;
+    }
+
+    .notice.info {
+      background: var(--blue-soft);
+      color: #17628c;
+      border: 1px solid #cbe3f1;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .45px;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      margin-top: 7px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .summary-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 8px;
+    }
+
+    .collapse-button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--navy);
+      padding: 7px 10px;
+      font-size: 9px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .collapsible-body.is-collapsed { display: none; }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(310px, 0.65fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .column-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      min-height: 64px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+    }
+
+    .card-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    .card-body {
+      padding: 15px;
+    }
+
+    .month-controls {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .icon-button {
+      width: 31px;
+      height: 31px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .month-label {
+      min-width: 124px;
+      font-size: 10px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 11px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 8px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .calendar-weekdays {
+      border: 1px solid var(--line);
+      border-bottom: 0;
+      border-radius: 11px 11px 0 0;
+      background: var(--surface-soft);
+    }
+
+    .calendar-weekday {
+      padding: 9px 4px;
+      color: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .calendar-grid {
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+      border-radius: 0 0 11px 11px;
+    }
+
+    .calendar-day {
+      min-height: 104px;
+      padding: 8px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .calendar-day.outside {
+      background: #fafcfd;
+    }
+
+    .calendar-day.today {
+      background: #f6fbfe;
+      box-shadow: inset 0 0 0 2px rgba(45, 142, 199, 0.23);
+    }
+
+    .day-number {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--ink);
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .outside .day-number {
+      color: #a4b1bb;
+    }
+
+    .calendar-events {
+      margin-top: 5px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .calendar-event {
+      width: 100%;
+      border: 0;
+      border-left: 3px solid var(--blue);
+      border-radius: 6px;
+      padding: 5px 6px;
+      background: var(--blue-soft);
+      color: #17628c;
+      text-align: left;
+      font-size: 7px;
+      font-weight: 600;
+      line-height: 1.35;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .calendar-event.in_progress {
+      border-color: var(--amber);
+      background: var(--amber-soft);
+      color: #8a5200;
+    }
+
+    .calendar-event.completed,
+    .calendar-event.approved {
+      border-color: var(--green);
+      background: var(--green-soft);
+      color: #146c4c;
+    }
+
+    .calendar-event.cancelled,
+    .calendar-event.declined {
+      border-color: var(--red);
+      background: var(--red-soft);
+      color: #8c2c2c;
+    }
+
+    .calendar-event.requested {
+      border-color: var(--purple);
+      background: var(--purple-soft);
+      color: #5e4896;
+    }
+
+    .list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .list-item {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px;
+      background: #ffffff;
+    }
+
+    button.list-item {
+      width: 100%;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    button.list-item:hover {
+      border-color: #bad8e9;
+      background: #fbfdfe;
+    }
+
+    .list-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .list-title {
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .list-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.45;
+    }
+
+    .status-badge {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 4px 7px;
+      background: var(--blue-soft);
+      color: #17628c;
+      font-size: 7px;
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+
+    .status-badge.in_progress {
+      background: var(--amber-soft);
+      color: #8a5200;
+    }
+
+    .status-badge.completed,
+    .status-badge.approved {
+      background: var(--green-soft);
+      color: #146c4c;
+    }
+
+    .status-badge.cancelled,
+    .status-badge.declined {
+      background: var(--red-soft);
+      color: #8c2c2c;
+    }
+
+    .status-badge.requested {
+      background: var(--purple-soft);
+      color: #5e4896;
+    }
+
+    .alert-card {
+      border-left: 4px solid var(--amber);
+    }
+
+    .alert-card.critical {
+      border-left-color: var(--red);
+      background: #fffdfd;
+    }
+
+    .alert-icon {
+      width: 29px;
+      height: 29px;
+      flex: 0 0 29px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--amber-soft);
+      color: var(--amber);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .alert-card.critical .alert-icon {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .alert-content {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .split-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .empty-state,
+    .loading-state {
+      padding: 24px 10px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .section-link {
+      color: var(--blue);
+      font-size: 9px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    @media (max-width: 1050px) {
+      .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .calendar-day {
+        min-height: 92px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .app-shell {
+        display: block;
+      }
+
+      .mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        min-height: 58px;
+        padding: 10px 13px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--navy);
+        color: #ffffff;
+      }
+
+      .mobile-header button {
+        border: 0;
+        border-radius: 8px;
+        padding: 8px 10px;
+        background: rgba(255,255,255,0.12);
+        color: #ffffff;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: calc(var(--sidebar-width) * -1 - 20px);
+        width: var(--sidebar-width);
+        transition: left 0.2s ease;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .page-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        background: rgba(4, 23, 39, 0.44);
+      }
+
+      .page-overlay.show {
+        display: block;
+      }
+
+      .main-content {
+        padding: 18px 14px 30px;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .topbar-actions {
+        align-items: stretch;
+      }
+
+      .property-select-wrap {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .calendar-day {
+        min-height: 82px;
+        padding: 5px;
+      }
+
+      .calendar-event {
+        padding: 4px;
+        font-size: 6px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .topbar-actions,
+      .split-row {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .calendar-weekday {
+        font-size: 7px;
+      }
+
+      .calendar-day {
+        min-height: 66px;
+      }
+
+      .calendar-events {
+        gap: 2px;
+      }
+
+      .calendar-event {
+        border-left-width: 2px;
+        padding: 3px;
+        font-size: 0;
+      }
+
+      .calendar-event::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: currentColor;
+        opacity: 0.72;
+      }
     }
   </style>
-
-<style>
-  .property-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}
-  .tabs{display:flex;gap:5px;overflow:auto;padding:5px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow);margin-bottom:16px}
-  .tab{border:0;border-radius:8px;padding:9px 12px;background:transparent;color:var(--muted);font-size:9px;font-weight:600;white-space:nowrap;cursor:pointer}
-  .tab.active{background:var(--navy);color:#fff} .panel{display:none} .panel.active{display:block}
-  .overview-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.7fr);gap:16px}
-  .details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
-  .label{color:var(--muted);font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.35px} .value{margin-top:4px;font-size:10px}
-  .summary-list,.item-list{display:grid;gap:9px} .summary-row,.list-item{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff}
-  .summary-row{display:flex;justify-content:space-between;align-items:center} .summary-row strong{font:700 16px Montserrat}
-  .list-row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start} .list-title{font-size:10px;font-weight:600} .list-meta{margin-top:4px;color:var(--muted);font-size:8px;line-height:1.5}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px} label{display:block;margin-bottom:5px;color:var(--muted);font-size:8px;font-weight:600;text-transform:uppercase}
-  input,textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff;color:var(--ink);outline:none} textarea{min-height:90px;resize:vertical}
-  .photo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px} .photo{aspect-ratio:1;border-radius:10px;overflow:hidden;background:#eef4f7} .photo img{width:100%;height:100%;object-fit:cover}
-  .check-room{border:1px solid var(--line);border-radius:10px;overflow:hidden} .check-room summary{padding:11px 13px;background:#f8fbfd;font-size:10px;font-weight:600;cursor:pointer} .check-tasks{padding:8px 13px} .check-task{padding:8px 0;border-bottom:1px solid var(--line);font-size:9px} .check-task:last-child{border-bottom:0}
-  @media(max-width:1000px){.overview-grid{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:620px){.details,.form-grid{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(2,1fr)}}
-</style>
 </head>
+
 <body>
-<div class="mobile"><strong>NSC CleanOps</strong><button id="menuBtn">Menu</button></div>
-<div class="shell">
-<aside class="sidebar" id="sidebar">
-  <div class="brand"><h1>NSC CleanOps</h1><p>Owner Portal</p></div>
-  <nav class="nav"><a href="owner-dashboard.html">Dashboard</a><a class="active" href="owner-properties.html">Properties</a><a href="owner-profile.html">Profile</a></nav>
-  <div class="sidefoot"><div class="user" id="userName">Loading account…</div><div class="role">Property Owner</div><button class="signout" id="signOut">Sign Out</button></div>
-</aside>
-<main class="main">
-  <div class="crumb">Properties / <span id="crumbName">Property</span></div>
-  <div class="property-top"><div><h2 class="title" id="propertyName">Loading property…</h2><p class="sub" id="propertyMeta"></p></div><a class="btn secondary" href="owner-properties.html">Back to Properties</a></div>
-  <div class="notice" id="notice"></div>
-  <nav class="tabs" id="tabs">
-    <button class="tab active" data-tab="overview">Overview</button>
-    <button class="tab" data-tab="turnovers">Turnovers</button>
-    <button class="tab" data-tab="checklist">Checklist</button>
-    <button class="tab" data-tab="inventory">Inventory</button>
-    <button class="tab" data-tab="photos">Photos</button>
-    <button class="tab" data-tab="messages">Messages</button>
-    <button class="tab" data-tab="documents">Documents</button>
-    <button class="tab" data-tab="reports">Reports</button>
-  </nav>
+  <div class="mobile-header">
+    <strong>NSC CleanOps</strong>
+    <button id="mobileMenuButton" type="button">Menu</button>
+  </div>
 
-  <section class="panel active" id="panel-overview">
-    <div class="overview-grid">
-      <article class="card"><div class="cardhead"><div><h3 class="cardtitle">Property Overview</h3><div class="cardnote">Property details and operating information.</div></div></div><div class="cardbody details" id="details"><div class="empty">Loading details…</div></div></article>
-      <article class="card"><div class="cardhead"><div><h3 class="cardtitle">Operations Summary</h3><div class="cardnote">Records connected to this property.</div></div></div><div class="cardbody summary-list" id="summary"><div class="empty">Loading summary…</div></div></article>
-    </div>
-  </section>
+  <div class="page-overlay" id="pageOverlay"></div>
 
-  <section class="panel" id="panel-turnovers">
-    <div class="grid" style="grid-template-columns:minmax(0,1.5fr) minmax(280px,.7fr)">
-      <article class="card"><div class="cardhead"><div><h3 class="cardtitle">Turnovers</h3><div class="cardnote">Upcoming, active and completed cleaning records.</div></div></div><div class="cardbody item-list" id="turnoverList"><div class="empty">Loading turnovers…</div></div></article>
-      <article class="card"><div class="cardhead"><div><h3 class="cardtitle">Request Future Cleaning</h3><div class="cardnote">Add a requested future date for the manager to schedule.</div></div></div>
-        <form class="cardbody" id="requestForm">
-          <div class="form-grid"><div><label for="requestDate">Cleaning date</label><input id="requestDate" type="date" required></div><div><label for="requestTime">Preferred time</label><input id="requestTime" type="time"></div></div>
-          <div style="margin-top:10px"><label for="requestNotes">Notes</label><textarea id="requestNotes" placeholder="Add access details, guest timing or special requests"></textarea></div>
-          <button class="btn" type="submit" style="margin-top:10px">Submit Cleaning Request</button>
-        </form>
-      </article>
-    </div>
-  </section>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <h1 class="brand-title">NSC CleanOps</h1>
+        <p class="brand-subtitle">Owner Portal</p>
+      </div>
 
-  <section class="panel" id="panel-checklist"><article class="card"><div class="cardhead"><div><h3 class="cardtitle">Checklist</h3><div class="cardnote">Cleaning tasks grouped by room.</div></div></div><div class="cardbody grid" id="checklist"><div class="empty">Loading checklist…</div></div></article></section>
-  <section class="panel" id="panel-inventory"><article class="card"><div class="cardhead"><div><h3 class="cardtitle">Inventory</h3><div class="cardnote">Current supply levels and low-stock alerts.</div></div></div><div class="cardbody item-list" id="inventory"><div class="empty">Loading inventory…</div></div></article></section>
-  <section class="panel" id="panel-photos"><article class="card"><div class="cardhead"><div><h3 class="cardtitle">Photos</h3><div class="cardnote">Latest cleaning and completion photos.</div></div></div><div class="cardbody photo-grid" id="photos"><div class="empty">Loading photos…</div></div></article></section>
-  <section class="panel" id="panel-messages"><article class="card"><div class="cardhead"><div><h3 class="cardtitle">Messages</h3><div class="cardnote">Owner, manager and cleaner conversation history.</div></div></div><div class="cardbody item-list" id="messages"><div class="empty">Loading messages…</div></div></article></section>
-  <section class="panel" id="panel-documents"><article class="card"><div class="cardhead"><div><h3 class="cardtitle">Documents</h3><div class="cardnote">Property documents and cleaning records.</div></div></div><div class="cardbody item-list" id="documents"><div class="empty">No property documents are available yet.</div></div></article></section>
-  <section class="panel" id="panel-reports"><article class="card"><div class="cardhead"><div><h3 class="cardtitle">Reports</h3><div class="cardnote">Cleaning history and property performance.</div></div></div><div class="cardbody item-list" id="reports"><div class="empty">Reports will appear as cleaning history is completed.</div></div></article></section>
-</main></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client.js"></script>
-<script>
-"use strict";
-const db=window.nscSupabase,$=id=>document.getElementById(id);
-const propertyId=new URLSearchParams(location.search).get("id");
-let user,profile,property,turnovers=[],inventory=[],photos=[],messages=[],tasks=[],rooms=[];
-document.addEventListener("DOMContentLoaded",init);
-$("menuBtn").onclick=()=>$("sidebar").classList.toggle("open");
-$("signOut").onclick=async()=>{await db.auth.signOut();location.href="login.html"};
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
-$("requestForm").onsubmit=submitRequest;
-async function init(){
- if(!db||!propertyId)return fail("Property could not be opened.");
- const a=await db.auth.getUser(); if(a.error||!a.data.user)return location.href="login.html"; user=a.data.user;
- const p=await db.from("users").select("*").eq("auth_user_id",user.id).maybeSingle(); if(p.error||!p.data)return fail("Owner profile could not be loaded."); profile=p.data;
- $("userName").textContent=profile.full_name||user.email||"Owner";
- const allowed=await ownerHasProperty(); if(!allowed)return fail("This property is not assigned to your owner account.");
- const pr=await db.from("properties").select("*").eq("id",propertyId).maybeSingle(); if(pr.error||!pr.data)return fail("Property could not be loaded."); property=pr.data;
- renderHeader(); await loadAll(); renderAll();
-}
-async function ownerHasProperty(){
- for(const q of [{column:"user_id",value:profile.id},{column:"user_id",value:user.id},{column:"owner_id",value:profile.id}]){
-  const r=await db.from("property_members").select("property_id").eq(q.column,q.value).eq("property_id",propertyId).limit(1);
-  if(!r.error&&r.data&&r.data.length)return true;
- } return false;
-}
-async function loadAll(){
- const [t,i,p,m,r,ta]=await Promise.all([
-  db.from("turnovers").select("*,users:assigned_user_id(full_name)").eq("property_id",propertyId).order("turnover_date",{ascending:false}),
-  db.from("inventory_items").select("*").eq("property_id",propertyId).order("item_name"),
-  db.from("photos").select("*").eq("property_id",propertyId).order("created_at",{ascending:false}).limit(40),
-  db.from("turnover_messages").select("*").eq("property_id",propertyId).order("created_at",{ascending:false}).limit(40),
-  db.from("rooms").select("*").eq("property_id",propertyId).order("sort_order"),
-  db.from("tasks").select("*").eq("property_id",propertyId).order("sort_order")
- ]);
- turnovers=t.error?[]:(t.data||[]); inventory=i.error?[]:(i.data||[]); photos=p.error?[]:(p.data||[]); messages=m.error?[]:(m.data||[]); rooms=r.error?[]:(r.data||[]); tasks=ta.error?[]:(ta.data||[]);
-}
-function renderHeader(){$("propertyName").textContent=property.property_name||"Property";$("crumbName").textContent=property.property_name||"Property";$("propertyMeta").textContent=[property.property_code,property.property_type,property.active===false?"Inactive":"Active"].filter(Boolean).join("   ");}
-function renderAll(){renderOverview();renderTurnovers();renderInventory();renderPhotos();renderMessages();renderChecklist();}
-function renderOverview(){
- const vals=[["Street Address",property.street_address||property.address||"Not entered"],["City and Province",[property.city,property.province].filter(Boolean).join(", ")||"Not entered"],["Property Type",property.property_type||"Not entered"],["GPS Check-in Radius",property.gps_radius?property.gps_radius+" metres":"Not entered"],["Owner Name",property.owner_name||profile.full_name||"Not entered"],["Listing",property.listing_url||property.vrbo_url||"Not entered"]];
- $("details").innerHTML=vals.map(v=>`<div><div class="label">${esc(v[0])}</div><div class="value">${esc(v[1])}</div></div>`).join("");
- const open=turnovers.filter(t=>!["completed","approved","cancelled"].includes(norm(t.status))).length;
- $("summary").innerHTML=[["Turnovers",turnovers.length],["Upcoming / Active",open],["Inventory Items",inventory.length],["Photos",photos.length],["Checklist Tasks",tasks.length]].map(x=>`<div class="summary-row"><span>${esc(x[0])}</span><strong>${x[1]}</strong></div>`).join("");
-}
-function renderTurnovers(){
- if(!turnovers.length){$("turnoverList").innerHTML='<div class="empty">No turnovers are available.</div>';return}
- $("turnoverList").innerHTML=turnovers.map(t=>`<div class="list-item"><div class="list-row"><div><div class="list-title">${esc(formatDate(t.turnover_date||t.scheduled_start))}</div><div class="list-meta">${esc(t.users?.full_name||"Cleaner not assigned")} · ${esc(formatTime(t.scheduled_start||t.scheduled_at))}</div></div><div><span class="badge ${norm(t.status)}">${esc(label(t.status||"scheduled"))}</span><div style="margin-top:8px"><a class="btn secondary" href="owner-turnover.html?id=${encodeURIComponent(t.id)}">Open</a></div></div></div></div>`).join("");
-}
-async function submitRequest(e){
- e.preventDefault(); const date=$("requestDate").value,time=$("requestTime").value,notes=$("requestNotes").value.trim(); if(!date)return;
- const btn=e.submitter;btn.disabled=true;btn.textContent="Submitting…";
- const payload={property_id:propertyId,turnover_date:date,status:"requested"};
- if(time)payload.scheduled_start=`${date}T${time}:00`;
- if(notes)payload.notes=notes;
- let r=await db.from("turnovers").insert(payload).select().single();
- if(r.error&&notes){delete payload.notes;r=await db.from("turnovers").insert(payload).select().single()}
- if(r.error){showNotice("Request could not be submitted: "+r.error.message,"error")}
- else{showNotice("Future cleaning request submitted.","info");$("requestForm").reset();await loadAll();renderAll()}
- btn.disabled=false;btn.textContent="Submit Cleaning Request";
-}
-function renderInventory(){
- if(!inventory.length){$("inventory").innerHTML='<div class="empty">No inventory records are available.</div>';return}
- $("inventory").innerHTML=inventory.map(i=>{const cur=Number(i.current_quantity??i.quantity??i.current_stock??0),min=Number(i.minimum_quantity??i.min_level??i.minimum_level??0),low=cur<=min;return `<div class="list-item"><div class="list-row"><div><div class="list-title">${esc(i.item_name||i.name||"Item")}</div><div class="list-meta">Current ${cur} · Minimum ${min}</div></div><span class="badge ${low?"cancelled":"active"}">${low?"Low":"In Stock"}</span></div></div>`}).join("");
-}
-function renderPhotos(){$("photos").innerHTML=photos.length?photos.map(p=>`<a class="photo" href="${esc(p.public_url||p.photo_url||p.url||"#")}" target="_blank"><img src="${esc(p.public_url||p.photo_url||p.url||"")}" alt="Cleaning photo"></a>`).join(""):'<div class="empty">No photos are available.</div>';}
-function renderMessages(){$("messages").innerHTML=messages.length?messages.map(m=>`<div class="list-item"><div class="list-title">${esc(m.sender_name||m.sender_role||"Message")}</div><div class="list-meta">${esc(m.message||"")}<br>${esc(formatDateTime(m.created_at))}</div></div>`).join(""):'<div class="empty">No messages are available.</div>';}
-function renderChecklist(){
- if(!tasks.length){$("checklist").innerHTML='<div class="empty">No checklist tasks are available.</div>';return}
- const groups=new Map(); rooms.forEach(r=>groups.set(r.id,{name:r.room_name||"Room",items:[]})); tasks.forEach(t=>{const key=t.room_id||"other";if(!groups.has(key))groups.set(key,{name:"Other",items:[]});groups.get(key).items.push(t)});
- $("checklist").innerHTML=[...groups.values()].filter(g=>g.items.length).map(g=>`<details class="check-room"><summary>${esc(g.name)} (${g.items.length})</summary><div class="check-tasks">${g.items.map(t=>`<div class="check-task">${esc(t.task_name||t.title||t.description||"Task")}</div>`).join("")}</div></details>`).join("");
-}
-function showTab(name){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id==="panel-"+name));}
-function showNotice(m,t){$("notice").className="notice show "+t;$("notice").textContent=m}
-function fail(m){showNotice(m,"error")}
-function norm(v){return String(v||"scheduled").toLowerCase().replace(/\s+/g,"_")} function label(v){return String(v||"scheduled").replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase())}
-function formatDate(v){if(!v)return"Date not set";const d=new Date(v);return isNaN(d)?"Date not set":d.toLocaleDateString("en-CA",{weekday:"short",month:"short",day:"numeric",year:"numeric"})}
-function formatTime(v){if(!v)return"Time not set";const d=new Date(v);return isNaN(d)?"Time not set":d.toLocaleTimeString("en-CA",{hour:"numeric",minute:"2-digit"})}
-function formatDateTime(v){if(!v)return"";const d=new Date(v);return isNaN(d)?"":d.toLocaleString("en-CA",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-</script>
-</body></html>
+      <nav class="navigation">
+        <a class="nav-link active" href="owner-dashboard.html"><span>Dashboard</span></a>
+        <a class="nav-link" href="owner-properties.html"><span>Properties</span></a>
+        <a class="nav-link" href="owner-profile.html"><span>Profile</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user-name" id="sidebarUserName">Loading account…</div>
+        <div class="sidebar-user-role">Property Owner</div>
+
+        <button class="signout-button" id="signOutButton" type="button">
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2 class="page-title">Owner Dashboard</h2>
+          <p class="page-subtitle" id="dashboardSubtitle">
+            Cleaning schedule, alerts and notifications.
+          </p>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="property-select-wrap">
+            <label class="property-select-label" for="propertySelect">
+              Property
+            </label>
+
+            <select class="property-select" id="propertySelect">
+              <option value="">Loading properties…</option>
+            </select>
+          </div>
+
+          <button class="button" id="refreshButton" type="button">
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      <div class="notice" id="pageNotice"></div>
+
+      <section class="summary-grid">
+        <article class="summary-card"><div class="summary-label">Today's Cleans</div><div class="summary-value" id="metricToday">0</div><div class="summary-note">Scheduled today</div></article>
+        <article class="summary-card"><div class="summary-label">Upcoming</div><div class="summary-value" id="metricUpcoming">0</div><div class="summary-note">Future cleans</div></article>
+        <article class="summary-card"><div class="summary-label">In Progress</div><div class="summary-value" id="metricProgress">0</div><div class="summary-note">Currently being cleaned</div></article>
+        <article class="summary-card"><div class="summary-label">Open Alerts</div><div class="summary-value" id="metricAlerts">0</div><div class="summary-note">Needs attention</div></article>
+        <article class="summary-card"><div class="summary-label">Low Inventory</div><div class="summary-value" id="metricInventory">0</div><div class="summary-note">Items to restock</div></article>
+      </section>
+
+      <section class="dashboard-grid">
+        <div class="column-stack">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Cleaning Calendar</h3>
+                <div class="card-note">
+                  Click any scheduled clean to open its turnover details.
+                </div>
+              </div>
+
+              <div class="month-controls">
+                <button class="icon-button" id="previousMonthButton" type="button">‹</button>
+                <div class="month-label" id="calendarMonthLabel">—</div>
+                <button class="icon-button" id="nextMonthButton" type="button">›</button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="calendar-legend">
+                <span class="legend-item"><span class="legend-dot" style="background:#2d8ec7"></span>Scheduled</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#b56a09"></span>In Progress</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#18845d"></span>Completed</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#7359b6"></span>Requested</span>
+                <span class="legend-item"><span class="legend-dot" style="background:#b83f3f"></span>Cancelled</span>
+              </div>
+
+              <div class="calendar-weekdays">
+                <div class="calendar-weekday">Sun</div>
+                <div class="calendar-weekday">Mon</div>
+                <div class="calendar-weekday">Tue</div>
+                <div class="calendar-weekday">Wed</div>
+                <div class="calendar-weekday">Thu</div>
+                <div class="calendar-weekday">Fri</div>
+                <div class="calendar-weekday">Sat</div>
+              </div>
+
+              <div class="calendar-grid" id="calendarGrid">
+                <div class="loading-state">Loading calendar…</div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="column-stack">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Upcoming Cleans</h3>
+                <div class="card-note">
+                  Schedule and assigned cleaning team.
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="list" id="upcomingList">
+                <div class="loading-state">Loading upcoming cleans…</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Critical Alerts</h3>
+                <div class="card-note">Low inventory and cleaning issues requiring attention.</div>
+              </div>
+              <button class="collapse-button" type="button" data-collapse="criticalAlertsBody">Collapse</button>
+            </div>
+
+            <div class="card-body collapsible-body" id="criticalAlertsBody">
+              <div class="list" id="criticalAlertsList">
+                <div class="loading-state">Loading alerts…</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="split-row">
+        <article class="card" id="notificationsSection">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Notifications</h3>
+              <div class="card-note">Recent cleaning activity for the selected property.</div>
+            </div>
+            <button class="collapse-button" type="button" data-collapse="notificationsBody">Collapse</button>
+          </div>
+
+          <div class="card-body collapsible-body" id="notificationsBody">
+            <div class="list" id="notificationsList">
+              <div class="loading-state">Loading notifications…</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Recent Activity</h3>
+              <div class="card-note">
+                Latest completed, started and updated cleans.
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="list" id="recentActivityList">
+              <div class="loading-state">Loading activity…</div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+
+  <script>
+    "use strict";
+
+    const db = window.nscSupabase;
+    const byId = (id) => document.getElementById(id);
+
+    const state = {
+      authUser: null,
+      profile: null,
+      properties: [],
+      selectedPropertyId: null,
+      calendarDate: startOfMonth(new Date()),
+      turnovers: [],
+      inventoryItems: [],
+      issues: [],
+      messages: [],
+      realtimeChannel: null,
+      refreshTimer: null
+    };
+
+    document.addEventListener("DOMContentLoaded", initializePage);
+
+    async function initializePage() {
+      bindEvents();
+
+      if (!db) {
+        showNotice(
+          "Supabase client was not found. Check supabase-client.js.",
+          "error"
+        );
+        stopLoading();
+        return;
+      }
+
+      const authenticated = await authenticateOwner();
+
+      if (!authenticated) {
+        return;
+      }
+
+      await loadOwnerProperties();
+
+      if (!state.properties.length) {
+        showNotice(
+          "No properties are assigned to this owner account.",
+          "info"
+        );
+        stopLoading();
+        return;
+      }
+
+      const storedPropertyId =
+        localStorage.getItem("nsc_owner_property_id");
+
+      state.selectedPropertyId =
+        state.properties.some((property) => property.id === storedPropertyId)
+          ? storedPropertyId
+          : state.properties[0].id;
+
+      renderPropertyOptions();
+      await loadDashboardData();
+      subscribeRealtime();
+    }
+
+    function bindEvents() {
+      byId("signOutButton").addEventListener("click", signOut);
+
+      document.querySelectorAll("[data-collapse]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = byId(button.dataset.collapse);
+          const collapsed = target.classList.toggle("is-collapsed");
+          button.textContent = collapsed ? "Expand" : "Collapse";
+        });
+      });
+      byId("mobileMenuButton").addEventListener("click", openMenu);
+      byId("pageOverlay").addEventListener("click", closeMenu);
+
+      byId("propertySelect").addEventListener("change", async (event) => {
+        state.selectedPropertyId = event.target.value;
+        localStorage.setItem(
+          "nsc_owner_property_id",
+          state.selectedPropertyId
+        );
+
+        await loadDashboardData();
+        subscribeRealtime();
+      });
+
+      byId("refreshButton").addEventListener("click", async () => {
+        const button = byId("refreshButton");
+        button.disabled = true;
+        button.textContent = "Refreshing…";
+
+        await loadDashboardData();
+
+        button.disabled = false;
+        button.textContent = "Refresh";
+      });
+
+      byId("previousMonthButton").addEventListener("click", async () => {
+        state.calendarDate = new Date(
+          state.calendarDate.getFullYear(),
+          state.calendarDate.getMonth() - 1,
+          1
+        );
+
+        await loadTurnovers();
+        renderDashboard();
+      });
+
+      byId("nextMonthButton").addEventListener("click", async () => {
+        state.calendarDate = new Date(
+          state.calendarDate.getFullYear(),
+          state.calendarDate.getMonth() + 1,
+          1
+        );
+
+        await loadTurnovers();
+        renderDashboard();
+      });
+    }
+
+    async function authenticateOwner() {
+      const {
+        data: authData,
+        error: authError
+      } = await db.auth.getUser();
+
+      if (authError || !authData?.user) {
+        window.location.href = "login.html";
+        return false;
+      }
+
+      state.authUser = authData.user;
+
+      const {
+        data: profile,
+        error: profileError
+      } = await db
+        .from("users")
+        .select("*")
+        .eq("auth_user_id", state.authUser.id)
+        .maybeSingle();
+
+      if (profileError || !profile) {
+        showNotice(
+          "Your NSC CleanOps profile could not be loaded.",
+          "error"
+        );
+        stopLoading();
+        return false;
+      }
+
+      if (
+        profile.active !== true ||
+        String(profile.role || "").toLowerCase() !== "owner"
+      ) {
+        await db.auth.signOut();
+        window.location.href = "login.html";
+        return false;
+      }
+
+      state.profile = profile;
+
+      byId("sidebarUserName").textContent =
+        profile.full_name ||
+        profile.name ||
+        state.authUser.email ||
+        "Owner";
+
+      return true;
+    }
+
+    async function loadOwnerProperties() {
+      const attempts = [
+        { column: "user_id", value: state.profile.id },
+        { column: "user_id", value: state.authUser.id },
+        { column: "owner_id", value: state.profile.id }
+      ];
+
+      const propertyIds = new Set();
+
+      for (const attempt of attempts) {
+        const {
+          data,
+          error
+        } = await db
+          .from("property_members")
+          .select("property_id")
+          .eq(attempt.column, attempt.value);
+
+        if (!error && Array.isArray(data)) {
+          data.forEach((row) => {
+            if (row.property_id) {
+              propertyIds.add(row.property_id);
+            }
+          });
+        }
+      }
+
+      if (!propertyIds.size) {
+        state.properties = [];
+        return;
+      }
+
+      const {
+        data,
+        error
+      } = await db
+        .from("properties")
+        .select("*")
+        .in("id", [...propertyIds])
+        .order("property_name", { ascending: true });
+
+      state.properties =
+        error || !Array.isArray(data)
+          ? []
+          : data;
+    }
+
+    function renderPropertyOptions() {
+      const select = byId("propertySelect");
+
+      select.innerHTML =
+        state.properties.map((property) => `
+          <option
+            value="${escapeHtml(property.id)}"
+            ${property.id === state.selectedPropertyId ? "selected" : ""}
+          >
+            ${escapeHtml(
+              property.property_name ||
+              property.property_code ||
+              "Property"
+            )}
+          </option>
+        `).join("");
+
+      const property = getSelectedProperty();
+
+      byId("dashboardSubtitle").textContent =
+        property
+          ? `${property.property_name || "Property"} cleaning schedule, alerts and notifications.`
+          : "Cleaning schedule, alerts and notifications.";
+    }
+
+    async function loadDashboardData() {
+      clearNotice();
+
+      await Promise.all([
+        loadTurnovers(),
+        loadInventory(),
+        loadIssues(),
+        loadMessages()
+      ]);
+
+      renderDashboard();
+    }
+
+    async function loadTurnovers() {
+      if (!state.selectedPropertyId) {
+        state.turnovers = [];
+        return;
+      }
+
+      const visibleStart =
+        new Date(
+          state.calendarDate.getFullYear(),
+          state.calendarDate.getMonth() - 1,
+          20
+        );
+
+      const visibleEnd =
+        new Date(
+          state.calendarDate.getFullYear(),
+          state.calendarDate.getMonth() + 2,
+          10
+        );
+
+      const {
+        data,
+        error
+      } = await db
+        .from("turnovers")
+        .select(`
+          *,
+          users:assigned_user_id (
+            full_name
+          )
+        `)
+        .eq("property_id", state.selectedPropertyId)
+        .gte("turnover_date", toDateInput(visibleStart))
+        .lte("turnover_date", toDateInput(visibleEnd))
+        .order("turnover_date", { ascending: true });
+
+      if (error) {
+        state.turnovers = [];
+        console.error(error);
+        return;
+      }
+
+      state.turnovers =
+        Array.isArray(data)
+          ? data
+          : [];
+    }
+
+    async function loadInventory() {
+      const {
+        data,
+        error
+      } = await db
+        .from("inventory_items")
+        .select("*")
+        .eq("property_id", state.selectedPropertyId)
+        .order("item_name", { ascending: true });
+
+      state.inventoryItems =
+        error || !Array.isArray(data)
+          ? []
+          : data;
+    }
+
+    async function loadIssues() {
+      const {
+        data,
+        error
+      } = await db
+        .from("issues")
+        .select("*")
+        .eq("property_id", state.selectedPropertyId)
+        .neq("issue_status", "resolved")
+        .neq("issue_status", "closed")
+        .order("created_at", { ascending: false })
+        .limit(12);
+
+      state.issues =
+        error || !Array.isArray(data)
+          ? []
+          : data;
+    }
+
+    async function loadMessages() {
+      state.messages = [];
+
+      try {
+        let query = db
+          .from("turnover_messages")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(20);
+
+        const direct = await query.eq("property_id", state.selectedPropertyId);
+
+        if (!direct.error) {
+          state.messages = Array.isArray(direct.data) ? direct.data : [];
+          return;
+        }
+
+        const turnoverIds = state.turnovers
+          .map((turnover) => turnover.id)
+          .filter(Boolean);
+
+        if (!turnoverIds.length) {
+          return;
+        }
+
+        const fallback = await db
+          .from("turnover_messages")
+          .select("*")
+          .in("turnover_id", turnoverIds)
+          .order("created_at", { ascending: false })
+          .limit(20);
+
+        if (!fallback.error) {
+          state.messages = Array.isArray(fallback.data) ? fallback.data : [];
+        }
+      } catch (error) {
+        console.warn("Owner notifications could not load messages:", error);
+        state.messages = [];
+      }
+    }
+
+    function renderDashboard() {
+      renderPropertyOptions();
+      renderSummaryMetrics();
+      renderCalendar();
+      renderUpcoming();
+      renderCriticalAlerts();
+      renderNotifications();
+      renderRecentActivity();
+    }
+
+    function renderSummaryMetrics() {
+      const today = dateKey(new Date());
+      const now = startOfDay(new Date());
+      const todayCount = state.turnovers.filter(t => turnoverDateKey(t) === today && normalizeStatus(t.status) !== "cancelled").length;
+      const upcomingCount = state.turnovers.filter(t => { const d = getTurnoverDate(t); const st = normalizeStatus(t.status); return d && d >= now && !["cancelled","completed","approved"].includes(st); }).length;
+      const progressCount = state.turnovers.filter(t => normalizeStatus(t.status) === "in_progress").length;
+      const lowInventory = state.inventoryItems.filter(item => { const l = getInventoryLevels(item); return l.current <= l.amber || ["low","critical","red"].includes(l.status); }).length;
+      const openAlerts = lowInventory + state.issues.filter(issue => !["resolved","closed"].includes(String(issue.issue_status || "").toLowerCase())).length;
+      byId("metricToday").textContent = todayCount;
+      byId("metricUpcoming").textContent = upcomingCount;
+      byId("metricProgress").textContent = progressCount;
+      byId("metricAlerts").textContent = openAlerts;
+      byId("metricInventory").textContent = lowInventory;
+    }
+
+    function renderCalendar() {
+      byId("calendarMonthLabel").textContent =
+        state.calendarDate.toLocaleDateString(
+          "en-CA",
+          {
+            month: "long",
+            year: "numeric"
+          }
+        );
+
+      const monthStart =
+        startOfMonth(state.calendarDate);
+
+      const gridStart =
+        new Date(
+          monthStart.getFullYear(),
+          monthStart.getMonth(),
+          1 - monthStart.getDay()
+        );
+
+      const todayKey =
+        dateKey(new Date());
+
+      const cells = [];
+
+      for (let index = 0; index < 42; index += 1) {
+        const day =
+          new Date(
+            gridStart.getFullYear(),
+            gridStart.getMonth(),
+            gridStart.getDate() + index
+          );
+
+        const dayKey =
+          dateKey(day);
+
+        const dayTurnovers =
+          state.turnovers.filter(
+            (turnover) => turnoverDateKey(turnover) === dayKey
+          );
+
+        const outside =
+          day.getMonth() !== state.calendarDate.getMonth();
+
+        cells.push(`
+          <div class="calendar-day ${outside ? "outside" : ""} ${dayKey === todayKey ? "today" : ""}">
+            <div class="day-number">${day.getDate()}</div>
+
+            <div class="calendar-events">
+              ${dayTurnovers.map((turnover) => {
+                const status =
+                  normalizeStatus(turnover.status);
+
+                const cleanerName =
+                  turnover.users?.full_name ||
+                  turnover.cleaner_name ||
+                  "Cleaner pending";
+
+                return `
+                  <button
+                    class="calendar-event ${escapeHtml(status)}"
+                    type="button"
+                    data-turnover-id="${escapeHtml(turnover.id)}"
+                    title="${escapeHtml(
+                      `${formatTime(turnover)} · ${cleanerName} · ${statusLabel(status)}`
+                    )}"
+                  >
+                    ${escapeHtml(formatTime(turnover))} · ${escapeHtml(cleanerName)}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `);
+      }
+
+      byId("calendarGrid").innerHTML =
+        cells.join("");
+
+      bindTurnoverButtons();
+    }
+
+    function renderUpcoming() {
+      const now =
+        new Date();
+
+      const upcoming =
+        state.turnovers
+          .filter((turnover) => {
+            const date = getTurnoverDate(turnover);
+            const status = normalizeStatus(turnover.status);
+
+            return (
+              date &&
+              date >= startOfDay(now) &&
+              status !== "cancelled" &&
+              status !== "declined" &&
+              status !== "completed" &&
+              status !== "approved"
+            );
+          })
+          .sort(
+            (first, second) =>
+              getTurnoverDate(first) - getTurnoverDate(second)
+          )
+          .slice(0, 8);
+
+      if (!upcoming.length) {
+        byId("upcomingList").innerHTML =
+          '<div class="empty-state">No upcoming cleans are currently scheduled.</div>';
+        return;
+      }
+
+      byId("upcomingList").innerHTML =
+        upcoming.map((turnover) => {
+          const status =
+            normalizeStatus(turnover.status);
+
+          const cleanerName =
+            turnover.users?.full_name ||
+            turnover.cleaner_name ||
+            "Cleaner not assigned";
+
+          return `
+            <button
+              class="list-item"
+              type="button"
+              data-turnover-id="${escapeHtml(turnover.id)}"
+            >
+              <div class="list-row">
+                <div>
+                  <div class="list-title">
+                    ${escapeHtml(formatTurnoverDate(turnover))}
+                  </div>
+
+                  <div class="list-meta">
+                    ${escapeHtml(formatTime(turnover))}
+                    · ${escapeHtml(cleanerName)}
+                  </div>
+                </div>
+
+                <span class="status-badge ${escapeHtml(status)}">
+                  ${escapeHtml(statusLabel(status))}
+                </span>
+              </div>
+            </button>
+          `;
+        }).join("");
+
+      bindTurnoverButtons();
+    }
+
+    function renderCriticalAlerts() {
+      const inventoryAlerts =
+        state.inventoryItems
+          .map((item) => ({
+            item,
+            levels: getInventoryLevels(item)
+          }))
+          .filter(({ levels }) => {
+            return (
+              levels.current <= levels.amber ||
+              ["low", "critical", "red"].includes(levels.status)
+            );
+          });
+
+      const criticalIssues =
+        state.issues.filter((issue) => {
+          const urgency =
+            String(issue.urgency || "").toLowerCase();
+
+          return (
+            issue.prevents_guest_ready === true ||
+            urgency === "urgent" ||
+            urgency === "emergency"
+          );
+        });
+
+      const alerts = [
+        ...inventoryAlerts.map(({ item, levels }) => ({
+          critical:
+            levels.current <= levels.minimum ||
+            levels.status === "critical" ||
+            levels.status === "red",
+          title:
+            item.item_name ||
+            item.name ||
+            "Inventory item",
+          meta:
+            `Current ${levels.current} · Minimum ${levels.minimum} · Target ${levels.target}`,
+          icon: "!"
+        })),
+        ...criticalIssues.map((issue) => ({
+          critical: true,
+          title:
+            issue.title ||
+            issue.issue_type ||
+            "Cleaning issue",
+          meta:
+            issue.description ||
+            statusLabel(issue.urgency || "urgent"),
+          icon: "!"
+        }))
+      ];
+
+      if (!alerts.length) {
+        byId("criticalAlertsList").innerHTML =
+          '<div class="empty-state">No critical alerts for this property.</div>';
+        return;
+      }
+
+      byId("criticalAlertsList").innerHTML =
+        alerts.slice(0, 8).map((alert) => `
+          <div class="list-item alert-card ${alert.critical ? "critical" : ""}">
+            <div class="list-row">
+              <div class="alert-icon">${escapeHtml(alert.icon)}</div>
+
+              <div class="alert-content">
+                <div class="list-title">${escapeHtml(alert.title)}</div>
+                <div class="list-meta">${escapeHtml(alert.meta)}</div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+    }
+
+    function renderNotifications() {
+      const notifications = [];
+
+      state.messages.slice(0, 5).forEach((message) => {
+        notifications.push({
+          title:
+            message.channel === "owner_manager"
+              ? "New manager message"
+              : "New cleaning team message",
+          meta:
+            `${truncate(message.message || message.content || message.body || "New message", 95)} · ${formatMaybeDateTime(message.created_at)}`,
+          date:
+            new Date(message.created_at || 0),
+          turnoverId:
+            message.turnover_id
+        });
+      });
+
+      state.issues.slice(0, 5).forEach((issue) => {
+        notifications.push({
+          title:
+            issue.title ||
+            "New cleaning issue",
+          meta:
+            `${statusLabel(issue.urgency || "normal")} · ${formatMaybeDateTime(issue.created_at)}`,
+          date:
+            new Date(issue.created_at || 0),
+          turnoverId:
+            issue.turnover_id
+        });
+      });
+
+      state.turnovers
+        .filter((turnover) => {
+          const status = normalizeStatus(turnover.status);
+          return ["in_progress", "completed", "approved", "declined"].includes(status);
+        })
+        .slice(-6)
+        .forEach((turnover) => {
+          const status =
+            normalizeStatus(turnover.status);
+
+          notifications.push({
+            title:
+              status === "in_progress"
+                ? "Cleaner started the clean"
+                : status === "declined"
+                  ? "Cleaning request declined"
+                  : "Cleaning completed",
+            meta:
+              `${formatTurnoverDate(turnover)} · ${statusLabel(status)}`,
+            date:
+              getTurnoverDate(turnover) || new Date(0),
+            turnoverId:
+              turnover.id
+          });
+        });
+
+      notifications.sort(
+        (first, second) => second.date - first.date
+      );
+
+      byId("notificationBadge").textContent =
+        notifications.length > 99
+          ? "99+"
+          : String(notifications.length);
+
+      if (!notifications.length) {
+        byId("notificationsList").innerHTML =
+          '<div class="empty-state">No recent notifications.</div>';
+        return;
+      }
+
+      byId("notificationsList").innerHTML =
+        notifications.slice(0, 8).map((notification) => `
+          <button
+            class="list-item"
+            type="button"
+            ${notification.turnoverId
+              ? `data-turnover-id="${escapeHtml(notification.turnoverId)}"`
+              : ""}
+          >
+            <div class="list-title">${escapeHtml(notification.title)}</div>
+            <div class="list-meta">${escapeHtml(notification.meta)}</div>
+          </button>
+        `).join("");
+
+      bindTurnoverButtons();
+    }
+
+    function renderRecentActivity() {
+      const activity =
+        [...state.turnovers]
+          .sort(
+            (first, second) =>
+              (getTurnoverDate(second) || 0) -
+              (getTurnoverDate(first) || 0)
+          )
+          .slice(0, 8);
+
+      if (!activity.length) {
+        byId("recentActivityList").innerHTML =
+          '<div class="empty-state">No cleaning activity is available yet.</div>';
+        return;
+      }
+
+      byId("recentActivityList").innerHTML =
+        activity.map((turnover) => {
+          const status =
+            normalizeStatus(turnover.status);
+
+          const cleaner =
+            turnover.users?.full_name ||
+            turnover.cleaner_name ||
+            "Cleaner not assigned";
+
+          return `
+            <button
+              class="list-item"
+              type="button"
+              data-turnover-id="${escapeHtml(turnover.id)}"
+            >
+              <div class="list-row">
+                <div>
+                  <div class="list-title">
+                    ${escapeHtml(formatTurnoverDate(turnover))}
+                  </div>
+
+                  <div class="list-meta">
+                    ${escapeHtml(cleaner)}
+                  </div>
+                </div>
+
+                <span class="status-badge ${escapeHtml(status)}">
+                  ${escapeHtml(statusLabel(status))}
+                </span>
+              </div>
+            </button>
+          `;
+        }).join("");
+
+      bindTurnoverButtons();
+    }
+
+    function bindTurnoverButtons() {
+      document
+        .querySelectorAll("[data-turnover-id]")
+        .forEach((button) => {
+          if (button.dataset.bound === "true") {
+            return;
+          }
+
+          button.dataset.bound = "true";
+
+          button.addEventListener("click", () => {
+            const turnoverId =
+              button.dataset.turnoverId;
+
+            if (turnoverId) {
+              window.location.href =
+                `owner-turnover.html?id=${encodeURIComponent(turnoverId)}`;
+            }
+          });
+        });
+    }
+
+    function subscribeRealtime() {
+      if (!state.selectedPropertyId) {
+        return;
+      }
+
+      if (state.realtimeChannel) {
+        db.removeChannel(state.realtimeChannel);
+      }
+
+      const propertyId =
+        state.selectedPropertyId;
+
+      state.realtimeChannel =
+        db
+          .channel(`owner-dashboard-${propertyId}`)
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "turnovers",
+              filter: `property_id=eq.${propertyId}`
+            },
+            scheduleRealtimeRefresh
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "inventory_items",
+              filter: `property_id=eq.${propertyId}`
+            },
+            scheduleRealtimeRefresh
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "issues",
+              filter: `property_id=eq.${propertyId}`
+            },
+            scheduleRealtimeRefresh
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "turnover_messages",
+              filter: `property_id=eq.${propertyId}`
+            },
+            scheduleRealtimeRefresh
+          )
+          .subscribe();
+    }
+
+    function scheduleRealtimeRefresh() {
+      window.clearTimeout(state.refreshTimer);
+
+      state.refreshTimer =
+        window.setTimeout(
+          loadDashboardData,
+          220
+        );
+    }
+
+    function getSelectedProperty() {
+      return state.properties.find(
+        (property) =>
+          property.id === state.selectedPropertyId
+      ) || null;
+    }
+
+    function getTurnoverDate(turnover) {
+      const value =
+        turnover?.scheduled_start ||
+        turnover?.scheduled_at ||
+        turnover?.turnover_date ||
+        turnover?.scheduled_date ||
+        turnover?.cleaning_date ||
+        null;
+
+      if (!value) {
+        return null;
+      }
+
+      if (
+        turnover.scheduled_date &&
+        turnover.scheduled_time
+      ) {
+        const combined =
+          new Date(
+            `${turnover.scheduled_date}T${turnover.scheduled_time}`
+          );
+
+        return isNaN(combined.getTime())
+          ? null
+          : combined;
+      }
+
+      const date =
+        new Date(value);
+
+      return isNaN(date.getTime())
+        ? null
+        : date;
+    }
+
+    function turnoverDateKey(turnover) {
+      const date =
+        getTurnoverDate(turnover);
+
+      return date
+        ? dateKey(date)
+        : "";
+    }
+
+    function formatTurnoverDate(turnover) {
+      const date =
+        getTurnoverDate(turnover);
+
+      return date
+        ? date.toLocaleDateString(
+            "en-CA",
+            {
+              weekday: "short",
+              month: "short",
+              day: "numeric"
+            }
+          )
+        : "Date not set";
+    }
+
+    function formatTime(turnover) {
+      const date =
+        getTurnoverDate(turnover);
+
+      const hasTime =
+        Boolean(
+          turnover?.scheduled_start ||
+          turnover?.scheduled_at ||
+          turnover?.scheduled_time
+        );
+
+      return date && hasTime
+        ? date.toLocaleTimeString(
+            "en-CA",
+            {
+              hour: "numeric",
+              minute: "2-digit"
+            }
+          )
+        : "Time not set";
+    }
+
+    function formatMaybeDateTime(value) {
+      if (!value) {
+        return "Date not recorded";
+      }
+
+      const date =
+        new Date(value);
+
+      return isNaN(date.getTime())
+        ? String(value)
+        : date.toLocaleString(
+            "en-CA",
+            {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit"
+            }
+          );
+    }
+
+    function getInventoryLevels(item) {
+      const current =
+        numberOrZero(
+          item.current_quantity ??
+          item.quantity ??
+          item.current_stock ??
+          item.stock_quantity ??
+          item.on_hand
+        );
+
+      const minimum =
+        numberOrZero(
+          item.minimum_quantity ??
+          item.min_level ??
+          item.minimum_level ??
+          item.red_level ??
+          item.min
+        );
+
+      const amber =
+        numberOrZero(
+          item.amber_level ??
+          item.amber_threshold ??
+          item.warning_level ??
+          item.reorder_level ??
+          minimum
+        );
+
+      const target =
+        numberOrZero(
+          item.target_quantity ??
+          item.target_level ??
+          item.par_level ??
+          item.target ??
+          Math.max(current, amber, minimum, 1)
+        );
+
+      const status =
+        String(
+          item.status ||
+          item.inventory_status ||
+          ""
+        ).toLowerCase();
+
+      return {
+        current,
+        minimum,
+        amber,
+        target,
+        status
+      };
+    }
+
+    function normalizeStatus(value) {
+      return String(value || "scheduled")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "_");
+    }
+
+    function statusLabel(value) {
+      return String(value || "scheduled")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (letter) => letter.toUpperCase());
+    }
+
+    function startOfMonth(date) {
+      return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        1
+      );
+    }
+
+    function startOfDay(date) {
+      return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      );
+    }
+
+    function dateKey(date) {
+      return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+      ].join("-");
+    }
+
+    function toDateInput(date) {
+      return dateKey(date);
+    }
+
+    function truncate(value, length) {
+      const text =
+        String(value || "");
+
+      return text.length > length
+        ? text.slice(0, length - 1) + "…"
+        : text;
+    }
+
+    function numberOrZero(value) {
+      const number =
+        Number(value);
+
+      return Number.isFinite(number)
+        ? number
+        : 0;
+    }
+
+    function showNotice(message, type = "info") {
+      const notice =
+        byId("pageNotice");
+
+      notice.className =
+        `notice show ${type}`;
+
+      notice.textContent =
+        message;
+    }
+
+    function clearNotice() {
+      const notice =
+        byId("pageNotice");
+
+      notice.className =
+        "notice";
+
+      notice.textContent = "";
+    }
+
+    function stopLoading() {
+      byId("calendarGrid").innerHTML =
+        '<div class="empty-state">Calendar is unavailable.</div>';
+
+      byId("upcomingList").innerHTML =
+        '<div class="empty-state">Upcoming cleans are unavailable.</div>';
+
+      byId("criticalAlertsList").innerHTML =
+        '<div class="empty-state">Alerts are unavailable.</div>';
+
+      byId("notificationsList").innerHTML =
+        '<div class="empty-state">Notifications are unavailable.</div>';
+
+      byId("recentActivityList").innerHTML =
+        '<div class="empty-state">Recent activity is unavailable.</div>';
+    }
+
+    function openMenu() {
+      byId("sidebar").classList.add("open");
+      byId("pageOverlay").classList.add("show");
+    }
+
+    function closeMenu() {
+      byId("sidebar").classList.remove("open");
+      byId("pageOverlay").classList.remove("show");
+    }
+
+    async function signOut() {
+      if (state.realtimeChannel) {
+        db.removeChannel(state.realtimeChannel);
+      }
+
+      await db.auth.signOut();
+      window.location.href = "login.html";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    window.addEventListener("beforeunload", () => {
+      if (state.realtimeChannel) {
+        db.removeChannel(state.realtimeChannel);
+      }
+    });
+  </script>
+</body>
+</html>

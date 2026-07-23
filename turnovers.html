@@ -413,6 +413,7 @@
     .status-review-required, .status-correction-required { background: #fff0e5; color: #b35f18; }
     .status-completed { background: var(--success-light); color: var(--success); }
     .status-cancelled { background: var(--danger-light); color: var(--danger); }
+    .status-requested { background:#f1edfb; color:#684ca4; }
 
     .priority-normal { background: #f1f5f8; color: #536b7e; }
     .priority-same-day { background: var(--warning-light); color: var(--warning); }
@@ -1241,6 +1242,7 @@ html, body {
 
             <select class="form-control" id="statusFilter">
               <option value="all">All statuses</option>
+              <option value="requested">Owner Requested</option>
               <option value="unassigned">Unassigned</option>
               <option value="assigned">Assigned</option>
               <option value="accepted">Accepted</option>

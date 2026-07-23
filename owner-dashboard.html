@@ -1320,20 +1320,44 @@
     }
 
     async function loadMessages() {
-      const {
-        data,
-        error
-      } = await db
-        .from("turnover_messages")
-        .select("*")
-        .eq("property_id", state.selectedPropertyId)
-        .order("created_at", { ascending: false })
-        .limit(12);
+      state.messages = [];
 
-      state.messages =
-        error || !Array.isArray(data)
-          ? []
-          : data;
+      try {
+        let query = db
+          .from("turnover_messages")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(20);
+
+        const direct = await query.eq("property_id", state.selectedPropertyId);
+
+        if (!direct.error) {
+          state.messages = Array.isArray(direct.data) ? direct.data : [];
+          return;
+        }
+
+        const turnoverIds = state.turnovers
+          .map((turnover) => turnover.id)
+          .filter(Boolean);
+
+        if (!turnoverIds.length) {
+          return;
+        }
+
+        const fallback = await db
+          .from("turnover_messages")
+          .select("*")
+          .in("turnover_id", turnoverIds)
+          .order("created_at", { ascending: false })
+          .limit(20);
+
+        if (!fallback.error) {
+          state.messages = Array.isArray(fallback.data) ? fallback.data : [];
+        }
+      } catch (error) {
+        console.warn("Owner notifications could not load messages:", error);
+        state.messages = [];
+      }
     }
 
     function renderDashboard() {
@@ -1597,7 +1621,7 @@
               ? "New manager message"
               : "New cleaning team message",
           meta:
-            `${truncate(message.message, 95)} · ${formatMaybeDateTime(message.created_at)}`,
+            `${truncate(message.message || message.content || message.body || "New message", 95)} · ${formatMaybeDateTime(message.created_at)}`,
           date:
             new Date(message.created_at || 0),
           turnoverId:
