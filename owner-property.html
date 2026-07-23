@@ -387,6 +387,145 @@
       height: 100%;
       background: var(--blue);
       border-radius: inherit;
+      transition: width .25s ease;
+    }
+
+    .live-clean {
+      border: 1px solid #b7ddee;
+      background: linear-gradient(180deg, #ffffff, #f6fbfe);
+    }
+
+    .live-clean-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(240px, .65fr);
+      gap: 18px;
+    }
+
+    .live-percentage {
+      font-family: "Montserrat", sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .live-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 7px;
+    }
+
+    .live-details {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .live-detail {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .live-detail:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .live-detail span:first-child {
+      color: var(--muted);
+    }
+
+    .photo-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .photo-preview {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #eef4f7;
+    }
+
+    .photo-preview img {
+      width: 100%;
+      height: 105px;
+      display: block;
+      object-fit: cover;
+    }
+
+    .photo-preview span {
+      display: block;
+      padding: 8px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .inventory-table {
+      display: grid;
+      gap: 10px;
+    }
+
+    .inventory-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 92px 94px;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .inventory-name {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .inventory-meta {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .inventory-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 9px;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .inventory-save {
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 10px;
+      background: var(--navy);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .inventory-save:disabled {
+      opacity: .55;
+      cursor: wait;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px var(--green-soft);
     }
 
     .quick-links {
@@ -463,6 +602,10 @@
       .content-grid {
         grid-template-columns: 1fr;
       }
+
+      .live-clean-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 760px) {
@@ -519,7 +662,12 @@
 
     @media (max-width: 480px) {
       .stats-grid,
-      .quick-links {
+      .quick-links,
+      .photo-preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .inventory-row {
         grid-template-columns: 1fr;
       }
     }
@@ -591,6 +739,8 @@
     let currentProfile = null;
     let ownerProperties = [];
     let selectedPropertyId = null;
+    let realtimeChannel = null;
+    let realtimeRefreshTimer = null;
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -820,6 +970,9 @@
                 guest_checkin_time,
                 status,
                 final_notes,
+                check_in_time,
+                check_out_time,
+                completed_at,
                 created_at
               `)
               .eq("property_id", propertyId)
@@ -832,6 +985,7 @@
             db.from("issues")
               .select(`
                 id,
+                turnover_id,
                 title,
                 description,
                 urgency,
@@ -871,13 +1025,95 @@
         ]);
 
       const upcoming = turnovers
-        .filter(item => item.turnover_date >= today)
+        .filter(item => item.turnover_date >= today && item.status !== "completed")
         .sort((a, b) => String(a.turnover_date).localeCompare(String(b.turnover_date)));
 
       const history = turnovers
         .filter(item => item.turnover_date < today || item.status === "completed")
         .sort((a, b) => String(b.turnover_date).localeCompare(String(a.turnover_date)))
         .slice(0, 6);
+
+      const activeTurnover =
+        turnovers.find(item =>
+          ["in_progress", "review_required", "correction_required"].includes(item.status)
+        ) || null;
+
+      const turnoverIds = turnovers.map(item => item.id);
+      let tasks = [];
+      let photos = [];
+      let assignments = [];
+
+      if (turnoverIds.length) {
+        [tasks, photos, assignments] = await Promise.all([
+          safeQuery(
+            db.from("turnover_tasks")
+              .select("id, turnover_id, room_id, task_name, completed, completed_at, sort_order")
+              .in("turnover_id", turnoverIds)
+              .order("sort_order")
+          ),
+          safeQuery(
+            db.from("photos")
+              .select("id, turnover_id, photo_url, storage_path, caption, photo_type, created_at")
+              .in("turnover_id", turnoverIds)
+              .order("created_at", { ascending: false })
+          ),
+          safeQuery(
+            db.from("turnover_assignments")
+              .select(`
+                id,
+                turnover_id,
+                assignment_status,
+                cleaner_id,
+                users (
+                  id,
+                  full_name
+                )
+              `)
+              .in("turnover_id", turnoverIds)
+          )
+        ]);
+      }
+
+      const tasksByTurnover = new Map();
+      tasks.forEach(task => {
+        if (!tasksByTurnover.has(task.turnover_id)) {
+          tasksByTurnover.set(task.turnover_id, []);
+        }
+        tasksByTurnover.get(task.turnover_id).push(task);
+      });
+
+      const photosByTurnover = new Map();
+      photos.forEach(photo => {
+        if (!photosByTurnover.has(photo.turnover_id)) {
+          photosByTurnover.set(photo.turnover_id, []);
+        }
+        photosByTurnover.get(photo.turnover_id).push(photo);
+      });
+
+      const cleanersByTurnover = new Map();
+      assignments.forEach(assignment => {
+        if (!cleanersByTurnover.has(assignment.turnover_id)) {
+          cleanersByTurnover.set(assignment.turnover_id, []);
+        }
+
+        const cleanerName = assignment.users?.full_name || "Assigned cleaner";
+        const existing = cleanersByTurnover.get(assignment.turnover_id);
+
+        if (!existing.includes(cleanerName)) existing.push(cleanerName);
+      });
+
+      turnovers.forEach(turnover => {
+        const turnoverTasks = tasksByTurnover.get(turnover.id) || [];
+        const completedTasks = turnoverTasks.filter(task => task.completed).length;
+
+        turnover.total_tasks = turnoverTasks.length;
+        turnover.completed_tasks = completedTasks;
+        turnover.progress_percentage = turnoverTasks.length
+          ? Math.round((completedTasks / turnoverTasks.length) * 100)
+          : 0;
+        turnover.cleaner_names = cleanersByTurnover.get(turnover.id) || [];
+        turnover.photos = photosByTurnover.get(turnover.id) || [];
+      });
 
       const latestCountByItem = new Map();
 
@@ -887,23 +1123,25 @@
         }
       });
 
-      const inventoryAlerts = inventoryItems
-        .map(item => ({
-          ...item,
-          current_quantity: latestCountByItem.has(item.id)
-            ? latestCountByItem.get(item.id)
-            : null
-        }))
-        .filter(item => {
-          if (item.current_quantity === null) return false;
-          const amber = Number(item.amber_quantity ?? item.minimum_quantity ?? 0);
-          return item.current_quantity <= amber;
-        });
+      const inventory = inventoryItems.map(item => ({
+        ...item,
+        current_quantity: latestCountByItem.has(item.id)
+          ? latestCountByItem.get(item.id)
+          : null
+      }));
+
+      const inventoryAlerts = inventory.filter(item => {
+        if (item.current_quantity === null) return false;
+        const amber = Number(item.amber_quantity ?? item.minimum_quantity ?? 0);
+        return item.current_quantity <= amber;
+      });
 
       return {
         upcoming,
         history,
+        activeTurnover,
         issues,
+        inventory,
         inventoryAlerts,
         reports
       };
@@ -928,10 +1166,29 @@
                         .join(" – ") || "Time not entered"
                     )}
                   </div>
+                  <div class="item-subtitle">
+                    Cleaner: ${escapeHtml(
+                      turnover.cleaner_names?.length
+                        ? turnover.cleaner_names.join(", ")
+                        : "Not assigned"
+                    )}
+                  </div>
                 </div>
                 <span class="badge ${statusBadgeClass(turnover.status)}">
-                  ${escapeHtml(formatStatus(turnover.status))}
+                  ${escapeHtml(
+                    turnover.status === "in_progress"
+                      ? `${turnover.progress_percentage}% complete`
+                      : formatStatus(turnover.status)
+                  )}
                 </span>
+              </div>
+
+              <div class="progress-track">
+                <div class="progress-fill" style="width:${turnover.progress_percentage || 0}%"></div>
+              </div>
+
+              <div class="item-subtitle" style="margin-top:7px;">
+                ${turnover.completed_tasks || 0} of ${turnover.total_tasks || 0} checklist tasks completed
               </div>
             </a>
           `).join("")}
@@ -1028,10 +1285,157 @@
       `;
     }
 
+    function resolvePhotoUrl(photo) {
+      if (photo.photo_url) return photo.photo_url;
+
+      if (photo.storage_path && db.storage) {
+        for (const bucket of ["turnover-photos", "photos", "cleaning-photos"]) {
+          const { data } = db.storage.from(bucket).getPublicUrl(photo.storage_path);
+          if (data?.publicUrl) return data.publicUrl;
+        }
+      }
+
+      return "";
+    }
+
+    function renderLiveCleaning(turnover) {
+      if (!turnover) return "";
+
+      const photos = (turnover.photos || [])
+        .map(photo => ({ ...photo, resolved_url: resolvePhotoUrl(photo) }))
+        .filter(photo => photo.resolved_url)
+        .slice(0, 6);
+
+      return `
+        <article class="panel live-clean" style="margin-top:20px;">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <span class="live-dot"></span>Live Cleaning
+            </h3>
+            <a class="panel-link" href="owner-turnover.html?id=${encodeURIComponent(turnover.id)}">
+              Open full checklist
+            </a>
+          </div>
+
+          <div class="panel-body">
+            <div class="live-clean-grid">
+              <div>
+                <div class="live-percentage">${turnover.progress_percentage || 0}%</div>
+                <div class="live-label">Exact checklist completion</div>
+
+                <div class="progress-track" style="height:12px; margin-top:14px;">
+                  <div class="progress-fill" style="width:${turnover.progress_percentage || 0}%"></div>
+                </div>
+
+                <div class="item-subtitle" style="margin-top:9px;">
+                  ${turnover.completed_tasks || 0} of ${turnover.total_tasks || 0} tasks completed
+                </div>
+
+                ${photos.length ? `
+                  <div class="photo-preview-grid">
+                    ${photos.map(photo => `
+                      <a class="photo-preview" href="${escapeHtml(photo.resolved_url)}" target="_blank" rel="noopener">
+                        <img src="${escapeHtml(photo.resolved_url)}" alt="${escapeHtml(photo.caption || "Cleaning photo")}">
+                        <span>${escapeHtml(photo.caption || "Live cleaning photo")}</span>
+                      </a>
+                    `).join("")}
+                  </div>
+                ` : '<div class="item-subtitle" style="margin-top:16px;">Photos will appear here as the cleaner uploads them.</div>'}
+              </div>
+
+              <div class="live-details">
+                <div class="live-detail">
+                  <span>Status</span>
+                  <strong>${escapeHtml(formatStatus(turnover.status))}</strong>
+                </div>
+                <div class="live-detail">
+                  <span>Assigned cleaner</span>
+                  <strong>${escapeHtml(
+                    turnover.cleaner_names?.length
+                      ? turnover.cleaner_names.join(", ")
+                      : "Not assigned"
+                  )}</strong>
+                </div>
+                <div class="live-detail">
+                  <span>Checked in</span>
+                  <strong>${escapeHtml(formatTime(turnover.check_in_time) || "Not yet")}</strong>
+                </div>
+                <div class="live-detail">
+                  <span>Photos uploaded</span>
+                  <strong>${turnover.photos?.length || 0}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function inventoryStatus(item) {
+      if (item.current_quantity === null) {
+        return { label: "Not counted", className: "badge-blue" };
+      }
+
+      if (Number(item.current_quantity) <= Number(item.minimum_quantity ?? 0)) {
+        return { label: "Critical", className: "badge-red" };
+      }
+
+      if (Number(item.current_quantity) <= Number(item.amber_quantity ?? item.minimum_quantity ?? 0)) {
+        return { label: "Low", className: "badge-amber" };
+      }
+
+      return { label: "Good", className: "badge-green" };
+    }
+
+    function renderOwnerInventory(items, propertyId) {
+      if (!items.length) {
+        return '<div class="empty">No inventory items have been configured for this property.</div>';
+      }
+
+      return `
+        <div class="inventory-table">
+          ${items.map(item => {
+            const status = inventoryStatus(item);
+
+            return `
+              <div class="inventory-row">
+                <div>
+                  <div class="inventory-name">${escapeHtml(item.item_name || "Inventory item")}</div>
+                  <div class="inventory-meta">
+                    Current: ${item.current_quantity === null ? "Not counted" : escapeHtml(item.current_quantity)}
+                    · Target: ${escapeHtml(item.target_quantity ?? "—")}
+                    · <span class="badge ${status.className}">${status.label}</span>
+                  </div>
+                </div>
+
+                <input
+                  class="inventory-input"
+                  id="inventory-${escapeHtml(item.id)}"
+                  type="number"
+                  min="0"
+                  step="1"
+                  value="${item.current_quantity === null ? "" : escapeHtml(item.current_quantity)}"
+                  aria-label="Quantity for ${escapeHtml(item.item_name || "inventory item")}"
+                >
+
+                <button
+                  class="inventory-save"
+                  type="button"
+                  data-save-inventory
+                  data-item-id="${escapeHtml(item.id)}"
+                  data-property-id="${escapeHtml(propertyId)}"
+                >
+                  Save
+                </button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
     function renderPage(property, data) {
-      const activeTurnover = data.upcoming.find(item =>
-        ["in_progress", "review_required", "correction_required"].includes(item.status)
-      );
+      const activeTurnover = data.activeTurnover;
 
       const completedCount = data.history.filter(item => item.status === "completed").length;
 
@@ -1069,10 +1473,20 @@
           <article class="stat-card">
             <div class="stat-label">Current Status</div>
             <div class="stat-value" style="font-size:19px;">
-              ${escapeHtml(activeTurnover ? formatStatus(activeTurnover.status) : "No Active Clean")}
+              ${escapeHtml(
+                activeTurnover
+                  ? `${activeTurnover.progress_percentage || 0}% Complete`
+                  : "No Active Clean"
+              )}
             </div>
             <div class="stat-note">
-              ${activeTurnover ? escapeHtml(formatDate(activeTurnover.turnover_date)) : "Property is currently clear"}
+              ${activeTurnover
+                ? escapeHtml(
+                    `${activeTurnover.cleaner_names?.length
+                      ? activeTurnover.cleaner_names.join(", ")
+                      : "Cleaner not assigned"} · ${formatStatus(activeTurnover.status)}`
+                  )
+                : "Property is currently clear"}
             </div>
           </article>
 
@@ -1088,6 +1502,8 @@
             <div class="stat-note">Amber and critical stock items</div>
           </article>
         </section>
+
+        ${renderLiveCleaning(activeTurnover)}
 
         <section class="content-grid">
           <div>
@@ -1125,10 +1541,13 @@
 
             <article class="panel" style="margin-top:20px;">
               <div class="panel-header">
-                <h3 class="panel-title">Inventory Alerts</h3>
+                <h3 class="panel-title">Owner Inventory Update</h3>
               </div>
               <div class="panel-body">
-                ${renderInventory(data.inventoryAlerts)}
+                <div class="item-subtitle" style="margin:0 0 14px;">
+                  Enter the actual quantity on hand. This update is controlled by the property owner.
+                </div>
+                ${renderOwnerInventory(data.inventory, property.id)}
               </div>
             </article>
 
@@ -1201,6 +1620,132 @@
 
       const data = await loadPropertyData(propertyId);
       renderPage(property, data);
+      subscribeToLiveUpdates(propertyId);
+    }
+
+    async function saveInventoryCount(button) {
+      const itemId = button.dataset.itemId;
+      const propertyId = button.dataset.propertyId;
+      const input = document.getElementById(`inventory-${itemId}`);
+      const quantity = Number(input?.value);
+
+      if (!Number.isFinite(quantity) || quantity < 0) {
+        alert("Enter a valid quantity of zero or more.");
+        return;
+      }
+
+      button.disabled = true;
+      const originalText = button.textContent;
+      button.textContent = "Saving...";
+
+      const payload = {
+        property_id: propertyId,
+        inventory_item_id: itemId,
+        quantity,
+        counted_at: new Date().toISOString()
+      };
+
+      const { error } = await db.from("inventory_counts").insert(payload);
+
+      if (error) {
+        console.error(error);
+        alert(`Inventory could not be saved: ${error.message}`);
+        button.disabled = false;
+        button.textContent = originalText;
+        return;
+      }
+
+      button.textContent = "Saved";
+
+      setTimeout(async () => {
+        try {
+          await openSelectedProperty(selectedPropertyId, false);
+        } catch (error) {
+          console.error(error);
+        }
+      }, 500);
+    }
+
+    function scheduleRealtimeRefresh() {
+      clearTimeout(realtimeRefreshTimer);
+
+      realtimeRefreshTimer = setTimeout(async () => {
+        if (!selectedPropertyId) return;
+
+        try {
+          await openSelectedProperty(selectedPropertyId, false);
+        } catch (error) {
+          console.error("Live owner portal refresh failed:", error);
+        }
+      }, 450);
+    }
+
+    function subscribeToLiveUpdates(propertyId) {
+      if (realtimeChannel) {
+        db.removeChannel(realtimeChannel);
+        realtimeChannel = null;
+      }
+
+      realtimeChannel = db
+        .channel(`owner-property-${propertyId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "turnovers",
+            filter: `property_id=eq.${propertyId}`
+          },
+          scheduleRealtimeRefresh
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "issues",
+            filter: `property_id=eq.${propertyId}`
+          },
+          scheduleRealtimeRefresh
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "inventory_counts",
+            filter: `property_id=eq.${propertyId}`
+          },
+          scheduleRealtimeRefresh
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "turnover_tasks"
+          },
+          scheduleRealtimeRefresh
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "photos"
+          },
+          scheduleRealtimeRefresh
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "turnover_assignments"
+          },
+          scheduleRealtimeRefresh
+        )
+        .subscribe();
     }
 
     async function signOut() {
@@ -1221,6 +1766,11 @@
         console.error(error);
         renderError(error.message);
       }
+    });
+
+    pageContent.addEventListener("click", event => {
+      const button = event.target.closest("[data-save-inventory]");
+      if (button) saveInventoryCount(button);
     });
 
     document.getElementById("logoutButton").addEventListener("click", signOut);
