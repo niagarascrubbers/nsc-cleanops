@@ -857,6 +857,292 @@
         flex-direction: column;
       }
     }
+
+    /* Owner read-only room checklist */
+    .room-checklist-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .owner-room-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #ffffff;
+    }
+
+    .owner-room-card.room-complete {
+      border-color: #cfe8dc;
+    }
+
+    .owner-room-header {
+      width: 100%;
+      border: 0;
+      padding: 15px 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      background: #ffffff;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .owner-room-header:hover {
+      background: #fbfdfe;
+    }
+
+    .owner-room-heading {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .owner-room-chevron {
+      width: 19px;
+      color: var(--blue);
+      font-size: 18px;
+      font-weight: 700;
+      transition: transform .18s ease;
+    }
+
+    .owner-room-card.open .owner-room-chevron {
+      transform: rotate(90deg);
+    }
+
+    .owner-room-title {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 15px;
+    }
+
+    .owner-room-summary {
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .owner-room-track {
+      height: 6px;
+      margin-top: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e9eff3;
+    }
+
+    .owner-room-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--blue);
+    }
+
+    .owner-room-card.room-complete .owner-room-fill {
+      background: var(--green);
+    }
+
+    .owner-room-body {
+      display: none;
+      border-top: 1px solid var(--line);
+    }
+
+    .owner-room-card.open .owner-room-body {
+      display: block;
+    }
+
+    .owner-task-item {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+      padding: 15px 16px;
+      border-bottom: 1px solid #edf2f6;
+    }
+
+    .owner-task-item:last-child {
+      border-bottom: 0;
+    }
+
+    .owner-task-number {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--blue-soft);
+      color: #17628c;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .owner-task-title {
+      color: var(--navy);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .owner-task-instructions,
+    .owner-task-note {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .owner-task-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 7px;
+    }
+
+    .owner-task-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #f1f5f8;
+      color: #536b7e;
+      font-size: 8px;
+      font-weight: 600;
+    }
+
+    .owner-task-badge.required {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .owner-task-badge.completed {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .owner-task-badge.pending {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .owner-task-photos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .owner-task-photo {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #ffffff;
+    }
+
+    .owner-task-photo img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+
+    .owner-task-photo-label {
+      padding: 6px;
+      color: var(--muted);
+      font-size: 7px;
+      text-align: center;
+    }
+
+    .message-list {
+      display: grid;
+      gap: 9px;
+      max-height: 330px;
+      padding: 14px;
+      overflow-y: auto;
+      background: var(--surface-soft);
+    }
+
+    .message-bubble {
+      max-width: 84%;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #ffffff;
+    }
+
+    .message-bubble.mine {
+      margin-left: auto;
+      background: var(--blue-soft);
+      border-color: #c9e3f2;
+    }
+
+    .message-author {
+      color: var(--navy);
+      font-size: 8px;
+      font-weight: 700;
+    }
+
+    .message-text {
+      margin-top: 3px;
+      font-size: 9px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message-time {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 7px;
+    }
+
+    .message-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 9px;
+      padding: 13px 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .message-field {
+      width: 100%;
+      min-height: 62px;
+      max-height: 150px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      resize: vertical;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .message-field:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(45, 142, 199, 0.12);
+    }
+
+    .message-status {
+      min-height: 24px;
+      padding: 0 14px 10px;
+      color: var(--muted);
+      font-size: 8px;
+    }
+
+    @media (max-width: 560px) {
+      .owner-task-item {
+        grid-template-columns: 28px minmax(0, 1fr);
+      }
+
+      .owner-task-state {
+        grid-column: 2;
+      }
+
+      .message-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 
@@ -1038,12 +1324,28 @@
                   >
                     Remaining
                   </button>
+
+                  <button
+                    class="filter-button"
+                    id="expandAllRoomsButton"
+                    type="button"
+                  >
+                    Expand All
+                  </button>
+
+                  <button
+                    class="filter-button"
+                    id="collapseAllRoomsButton"
+                    type="button"
+                  >
+                    Collapse All
+                  </button>
                 </div>
 
                 <div class="task-count" id="taskCount"></div>
               </div>
 
-              <div class="task-list" id="taskList"></div>
+              <div class="room-checklist-list" id="taskList"></div>
             </div>
           </article>
 
@@ -1140,37 +1442,69 @@
           <article class="card">
             <div class="card-header">
               <div>
-                <h3 class="card-title">
-                  Owner Note
-                </h3>
-
+                <h3 class="card-title">Message Cleaning Team</h3>
                 <div class="card-note">
-                  Send a note about this clean to the manager.
+                  Visible to the assigned cleaner and management.
                 </div>
               </div>
             </div>
 
-            <form class="card-body" id="noteForm">
+            <div class="message-list" id="ownerCleanerMessages">
+              <div class="loading-state">Loading messages…</div>
+            </div>
+
+            <form class="message-form" id="ownerCleanerMessageForm">
               <textarea
-                class="note-field"
-                id="ownerNote"
-                placeholder="Add a note for the manager or cleaning team."
+                class="message-field"
+                id="ownerCleanerMessage"
+                maxlength="3000"
+                placeholder="Write a message to the cleaning team…"
               ></textarea>
 
-              <div class="note-footer">
-                <div class="note-status" id="noteStatus">
-                  Notes are visible to the management team.
-                </div>
-
-                <button
-                  class="button button-primary"
-                  id="saveNoteButton"
-                  type="submit"
-                >
-                  Save Note
-                </button>
-              </div>
+              <button
+                class="button button-primary"
+                id="sendOwnerCleanerMessage"
+                type="submit"
+              >
+                Send
+              </button>
             </form>
+
+            <div class="message-status" id="ownerCleanerMessageStatus"></div>
+          </article>
+
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Private Message to Manager</h3>
+                <div class="card-note">
+                  Only you and management can see this conversation.
+                </div>
+              </div>
+            </div>
+
+            <div class="message-list" id="ownerManagerMessages">
+              <div class="loading-state">Loading messages…</div>
+            </div>
+
+            <form class="message-form" id="ownerManagerMessageForm">
+              <textarea
+                class="message-field"
+                id="ownerManagerMessage"
+                maxlength="3000"
+                placeholder="Write a private message to the manager…"
+              ></textarea>
+
+              <button
+                class="button button-primary"
+                id="sendOwnerManagerMessage"
+                type="submit"
+              >
+                Send
+              </button>
+            </form>
+
+            <div class="message-status" id="ownerManagerMessageStatus"></div>
           </article>
         </div>
       </section>
@@ -1196,7 +1530,11 @@
       taskFilter: "all",
       photos: [],
       inventoryItems: [],
-      ownerNoteRow: null
+      openRoomKeys: new Set(),
+      messages: {
+        owner_cleaner: [],
+        owner_manager: []
+      }
     };
 
     document.addEventListener("DOMContentLoaded", initializePage);
@@ -1265,9 +1603,32 @@
         closeMobileMenu
       );
 
-      byId("noteForm").addEventListener(
+      byId("ownerCleanerMessageForm").addEventListener(
         "submit",
-        saveOwnerNote
+        (event) => sendTurnoverMessage(event, "owner_cleaner")
+      );
+
+      byId("ownerManagerMessageForm").addEventListener(
+        "submit",
+        (event) => sendTurnoverMessage(event, "owner_manager")
+      );
+
+      byId("expandAllRoomsButton").addEventListener(
+        "click",
+        () => {
+          getGroupedTasks(state.tasks).forEach((group) => {
+            state.openRoomKeys.add(group.key);
+          });
+          renderTaskList();
+        }
+      );
+
+      byId("collapseAllRoomsButton").addEventListener(
+        "click",
+        () => {
+          state.openRoomKeys.clear();
+          renderTaskList();
+        }
       );
 
       document
@@ -1394,7 +1755,8 @@
         loadTaskRecords(),
         loadPhotoRecords(),
         loadInventoryRecords(),
-        loadOwnerNote()
+        loadTurnoverMessages("owner_cleaner"),
+        loadTurnoverMessages("owner_manager")
       ]);
 
       renderDetails();
@@ -1525,8 +1887,33 @@
       state.cleaner = null;
 
       if (!state.assignment) {
+        const directCleanerId =
+          state.turnover.assigned_user_id ||
+          null;
+
+        if (!directCleanerId) {
+          byId("cleanerName").textContent =
+            "Not assigned";
+          return;
+        }
+
+        const {
+          data,
+          error
+        } = await db
+          .from("users")
+          .select("*")
+          .eq("id", directCleanerId)
+          .maybeSingle();
+
+        state.cleaner =
+          error ? null : data;
+
         byId("cleanerName").textContent =
-          "Not assigned";
+          data?.full_name ||
+          data?.name ||
+          data?.email ||
+          "Assigned cleaner";
 
         return;
       }
@@ -1596,39 +1983,59 @@
     }
 
     async function loadTaskRecords() {
-      const taskSources = [
-        "turnover_tasks",
-        "cleaning_tasks"
-      ];
+      const {
+        data,
+        error
+      } = await db
+        .from("turnover_tasks")
+        .select(`
+          id,
+          turnover_id,
+          template_item_id,
+          room_id,
+          section_name,
+          task_text,
+          task_code,
+          required_photo_count,
+          task_status,
+          cleaner_note,
+          is_required,
+          photo_required,
+          notes_required,
+          task_type,
+          category,
+          cleaner_instructions,
+          estimated_minutes,
+          required_supplies,
+          sort_order,
+          rooms (
+            room_name,
+            room_code,
+            sort_order
+          )
+        `)
+        .eq("turnover_id", state.turnoverId)
+        .order("sort_order", { ascending: true })
+        .order("task_text", { ascending: true });
 
-      state.tasks = [];
-
-      for (const source of taskSources) {
-        const {
-          data,
-          error
-        } = await db
-          .from(source)
-          .select("*")
-          .eq("turnover_id", state.turnoverId);
-
-        if (!error) {
-          state.tasks =
-            Array.isArray(data)
-              ? data
-              : [];
-
-          renderTaskProgress();
-          renderTaskList();
-          return;
-        }
+      if (error) {
+        byId("progressBlock").innerHTML =
+          '<div class="empty-state">Checklist progress is not available for this clean.</div>';
+        byId("taskList").innerHTML = "";
+        byId("taskToolbar").hidden = true;
+        return;
       }
 
-      byId("progressBlock").innerHTML =
-        '<div class="empty-state">Checklist progress is not available for this clean.</div>';
+      state.tasks = Array.isArray(data) ? data : [];
 
-      byId("taskList").innerHTML = "";
-      byId("taskToolbar").hidden = true;
+      getGroupedTasks(state.tasks).forEach((group, index) => {
+        if (index === 0 || group.items.some(isTaskComplete)) {
+          state.openRoomKeys.add(group.key);
+        }
+      });
+
+      renderTaskProgress();
+      renderTaskList();
     }
 
     function renderTaskProgress() {
@@ -1675,18 +2082,13 @@
     function renderTaskList() {
       const filteredTasks =
         state.tasks.filter((task) => {
-          const complete =
-            isTaskComplete(task);
+          const complete = isTaskComplete(task);
 
-          if (
-            state.taskFilter === "completed"
-          ) {
+          if (state.taskFilter === "completed") {
             return complete;
           }
 
-          if (
-            state.taskFilter === "remaining"
-          ) {
+          if (state.taskFilter === "remaining") {
             return !complete;
           }
 
@@ -1695,133 +2097,292 @@
 
       byId("taskCount").textContent =
         filteredTasks.length +
-        (
-          filteredTasks.length === 1
-            ? " task"
-            : " tasks"
-        );
+        (filteredTasks.length === 1 ? " task" : " tasks");
 
       if (!state.tasks.length) {
         byId("taskList").innerHTML =
           '<div class="empty-state">No checklist tasks are attached to this clean yet.</div>';
-
         return;
       }
 
       if (!filteredTasks.length) {
         byId("taskList").innerHTML =
           '<div class="empty-state">No tasks match this filter.</div>';
-
         return;
       }
 
-      const sortedTasks =
-        [...filteredTasks].sort(
-          (first, second) => {
-            const firstRoom =
-              getTaskRoom(first);
-
-            const secondRoom =
-              getTaskRoom(second);
-
-            return firstRoom.localeCompare(
-              secondRoom
-            );
-          }
-        );
+      const groups = getGroupedTasks(filteredTasks);
 
       byId("taskList").innerHTML =
-        sortedTasks.map((task) => {
-          const complete =
-            isTaskComplete(task);
+        groups.map(renderOwnerRoomCard).join("");
 
-          const title =
-            getTaskTitle(task);
+      byId("taskList")
+        .querySelectorAll("[data-room-toggle]")
+        .forEach((button) => {
+          button.addEventListener("click", () => {
+            const key = button.dataset.roomToggle;
 
-          const room =
-            getTaskRoom(task);
+            if (state.openRoomKeys.has(key)) {
+              state.openRoomKeys.delete(key);
+            } else {
+              state.openRoomKeys.add(key);
+            }
 
-          const mandatoryPhoto =
-            Boolean(
-              task.photo_required ||
-              task.requires_photo ||
-              task.mandatory_photo ||
-              task.require_photo
-            );
+            renderTaskList();
+          });
+        });
+    }
 
-          return `
-            <div
-              class="task-item ${complete ? "complete" : "pending"}"
-            >
-              <div class="task-row">
-                <div class="task-main">
-                  <div class="task-title">
-                    ${escapeHtml(title)}
-                  </div>
+    function getGroupedTasks(taskRecords) {
+      const groupMap = new Map();
 
-                  ${
-                    room
-                      ? `
-                        <div class="task-meta">
-                          ${escapeHtml(room)}
-                        </div>
-                      `
-                      : ""
-                  }
+      taskRecords.forEach((task) => {
+        const roomName = getTaskRoom(task) || "General Tasks";
+        const roomCode =
+          task.rooms?.room_code ||
+          task.room_code ||
+          roomName;
 
-                  ${
-                    mandatoryPhoto
-                      ? `
-                        <div class="task-photo-note">
-                          Photo required
-                        </div>
-                      `
-                      : ""
-                  }
-                </div>
+        const key =
+          String(task.room_id || roomCode || roomName)
+            .trim()
+            .toLowerCase();
 
+        if (!groupMap.has(key)) {
+          groupMap.set(key, {
+            key,
+            roomName,
+            roomSortOrder:
+              Number(task.rooms?.sort_order) || 9999,
+            items: []
+          });
+        }
+
+        groupMap.get(key).items.push(task);
+      });
+
+      return [...groupMap.values()]
+        .map((group) => ({
+          ...group,
+          items: [...group.items].sort(
+            (first, second) =>
+              numberOrZero(first.sort_order) -
+              numberOrZero(second.sort_order)
+          )
+        }))
+        .sort(
+          (first, second) =>
+            first.roomSortOrder - second.roomSortOrder ||
+            first.roomName.localeCompare(second.roomName)
+        );
+    }
+
+    function renderOwnerRoomCard(group) {
+      const completed =
+        group.items.filter(isTaskComplete).length;
+
+      const total =
+        group.items.length;
+
+      const percentage =
+        total > 0
+          ? Math.round(completed / total * 100)
+          : 0;
+
+      const isOpen =
+        state.openRoomKeys.has(group.key);
+
+      const allComplete =
+        total > 0 && completed === total;
+
+      return `
+        <article
+          class="owner-room-card ${isOpen ? "open" : ""} ${allComplete ? "room-complete" : ""}"
+        >
+          <button
+            class="owner-room-header"
+            type="button"
+            data-room-toggle="${escapeHtml(group.key)}"
+            aria-expanded="${isOpen ? "true" : "false"}"
+          >
+            <div>
+              <div class="owner-room-heading">
+                <span class="owner-room-chevron">›</span>
+                <h4 class="owner-room-title">${escapeHtml(group.roomName)}</h4>
+              </div>
+
+              <div class="owner-room-track">
                 <div
-                  class="task-state ${complete ? "complete" : "pending"}"
-                >
-                  ${complete ? "Completed" : "Pending"}
-                </div>
+                  class="owner-room-fill"
+                  style="width:${percentage}%"
+                ></div>
               </div>
             </div>
-          `;
-        }).join("");
+
+            <div class="owner-room-summary">
+              ${completed} / ${total} Complete
+            </div>
+          </button>
+
+          <div class="owner-room-body">
+            ${group.items.map((task, index) =>
+              renderOwnerTask(task, index + 1)
+            ).join("")}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderOwnerTask(task, number) {
+      const complete =
+        isTaskComplete(task);
+
+      const taskPhotos =
+        state.photos.filter(
+          (photo) =>
+            photo.turnover_task_id === task.id
+        );
+
+      const requiredPhotoCount =
+        Math.max(
+          numberOrZero(task.required_photo_count),
+          task.photo_required ? 1 : 0
+        );
+
+      return `
+        <div class="owner-task-item">
+          <div class="owner-task-number">${number}</div>
+
+          <div>
+            <div class="owner-task-title">
+              ${escapeHtml(getTaskTitle(task))}
+            </div>
+
+            ${task.cleaner_instructions ? `
+              <div class="owner-task-instructions">
+                ${escapeHtml(task.cleaner_instructions)}
+              </div>
+            ` : ""}
+
+            ${task.cleaner_note ? `
+              <div class="owner-task-note">
+                Cleaner note: ${escapeHtml(task.cleaner_note)}
+              </div>
+            ` : ""}
+
+            <div class="owner-task-badges">
+              ${task.is_required
+                ? '<span class="owner-task-badge required">Mandatory Task</span>'
+                : ""}
+
+              ${requiredPhotoCount > 0
+                ? `<span class="owner-task-badge required">${requiredPhotoCount} Required Photo${requiredPhotoCount === 1 ? "" : "s"}</span>`
+                : ""}
+
+              ${task.notes_required
+                ? '<span class="owner-task-badge required">Required Note</span>'
+                : ""}
+
+              ${task.estimated_minutes
+                ? `<span class="owner-task-badge">${escapeHtml(task.estimated_minutes)} minutes</span>`
+                : ""}
+
+              <span class="owner-task-badge ${complete ? "completed" : "pending"}">
+                ${complete ? "Completed" : "Pending"}
+              </span>
+            </div>
+
+            ${taskPhotos.length ? `
+              <div class="owner-task-photos">
+                ${taskPhotos.map((photo, index) => `
+                  <div class="owner-task-photo">
+                    ${photo.resolved_url ? `
+                      <a
+                        href="${escapeHtml(photo.resolved_url)}"
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        <img
+                          src="${escapeHtml(photo.resolved_url)}"
+                          alt="Task photo ${index + 1}"
+                          loading="lazy"
+                        >
+                      </a>
+                    ` : ""}
+
+                    <div class="owner-task-photo-label">
+                      ${escapeHtml(photo.caption || `Task photo ${index + 1}`)}
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+            ` : ""}
+          </div>
+
+          <div class="owner-task-state">
+            <span class="task-state ${complete ? "complete" : "pending"}">
+              ${complete ? "✓" : "Pending"}
+            </span>
+          </div>
+        </div>
+      `;
     }
 
     async function loadPhotoRecords() {
-      const photoSources = [
-        "turnover_photos",
-        "photos",
-        "task_photos"
-      ];
+      const {
+        data,
+        error
+      } = await db
+        .from("photos")
+        .select(`
+          id,
+          turnover_id,
+          turnover_task_id,
+          issue_id,
+          room_id,
+          photo_type,
+          storage_path,
+          caption,
+          created_at
+        `)
+        .eq("turnover_id", state.turnoverId)
+        .order("created_at", { ascending: true });
 
-      state.photos = [];
-
-      for (const source of photoSources) {
-        const {
-          data,
-          error
-        } = await db
-          .from(source)
-          .select("*")
-          .eq("turnover_id", state.turnoverId);
-
-        if (!error) {
-          state.photos =
-            Array.isArray(data)
-              ? data
-              : [];
-
-          renderPhotos();
-          return;
-        }
+      if (error) {
+        state.photos = [];
+        byId("photoGrid").innerHTML =
+          '<div class="empty-state">Cleaning photos are not available for this clean.</div>';
+        renderTaskList();
+        return;
       }
 
-      byId("photoGrid").innerHTML =
-        '<div class="empty-state">Cleaning photos are not available for this clean.</div>';
+      state.photos = await Promise.all(
+        (data || []).map(async (photo) => ({
+          ...photo,
+          resolved_url:
+            await createTurnoverPhotoUrl(photo.storage_path)
+        }))
+      );
+
+      renderPhotos();
+      renderTaskList();
+    }
+
+    async function createTurnoverPhotoUrl(storagePath) {
+      if (!storagePath) {
+        return "";
+      }
+
+      const {
+        data,
+        error
+      } = await db.storage
+        .from("turnover-photos")
+        .createSignedUrl(storagePath, 3600);
+
+      return error
+        ? ""
+        : data?.signedUrl || "";
     }
 
     function renderPhotos() {
@@ -1840,7 +2401,7 @@
       byId("photoGrid").innerHTML =
         viewablePhotos.map((photo) => {
           const url =
-            getPhotoUrl(photo);
+            photo.resolved_url || getPhotoUrl(photo);
 
           const caption =
             photo.caption ||
@@ -2016,135 +2577,157 @@
         }).join("");
     }
 
-    async function loadOwnerNote() {
-      state.ownerNoteRow = null;
-
-      const ownerIdentifiers = [
-        state.profile.id,
-        state.authUser.id
-      ];
-
-      for (const ownerId of ownerIdentifiers) {
-        const {
-          data,
-          error
-        } = await db
-          .from("turnover_owner_notes")
-          .select("*")
-          .eq("turnover_id", state.turnoverId)
-          .eq("owner_id", ownerId)
-          .maybeSingle();
-
-        if (!error) {
-          state.ownerNoteRow = data || null;
-
-          byId("ownerNote").value =
-            data
-              ? (
-                  data.note ||
-                  data.message ||
-                  ""
-                )
-              : "";
-
-          if (
-            data &&
-            (
-              data.updated_at ||
-              data.created_at
-            )
-          ) {
-            byId("noteStatus").textContent =
-              "Last saved " +
-              formatMaybeDateTime(
-                data.updated_at ||
-                data.created_at
-              );
-          }
-
-          return;
-        }
-      }
-
-      byId("noteStatus").textContent =
-        "Owner notes table is not available yet.";
-    }
-
-    async function saveOwnerNote(event) {
-      event.preventDefault();
-
-      if (
-        !state.turnover ||
-        !state.profile
-      ) {
-        return;
-      }
-
-      const note =
-        byId("ownerNote")
-          .value
-          .trim();
-
-      const saveButton =
-        byId("saveNoteButton");
-
-      saveButton.disabled = true;
-      saveButton.textContent = "Saving…";
-      byId("noteStatus").textContent =
-        "Saving note…";
-
-      const record = {
-        turnover_id: state.turnoverId,
-        property_id: state.turnover.property_id,
-        owner_id: state.profile.id,
-        note: note,
-        updated_at: new Date().toISOString()
-      };
+    async function loadTurnoverMessages(channel) {
+      const listId =
+        channel === "owner_cleaner"
+          ? "ownerCleanerMessages"
+          : "ownerManagerMessages";
 
       const {
         data,
         error
       } = await db
-        .from("turnover_owner_notes")
-        .upsert(
-          record,
-          {
-            onConflict:
-              "turnover_id,owner_id"
-          }
-        )
-        .select("*")
-        .maybeSingle();
-
-      saveButton.disabled = false;
-      saveButton.textContent = "Save Note";
+        .from("turnover_messages")
+        .select(`
+          id,
+          turnover_id,
+          channel,
+          sender_user_id,
+          sender_role,
+          message,
+          created_at,
+          users:sender_user_id (
+            full_name
+          )
+        `)
+        .eq("turnover_id", state.turnoverId)
+        .eq("channel", channel)
+        .order("created_at", { ascending: true });
 
       if (error) {
-        byId("noteStatus").textContent =
-          "Note was not saved.";
-
-        showNotice(
-          "Owner note could not be saved: " +
-          error.message,
-          "error"
-        );
-
+        byId(listId).innerHTML =
+          `<div class="empty-state">${escapeHtml(error.message)}</div>`;
         return;
       }
 
-      state.ownerNoteRow =
-        data || record;
+      state.messages[channel] =
+        Array.isArray(data) ? data : [];
 
-      byId("noteStatus").textContent =
-        "Saved " +
-        formatMaybeDateTime(
-          state.ownerNoteRow.updated_at
-        );
+      renderTurnoverMessages(channel);
+    }
 
-      showNotice(
-        "Your note was saved successfully.",
-        "success"
-      );
+    function renderTurnoverMessages(channel) {
+      const listId =
+        channel === "owner_cleaner"
+          ? "ownerCleanerMessages"
+          : "ownerManagerMessages";
+
+      const list =
+        byId(listId);
+
+      const messages =
+        state.messages[channel] || [];
+
+      if (!messages.length) {
+        list.innerHTML =
+          '<div class="empty-state">No messages yet.</div>';
+        return;
+      }
+
+      list.innerHTML =
+        messages.map((message) => {
+          const mine =
+            message.sender_user_id === state.profile.id;
+
+          const author =
+            message.users?.full_name ||
+            statusLabel(message.sender_role || "User");
+
+          return `
+            <div class="message-bubble ${mine ? "mine" : ""}">
+              <div class="message-author">
+                ${escapeHtml(author)}
+              </div>
+
+              <div class="message-text">
+                ${escapeHtml(message.message)}
+              </div>
+
+              <div class="message-time">
+                ${escapeHtml(formatMaybeDateTime(message.created_at))}
+              </div>
+            </div>
+          `;
+        }).join("");
+
+      list.scrollTop =
+        list.scrollHeight;
+    }
+
+    async function sendTurnoverMessage(event, channel) {
+      event.preventDefault();
+
+      const inputId =
+        channel === "owner_cleaner"
+          ? "ownerCleanerMessage"
+          : "ownerManagerMessage";
+
+      const buttonId =
+        channel === "owner_cleaner"
+          ? "sendOwnerCleanerMessage"
+          : "sendOwnerManagerMessage";
+
+      const statusId =
+        channel === "owner_cleaner"
+          ? "ownerCleanerMessageStatus"
+          : "ownerManagerMessageStatus";
+
+      const input =
+        byId(inputId);
+
+      const button =
+        byId(buttonId);
+
+      const status =
+        byId(statusId);
+
+      const message =
+        input.value.trim();
+
+      if (!message) {
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Sending…";
+      status.textContent = "";
+
+      const {
+        error
+      } = await db
+        .from("turnover_messages")
+        .insert({
+          turnover_id: state.turnoverId,
+          property_id: state.turnover.property_id,
+          channel,
+          sender_user_id: state.profile.id,
+          sender_role: state.profile.role,
+          message
+        });
+
+      button.disabled = false;
+      button.textContent = "Send";
+
+      if (error) {
+        status.textContent =
+          "Message was not sent: " + error.message;
+        return;
+      }
+
+      input.value = "";
+      status.textContent = "Message sent.";
+
+      await loadTurnoverMessages(channel);
     }
 
     function renderPageHeader() {
@@ -2536,6 +3119,7 @@
 
     function getTaskTitle(task) {
       return (
+        task.task_text ||
         task.task_name ||
         task.title ||
         task.name ||
@@ -2547,7 +3131,9 @@
 
     function getTaskRoom(task) {
       return (
+        task.rooms?.room_name ||
         task.room_name ||
+        task.section_name ||
         task.area_name ||
         task.section ||
         task.room ||
@@ -2558,7 +3144,11 @@
 
     function isTaskComplete(task) {
       const status =
-        String(task.status || "")
+        String(
+          task.task_status ||
+          task.status ||
+          ""
+        )
           .trim()
           .toLowerCase();
 
@@ -2716,6 +3306,12 @@
 
       byId("inventoryList").innerHTML =
         '<div class="empty-state">Inventory is unavailable.</div>';
+
+      byId("ownerCleanerMessages").innerHTML =
+        '<div class="empty-state">Messages are unavailable.</div>';
+
+      byId("ownerManagerMessages").innerHTML =
+        '<div class="empty-state">Messages are unavailable.</div>';
     }
 
     function openMobileMenu() {
