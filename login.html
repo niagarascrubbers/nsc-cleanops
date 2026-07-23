@@ -6,175 +6,328 @@
   <title>Login | NSC CleanOps</title>
 
   <style>
+    :root {
+      --navy: #0b2f4f;
+      --navy-hover: #164f7a;
+      --text: #17324d;
+      --muted: #5c6f7d;
+      --border: #c8d6e2;
+      --danger: #b42318;
+      --success: #16794a;
+      --background: #f4f8fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f8fb;
+      min-height: 100vh;
+      padding: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      background: var(--background);
+      font-family: Arial, sans-serif;
+      color: var(--text);
     }
 
     .login-card {
-      background: white;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       padding: 40px;
       border-radius: 16px;
+      background: #ffffff;
       box-shadow: 0 12px 35px rgba(0, 34, 68, 0.12);
     }
 
     .brand {
-      text-align: center;
       margin-bottom: 30px;
+      text-align: center;
     }
 
     .brand h1 {
       margin: 0;
-      color: #0b2f4f;
+      color: var(--navy);
       font-size: 30px;
     }
 
     .brand p {
-      margin-top: 8px;
-      color: #5c6f7d;
+      margin: 8px 0 0;
+      color: var(--muted);
     }
 
     label {
       display: block;
       margin-bottom: 6px;
-      color: #17324d;
       font-weight: 600;
     }
 
     input {
       width: 100%;
-      box-sizing: border-box;
-      padding: 13px;
       margin-bottom: 18px;
-      border: 1px solid #c8d6e2;
+      padding: 13px;
+      border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 16px;
+    }
+
+    input:focus {
+      border-color: var(--navy-hover);
+      outline: 3px solid rgba(22, 79, 122, 0.12);
     }
 
     button {
       width: 100%;
       padding: 14px;
-      background: #0b2f4f;
-      color: white;
-      border: none;
+      border: 0;
       border-radius: 8px;
+      background: var(--navy);
+      color: #ffffff;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
     }
 
     button:hover {
-      background: #164f7a;
+      background: var(--navy-hover);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.7;
     }
 
     .status {
+      min-height: 20px;
       margin-top: 16px;
       text-align: center;
-      color: #5c6f7d;
+      color: var(--muted);
       font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    @media (max-width: 520px) {
+      .login-card {
+        padding: 28px 22px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="login-card">
+  <main class="login-card">
     <div class="brand">
       <h1>NSC CleanOps</h1>
       <p>Niagara Scrubbers Operations Platform</p>
     </div>
 
-    <form id="login-form">
+    <form id="login-form" novalidate>
       <label for="email">Email</label>
-      <input type="email" id="email" placeholder="Enter your email" required>
+      <input
+        type="email"
+        id="email"
+        autocomplete="username"
+        placeholder="Enter your email"
+        required
+      >
 
       <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Enter your password" required>
+      <input
+        type="password"
+        id="password"
+        autocomplete="current-password"
+        placeholder="Enter your password"
+        required
+      >
 
-      <button type="submit">Sign In</button>
+      <button id="submit-button" type="submit">Sign In</button>
 
-      <div class="status" id="status">
+      <div class="status" id="status" role="status" aria-live="polite">
         Authorized users only
       </div>
     </form>
-  </div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js"></script>
+  </main>
 
-<script>
-  const loginForm = document.getElementById("login-form");
-  const statusMessage = document.getElementById("status");
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
 
-  loginForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
+  <script>
+    const loginForm = document.getElementById("login-form");
+    const statusMessage = document.getElementById("status");
+    const submitButton = document.getElementById("submit-button");
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    statusMessage.textContent = "Signing in...";
-
-    const { data, error } =
-      await window.nscSupabase.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
-
-    if (error) {
-      statusMessage.textContent = error.message;
-      return;
+    function setStatus(message, type) {
+      statusMessage.textContent = message;
+      statusMessage.className = "status" + (type ? " " + type : "");
     }
 
-    statusMessage.textContent = "Checking account access...";
+    function setLoading(isLoading) {
+      submitButton.disabled = isLoading;
+      submitButton.textContent = isLoading ? "Signing In..." : "Sign In";
+    }
 
-    const { data: profile, error: profileError } =
-      await window.nscSupabase
+    function normalizeRole(role) {
+      return String(role || "").trim().toLowerCase();
+    }
+
+    function dashboardForRole(role) {
+      if (role === "cleaner") return "cleaner-dashboard.html";
+      if (role === "owner") return "owner-dashboard.html";
+      if (role === "admin" || role === "manager") return "manager-dashboard.html";
+      return null;
+    }
+
+    async function loadProfile(authUser) {
+      // Primary lookup: exact Supabase Auth user ID.
+      const primaryResult = await window.nscSupabase
         .from("users")
-        .select("full_name, role, active")
-        .eq("auth_user_id", data.user.id)
-        .single();
+        .select("id, auth_user_id, full_name, email, role, active, company_id")
+        .eq("auth_user_id", authUser.id)
+        .maybeSingle();
 
-    if (profileError || !profile) {
-      await window.nscSupabase.auth.signOut();
-      statusMessage.textContent =
-        "Your login exists, but your NSC CleanOps profile was not found.";
-      return;
+      if (primaryResult.data) {
+        return {
+          profile: primaryResult.data,
+          error: null
+        };
+      }
+
+      // Fallback lookup: profile email. This protects existing profiles created
+      // before auth_user_id was attached or where the ID needs repair.
+      const email = String(authUser.email || "").trim().toLowerCase();
+
+      if (email) {
+        const fallbackResult = await window.nscSupabase
+          .from("users")
+          .select("id, auth_user_id, full_name, email, role, active, company_id")
+          .ilike("email", email)
+          .maybeSingle();
+
+        if (fallbackResult.data) {
+          return {
+            profile: fallbackResult.data,
+            error: null
+          };
+        }
+
+        return {
+          profile: null,
+          error: fallbackResult.error || primaryResult.error
+        };
+      }
+
+      return {
+        profile: null,
+        error: primaryResult.error
+      };
     }
 
-    if (profile.active !== true) {
-      await window.nscSupabase.auth.signOut();
-      statusMessage.textContent = "This account is inactive.";
-      return;
-    }
+    loginForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
 
-    const role = String(profile.role || "").toLowerCase();
-
-    statusMessage.textContent = "Login successful. Opening dashboard...";
-
-    setTimeout(function () {
-      if (role === "cleaner") {
-        window.location.href = "cleaner-dashboard.html";
+      if (!window.nscSupabase) {
+        setStatus(
+          "The database connection did not load. Refresh the page and try again.",
+          "error"
+        );
         return;
       }
 
-      if (role === "owner") {
-        window.location.href = "owner-dashboard.html";
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        setStatus("Enter both your email and password.", "error");
         return;
       }
 
-      if (role === "admin") {
-        window.location.href = "manager-dashboard.html";
-        return;
-      }
+      setLoading(true);
+      setStatus("Signing in...");
 
-      window.nscSupabase.auth.signOut();
-      statusMessage.textContent = "This account has an unsupported role.";
-    }, 500);
-  });
-</script>
+      try {
+        const { data, error } =
+          await window.nscSupabase.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) {
+          setStatus(error.message, "error");
+          return;
+        }
+
+        const authUser = data && data.user;
+
+        if (!authUser) {
+          setStatus(
+            "Login succeeded, but the authenticated user could not be loaded.",
+            "error"
+          );
+          return;
+        }
+
+        setStatus("Checking account access...");
+
+        const result = await loadProfile(authUser);
+        const profile = result.profile;
+        const profileError = result.error;
+
+        if (!profile) {
+          console.error("NSC CleanOps profile lookup failed:", profileError);
+
+          const detail = profileError && profileError.message
+            ? " Database response: " + profileError.message
+            : "";
+
+          setStatus(
+            "Your login worked, but access to your NSC CleanOps profile was blocked." +
+            detail,
+            "error"
+          );
+          return;
+        }
+
+        if (profile.active !== true) {
+          await window.nscSupabase.auth.signOut();
+          setStatus("This account is inactive.", "error");
+          return;
+        }
+
+        const role = normalizeRole(profile.role);
+        const dashboard = dashboardForRole(role);
+
+        if (!dashboard) {
+          await window.nscSupabase.auth.signOut();
+          setStatus(
+            "This account has an unsupported role: " + (profile.role || "blank"),
+            "error"
+          );
+          return;
+        }
+
+        setStatus("Login successful. Opening dashboard...", "success");
+        window.location.replace(dashboard);
+      } catch (error) {
+        console.error("Unexpected login error:", error);
+        setStatus(
+          "An unexpected login error occurred. " +
+          (error && error.message ? error.message : "Please try again."),
+          "error"
+        );
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
 </body>
 </html>
