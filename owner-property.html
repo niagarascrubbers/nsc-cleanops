@@ -705,7 +705,7 @@
             <strong>NSC CleanOps</strong>
             <button class="mobile-logout" id="mobileLogoutButton" type="button">Sign Out</button>
           </div>
-          <h1 class="page-title">Property Overview</h1>
+          <h1 class="page-title">Property Overview <span style="font-size:11px;color:#2e8bc0;">LIVE V2</span></h1>
           <div class="breadcrumb">Owner Portal / Property</div>
         </div>
 
@@ -958,71 +958,74 @@
     async function loadPropertyData(propertyId) {
       const today = new Date().toISOString().slice(0, 10);
 
-      const [turnovers, issues, inventoryItems, inventoryCounts, reports] =
-        await Promise.all([
-          safeQuery(
-            db.from("turnovers")
-              .select(`
-                id,
-                turnover_date,
-                scheduled_start,
-                scheduled_end,
-                guest_checkin_time,
-                status,
-                final_notes,
-                check_in_time,
-                check_out_time,
-                completed_at,
-                created_at
-              `)
-              .eq("property_id", propertyId)
-              .neq("status", "cancelled")
-              .order("turnover_date", { ascending: false })
-              .limit(60)
-          ),
+      const [turnovers, issues, inventoryItems, reports] = await Promise.all([
+        safeQuery(
+          db.from("turnovers")
+            .select(`
+              id,
+              turnover_date,
+              scheduled_start,
+              scheduled_end,
+              guest_checkin_time,
+              status,
+              final_notes,
+              check_in_time,
+              check_out_time,
+              completed_at,
+              created_at
+            `)
+            .eq("property_id", propertyId)
+            .neq("status", "cancelled")
+            .order("turnover_date", { ascending: false })
+            .limit(60)
+        ),
 
-          safeQuery(
-            db.from("issues")
-              .select(`
-                id,
-                turnover_id,
-                title,
-                description,
-                urgency,
-                issue_status,
-                prevents_guest_ready,
-                created_at
-              `)
-              .eq("property_id", propertyId)
-              .not("issue_status", "in", '("resolved","closed")')
-              .order("created_at", { ascending: false })
-              .limit(10)
-          ),
+        safeQuery(
+          db.from("issues")
+            .select(`
+              id,
+              turnover_id,
+              title,
+              description,
+              urgency,
+              issue_status,
+              prevents_guest_ready,
+              created_at
+            `)
+            .eq("property_id", propertyId)
+            .not("issue_status", "in", '("resolved","closed")')
+            .order("created_at", { ascending: false })
+            .limit(10)
+        ),
 
-          safeQuery(
-            db.from("inventory_items")
-              .select("id, item_name, target_quantity, amber_quantity, minimum_quantity, active")
-              .eq("property_id", propertyId)
-              .eq("active", true)
-              .order("item_name")
-          ),
+        safeQuery(
+          db.from("inventory_items")
+            .select("id, item_name, target_quantity, amber_quantity, minimum_quantity, active")
+            .eq("property_id", propertyId)
+            .eq("active", true)
+            .order("item_name")
+        ),
 
-          safeQuery(
-            db.from("inventory_counts")
-              .select("id, inventory_item_id, quantity, counted_at, created_at")
-              .in("inventory_item_id", inventoryItems.map(item => item.id))
-              .order("counted_at", { ascending: false })
-              .order("created_at", { ascending: false })
-          ),
+        safeQuery(
+          db.from("reports")
+            .select("id, turnover_id, created_at")
+            .eq("property_id", propertyId)
+            .order("created_at", { ascending: false })
+            .limit(20)
+        )
+      ]);
 
-          safeQuery(
-            db.from("reports")
-              .select("id, turnover_id, created_at")
-              .eq("property_id", propertyId)
-              .order("created_at", { ascending: false })
-              .limit(20)
-          )
-        ]);
+      let inventoryCounts = [];
+
+      if (inventoryItems.length) {
+        inventoryCounts = await safeQuery(
+          db.from("inventory_counts")
+            .select("id, inventory_item_id, quantity, counted_at, created_at")
+            .in("inventory_item_id", inventoryItems.map(item => item.id))
+            .order("counted_at", { ascending: false })
+            .order("created_at", { ascending: false })
+        );
+      }
 
       const upcoming = turnovers
         .filter(item => item.turnover_date >= today && item.status !== "completed")
