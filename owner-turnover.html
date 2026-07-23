@@ -1143,6 +1143,314 @@
       }
     }
 
+
+    /* Clean owner turnover redesign */
+    body {
+      background: #f6f8fb;
+    }
+
+    .main-content {
+      padding: 24px 30px 40px;
+    }
+
+    .topbar {
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .page-title {
+      font-size: 28px;
+      letter-spacing: -0.7px;
+    }
+
+    .page-subtitle {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .summary-grid {
+      grid-template-columns: 1.3fr 1fr 1fr 0.8fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .summary-card {
+      padding: 14px 15px;
+      border-radius: 13px;
+      box-shadow: 0 6px 18px rgba(11, 47, 79, 0.05);
+    }
+
+    .summary-label {
+      font-size: 9px;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-value {
+      margin-top: 5px;
+      font-size: 13px;
+      min-height: auto;
+    }
+
+    .owner-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 4px 0 16px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(11, 47, 79, 0.04);
+    }
+
+    .owner-tab-button {
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 14px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .owner-tab-button.active {
+      background: var(--navy);
+      color: #ffffff;
+    }
+
+    .owner-tab-pane {
+      display: none;
+    }
+
+    .owner-tab-pane.active {
+      display: block;
+    }
+
+    .owner-overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .owner-overview-left,
+    .owner-overview-right {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      border-radius: 14px;
+      box-shadow: 0 7px 20px rgba(11, 47, 79, 0.055);
+    }
+
+    .card-header {
+      min-height: auto;
+      padding: 15px 17px;
+    }
+
+    .card-title {
+      font-size: 15px;
+    }
+
+    .card-note {
+      margin-top: 3px;
+      font-size: 10px;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .progress-summary {
+      margin-bottom: 0;
+    }
+
+    .progress-percentage {
+      min-width: 72px;
+      font-size: 30px;
+    }
+
+    .progress-track {
+      height: 9px;
+    }
+
+    .progress-caption {
+      margin-top: 6px;
+      font-size: 10px;
+    }
+
+    .details-compact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .details-compact-grid .side-item {
+      padding: 10px 11px;
+      border-radius: 9px;
+      box-shadow: none;
+    }
+
+    .details-compact-grid .side-title {
+      font-size: 10px;
+    }
+
+    .details-compact-grid .side-meta {
+      font-size: 9px;
+    }
+
+    .task-toolbar {
+      margin-bottom: 14px;
+      padding: 0;
+    }
+
+    .task-filter-group {
+      gap: 6px;
+    }
+
+    .filter-button {
+      padding: 7px 10px;
+      font-size: 9px;
+    }
+
+    .owner-room-card {
+      border-radius: 11px;
+      box-shadow: none;
+    }
+
+    .owner-room-header {
+      padding: 13px 14px;
+    }
+
+    .owner-room-title {
+      font-size: 13px;
+    }
+
+    .owner-room-summary {
+      font-size: 9px;
+    }
+
+    .owner-room-track {
+      height: 5px;
+      margin-top: 7px;
+    }
+
+    .owner-task-item {
+      grid-template-columns: 26px minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+
+    .owner-task-number {
+      width: 24px;
+      height: 24px;
+      font-size: 8px;
+    }
+
+    .owner-task-title {
+      font-size: 10px;
+    }
+
+    .owner-task-instructions,
+    .owner-task-note {
+      font-size: 8px;
+    }
+
+    .owner-task-badge {
+      min-height: 20px;
+      padding: 2px 6px;
+      font-size: 7px;
+    }
+
+    .timeline-list {
+      gap: 8px;
+    }
+
+    .timeline-item {
+      padding: 10px 10px 10px 32px;
+    }
+
+    .timeline-label {
+      font-size: 10px;
+    }
+
+    .timeline-value {
+      font-size: 9px;
+    }
+
+    .inventory-item {
+      padding: 10px;
+    }
+
+    .photo-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .photo-card img {
+      height: 125px;
+    }
+
+    .message-grid-clean {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .message-list {
+      max-height: 360px;
+    }
+
+    @media (max-width: 1050px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .owner-overview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .main-content {
+        padding: 16px 14px 28px;
+      }
+
+      .owner-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+
+      .owner-tab-button {
+        white-space: nowrap;
+      }
+
+      .details-compact-grid,
+      .message-grid-clean {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .summary-grid,
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .owner-task-item {
+        grid-template-columns: 24px minmax(0, 1fr);
+      }
+    }
+
   </style>
 </head>
 
@@ -1277,174 +1585,170 @@
         </article>
       </section>
 
-      <section class="content-grid">
-        <div class="column-stack">
-          <article class="card">
-            <div class="card-header">
-              <div>
-                <h3 class="card-title">
-                  Checklist Progress
-                </h3>
+      <div class="owner-tabs" role="tablist" aria-label="Turnover sections">
+        <button class="owner-tab-button active" type="button" data-owner-tab="overview">
+          Overview
+        </button>
 
-                <div class="card-note">
-                  Live completion information from the cleaner checklist.
+        <button class="owner-tab-button" type="button" data-owner-tab="checklist">
+          Checklist
+        </button>
+
+        <button class="owner-tab-button" type="button" data-owner-tab="photos">
+          Photos
+        </button>
+
+        <button class="owner-tab-button" type="button" data-owner-tab="messages">
+          Messages
+        </button>
+      </div>
+
+      <section class="owner-tab-pane active" data-owner-pane="overview">
+        <div class="owner-overview-grid">
+          <div class="owner-overview-left">
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Cleaning Progress</h3>
+                  <div class="card-note">
+                    Live completion from the cleaner checklist.
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="card-body">
-              <div id="progressBlock">
-                <div class="loading-state">
-                  Loading checklist progress…
+              <div class="card-body">
+                <div id="progressBlock">
+                  <div class="loading-state">Loading checklist progress…</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Cleaning Details</h3>
+                  <div class="card-note">
+                    Important information for this turnover.
+                  </div>
                 </div>
               </div>
 
-              <div class="task-toolbar" id="taskToolbar" hidden>
-                <div class="task-filter-group">
-                  <button
-                    class="filter-button active"
-                    type="button"
-                    data-task-filter="all"
-                  >
-                    All
-                  </button>
-
-                  <button
-                    class="filter-button"
-                    type="button"
-                    data-task-filter="completed"
-                  >
-                    Completed
-                  </button>
-
-                  <button
-                    class="filter-button"
-                    type="button"
-                    data-task-filter="remaining"
-                  >
-                    Remaining
-                  </button>
-
-                  <button
-                    class="filter-button"
-                    id="expandAllRoomsButton"
-                    type="button"
-                  >
-                    Expand All
-                  </button>
-
-                  <button
-                    class="filter-button"
-                    id="collapseAllRoomsButton"
-                    type="button"
-                  >
-                    Collapse All
-                  </button>
-                </div>
-
-                <div class="task-count" id="taskCount"></div>
-              </div>
-
-              <div class="room-checklist-list" id="taskList"></div>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-header">
-              <div>
-                <h3 class="card-title">
-                  Cleaning Photos
-                </h3>
-
-                <div class="card-note">
-                  Photos uploaded during or after this clean.
+              <div class="card-body">
+                <div class="details-compact-grid" id="detailsList">
+                  <div class="loading-state">Loading details…</div>
                 </div>
               </div>
-            </div>
+            </article>
+          </div>
 
-            <div class="card-body">
-              <div class="photo-grid" id="photoGrid">
-                <div class="loading-state">
-                  Loading photos…
+          <div class="owner-overview-right">
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Timeline</h3>
+                  <div class="card-note">
+                    Key turnover milestones.
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
+
+              <div class="card-body">
+                <div class="timeline-list" id="timelineList">
+                  <div class="loading-state">Loading timeline…</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Inventory Alerts</h3>
+                  <div class="card-note">
+                    Only low or urgent supplies appear here.
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <div class="side-list" id="inventoryList">
+                  <div class="loading-state">Loading inventory…</div>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
+      </section>
 
-        <div class="column-stack">
+      <section class="owner-tab-pane" data-owner-pane="checklist">
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Room-by-Room Checklist</h3>
+              <div class="card-note">
+                Open a room only when you need to review its tasks.
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="task-toolbar" id="taskToolbar" hidden>
+              <div class="task-filter-group">
+                <button class="filter-button active" type="button" data-task-filter="all">
+                  All
+                </button>
+
+                <button class="filter-button" type="button" data-task-filter="completed">
+                  Completed
+                </button>
+
+                <button class="filter-button" type="button" data-task-filter="remaining">
+                  Remaining
+                </button>
+
+                <button class="filter-button" id="expandAllRoomsButton" type="button">
+                  Expand All
+                </button>
+
+                <button class="filter-button" id="collapseAllRoomsButton" type="button">
+                  Collapse All
+                </button>
+              </div>
+
+              <div class="task-count" id="taskCount"></div>
+            </div>
+
+            <div class="room-checklist-list" id="taskList"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="owner-tab-pane" data-owner-pane="photos">
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Cleaning Photos</h3>
+              <div class="card-note">
+                Photos uploaded during this clean.
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="photo-grid" id="photoGrid">
+              <div class="loading-state">Loading photos…</div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="owner-tab-pane" data-owner-pane="messages">
+        <div class="message-grid-clean">
           <article class="card">
             <div class="card-header">
               <div>
-                <h3 class="card-title">
-                  Cleaning Details
-                </h3>
-
+                <h3 class="card-title">Cleaning Team</h3>
                 <div class="card-note">
-                  Timing, guest readiness and completion information.
-                </div>
-              </div>
-            </div>
-
-            <div class="card-body">
-              <div class="side-list" id="detailsList">
-                <div class="loading-state">
-                  Loading details…
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-header">
-              <div>
-                <h3 class="card-title">
-                  Cleaning Timeline
-                </h3>
-
-                <div class="card-note">
-                  Key events for this turnover.
-                </div>
-              </div>
-            </div>
-
-            <div class="card-body">
-              <div class="timeline-list" id="timelineList">
-                <div class="loading-state">
-                  Loading timeline…
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-header">
-              <div>
-                <h3 class="card-title">
-                  Inventory Alerts
-                </h3>
-
-                <div class="card-note">
-                  Low or urgent property supplies.
-                </div>
-              </div>
-            </div>
-
-            <div class="card-body">
-              <div class="side-list" id="inventoryList">
-                <div class="loading-state">
-                  Loading inventory…
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-header">
-              <div>
-                <h3 class="card-title">Message Cleaning Team</h3>
-                <div class="card-note">
-                  Visible to the assigned cleaner and management.
+                  Shared with the assigned cleaner and management.
                 </div>
               </div>
             </div>
@@ -1461,11 +1765,7 @@
                 placeholder="Write a message to the cleaning team…"
               ></textarea>
 
-              <button
-                class="button button-primary"
-                id="sendOwnerCleanerMessage"
-                type="submit"
-              >
+              <button class="button button-primary" id="sendOwnerCleanerMessage" type="submit">
                 Send
               </button>
             </form>
@@ -1476,7 +1776,7 @@
           <article class="card">
             <div class="card-header">
               <div>
-                <h3 class="card-title">Private Message to Manager</h3>
+                <h3 class="card-title">Private Manager Conversation</h3>
                 <div class="card-note">
                   Only you and management can see this conversation.
                 </div>
@@ -1495,11 +1795,7 @@
                 placeholder="Write a private message to the manager…"
               ></textarea>
 
-              <button
-                class="button button-primary"
-                id="sendOwnerManagerMessage"
-                type="submit"
-              >
+              <button class="button button-primary" id="sendOwnerManagerMessage" type="submit">
                 Send
               </button>
             </form>
@@ -1576,7 +1872,29 @@
       await loadCompleteTurnover();
     }
 
+    function activateOwnerTab(tabName) {
+      document.querySelectorAll("[data-owner-tab]").forEach((button) => {
+        button.classList.toggle(
+          "active",
+          button.dataset.ownerTab === tabName
+        );
+      });
+
+      document.querySelectorAll("[data-owner-pane]").forEach((pane) => {
+        pane.classList.toggle(
+          "active",
+          pane.dataset.ownerPane === tabName
+        );
+      });
+    }
+
     function bindPageEvents() {
+      document.querySelectorAll("[data-owner-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activateOwnerTab(button.dataset.ownerTab);
+        });
+      });
+
       byId("signOutButton").addEventListener(
         "click",
         signOut
@@ -2030,12 +2348,6 @@
       }
 
       state.tasks = Array.isArray(data) ? data : [];
-
-      getGroupedTasks(state.tasks).forEach((group, index) => {
-        if (index === 0 || group.items.some(isTaskComplete)) {
-          state.openRoomKeys.add(group.key);
-        }
-      });
 
       renderTaskProgress();
       renderTaskList();
