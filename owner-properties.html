@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Properties | NSC CleanOps</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#0b2f4f;--navy2:#082945;--blue:#2d8ec7;--ink:#17324d;--muted:#738696;
+      --line:#dde7ee;--bg:#f4f8fb;--white:#fff;--green:#16845d;--greenbg:#e9f7f1;
+      --amber:#a76408;--amberbg:#fff3dd;--red:#b83f3f;--redbg:#fdecec;--shadow:0 10px 28px rgba(11,47,79,.07);
+    }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:Poppins,Arial,sans-serif}
+    a{color:inherit} button,input,select,textarea{font:inherit}
+    .shell{min-height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;padding:22px 15px;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff}
+    .brand{padding:0 6px 20px;border-bottom:1px solid rgba(255,255,255,.12)} .brand h1{margin:0;font:700 20px Montserrat}
+    .brand p{margin:5px 0 0;color:#bdd3e1;font-size:10px}
+    .nav{display:grid;gap:6px;margin-top:18px}.nav a,.signout{border:0;border-radius:9px;padding:11px 12px;background:transparent;color:#dbe8f0;text-decoration:none;text-align:left;cursor:pointer}
+    .nav a.active,.nav a:hover,.signout:hover{background:rgba(255,255,255,.11);color:#fff}
+    .sidefoot{margin-top:auto;padding:16px 6px 0;border-top:1px solid rgba(255,255,255,.12)}
+    .user{font-size:12px;font-weight:600}.role{margin:3px 0 10px;color:#bdd3e1;font-size:10px}
+    .main{min-width:0;padding:24px 28px 40px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}
+    .crumb{font-size:10px;color:var(--muted);margin-bottom:8px}.title{margin:0;font:700 clamp(24px,3vw,30px) Montserrat;letter-spacing:-.5px}
+    .sub{margin:6px 0 0;color:var(--muted);font-size:11px}.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--blue);color:#fff;font-size:10px;font-weight:600;cursor:pointer;text-decoration:none}
+    .btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)} .btn.danger{background:var(--red)}
+    .notice{display:none;margin-bottom:14px;border-radius:10px;padding:11px 13px;font-size:10px}.notice.show{display:block}.notice.error{background:var(--redbg);color:#8f2c2c}.notice.info{background:#eaf5fb;color:#17628c}
+    .grid{display:grid;gap:16px}.card{border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .cardhead{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .cardtitle{margin:0;font:700 14px Montserrat}.cardnote{margin-top:3px;color:var(--muted);font-size:9px}.cardbody{padding:15px}
+    .empty{padding:28px 10px;text-align:center;color:var(--muted);font-size:10px}
+    .badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;background:#eaf5fb;color:#17628c;font-size:8px;font-weight:700;text-transform:capitalize}
+    .badge.active,.badge.completed,.badge.approved{background:var(--greenbg);color:#146d4c}.badge.cancelled,.badge.declined{background:var(--redbg);color:#8e2d2d}.badge.requested,.badge.in_progress{background:var(--amberbg);color:#875000}
+    .mobile{display:none}
+    @media(max-width:800px){
+      .shell{display:block}.sidebar{position:fixed;left:-240px;z-index:20;width:224px;transition:.2s}.sidebar.open{left:0}.mobile{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:var(--navy);color:#fff}.mobile button{border:0;border-radius:8px;padding:7px 10px;background:rgba(255,255,255,.12);color:#fff}.main{padding:18px 14px 30px}.top{align-items:flex-start;flex-direction:column}
+    }
+  </style>
+
+  <style>
+    .property-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+    .property-card{display:flex;flex-direction:column;min-height:215px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .property-image{height:74px;background:linear-gradient(135deg,#d9edf7,#f7fbfd);display:grid;place-items:center;color:#4d7d98;font:700 13px Montserrat}
+    .property-content{padding:15px;display:flex;flex-direction:column;flex:1}
+    .property-name{margin:0;font:700 15px Montserrat} .property-meta{margin:7px 0 0;color:var(--muted);font-size:9px;line-height:1.55}
+    .property-footer{margin-top:auto;padding-top:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    @media(max-width:1050px){.property-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.property-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="mobile"><strong>NSC CleanOps</strong><button id="menuBtn">Menu</button></div>
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><h1>NSC CleanOps</h1><p>Owner Portal</p></div>
+    <nav class="nav">
+      <a href="owner-dashboard.html">Dashboard</a>
+      <a class="active" href="owner-properties.html">Properties</a>
+      <a href="owner-profile.html">Profile</a>
+    </nav>
+    <div class="sidefoot"><div class="user" id="userName">Loading account…</div><div class="role">Property Owner</div><button class="signout" id="signOut">Sign Out</button></div>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <div><div class="crumb">Owner Portal / Properties</div><h2 class="title">Properties</h2><p class="sub">Open a property to view its turnover records, checklist, inventory, photos, messages, documents and reports.</p></div>
+      <a class="btn secondary" href="owner-dashboard.html">Back to Dashboard</a>
+    </header>
+    <div class="notice" id="notice"></div>
+    <section class="property-grid" id="propertyGrid"><div class="empty">Loading assigned properties…</div></section>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script>
+"use strict";
+const db=window.nscSupabase,$=id=>document.getElementById(id);
+let authUser=null,profile=null,properties=[];
+document.addEventListener("DOMContentLoaded",init);
+$("menuBtn").onclick=()=>$("sidebar").classList.toggle("open");
+$("signOut").onclick=async()=>{await db.auth.signOut();location.href="login.html"};
+async function init(){
+  if(!db)return fail("Supabase client was not found.");
+  const a=await db.auth.getUser(); if(a.error||!a.data.user) return location.href="login.html";
+  authUser=a.data.user;
+  const p=await db.from("users").select("*").eq("auth_user_id",authUser.id).maybeSingle();
+  if(p.error||!p.data)return fail("Owner profile could not be loaded.");
+  profile=p.data; if(String(profile.role||"").toLowerCase()!=="owner")return location.href="login.html";
+  $("userName").textContent=profile.full_name||authUser.email||"Owner";
+  await loadProperties(); render();
+}
+async function loadProperties(){
+  const ids=new Set();
+  for(const q of [{column:"user_id",value:profile.id},{column:"user_id",value:authUser.id},{column:"owner_id",value:profile.id}]){
+    const r=await db.from("property_members").select("property_id").eq(q.column,q.value);
+    if(!r.error)(r.data||[]).forEach(x=>x.property_id&&ids.add(x.property_id));
+  }
+  if(!ids.size){properties=[];return}
+  const r=await db.from("properties").select("*").in("id",[...ids]).order("property_name");
+  properties=r.error?[]:(r.data||[]);
+}
+function render(){
+  if(!properties.length){$("propertyGrid").innerHTML='<div class="empty">No properties are assigned to this owner account.</div>';return}
+  $("propertyGrid").innerHTML=properties.map(p=>`
+    <article class="property-card">
+      <div class="property-image">${esc((p.property_code||p.property_name||"Property").slice(0,3).toUpperCase())}</div>
+      <div class="property-content">
+        <div><h3 class="property-name">${esc(p.property_name||"Property")}</h3><div class="property-meta">${esc([p.street_address,p.city,p.province].filter(Boolean).join(", ")||"Address not entered")}<br>${esc(p.property_type||"Property")}</div></div>
+        <div class="property-footer"><span class="badge active">${p.active===false?"Inactive":"Active"}</span><a class="btn" href="owner-property.html?id=${encodeURIComponent(p.id)}">Open Property</a></div>
+      </div>
+    </article>`).join("");
+}
+function fail(m){$("notice").className="notice show error";$("notice").textContent=m;$("propertyGrid").innerHTML='<div class="empty">Unable to load properties.</div>'}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+</script>
+</body></html>
