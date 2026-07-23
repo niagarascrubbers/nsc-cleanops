@@ -725,7 +725,7 @@
         .from("properties")
         .select("*")
         .in("id", propertyIds)
-        .order("name", { ascending: true });
+        .order("property_name", { ascending: true });
 
       if (propertyError) {
         showPageError("Property details could not be loaded: " + propertyError.message);
@@ -748,7 +748,7 @@
 
     function renderPropertyOptions() {
       $("propertySelect").innerHTML = state.properties.map(property => {
-        const label = property.name || property.property_name || property.code || "Property";
+        const label = property.property_name || property.property_code || "Property";
         return `<option value="${escapeHtml(property.id)}">${escapeHtml(label)}</option>`;
       }).join("");
     }
