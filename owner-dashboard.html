@@ -991,48 +991,6 @@
       .inventory-row { grid-template-columns: minmax(0,1fr) 76px; }
       .inventory-row .button { grid-column: 1 / -1; }
     }
-
-    /* Focused owner dashboard */
-    .dashboard-focus {
-      grid-template-columns: minmax(0, 7fr) minmax(320px, 5fr);
-      align-items: stretch;
-    }
-
-    .dashboard-focus .live-progress-card,
-    .dashboard-focus .notifications-card {
-      grid-column: auto;
-    }
-
-    .dashboard-focus .card {
-      height: 100%;
-    }
-
-    .page-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .recent-notifications {
-      max-height: 315px;
-    }
-
-    .recent-notifications .notification-item:nth-child(n+6) {
-      display: none;
-    }
-
-    .owner-data-compatibility {
-      display: none !important;
-    }
-
-    @media (max-width: 1180px) {
-      .dashboard-focus {
-        grid-template-columns: 1fr;
-      }
-    }
-
   </style>
 </head>
 
@@ -1050,25 +1008,9 @@
           <span class="nav-icon">⌂</span>
           <span>Dashboard</span>
         </a>
-        <a class="nav-link" href="owner-turnovers.html">
-          <span class="nav-icon">▦</span>
-          <span>Turnovers</span>
-        </a>
-        <a class="nav-link" href="owner-inventory.html">
-          <span class="nav-icon">▣</span>
-          <span>Inventory</span>
-        </a>
         <a class="nav-link" href="owner-documents.html">
           <span class="nav-icon">▤</span>
-          <span>Documents</span>
-        </a>
-        <a class="nav-link" href="owner-messages.html">
-          <span class="nav-icon">✉</span>
-          <span>Messages</span>
-        </a>
-        <a class="nav-link" href="owner-notifications.html">
-          <span class="nav-icon">●</span>
-          <span>Notifications</span>
+          <span>Turnovers &amp; Documents</span>
         </a>
       </nav>
 
@@ -1140,46 +1082,71 @@
           </article>
         </section>
 
-        <section class="dashboard-sections dashboard-focus">
+        <section class="dashboard-sections">
           <article class="card live-progress-card">
             <div class="card-header">
               <div>
                 <h2 class="card-title">Live Cleaning Progress</h2>
                 <p class="card-subtitle" id="liveTurnoverTitle"></p>
               </div>
-              <a class="button button-secondary button-small page-link" href="owner-turnovers.html">View Turnovers</a>
             </div>
             <div class="card-body" id="liveProgressContent">
               <div class="loading-state"><div class="spinner"></div></div>
             </div>
           </article>
 
+          <article class="card issues-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Issues</h2>
+                <p class="card-subtitle">Newest property issues first</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="list scroll-list" id="issuesList"></div>
+            </div>
+          </article>
+
+          <article class="card inventory-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Inventory</h2>
+                <p class="card-subtitle">Current quantities and low-stock alerts</p>
+              </div>
+              <button class="button button-secondary button-small" id="addInventoryButton" type="button">Add Item</button>
+            </div>
+            <div class="card-body">
+              <div class="scroll-list" id="inventoryList"></div>
+            </div>
+          </article>
+
+          <article class="card messages-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Messages</h2>
+                <p class="card-subtitle">Property conversation</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="message-thread" id="messageThread"></div>
+              <form class="message-compose" id="messageForm">
+                <textarea class="message-input" id="messageInput" required aria-label="Message"></textarea>
+                <button class="button button-primary" type="submit">Send</button>
+              </form>
+            </div>
+          </article>
+
           <article class="card notifications-card">
             <div class="card-header">
               <div>
-                <h2 class="card-title">Recent Notifications</h2>
-                <p class="card-subtitle">Your five newest cleaning and property updates</p>
+                <h2 class="card-title">Owner Notifications</h2>
+                <p class="card-subtitle">Cleaning and property updates</p>
               </div>
-              <a class="button button-secondary button-small page-link" href="owner-notifications.html">View All</a>
             </div>
             <div class="card-body">
-              <div class="scroll-list recent-notifications" id="notificationsList">
-                <div class="loading-state"><div class="spinner"></div></div>
-              </div>
+              <div class="scroll-list" id="notificationsList"></div>
             </div>
           </article>
-        </section>
-
-        <!-- Compatibility elements remain hidden until owner-data.js is split by page. -->
-        <section class="owner-data-compatibility" aria-hidden="true">
-          <div id="issuesList"></div>
-          <div id="inventoryList"></div>
-          <button id="addInventoryButton" type="button"></button>
-          <div id="messageThread"></div>
-          <form id="messageForm">
-            <textarea id="messageInput"></textarea>
-            <button type="submit"></button>
-          </form>
         </section>
       </main>
     </div>
